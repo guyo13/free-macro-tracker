@@ -38,15 +38,19 @@
                     <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
-            <div id="macroes-cont" class="mb-1 xs">
-                Macro-nutrient Breakdown:
-                <div id="carb-progress-bar" class="progress fmt-macro-progress">
+            <div id="macroes-cont" class="mb-1 xs row">
+                <div class="col-12 center-text mb-3">Macro-nutrient Breakdown:</div>
+                <div class="col mr-2 ml-2 center-text">Carbohydrates</div>
+                <div class="col mr-2 ml-2 center-text">Proteins</div>
+                <div class="col mr-2 ml-2 center-text">Fats</div>
+                <div class="w-100"></div>
+                <div id="carb-progress-bar" class="progress fmt-macro-progress col mr-2 ml-2">
                     <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
-                <div id="protein-progress-bar" class="progress fmt-macro-progress">
+                <div id="protein-progress-bar" class="progress fmt-macro-progress col mr-2 ml-2">
                     <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
-                <div id="fat-progress-bar" class="progress fmt-macro-progress">
+                <div id="fat-progress-bar" class="progress fmt-macro-progress col mr-2 ml-2">
                     <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
@@ -58,5 +62,8 @@
     </div>
     <script src="javascript/jquery-3.4.1.min.js"></script>
     <script src="javascript/fmt.js"></script>
+    <div id="source-code" class="footer bg-dark text-white">
+        <a href="https://github.com/guyo13/free-macro-tracker">View source on GitHub</a>
+    </div>
 </body>
 </html> 

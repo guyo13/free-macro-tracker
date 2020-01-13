@@ -35,7 +35,7 @@ $(document).ready(function() {
     }
     pageController.showOverview();
     let hasLocalStorage = pageController.hasLocalStorage();
-    if (hasLocalStorage) {
+    if (!hasLocalStorage) {
         document.getElementById("page-title").innerHTML += '<div class="alert alert-danger col-12" role="alert">HTML Local Storage is not supported on this browser. Progress won\'t be saved!</div>';
     }
 });
