@@ -1,0 +1,58 @@
+ <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Free Macro Tracker</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/fmt.css" rel="stylesheet">
+</head>
+<body>
+    <div id="odin">
+        <div id="page-title" class="row justify-content-center">
+            <h1 class="display-4">Free Macro Tracker</h1>
+        </div>
+        <div id="tabs" class="row justify-content-center">
+        <ul id="main-screens" class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link active" id="goto-overview" href="#">Overview</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="goto-foods" href="#">Foods</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="goto-profile" href="#">Profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="goto-export" href="#">Export</a>
+          </li>
+        </ul>
+        </div>
+        <div id="overview">
+            <div id="calories-cont" class="mb-1 xs justify-content-center">
+                Calories:
+                <div class="progress fmt-total-progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+            <div id="macroes-cont" class="mb-1 xs">
+                Macro-nutrient Breakdown:
+                <div id="carb-progress-bar" class="progress fmt-macro-progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div id="protein-progress-bar" class="progress fmt-macro-progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div id="fat-progress-bar" class="progress fmt-macro-progress">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+        <div id="foods">This is the foods menu</div>
+        <div id="profile">This is the profile menu</div>
+        <div id="export">This is the export menu</div>
+    </div>
+    <script src="javascript/jquery-3.4.1.min.js"></script>
+    <script src="javascript/fmt.js"></script>
+</body>
+</html> 
