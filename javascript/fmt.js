@@ -32,13 +32,17 @@ var pageController = {
 };
 //Main
 $(document).ready(function() {
+    //Handle Tabs
     for (const i in tabIds) {
         let tabId = tabIds[i];
         $("#" + tabId).click(function () {pageController.setTabActive(tabId)});
     }
+    //Initialize view
     pageController.showOverview();
+    //Check localStorage
     let hasLocalStorage = pageController.hasLocalStorage();
     if (!hasLocalStorage) {
         document.getElementById("page-title").innerHTML += '<div class="alert alert-danger col-12" role="alert">HTML Local Storage is not supported on this browser. Progress won\'t be saved!</div>';
     }
+    //
 });

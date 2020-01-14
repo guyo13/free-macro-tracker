@@ -67,11 +67,80 @@
             </div>
         </div>
         <div id="foods">This is the foods menu</div>
-        <div id="profile">This is the profile menu</div>
+        <div id="profile">
+            <div id="bodily-details" class="row justify-content-center debug-2">
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <input id="profile-name" type="text" class="form-control" placeholder="Your name (Optional)" aria-label="Name" aria-describedby="basic-addon2">
+                  <div class="input-group-append">
+                    <button id="save-profile-name" class="btn btn-outline-dark" type="button">Save</button>
+                    <button id="edit-profile-name" class="btn btn-outline-dark" type="button">Edit</button>
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <input id="profile-weight" type="text" class="form-control" placeholder="Body-Weight" aria-label="Weight" aria-describedby="basic-addon2">
+                  <div class="input-group-append">
+                    <button id="profile-weight-units" type="button" class="btn btn-outline-dark" units="Kg">Kg</button>
+                    <button id="profile-weight-units-drop" type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div  class="dropdown-menu">
+                      <a id="profile-weight-units-kg" class="dropdown-item" href="#">Kg</a>
+                      <a id="profile-weight-units-lbs" class="dropdown-item" href="#">Lbs</a>
+                    </div>
+                    <button id="save-profile-weight" class="btn btn-outline-dark" type="button">Save</button>
+                    <button id="edit-profile-weight" class="btn btn-outline-dark" type="button">Edit</button>
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <input id="profile-height" type="text" class="form-control" placeholder="Height" aria-label="Height" aria-describedby="basic-addon2">
+                  <div class="input-group-append">
+                    <button id="profile-height-units" type="button" class="btn btn-outline-dark" units="Cm">Cm</button>
+                    <button id="profile-height-units-drop" type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div  class="dropdown-menu">
+                      <a id="profile-height-units-cm" class="dropdown-item" href="#">Cm</a>
+                      <a id="profile-height-units-inch" class="dropdown-item" href="#">Inch</a>
+                    </div>
+                    <button id="save-profile-weight" class="btn btn-outline-dark" type="button">Save</button>
+                    <button id="edit-profile-weight" class="btn btn-outline-dark" type="button">Edit</button>
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <input id="profile-age" type="text" class="form-control" placeholder="Your Age" aria-label="Age" aria-describedby="basic-addon2">
+                  <div class="input-group-append">
+                    <button id="save-profile-age" class="btn btn-outline-dark" type="button">Save</button>
+                    <button id="edit-profile-age" class="btn btn-outline-dark" type="button">Edit</button>
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Sex</span>
+                  </div>
+                  <div class="input-group-append">
+                    <button id="profile-sex" type="button" class="btn btn-outline-dark pr-5" sex=""></button>
+                    <button id="profile-sex-drop" type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div  class="dropdown-menu">
+                      <a id="profile-sex=male" class="dropdown-item" href="#">Male</a>
+                      <a id="profile-sex-female" class="dropdown-item" href="#">Female</a>
+                    </div>
+                    <button id="save-profile-weight" class="btn btn-outline-dark" type="button">Save</button>
+                    <button id="edit-profile-weight" class="btn btn-outline-dark" type="button">Edit</button>
+                  </div>
+                </div>
+            </div>
+        </div>
         <div id="export">This is the export menu</div>
         <div id="import">This is the import menu</div>
     </div>
     <script src="javascript/jquery-3.4.1.min.js"></script>
+    <script src="javascript/bootstrap.bundle.min.js"></script>
     <script src="javascript/fmt.js"></script>
     <div id="source-code" class="footer bg-dark text-white">
         <a href="https://github.com/guyo13/free-macro-tracker">View source on GitHub</a>
