@@ -68,13 +68,13 @@
         </div>
         <div id="foods">This is the foods menu</div>
         <div id="profile">
-            <div id="bodily-details" class="row justify-content-center debug-2">
+            <div id="bodily-details" class="row justify-content-center">
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <h4 class="display-7">Personal Details</h4>
+                </div>
+                <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-4 mb-1">
                   <input id="profile-name" type="text" class="form-control" placeholder="Your name (Optional)" aria-label="Name" aria-describedby="basic-addon2">
-                  <div class="input-group-append">
-                    <button id="save-profile-name" class="btn btn-outline-dark" type="button">Save</button>
-                    <button id="edit-profile-name" class="btn btn-outline-dark" type="button">Edit</button>
-                  </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-4 mb-1">
@@ -88,8 +88,6 @@
                       <a id="profile-weight-units-kg" class="dropdown-item" href="#">Kg</a>
                       <a id="profile-weight-units-lbs" class="dropdown-item" href="#">Lbs</a>
                     </div>
-                    <button id="save-profile-weight" class="btn btn-outline-dark" type="button">Save</button>
-                    <button id="edit-profile-weight" class="btn btn-outline-dark" type="button">Edit</button>
                   </div>
                 </div>
                 <div class="w-100"></div>
@@ -104,17 +102,11 @@
                       <a id="profile-height-units-cm" class="dropdown-item" href="#">Cm</a>
                       <a id="profile-height-units-inch" class="dropdown-item" href="#">Inch</a>
                     </div>
-                    <button id="save-profile-weight" class="btn btn-outline-dark" type="button">Save</button>
-                    <button id="edit-profile-weight" class="btn btn-outline-dark" type="button">Edit</button>
                   </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-4 mb-1">
                   <input id="profile-age" type="text" class="form-control" placeholder="Your Age" aria-label="Age" aria-describedby="basic-addon2">
-                  <div class="input-group-append">
-                    <button id="save-profile-age" class="btn btn-outline-dark" type="button">Save</button>
-                    <button id="edit-profile-age" class="btn btn-outline-dark" type="button">Edit</button>
-                  </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-4 mb-1">
@@ -127,11 +119,101 @@
                       <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <div  class="dropdown-menu">
-                      <a id="profile-sex=male" class="dropdown-item" href="#">Male</a>
+                      <a id="profile-sex-male" class="dropdown-item" href="#">Male</a>
                       <a id="profile-sex-female" class="dropdown-item" href="#">Female</a>
                     </div>
-                    <button id="save-profile-weight" class="btn btn-outline-dark" type="button">Save</button>
-                    <button id="edit-profile-weight" class="btn btn-outline-dark" type="button">Edit</button>
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <input id="profile-bodyfat" type="text" class="form-control" placeholder="Bodyfat (Optional)" aria-label="Bodyfat" aria-describedby="basic-addon2">
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Activity Level</span>
+                  </div>
+                  <div class="input-group-append">
+                    <button id="profile-active-level" type="button" class="btn btn-outline-dark pr-5" level=""></button>
+                    <button id="profile-active-level-drop" type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div  class="dropdown-menu">
+                      <a id="profile-active-level-sed" class="dropdown-item" href="#">Sedentary</a>
+                      <a id="profile-active-level-light" class="dropdown-item" href="#">Exercise 1-3 days/week</a>
+                      <a id="profile-active-level-mod" class="dropdown-item" href="#">Exercise 3-5 days/week</a>
+                      <a id="profile-active-level-high" class="dropdown-item" href="#">Exercise 6-7 days/week</a>
+                      <a id="profile-active-level-vhigh" class="dropdown-item" href="#">Exercise x2/day</a>
+                      <a id="profile-active-level-custom" class="dropdown-item" href="#">Custom Multiplier</a>    
+                    </div>
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Activity Level Multiplier</span>
+                    <span id="profile-activity-mult" class="input-group-text"></span>
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-append">
+                    <button id="save-profile-details" class="btn btn-outline-dark" type="button">Save</button>
+                    <button id="edit-profile-details" class="btn btn-outline-dark" type="button">Edit</button>
+                  </div>
+                </div>            
+            </div>
+            <div id="energy-data" class="row justify-content-center">
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <h4 class="display-7">Calculated Consumption</h4>
+                </div>
+                <div class="w-100"></div>
+                <div class="col-12 col-lg-4 mb-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">BMR</span>
+                        <span id="profile-bmr" class="input-group-text"></span>
+                    </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="col-12 col-lg-4 mb-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">TDEE</span>
+                        <span id="profile-tdee" class="input-group-text"></span>
+                    </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="col-12 col-lg-4 mb-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Formula Used</span>
+                        <span id="profile-formula" class="input-group-text"></span>
+                    </div>
+                </div>
+            </div>
+            <div id="macro-split" class="row justify-content-center">
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <h4 class="display-7">Macro Split</h4>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <input id="profile-daily-calories" type="text" class="form-control" placeholder="Target Calories" aria-label="Target Calories" aria-describedby="basic-addon2">
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <input id="profile-macro-protein" type="text" class="form-control" placeholder="%Protein" aria-label="Protein" aria-describedby="basic-addon2">
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <input id="profile-macro-carb" type="text" class="form-control" placeholder="%Carb" aria-label="Carb" aria-describedby="basic-addon2">
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <input id="profile-macro-fat" type="text" class="form-control" placeholder="%Fat" aria-label="Fat" aria-describedby="basic-addon2">
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-append">
+                    <button id="save-profile-macro" class="btn btn-outline-dark" type="button">Save</button>
+                    <button id="edit-profile-macro" class="btn btn-outline-dark" type="button">Edit</button>
                   </div>
                 </div>
             </div>
@@ -142,8 +224,8 @@
     <script src="javascript/jquery-3.4.1.min.js"></script>
     <script src="javascript/bootstrap.bundle.min.js"></script>
     <script src="javascript/fmt.js"></script>
-    <div id="source-code" class="footer bg-dark text-white">
-        <a href="https://github.com/guyo13/free-macro-tracker">View source on GitHub</a>
-    </div>
 </body>
+<footer class="footer bg-dark text-white mt">
+    <a href="https://github.com/guyo13/free-macro-tracker" target="_blank">View source on GitHub</a>
+</footer>    
 </html> 

@@ -1,3 +1,7 @@
+body {
+    margin-bottom: 2rem;
+}
+
 .fmt-macro-progress {
     width : 10rem;
 }
