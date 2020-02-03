@@ -20,6 +20,11 @@ fmtAppGlobals.FMT_DB_FOODS_STORE = "fmt_foods";
 fmtAppGlobals.FMT_DB_FOODS_KP = "food_id";
 fmtAppGlobals.FMT_DB_FOOD_NAMES_INDEX_NAME = "food_names_index";
 fmtAppGlobals.FMT_DB_FOOD_NAMES_INDEX_KEYS = "foodName";
+fmtAppGlobals.FMT_DB_FOOD_MACROES_INDEX_NAME = "macroes_index";
+fmtAppGlobals.FMT_DB_FOOD_MACROES_INDEX_KEYS = ["nutritionalValue.calories",
+                                           "nutritionalValue.macronutrients.proteins",
+                                           "nutritionalValue.macronutrients.carbohydrates",
+                                           "nutritionalValue.macronutrients.fats"];
 //Globals - DB - Recipes Store constants
 fmtAppGlobals.FMT_DB_RECIPES_STORE = "fmt_recipes";
 fmtAppGlobals.FMT_DB_RECIPES_KP = "recipe_id";
@@ -46,12 +51,18 @@ function prepareDb() {
     fmtEntriesStore.createIndex(fmtAppGlobals.FMT_DB_DATE_INDEX_NAME, fmtAppGlobals.FMT_DB_DATE_INDEX_KEYS, { unique: false });
     fmtEntriesStore.createIndex(fmtAppGlobals.FMT_DB_FOODID_INDEX_NAME, fmtAppGlobals.FMT_DB_FOODID_INDEX_KEYS, { unique: false });
     fmtEntriesStore.createIndex(fmtAppGlobals.FMT_DB_MEALNAME_INDEX_NAME, fmtAppGlobals.FMT_DB_MEALNAME_INDEX_KEYS, { unique: false });
+    
     //Create foods objectStore
     let fmtFoodsStore = fmtAppGlobals.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_FOODS_STORE, {keyPath: fmtAppGlobals.FMT_DB_FOODS_KP, autoIncrement: true});
     fmtFoodsStore.createIndex(fmtAppGlobals.FMT_DB_FOOD_NAMES_INDEX_NAME, fmtAppGlobals.FMT_DB_FOOD_NAMES_INDEX_KEYS, { unique: false });
+    for (let i in fmtAppGlobals.FMT_DB_FOOD_MACROES_INDEX_KEYS) {
+        fmtFoodsStore.createIndex(`${fmtAppGlobals.FMT_DB_FOOD_MACROES_INDEX_NAME}_${i}`, fmtAppGlobals.FMT_DB_FOOD_MACROES_INDEX_KEYS[i], { unique: false});
+    }
+    
     //Create recipes objectStore
     let fmtRecipesStore = fmtAppGlobals.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_RECIPES_STORE, {keyPath: fmtAppGlobals.FMT_DB_RECIPES_KP, autoIncrement: true});
     fmtRecipesStore.createIndex(fmtAppGlobals.FMT_DB_RECIPE_NAMES_INDEX_NAME, fmtAppGlobals.FMT_DB_RECIPE_NAMES_INDEX_KEYS, { unique: false });
+    
     //Create profile objectStore
     let fmtProfileStore = fmtAppGlobals.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_PROFILE_STORE, {keyPath: fmtAppGlobals.FMT_DB_PROFILE_KP, autoIncrement: false});
 }
@@ -101,7 +112,6 @@ function FMTAddEntry(entryObject) {
     entryObject.lastModified = date.toISOString();
     entryObject.tzMinutes = date.getTimezoneOffset();
     let addRequest = entriesStore.add(entryObject);
-   // addRequest.complete
     
 }
 function FMTUpdateEntry(entryObject, entry_id) {
@@ -121,8 +131,11 @@ function FMTUpdateEntry(entryObject, entry_id) {
     entryObject.lastModified = date.toISOString();
     entryObject.tzMinutes = date.getTimezoneOffset();
     entryObject._id = entry_id;
-    let addRequest = entriesStore.put(entryObject);
-   // addRequest.complete   
+    let updateRequest = entriesStore.put(entryObject);
+}
+function FMTRemoveEntry(entry_id) {
+    let entriesStore = getObjectStore(fmtAppGlobals.FMT_DB_ENTRIES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let updateRequest = entriesStore.delete(entry_id);
 }
 
 //Classes
