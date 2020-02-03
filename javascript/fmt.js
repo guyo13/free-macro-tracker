@@ -96,16 +96,6 @@ function onUpgradeNeeded(event) {
 }
 
 function FMTAddEntry(entryObject) {
-    //Each entryObject should contain -
-    /*
-     * @param {int} year
-     * @param {int} month
-     * @param {int} day
-     * @param {int} food_id
-     * @param {int} weight
-     * @param {String} weightUnits optional - must be translatable to weight unit defined by the Food identified by foodId
-     * @param {String} mealName
-     */
     //TODO validate object
     let entriesStore = getObjectStore(fmtAppGlobals.FMT_DB_ENTRIES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
     let date = new Date();
@@ -115,16 +105,6 @@ function FMTAddEntry(entryObject) {
     
 }
 function FMTUpdateEntry(entryObject, entry_id) {
-    //Each entryObject should contain -
-    /*
-     * @param {int} year
-     * @param {int} month
-     * @param {int} day
-     * @param {int} food_id
-     * @param {int} weight
-     * @param {String} weightUnits optional - must be translatable to weight unit defined by the Food identified by foodId
-     * @param {String} mealName
-     */
     //TODO validate object
     let entriesStore = getObjectStore(fmtAppGlobals.FMT_DB_ENTRIES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
     let date = new Date();

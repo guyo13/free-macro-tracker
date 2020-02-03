@@ -1,0 +1,118 @@
+Entry Object - This is an entry in the food log
+{
+    year : int,
+    month: int,
+    day: int,
+    food_id: int,
+    weight: int,
+    weightUnits: String,
+    mealName: String
+}
+
+Nutritional Values - An object detailing a food's nutritional values.
+{
+    calories : float,
+    macronutrients : {
+        //Values in grams
+        proteins : float,
+        carbohydrates : float,
+        fats : float,
+    },
+    micronutrients : {
+        carbohydrates : {
+            //Values in grams
+            Fibers: float,
+            Sugars: float,
+            Starch: float,
+            //Values in milligrams
+            Sucrose: float,
+            Glucose: float,
+            Fructose: float,
+            Lactose: float,
+            Maltose: float,
+            Galactose: float
+        },
+        fats: {
+            //values in grams
+            Saturated_fat: float,
+            Monounsaturated_fat: float,
+            Polyunsaturated_fat: float,
+            Trans: float,
+            //milligrams
+            Cholesterol: float,
+            Omega3: float,
+            Omega6: float
+        },
+        amino_acids: {
+            //Values in milligrams
+            Tryptophan: float,
+            Threonine: float,
+            Isoleucine: float,
+            Leucine: float,
+            Lysine: float,
+            Methionine: float,
+            Cystine: float,
+            Phenylalanine: float,
+            Tyrosine: float,
+            Valine: float,
+            Arginine: float,
+            Histidine: float,
+            Alanine: float,
+            Aspartic_acid: float,
+            Glutamic_acid: float,
+            Glycine: float,
+            Proline: float,
+            Serine: float,
+            Hydroxyproline: float,
+        },
+        minerals: {
+            //Values in milligrams
+            Calcium: float,
+            Iron: float,
+            Magnesium: float,
+            Phosphorus: float,
+            Potassium: float,
+            Sodium: float,
+            Zinc: float,
+            Copper: float,
+            Manganese: float,
+            Selenium: float,
+            Fluoride: float,
+            Iodine: float,
+            Molybdenum: float,
+            Chromium: float
+        },
+        vitamins: {
+            //Values in IU
+            Retinol: int,
+            RAE: int,
+            AlphaCarotene: int,
+            BetaCarotene: int,
+            VitaminA: int,
+            VitaminC: int,
+            VitaminD: int,
+            VitaminE: int,
+            VitaminB1: int,
+            VitaminB2: int,
+            VitaminB3: int,
+            VitaminB5: int,
+            VitaminB6: int,
+            VitaminB9: int,
+            VitaminB12: int,
+            VitaminK: int,
+            VitaminH: int
+        }
+    },
+    additionals : {
+        //Values in grams
+        Alcohol: float,
+        Water: float,
+        Ash: float,
+        //milligrams
+        Caffeine: float
+    },
+    userDefined: {
+        nutrientName_1: {amount: float, units: String},
+        nutrientName_n: {amount: float, units: String}
+    }
+}
