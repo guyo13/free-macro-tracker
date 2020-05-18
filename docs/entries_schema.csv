@@ -1,1 +1,1 @@
-_id,year,month,day,mealName,lastModified,tzMinutes,food_id,weight,weightUnits
+_id,profile_id,year,month,day,mealName,lastModified,tzMinutes,food_id,weight,weightUnits

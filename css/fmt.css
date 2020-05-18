@@ -10,6 +10,13 @@ body {
     width : 30rem;
 }
 
+.fmt-label1 {
+    width: 6rem;
+}
+.fmt-label2 {
+    width: 2rem;
+}
+
 .center-text {text-align: center}
 
 .footer {
