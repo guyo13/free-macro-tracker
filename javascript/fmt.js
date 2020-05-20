@@ -37,18 +37,33 @@ fmtAppGlobals.FMT_DB_RECIPE_NAMES_INDEX_KEYS = "recipe_name";
 //Globals - DB - Profile Store constants
 fmtAppGlobals.FMT_DB_PROFILE_STORE = "fmt_profile";
 fmtAppGlobals.FMT_DB_PROFILE_KP = "profile_id";
+//Globals - DB - Mass Units Store constants
+fmtAppGlobals.FMT_DB_MUNIT_STORE = "fmt_mass_units";
+fmtAppGlobals.FMT_DB_MUNIT_KP = "name";
+fmtAppGlobals.FMT_DB_MUNIT_INDEX_NAME = "mass_unit_index";
+fmtAppGlobals.FMT_DB_MUNIT_INDEX_KEYS = ["value_in_grams", "description"];
 
 //Globals - Page
-fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-profile", "goto-export", "goto-import"];
-
+fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-profile", "goto-advanced", "goto-export", "goto-import"];
+//Globals - Units
 fmtAppGlobals.supportedBodyweightUnits = ["Kg", "Lbs"];
 fmtAppGlobals.supportedHeightUnits = ["Cm", "Inch"];
 fmtAppGlobals.sexes = ["Male", "Female"];
 fmtAppGlobals.supportedActivityLevels = ["Sedentary", "Light", "Moderate", "High", "Very High", "Custom"];
+fmtAppGlobals.baseMassUnitChart = [{"name": "oz", "value_in_grams": 28.34952, "description": "Ounce"},
+                               {"name": "lb", "value_in_grams": 453.5924, "description": "Pound"},
+                               {"name": "st", "value_in_grams": 6350.293, "description": "Stone"},
+                               {"name": "mcg", "value_in_grams": 0.000001, "description": "Microgram"}, 
+                               {"name": "mg", "value_in_grams": 0.001, "description": "Milligram"},
+                               {"name": "g", "value_in_grams": 1, "description": "Gram"},
+                               {"name": "kg", "value_in_grams": 1000, "description": "Kilogram"}
+                              ];
+//Globals - UI - Default
+fmtAppGlobals.defaultAlertScroll = {top: 0, left: 0, behavior: 'smooth'};
 
 //Functions
 //Functions - DB
-function prepareDb() {
+function prepareDBv1() {
     console.debug("Preparing DB...");
     if (!fmtAppGlobals.fmtDb) {
         console.error("fmt DB null reference");
@@ -92,6 +107,17 @@ function prepareDb() {
     //Create profile objectStore
     let fmtProfileStore = fmtAppGlobals.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_PROFILE_STORE,
                                                                 {keyPath: fmtAppGlobals.FMT_DB_PROFILE_KP, autoIncrement: false});
+    
+    //Create mass units objectStore
+    let fmtMassUnitStore = fmtAppGlobals.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_MUNIT_STORE,
+                                                                {keyPath: fmtAppGlobals.FMT_DB_MUNIT_KP, autoIncrement: false});
+    fmtMassUnitStore.createIndex(fmtAppGlobals.FMT_DB_MUNIT_INDEX_NAME,
+                                fmtAppGlobals.FMT_DB_MUNIT_INDEX_KEYS,
+                                { unique: false });
+    for (let i in fmtAppGlobals.baseMassUnitChart) {
+        console.debug(`Adding Mass unit entry: ${JSON.stringify(fmtAppGlobals.baseMassUnitChart[i])}`);
+        fmtMassUnitStore.add(fmtAppGlobals.baseMassUnitChart[i]);
+    }
 }
 
 /**
@@ -185,6 +211,18 @@ function katchMcArdle(weightKg, bodyfatReal) {
     }
     else {return -1;}
 }
+
+//Functions - UI - Generic
+function FMTShowAlert(divId, alertLevel, msg, scrollOptions) {
+    let alertDiv = document.getElementById(divId);
+    let alertElem = `<div class="alert alert-${alertLevel} col-12 col-lg-4 mb-1 alert-dismissible fade show" role="alert">${msg}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>\n<div class="w-100"></div>`;
+    alertDiv.innerHTML = alertElem
+    if (scrollOptions) {
+        window.scroll(scrollOptions);    
+    }
+    return;   
+}
+
 
 //Functions - UI - Profile
 function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
@@ -288,27 +326,36 @@ function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
     let Protein = document.getElementById("profile-macro-protein").value;
     let Carbohydrate = document.getElementById("profile-macro-carb").value;
     let Fat = document.getElementById("profile-macro-fat").value;
-    if (!isNaN(Calories) && Calories>0) {macroSplit.Calories = Number(Calories);} else {throw TypeError(`Invalid Calories '${Calories}'`);}
-    if (isPercent(Protein) && Protein>0) {macroSplit.Protein = Number(Protein);} else {throw TypeError(`Invalid Protein Percentage '${Protein}'`);}
-    if (isPercent(Carbohydrate) && Carbohydrate>0) {macroSplit.Carbohydrate = Number(Carbohydrate);} else {throw TypeError(`Invalid Carbohydrate Percentage '${Carbohydrate}'`);}
-    if (isPercent(Fat) && Fat>0) {macroSplit.Fat = Number(Fat);} else {throw TypeError(`Invalid Fat Percentage '${Fat}'`);}
-    let sum = macroSplit.Carbohydrate + macroSplit.Fat + macroSplit.Protein; 
-    if (sum !== 100) {
-        return FTMDisplayProfile(profileId, function(e) {
-            let profileAlertsDiv = document.getElementById("profile-alerts");
-            profileAlertsDiv.innerHTML = `<div class="alert alert-danger col-12 col-lg-4 mb-1 alert-dismissible fade show"  role="alert">The sum of Protein, Carbohydrate and Fat Percentages must equal 100, current sum is ${sum}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>\n<div class="w-100"></div>`;
-        });
-        //throw TypeError(`The sum of Protein, Carbohydrate and Fat Percentages must equal 100, current sum is ${sum}`);
-    }
     FMTReadProfile(profileId,
                 function(e) {
                     let res = e.target.result;
                     console.debug(res);
                     if (res === undefined) {
-                        alert(`Profile with ID ${profileId} does not exist yet.
-Please create it first by filling in your Personal details and then click "Save Personal Details"`);
-                        return;
-                        //throw ReferenceError(`Profile with ID ${profileId} does not exist. Please create it first`);
+                        let msg = `Profile with ID ${profileId} does not exist yet. Please create it first by filling in your Personal details and then click "Save Personal Details"`;
+                        return FMTShowAlert("profile-alerts", "warning", msg, fmtAppGlobals.defaultAlertScroll);
+                    }
+                    if (!isNaN(Calories) && Calories>0) {macroSplit.Calories = Number(Calories);}
+                    else {
+                        return FMTShowAlert("profile-alerts", "danger", `Invalid Calories '${Calories}'`, fmtAppGlobals.defaultAlertScroll);
+                    }
+                    if (isPercent(Protein) && Protein>0) {macroSplit.Protein = Number(Protein);}
+                    else {
+                        return FMTShowAlert("profile-alerts", "danger", `Invalid Protein Percentage '${Protein}'`, fmtAppGlobals.defaultAlertScroll);
+                         }
+                    if (isPercent(Carbohydrate) && Carbohydrate>0) {macroSplit.Carbohydrate = Number(Carbohydrate);}
+                    else {
+                        return FMTShowAlert("profile-alerts", "danger", `Invalid Carbohydrate Percentage '${Carbohydrate}'`, fmtAppGlobals.defaultAlertScroll);
+                    }
+                    if (isPercent(Fat) && Fat>0) {macroSplit.Fat = Number(Fat);}
+                    else {
+                        return FMTShowAlert("profile-alerts", "danger", `Invalid Fat Percentage '${Fat}'`, fmtAppGlobals.defaultAlertScroll);
+                    }
+                    let sum = macroSplit.Carbohydrate + macroSplit.Fat + macroSplit.Protein; 
+                    if (sum !== 100) {
+                        return FTMDisplayProfile(profileId, function(e) {
+                            let msg = `The sum of Protein, Carbohydrate and Fat Percentages must equal 100, current sum is ${sum}`;
+                            return FMTShowAlert("profile-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
+                        });
                     }
                     res.macroSplit = macroSplit;
                     let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILE_STORE, fmtAppGlobals.FMT_DB_READWRITE);
@@ -431,7 +478,7 @@ function onUpgradeNeeded(event) {
     fmtAppGlobals.fmtDb = event.target.result;
     switch(fmtAppGlobals.fmtDb.version) {
         case 1:
-            prepareDb();
+            prepareDBv1();
             break;
         default:
             break;
