@@ -42,6 +42,11 @@ fmtAppGlobals.FMT_DB_MUNIT_STORE = "fmt_mass_units";
 fmtAppGlobals.FMT_DB_MUNIT_KP = "name";
 fmtAppGlobals.FMT_DB_MUNIT_INDEX_NAME = "mass_unit_index";
 fmtAppGlobals.FMT_DB_MUNIT_INDEX_KEYS = ["value_in_grams", "description"];
+//Globals - DB - Nutrients Store constants
+fmtAppGlobals.FMT_DB_NUTRI_STORE = "fmt_nutrients";
+fmtAppGlobals.FMT_DB_NUTRI_KP = "name";
+fmtAppGlobals.FMT_DB_NUTRI_INDEX_NAME = "nutri_category_index";
+fmtAppGlobals.FMT_DB_NUTRI_INDEX_KEYS = "category";
 
 //Globals - Page
 fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-profile", "goto-advanced", "goto-export", "goto-import"];
@@ -118,6 +123,13 @@ function prepareDBv1() {
         console.debug(`Adding Mass unit entry: ${JSON.stringify(fmtAppGlobals.baseMassUnitChart[i])}`);
         fmtMassUnitStore.add(fmtAppGlobals.baseMassUnitChart[i]);
     }
+    
+    //Create nutrients objectStore
+    let fmtNutrientsStore = fmtAppGlobals.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_NUTRI_STORE,
+                                                                {keyPath: fmtAppGlobals.FMT_DB_NUTRI_KP, autoIncrement: false});
+    fmtNutrientsStore.createIndex(fmtAppGlobals.FMT_DB_NUTRI_INDEX_NAME,
+                                fmtAppGlobals.FMT_DB_NUTRI_INDEX_KEYS,
+                                { unique: false });
 }
 
 /**
