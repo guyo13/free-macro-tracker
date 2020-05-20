@@ -469,8 +469,7 @@ function onDbSuccess(event) {
                         if (profiles.length === 0) {
                             console.debug("No profiles exist yet!");
                             pageController.showProfile();
-                            let profileAlertsDiv = document.getElementById("profile-alerts");
-                            profileAlertsDiv.innerHTML = '<div class="alert alert-success col-12 col-lg-4 mb-1 alert-dismissible fade show"  role="alert">Please create a new Profile :)<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>\n<div class="w-100"></div>';
+                            FMTShowAlert("profile-alerts", "success", "Please create a new Profile :)", fmtAppGlobals.defaultAlertScroll);
                         }
                         else {
                             console.debug(`Selected profile id ${fmtAppInstance.currentProfileId}`);
@@ -479,8 +478,7 @@ function onDbSuccess(event) {
                     function(e) {
                         let _report = JSON.stringify({"globals": fmtAppGlobals, "instance": fmtAppInstance});
                         let msg = `Failed loading profiles. Please report problem on Github and include the following data:\n${_report}`
-                        let overviewAlertsDiv = document.getElementById("overview-alerts");
-                        overviewAlertsDiv.innerHTML = `<div class="alert alert-danger col-12 col-lg-4 mb-1 alert-dismissible fade show"  role="alert">${msg}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>\n<div class="w-100"></div>`;
+                        FMTShowAlert("overview-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
                         throw ReferenceError(msg);
                     }
                    );
