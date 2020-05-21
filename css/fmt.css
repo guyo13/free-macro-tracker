@@ -1,24 +1,44 @@
 body {
     margin-bottom: 2rem;
 }
-
 .fmt-macro-progress {
     width : 10rem;
 }
-
 .fmt-total-progress {
     width : 30rem;
 }
-
 .fmt-label1 {
     width: 6rem;
 }
 .fmt-label2 {
     width: 2rem;
 }
-
+.fmt-text-btn1 {
+    font-size: 1.3rem;
+}
+.fmt-text-btn2 {
+    font-size: 1.5rem;
+}
+.fmt-table-height {
+    height: 50vh;
+    overflow-y: auto;
+}
+.fmt-max-height60 {
+    max-height: 60vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.fmt-food-id-cell {}
+.fmt-food-name-cell {}
+.fmt-food-brand-cell {}
+.fmt-food-table-row {}
+.fmt-dynamic-screen {}
+.fmt-add-nutri {}
+.fmt-mass-unit-igroup {}
+.fmt-mass-unit-btn {
+    background-color: rgb(233, 236, 239)!important;
+}
 .center-text {text-align: center}
-
 .footer {
   position: fixed;
   left: 0;

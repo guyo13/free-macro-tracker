@@ -1,1 +1,1 @@
-food_id,foodName,created,lastModified,tzMinutes,referenceWeight,weightUnits,nutritionalValue
+food_id,foodName,foodBrand,created,lastModified,tzMinutes,referenceWeight,weightUnits,nutritionalValue

@@ -10,7 +10,8 @@
 <body>
     <div id="odin">
         <div id="page-title" class="row justify-content-center">
-            <h1 class="display-4">Free Macro Tracker</h1>
+            <h1 class="display-4 d-none d-md-block">Free Macro Tracker</h1>
+            <h2 class="d-md-none">Free Macro Tracker</h3>
         </div>
         <div id="tabs" class="row justify-content-center">
         <ul id="main-screens" class="nav nav-tabs">
@@ -19,6 +20,9 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" id="goto-foods" href="#">Foods</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="goto-recipes" href="#">Recipes</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" id="goto-profile" href="#">Profile</a>
@@ -36,47 +40,100 @@
         </div>
         <div id="overview">
             <div id="overview-alerts" class="row justify-content-center"></div>
-            <div id="date-container" class="mb-3 mt-3 xs row ">
-                <div class="col-2 center-text">
-                    <button id="prev-day" type="button" class="btn btn-outline-dark btn-lg">&lt;</button>
+            <div id="overview-container" class="row justify-content-center">
+                <div id="overview-date-container" class="mb-3 mt-3 xs row ">
+                    <div class="col-2 center-text">
+                        <button id="overview-date-prev-day" type="button" class="btn btn-outline-dark btn-lg">&lt;</button>
+                    </div>
+                    <div class="col-8 center-text">
+                        <h1 id="overview-date-day" class="display-5">Jan 1st 2020</h1>
+                    </div>
+                    <div class="col-2 center-text">
+                        <button id="overview-date-next-day" type="button" class="btn btn-outline-dark btn-lg">&gt;</button>
+                    </div>
                 </div>
-                <div class="col-8 center-text">
-                    <h1 class="display-5">Jan 1st 2020</h1>
-                </div>
-                <div class="col-2 center-text">
-                    <button id="next-day" type="button" class="btn btn-outline-dark btn-lg">&gt;</button>
-                </div>
-            </div>
-            <div id="calories-cont" class="mb-3 mt-3 xs row justify-content-center">
-                <div class="col-12 center-text">Calories:</div>
-                <div class="progress fmt-total-progress">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-            </div>
-            <div id="macroes-cont" class="mb-1 xs row">
-                <div class="col-12 center-text mb-3">Macro-nutrient Breakdown:</div>
-                <div class="col mr-2 ml-2 center-text">Carbohydrates</div>
-                <div class="col mr-2 ml-2 center-text">Proteins</div>
-                <div class="col mr-2 ml-2 center-text">Fats</div>
                 <div class="w-100"></div>
-                <div id="carb-progress-bar" class="progress fmt-macro-progress col mr-2 ml-2">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                <div id="calories-cont" class="mb-3 mt-3 xs row justify-content-center">
+                    <div class="col-12 center-text">Calories:</div>
+                    <div class="progress fmt-total-progress">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
                 </div>
-                <div id="protein-progress-bar" class="progress fmt-macro-progress col mr-2 ml-2">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <div id="fat-progress-bar" class="progress fmt-macro-progress col mr-2 ml-2">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="w-100"></div>
+                <div id="macroes-cont" class="mb-1 xs row">
+                    <div class="col-12 center-text mb-3">Macro-nutrient Breakdown:</div>
+                    <div class="col mr-2 ml-2 center-text">Carbohydrates</div>
+                    <div class="col mr-2 ml-2 center-text">Proteins</div>
+                    <div class="col mr-2 ml-2 center-text">Fats</div>
+                    <div class="w-100"></div>
+                    <div id="carb-progress-bar" class="progress fmt-macro-progress col mr-2 ml-2">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div id="protein-progress-bar" class="progress fmt-macro-progress col mr-2 ml-2">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div id="fat-progress-bar" class="progress fmt-macro-progress col mr-2 ml-2">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
                 </div>
             </div>
         </div>
         <div id="foods">
             <div id="foods-alerts" class="row justify-content-center"></div>
+            <div class="d-flex justify-content-center mt-3">
+                <div class="d-flex col-12 col-lg-4 mb-1 justify-content-between">
+                    <div class="">
+                        <h4 class="display-7 ">Food</h4>
+                    </div>
+                    <div class="">
+                        <button id="foods-add-food" class="btn btn-outline-dark fmt-text-btn1" type="button">New</button>
+                    </div>        
+                </div>
+            </div>
             <div id="food-menu-container" class="row justify-content-center">
-                <h4 class="display-7">My Food</h4>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Search</span>
+                        <input id="myfood-search" type="text" class="form-control" placeholder="Type to Search..." aria-label="Search" aria-describedby="basic-addon2">
+                    </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1 fmt-table-height">
+                    <table id="food-table" class="table table-striped table-hover">
+                      <tbody id="food-table-body">
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div id="recipes">
+            <div id="recipes-alerts" class="row justify-content-center"></div>
+            <div class="d-flex justify-content-center mt-3">
+                <div class="d-flex col-12 col-lg-4 mb-1 justify-content-between">
+                    <div class="">
+                        <h4 class="display-7 ">Recipes</h4>
+                    </div>
+                    <div class="">
+                        <button id="add-recipe" class="btn btn-outline-dark fmt-text-btn1" type="button">New</button>
+                    </div>        
+                </div>
             </div>
             <div id="recipe-menu-container" class="row justify-content-center">
-                <h4 class="display-7">My Recipes</h4>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Search</span>
+                        <input id="myrecipes-search" type="text" class="form-control" placeholder="Type to Search..." aria-label="Search" aria-describedby="basic-addon2">
+                    </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <table class="table table-striped table-hover">
+                      <tbody>
+                      </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <div id="profile">
@@ -185,11 +242,8 @@
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-4 mb-1">
-                  <div class="input-group-append">
-                    <button id="save-profile-details" class="btn btn-outline-dark" type="button">Save Personal Details</button>
-                    <!--<button id="edit-profile-details" class="btn btn-outline-dark" type="button">Edit</button>-->
-                  </div>
-                </div>            
+                  <button id="save-profile-details" class="btn btn-outline-dark flex-fill" type="button">Save Personal Details</button>
+                </div>           
             </div>
             <div id="energy-data" class="row justify-content-center">
                 <div class="input-group col-12 col-lg-4 mb-1">
@@ -254,10 +308,7 @@
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-4 mb-1">
-                  <div class="input-group-append">
-                    <button id="save-profile-macro" class="btn btn-outline-dark" type="button">Save Macro Split</button>
-                    <!--<button id="edit-profile-macro" class="btn btn-outline-dark" type="button">Edit</button>-->
-                  </div>
+                    <button id="save-profile-macro" class="btn btn-outline-dark flex-fill" type="button">Save Macro Split</button>
                 </div>
             </div>
         </div>
@@ -287,8 +338,251 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div id="advanced">Advanced Settings, custom nutrients, mass units, etc...</div>
+        <div id="advanced">Advanced Settings, custom nutrients, mass units, etc...</div>
+        <!--Dynamic Screens-->
+        <div id="add-food-screen" class="fmt-dynamic-screen">
+            <div id="add-food-screen-alerts" class="row justify-content-center"></div>
+            <div class="d-flex justify-content-center mt-3">
+                <div class="d-flex col-12 col-lg-4 mb-1 justify-content-between">
+                    <div class="">
+                        <h4 class="display-7 ">Add Food</h4>
+                    </div>
+                    <div class="">
+                        <button id="add-food-screen-cancel" class="btn btn-outline-dark fmt-text-btn1" type="button">&times;</button>
+                    </div>
+                </div>
+            </div>
+            <div id="add-food-screen-content" class="row justify-content-center fmt-max-height60">
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Description</span>
+                    <input id="add-food-screen-food-name" type="text" class="form-control" placeholder="Food description (Required)" aria-label="Description" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Brand</span>
+                    <input id="add-food-screen-food-brand" type="text" class="form-control" placeholder="Food brand (Optional)" aria-label="Brand" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <div id="add-food-screen-food-weight" class="input-group-prepend">
+                        <span class="input-group-text">Weight</span>
+                        <input id="add-food-screen-food-weight-input" type="text" class="form-control" placeholder="Food weight (Required)" aria-label="Brand" aria-describedby="basic-addon2">
+                    </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="col-12 col-lg-4 mb-1">
+                    <h4 class="display-7 ">Nutritional Facts</h4>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Calories</span>
+                    <input id="add-food-screen-food-calories" type="text" class="form-control" placeholder="Calories (Kcal)" aria-label="Calories" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Proteins</span>
+                    <input id="add-food-screen-food-proteins" type="text" class="form-control" placeholder="Proteins (g)" aria-label="Proteins" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Carbohydrates</span>
+                    <input id="add-food-screen-food-carbohydrates" type="text" class="form-control" placeholder="Carbohydrates (g)" aria-label="Carbohydrates" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Fats</span>
+                    <input id="add-food-screen-food-fats" type="text" class="form-control" placeholder="Fats (g)" aria-label="Fats" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div id="add-food-screen-food-additional" class="d-none row justify-content-center">
+                </div>
+            </div>
+            <div id="add-food-screen-footer" class="row justify-content-center">
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <button id="add-food-screen-more" class="btn btn-outline-dark flex-fill" type="button">Show More</button>
+                    <button id="add-food-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Show Less</button>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <button id="add-food-screen-save" class="btn btn-outline-dark flex-fill" type="button">Save Food</button>
+                </div>
+            </div>
+        </div>
+        <div id="edit-food-screen" class="fmt-dynamic-screen">
+            <div id="edit-food-screen-alerts" class="row justify-content-center"></div>
+            <div class="d-flex justify-content-center mt-3">
+                <div class="d-flex col-12 col-lg-4 mb-1 justify-content-between">
+                    <div class="">
+                        <h4 class="display-7 ">Edit Food</h4>
+                    </div>
+                    <div class="">
+                        <button id="edit-food-screen-cancel" class="btn btn-outline-dark fmt-text-btn1" type="button">&times;</button>
+                    </div>
+                </div>
+            </div>
+            <div id="edit-food-screen-content" class="row justify-content-center fmt-max-height60">
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Description</span>
+                    <input id="edit-food-screen-food-name" type="text" class="form-control" placeholder="Food description (Required)" aria-label="Description" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Brand</span>
+                    <input id="edit-food-screen-food-brand" type="text" class="form-control" placeholder="Food brand (Optional)" aria-label="Brand" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <div id="edit-food-screen-food-weight" class="input-group-prepend">
+                        <span class="input-group-text">Weight</span>
+                        <input id="edit-food-screen-food-weight-input" type="text" class="form-control" placeholder="Food weight (Required)" aria-label="Brand" aria-describedby="basic-addon2">
+                    </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="col-12 col-lg-4 mb-1">
+                    <h4 class="display-7 ">Nutritional Facts</h4>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Calories</span>
+                    <input id="edit-food-screen-food-calories" type="text" class="form-control" placeholder="Calories (Kcal)" aria-label="Calories" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Proteins</span>
+                    <input id="edit-food-screen-food-proteins" type="text" class="form-control" placeholder="Proteins (g)" aria-label="Proteins" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Carbohydrates</span>
+                    <input id="edit-food-screen-food-carbohydrates" type="text" class="form-control" placeholder="Carbohydrates (g)" aria-label="Carbohydrates" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Fats</span>
+                    <input id="edit-food-screen-food-fats" type="text" class="form-control" placeholder="Fats (g)" aria-label="Fats" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div id="edit-food-screen-food-additional" class="d-none row justify-content-center">
+                </div>
+            </div>
+            <div id="edit-food-screen-footer" class="row justify-content-center">
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <button id="edit-food-screen-more" class="btn btn-outline-dark flex-fill" type="button">Show More</button>
+                    <button id="edit-food-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Show Less</button>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <button id="edit-food-screen-save" class="btn btn-outline-dark flex-fill" type="button">Save Food</button>
+                </div>
+            </div>
+        </div>
+        <div id="view-food-screen" class="fmt-dynamic-screen">
+            <div id="view-food-screen-alerts" class="row justify-content-center"></div>
+            <div class="d-flex justify-content-center mt-3">
+                <div class="d-flex col-12 col-lg-4 mb-1 justify-content-between">
+                    <div class="">
+                        <h4 class="display-7 ">View Food</h4>
+                    </div>
+                    <div class="">
+                        <button id="view-food-screen-edit" type="button" class="btn btn-outline-dark fmt-text-btn1 mr-4">Edit</button>
+                        <button id="view-food-screen-cancel" class="btn btn-outline-dark fmt-text-btn1" type="button">&times;</button>
+                    </div>
+                </div>
+            </div>
+            <div id="view-food-screen-content" class="row justify-content-center fmt-max-height60">
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Description</span>
+                    <input id="view-food-screen-food-name" type="text" class="form-control" placeholder="Food description" aria-label="Description" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Brand</span>
+                    <input id="view-food-screen-food-brand" type="text" class="form-control" placeholder="Food brand" aria-label="Brand" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <div id="view-food-screen-food-weight" class="input-group-prepend">
+                        <span class="input-group-text">Weight</span>
+                        <input id="view-food-screen-food-weight-input" type="text" class="form-control" placeholder="Food weight" aria-label="Brand" aria-describedby="basic-addon2">
+                    </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="col-12 col-lg-4 mb-1">
+                    <h4 class="display-7 ">Nutritional Facts</h4>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Calories</span>
+                    <input id="view-food-screen-food-calories" type="text" class="form-control" placeholder="Calories (Kcal)" aria-label="Calories" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Proteins</span>
+                    <input id="view-food-screen-food-proteins" type="text" class="form-control" placeholder="Proteins (g)" aria-label="Proteins" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Carbohydrates</span>
+                    <input id="view-food-screen-food-carbohydrates" type="text" class="form-control" placeholder="Carbohydrates (g)" aria-label="Carbohydrates" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Fats</span>
+                    <input id="view-food-screen-food-fats" type="text" class="form-control" placeholder="Fats (g)" aria-label="Fats" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div id="view-food-screen-food-additional" class="d-none row justify-content-center">
+                </div>
+            </div>
+            <div id="view-food-screen-footer" class="row justify-content-center">
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <button id="view-food-screen-more" class="btn btn-outline-dark flex-fill" type="button">Show More</button>
+                    <button id="view-food-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Show Less</button>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <button id="view-food-screen-save" class="btn btn-outline-dark flex-fill" type="button">Add to Meal</button>
+                </div>
+            </div>
+        </div>
+    </div><!--Ragnarok-->
+    <!--JavaScript-->
     <script src="javascript/jquery-3.4.1.min.js"></script>
     <script src="javascript/bootstrap.bundle.min.js"></script>
     <script src="javascript/fmt.js"></script>
