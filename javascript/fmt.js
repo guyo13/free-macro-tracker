@@ -1666,18 +1666,23 @@ function prepareEventHandlers() {
         foodId = Number(foodId);
         const msg = `Are you sure you would like to delete this Food ? (Food ID ${foodId})`;
         FMTShowPrompt("edit-food-screen-alerts", "warning", msg, fmtAppGlobals.defaultAlertScroll,
-                      function() {
-            FMTDeleteFood(foodId,
-                          function(e) {
-                pageController.closeEditFoodDynamicScreen();
-                pageController.showFoods();
-                FMTShowAlert("foods-alerts", "success", `Successfully deleted Food! (Food ID ${foodId})`, fmtAppGlobals.defaultAlertScroll);
-            },
-                          function(e) {
-                pageController.closeEditFoodDynamicScreen();
-                pageController.showFoods();
-                FMTShowAlert("foods-alerts", "danger", `Failed deleting Food! (Food ID ${foodId})`, fmtAppGlobals.defaultAlertScroll);
-            });
+                      function(delFood) {
+            if (delFood) {
+                FMTDeleteFood(foodId,
+                              function(e) {
+                    pageController.closeEditFoodDynamicScreen();
+                    pageController.showFoods();
+                    FMTShowAlert("foods-alerts", "success", `Successfully deleted Food! (Food ID ${foodId})`, fmtAppGlobals.defaultAlertScroll);
+                },
+                              function(e) {
+                    pageController.closeEditFoodDynamicScreen();
+                    pageController.showFoods();
+                    FMTShowAlert("foods-alerts", "danger", `Failed deleting Food! (Food ID ${foodId})`, fmtAppGlobals.defaultAlertScroll);
+                });                
+            }
+            else {
+                FMTShowAlert("edit-food-screen-alerts", "success", `Food not deleted! (Food ID ${foodId})`, fmtAppGlobals.defaultAlertScroll);
+            }
         });
     });
     $("#view-food-screen-food-weight-input").keyup(FMTUpdateViewFoodValuesOnWeightChange);
