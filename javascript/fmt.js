@@ -1376,6 +1376,7 @@ var pageController = {
         FMTFoodItemScreenClear("edit-food-screen");
         FMTFoodItemScreenPopulate("edit-food-screen", {"foodId": foodId});
         FMTFoodItemScreenPopulateSavedValues("edit-food-screen", foodId, 1, false, null);
+        document.getElementById("edit-food-screen-delete").setAttribute("food_id", foodId);
     },
     closeEditFoodDynamicScreen: function() {
         pageController.closeDynamicScreen("edit-food-screen");
@@ -1655,6 +1656,30 @@ function prepareEventHandlers() {
         const foodId = Number(e.currentTarget.getAttribute("food_id"));
         if (!isNumber(foodId)) { console.error(`Food ID (${foodId}) is not a number`); return; }
         FMTFoodItemScreenSave("edit-food-screen", "edit", {"foodId": foodId}/*, onsuccessFn, onerrorFn*/); } );
+    $("#edit-food-screen-delete").click( (e) => {
+        let foodId = e.currentTarget.getAttribute("food_id");
+        if (!isNumber(foodId)) {
+            const msg = `Invalid Food ID (${foodId}). Please reload`;
+            FMTShowAlert("edit-food-screen-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
+            return;
+        }
+        foodId = Number(foodId);
+        const msg = `Are you sure you would like to delete this Food ? (Food ID ${foodId})`;
+        FMTShowPrompt("edit-food-screen-alerts", "warning", msg, fmtAppGlobals.defaultAlertScroll,
+                      function() {
+            FMTDeleteFood(foodId,
+                          function(e) {
+                pageController.closeEditFoodDynamicScreen();
+                pageController.showFoods();
+                FMTShowAlert("foods-alerts", "success", `Successfully deleted Food! (Food ID ${foodId})`, fmtAppGlobals.defaultAlertScroll);
+            },
+                          function(e) {
+                pageController.closeEditFoodDynamicScreen();
+                pageController.showFoods();
+                FMTShowAlert("foods-alerts", "danger", `Failed deleting Food! (Food ID ${foodId})`, fmtAppGlobals.defaultAlertScroll);
+            });
+        });
+    });
     $("#view-food-screen-food-weight-input").keyup(FMTUpdateViewFoodValuesOnWeightChange);
     $("#view-food-screen-more").click( (e) => { FMTFoodItemScreenShowMore("view-food-screen"); } );
     $("#view-food-screen-less").click( (e) => { FMTFoodItemScreenShowLess("view-food-screen"); } );
