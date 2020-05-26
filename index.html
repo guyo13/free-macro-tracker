@@ -43,21 +43,21 @@
             <div id="overview-container" class="">
                 <div id="overview-date-container" class="mb-3 mt-3 row justify-content-center">
                     <div class="col-lg-1 col-1">
-                        <button id="overview-date-prev-day" type="button" class="fmt-prev-day-btn btn btn-outline-dark btn-lg d-none d-md-block float-left">&lt;</button>
-                        <button id="overview-date-prev-day" type="button" class="fmt-prev-day-btn btn btn-outline-dark d-md-none float-left">&lt;</button>
+                        <button id="overview-date-prev-day-lg" type="button" class="fmt-prev-day-btn btn btn-outline-dark btn-lg d-none d-md-block float-left">&lt;</button>
+                        <button id="overview-date-prev-day-sm" type="button" class="fmt-prev-day-btn btn btn-outline-dark d-md-none float-left">&lt;</button>
                     </div>
                     <div class="col-lg-6 col-8 fmt-center-text">
                         <h1 id="overview-date-day-large" class="display-5 d-none d-md-block"></h1>
                         <h4 id="overview-date-day-small" class="display-5 d-md-none"></h4>
                     </div>
                     <div class="col-lg-1 col-1">
-                        <button id="overview-date-next-day" type="button" class="fmt-next-day-btn btn btn-outline-dark btn-lg d-none d-md-block float-right">&gt;</button>
-                        <button id="overview-date-next-day" type="button" class="fmt-next-day-btn btn btn-outline-dark d-md-none float-right">&gt;</button>
+                        <button id="overview-date-next-day-lg" type="button" class="fmt-next-day-btn btn btn-outline-dark btn-lg d-none d-md-block float-right">&gt;</button>
+                        <button id="overview-date-next-day-sm" type="button" class="fmt-next-day-btn btn btn-outline-dark d-md-none float-right">&gt;</button>
                     </div>
                 </div>
                 <div id="calories-cont" class="mb-3 mt-3 row justify-content-center">
                     <div class="col-10 col-lg-8 fmt-center-text">
-                        <span class="fmt-text-lg ">Calories:</span>
+                        <span class="fmt-text-lg">Calories:</span>
                     </div>
                     <div class="w-100"></div>
                     <div class="progress fmt-total-progress col-10 col-lg-8">
@@ -66,16 +66,14 @@
                 </div>
                 <div id="macroes-cont" class="mb-1 row justify-content-center">
                     <div class="col-3 col-lg-2 fmt-center-text">
-                        <span class="fmt-text-lg d-none d-md-block">Carbohydrates</span>
-                        <span class="fmt-text-sm d-md-none">Carbs</span>
+                        <span class="fmt-font-2 d-none d-sm-block">Carbohydrates</span>
+                        <span class="fmt-font-2 d-sm-none">Carbs</span>
                     </div>
                     <div class="col-3 col-lg-2 fmt-center-text">
-                        <span class="fmt-text-lg d-none d-md-block">Proteins</span>
-                        <span class="fmt-text-sm d-md-none">Proteins</span>
+                        <span class="fmt-font-2">Proteins</span>
                     </div>
                     <div class="col-3 col-lg-2 fmt-center-text">
-                        <span class="fmt-text-lg d-none d-md-block">Fats</span>
-                        <span class="fmt-text-sm d-md-none">Fats</span>
+                        <span class="fmt-font-2">Fats</span>
                     </div>
                     <div class="w-100"></div>
                     <div id="carb-progress-bar" class="progress fmt-macro-progress col-3 col-lg-2 ml-1 mr-1">
@@ -87,6 +85,32 @@
                     <div id="fat-progress-bar" class="progress fmt-macro-progress col-3 col-lg-2 ml-1 mr-1">
                         <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
+                </div>
+                <div id="overview-meals-container" class="fmt-meals-container">
+                    
+                    <div id="overview-meal-MEAL_NAME" class="fmt-meal row justify-content-center mb-2">
+                        <div id="overview-meal-MEAL_NAME-header" class="fmt-meal-header col-11 col-lg-8">
+                            <span class="fmt-font-2">Meal Name</span>
+                            <!--<span class="fmt-font-2 float-right ml-3">&#9776</span>-->
+                            <button class="fmt-font-1 float-right ml-3 btn btn-outline-dark" type="button">&#9776</button>
+                            <span class="fmt-font-2 float-right">775 kCal</span>
+                            
+                        </div>
+                        <div class="w-100"></div>
+                        <div id="overview-meal-MEAL_NAME-entries" class="col-11 col-lg-8">
+                            <div id="overview-meal-MEAL_NAME-ENTRYID1" class="fmt-meal-entry mb-1">
+                            </div>
+                            <div class="w-100"></div>
+                            <div id="overview-meal-MEAL_NAME-ENTRYID2" class="fmt-meal-entry mb-1">
+                            </div>
+                        </div>
+                        <div class="w-100"></div>
+                        <div id="overview-meal-MEAL_NAME-footer" class="fmt-meal-footer col-11 col-lg-8">
+                        </div>
+                    </div>
+                    
+
+                </div>
                 </div>
             </div>
         </div>
