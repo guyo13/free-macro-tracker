@@ -4,13 +4,8 @@ body {
 button {
     touch-action: manipulation;
 }
-.fmt-macro-progress {
-   /* width : 0.3rem;*/
-}
-.fmt-total-progress {
-    margin-left: 1rem;
-    margin-right: 1rem;
-}
+.fmt-macro-progress {}
+.fmt-total-progress {}
 .fmt-label1 {
     width: 6rem;
 }
