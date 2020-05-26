@@ -46,7 +46,6 @@ button {
     background-color: rgb(233, 236, 239)!important;
 }
 .fmt-allfather {
-    margin: 2rem;
     border-style: solid;
     border-color: red;
 }
@@ -91,4 +90,8 @@ button {
 .debug-4 {
     border-style: solid;
     border-color: purple;
+}
+#main-screens {
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
