@@ -7,13 +7,7 @@ button {
 .fmt-macro-progress {
    /* width : 0.3rem;*/
 }
-.fmt-total-progress-lg {
-    width : 30rem;
-    margin-left: 1rem;
-    margin-right: 1rem;
-}
-.fmt-total-progress-sm {
-    width : 18rem;
+.fmt-total-progress {
     margin-left: 1rem;
     margin-right: 1rem;
 }
