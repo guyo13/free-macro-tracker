@@ -1289,7 +1289,8 @@ function FMTUpdateViewFoodValuesOnWeightChange(e) {
 //Functions - UI - Recipes
 //Functions - UI - Overview
 function FMTOverviewLoadCurrentDay(onsuccessFn, onerrorFn) {
-    document.getElementById("overview-date-day").innerHTML = getDateString(fmtAppInstance.currentDay);
+    document.getElementById("overview-date-day-large").innerHTML = getDateString(fmtAppInstance.currentDay);
+    document.getElementById("overview-date-day-small").innerHTML = getDateString(fmtAppInstance.currentDay);
 }
 //Functions - State
 //Functions - State - Date

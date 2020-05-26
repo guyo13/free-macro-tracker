@@ -2,10 +2,12 @@ body {
     margin-bottom: 2rem;
 }
 .fmt-macro-progress {
-    width : 10rem;
+    width : 0.3rem;
 }
 .fmt-total-progress {
-    width : 30rem;
+    width : 27rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
 }
 .fmt-label1 {
     width: 6rem;
@@ -32,11 +34,23 @@ body {
 .fmt-food-name-cell {}
 .fmt-food-brand-cell {}
 .fmt-food-table-row {}
-.fmt-dynamic-screen {}
+.fmt-dynamic-screen {
+    border-style: dashed;
+    border-color: darkgoldenrod;
+}
 .fmt-add-nutri {}
 .fmt-mass-unit-igroup {}
 .fmt-mass-unit-btn {
     background-color: rgb(233, 236, 239)!important;
+}
+.fmt-allfather {
+    margin: 2rem;
+    border-style: solid;
+    border-color: red;
+}
+.fmt-tab {
+    border-style: dotted;
+    border-color: aqua;
 }
 .center-text {text-align: center}
 .footer {
