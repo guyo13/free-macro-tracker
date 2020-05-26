@@ -1,6 +1,9 @@
 body {
     margin-bottom: 2rem;
 }
+button {
+    touch-action: manipulation;
+}
 .fmt-macro-progress {
     width : 0.3rem;
 }
