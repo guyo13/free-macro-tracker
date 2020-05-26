@@ -5,6 +5,9 @@ button {
     touch-action: manipulation;
 }
 .fmt-macro-progress {}
+.fmt-macro-progress-inverse {
+    background-color: #343a40;
+}
 .fmt-total-progress {}
 .fmt-label1 {
     width: 6rem;
@@ -71,16 +74,13 @@ button {
     border-color: burlywood;
 }
 .fmt-meal-entry {
-    border-style: solid;
-    border-color: black;
+    background-color: #e9ecef;
 }
 .fmt-meal-footer {
-    border-style: dashed;
-    border-color: forestgreen;
+    background-color: #e9ecef;
 }
 .fmt-meal-header {
-/*    border-style: dashed;
-    border-color: greenyellow;*/
+    border-color: grey;
     background-color: #e9ecef;
     border-radius: 3px;
 }
