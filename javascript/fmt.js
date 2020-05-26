@@ -163,6 +163,9 @@ function isNumber(input) {
     if (input === "" || isNaN(input) || input == null) { return false; }
     else { return true; }
 }
+function isDate(date) {
+    return date && Object.prototype.toString.call(date) === "[object Date]" && !isNaN(date);
+}
 //Functions - DB
 function prepareDBv1() {
     console.debug("Preparing DB...");
@@ -1284,7 +1287,31 @@ function FMTUpdateViewFoodValuesOnWeightChange(e) {
     }
 }
 //Functions - UI - Recipes
-//Classes
+//Functions - UI - Overview
+function FMTOverviewLoadCurrentDay(onsuccessFn, onerrorFn) {
+    document.getElementById("overview-date-day").innerHTML = getDateString(fmtAppInstance.currentDay);
+}
+//Functions - State
+//Functions - State - Date
+function FMTToday() { fmtAppInstance.today = new Date(); }
+function FMTSetCurrentDate(currentDate, onsuccessFn, onerrorFn) {
+    onerrorFn = onerrorFn || function(e) { console.error(`currentDate (${currentDate}) is not a valid Date object`); };
+    if (!isDate(currentDate)) {return onerrorFn();}
+    fmtAppInstance.currentDay = currentDate;
+    if (onsuccessFn) { onsuccessFn(); }
+}
+function FMTPreviousDay(onsuccessFn, onerrorFn) {
+    onerrorFn = onerrorFn || function (e) { console.error(`currentDay (${fmtAppInstance.currentDay}) is not a valid Date object`); }
+    if (!isDate(fmtAppInstance.currentDay)) { return onerrorFn(); }
+    fmtAppInstance.currentDay.setDate(fmtAppInstance.currentDay.getDate() - 1);
+    if (onsuccessFn) { onsuccessFn(); }
+}
+function FMTNextDay(onsuccessFn, onerrorFn) {
+    onerrorFn = onerrorFn || function (e) { console.error(`currentDay (${fmtAppInstance.currentDay}) is not a valid Date object`); }
+    if (!isDate(fmtAppInstance.currentDay)) { return onerrorFn(); }
+    fmtAppInstance.currentDay.setDate(fmtAppInstance.currentDay.getDate() + 1);
+    if (onsuccessFn) { onsuccessFn(); }
+}
 
 //Page
 var pageController = {
@@ -1463,15 +1490,14 @@ function FMTLoadProfile() {
 }
 function onDbSuccess(event) {  
     fmtAppInstance.fmtDb = event.target.result;
-    fmtAppInstance.today = new Date();
-    fmtAppInstance.currentDay = fmtAppInstance.today;
-    //FIXME
-    document.getElementById("overview-date-day").innerHTML = getDateString(fmtAppInstance.currentDay);
+    FMTToday();
+    FMTSetCurrentDate(fmtAppInstance.today);
     pageController.showOverview();
     prepareEventHandlers();
     FMTLoadMassUnits();
     FMTLoadAdditionalNutrients();
     FMTLoadProfile();
+    FMTOverviewLoadCurrentDay();
 }
 
 function onUpgradeNeeded(event) {
@@ -1704,6 +1730,8 @@ function prepareEventHandlers() {
         let query = e.currentTarget.value;
         FMTQueryFoodsTable(query)
     });
+    $("#overview-date-prev-day").click( (e) => { FMTPreviousDay(FMTOverviewLoadCurrentDay); } );
+    $("#overview-date-next-day").click( (e) => { FMTNextDay(FMTOverviewLoadCurrentDay); } );
 }
 //Main
 $(document).ready(function() {
