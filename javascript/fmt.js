@@ -932,7 +932,7 @@ function FMTCreateNutrientCategoryHeading(category, targetDivID) {
     spacer.classList.add("w-100");
     headingElements.push(spacer);
     const headingCont = document.createElement("div");
-    headingCont.classList.add("input-group", "col-12", "col-lg-8", "mb-1");
+    headingCont.classList.add("input-group", "mb-1");//, "col-12", "col-lg-8", "mb-1");
     const h5 = document.createElement("h5");
     h5.innerHTML = category;
     headingCont.appendChild(h5);
@@ -952,7 +952,7 @@ function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj
         spacer.classList.add("w-100");
         elements.push(spacer);
         const inGroupCont = document.createElement("div");
-        inGroupCont.classList.add("input-group", "col-12", "col-lg-8", "mb-1");
+        inGroupCont.classList.add("input-group", "mb-1");//, "col-12", "col-lg-8", "mb-1");
         const addNutriInGroup = document.createElement("div");
         addNutriInGroup.classList.add("input-group-prepend");
         addNutriInGroup.setAttribute("id", nutriBaseId);
