@@ -1731,8 +1731,8 @@ function prepareEventHandlers() {
         let query = e.currentTarget.value;
         FMTQueryFoodsTable(query)
     });
-    $("#overview-date-prev-day").click( (e) => { FMTPreviousDay(FMTOverviewLoadCurrentDay); } );
-    $("#overview-date-next-day").click( (e) => { FMTNextDay(FMTOverviewLoadCurrentDay); } );
+    $(".fmt-prev-day-btn").click( (e) => { FMTPreviousDay(FMTOverviewLoadCurrentDay); } );
+    $(".fmt-next-day-btn").click( (e) => { FMTNextDay(FMTOverviewLoadCurrentDay); } );
 }
 //Main
 $(document).ready(function() {

@@ -5,10 +5,15 @@ button {
     touch-action: manipulation;
 }
 .fmt-macro-progress {
-    width : 0.3rem;
+   /* width : 0.3rem;*/
 }
-.fmt-total-progress {
-    width : 27rem;
+.fmt-total-progress-lg {
+    width : 30rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+.fmt-total-progress-sm {
+    width : 18rem;
     margin-left: 1rem;
     margin-right: 1rem;
 }
@@ -55,7 +60,20 @@ button {
     border-style: dotted;
     border-color: aqua;
 }
-.center-text {text-align: center}
+.fmt-text-lg {
+    font-size: 1.2rem;
+    font-weight: 300;
+}
+.fmt-text-sm {
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+.fmt-center-text {
+    text-align: center;
+}
+.fmt-left-text {
+    text-align: left;
+}
 .footer {
   position: fixed;
   left: 0;
