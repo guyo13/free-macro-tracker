@@ -37,6 +37,10 @@ button {
 .fmt-dynamic-screen {}
 .fmt-add-nutri {}
 .fmt-mass-unit-igroup {}
+.fmt-bg-light {
+    background-color: rgb(233, 236, 239);
+}
+
 .fmt-mass-unit-btn {
     background-color: rgb(233, 236, 239)!important;
 }
@@ -176,5 +180,13 @@ button {
     .fmt-font-3 {
             font-size: 1.5rem;
         font-weight: 400;
+    }
+}
+.fmt-food-input-field {
+    width: 50%;
+}
+@media screen and (max-width: 768px) {
+    .fmt-food-input-field {
+        width: 100%;
     }
 }

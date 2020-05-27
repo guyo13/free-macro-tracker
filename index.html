@@ -9,34 +9,43 @@
 </head>
 <body>
     <div id="odin" class="fmt-allfather">
-        <div id="page-title" class="row justify-content-center">
+<!--        <div id="page-title" class="row justify-content-center">
             <h1 class="display-4 d-none d-md-block">Free Macro Tracker - Development</h1>
             <h4 class="d-md-none">Free Macro Tracker - Development</h4>
-        </div>
+        </div>-->
         <div id="tabs" class="row justify-content-center">
-        <ul id="main-screens" class="nav nav-tabs">
-          <li class="nav-item">
-            <a class="nav-link active fmt-font-1" id="goto-overview" href="#">Overview</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link fmt-font-1" id="goto-foods" href="#">Foods</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link fmt-font-1" id="goto-recipes" href="#">Recipes</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link fmt-font-1" id="goto-profile" href="#">Profile</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link fmt-font-1" id="goto-advanced" href="#">Advanced</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link fmt-font-1" id="goto-export" href="#">Export</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link fmt-font-1" id="goto-import" href="#">Import</a>
-          </li>
-        </ul>
+        <nav class="navbar navbar-expand-md navbar-light fmt-bg-light">
+          <!-- Brand -->
+          <a class="navbar-brand fmt-font-3" href="#">Free Macro Tracker - Development</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul id="main-screens" class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link active fmt-font-1" id="goto-overview" href="#">Overview</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link fmt-font-1" id="goto-foods" href="#">Foods</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link fmt-font-1" id="goto-recipes" href="#">Recipes</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link fmt-font-1" id="goto-profile" href="#">Profile</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link fmt-font-1" id="goto-advanced" href="#">Advanced</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link fmt-font-1" id="goto-export" href="#">Export</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link fmt-font-1" id="goto-import" href="#">Import</a>
+                  </li>
+                </ul>
+          </div>
+        </nav>
         </div>
         <div id="overview" class="fmt-tab">
             <div id="overview-alerts" class="row justify-content-center"></div>
@@ -526,21 +535,21 @@
             </div>
             <div id="add-food-screen-content" class="row justify-content-center fmt-max-height60">
                 <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend fmt-food-input-field">
                     <span class="input-group-text">Description</span>
                     <input id="add-food-screen-food-name" type="text" class="form-control" placeholder="Food description (Required)" aria-label="Description" aria-describedby="basic-addon2">
                   </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend fmt-food-input-field">
                     <span class="input-group-text">Brand</span>
                     <input id="add-food-screen-food-brand" type="text" class="form-control" placeholder="Food brand (Optional)" aria-label="Brand" aria-describedby="basic-addon2">
                   </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1">
-                    <div id="add-food-screen-food-weight" class="input-group-prepend">
+                    <div id="add-food-screen-food-weight" class="input-group-prepend fmt-food-input-field">
                         <span class="input-group-text">Weight</span>
                         <input id="add-food-screen-food-weight-input" type="text" class="form-control" placeholder="Food weight (Required)" aria-label="Brand" aria-describedby="basic-addon2">
                     </div>
@@ -552,28 +561,28 @@
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend fmt-food-input-field">
                     <span class="input-group-text">Calories</span>
                     <input id="add-food-screen-food-calories" type="text" class="form-control" placeholder="Calories (Kcal)" aria-label="Calories" aria-describedby="basic-addon2">
                   </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend fmt-food-input-field">
                     <span class="input-group-text">Proteins</span>
                     <input id="add-food-screen-food-proteins" type="text" class="form-control" placeholder="Proteins (g)" aria-label="Proteins" aria-describedby="basic-addon2">
                   </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend fmt-food-input-field">
                     <span class="input-group-text">Carbohydrates</span>
                     <input id="add-food-screen-food-carbohydrates" type="text" class="form-control" placeholder="Carbohydrates (g)" aria-label="Carbohydrates" aria-describedby="basic-addon2">
                   </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend fmt-food-input-field">
                     <span class="input-group-text">Fats</span>
                     <input id="add-food-screen-food-fats" type="text" class="form-control" placeholder="Fats (g)" aria-label="Fats" aria-describedby="basic-addon2">
                   </div>
@@ -609,21 +618,21 @@
             </div>
             <div id="edit-food-screen-content" class="row justify-content-center fmt-max-height60">
                 <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend fmt-food-input-field">
                     <span class="input-group-text">Description</span>
                     <input id="edit-food-screen-food-name" type="text" class="form-control" placeholder="Food description (Required)" aria-label="Description" aria-describedby="basic-addon2">
                   </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend fmt-food-input-field">
                     <span class="input-group-text">Brand</span>
                     <input id="edit-food-screen-food-brand" type="text" class="form-control" placeholder="Food brand (Optional)" aria-label="Brand" aria-describedby="basic-addon2">
                   </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1">
-                    <div id="edit-food-screen-food-weight" class="input-group-prepend">
+                    <div id="edit-food-screen-food-weight" class="input-group-prepend fmt-food-input-field">
                         <span class="input-group-text">Weight</span>
                         <input id="edit-food-screen-food-weight-input" type="text" class="form-control" placeholder="Food weight (Required)" aria-label="Brand" aria-describedby="basic-addon2">
                     </div>
@@ -635,28 +644,28 @@
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend fmt-food-input-field">
                     <span class="input-group-text">Calories</span>
                     <input id="edit-food-screen-food-calories" type="text" class="form-control" placeholder="Calories (Kcal)" aria-label="Calories" aria-describedby="basic-addon2">
                   </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend fmt-food-input-field">
                     <span class="input-group-text">Proteins</span>
                     <input id="edit-food-screen-food-proteins" type="text" class="form-control" placeholder="Proteins (g)" aria-label="Proteins" aria-describedby="basic-addon2">
                   </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend fmt-food-input-field">
                     <span class="input-group-text">Carbohydrates</span>
                     <input id="edit-food-screen-food-carbohydrates" type="text" class="form-control" placeholder="Carbohydrates (g)" aria-label="Carbohydrates" aria-describedby="basic-addon2">
                   </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend fmt-food-input-field">
                     <span class="input-group-text">Fats</span>
                     <input id="edit-food-screen-food-fats" type="text" class="form-control" placeholder="Fats (g)" aria-label="Fats" aria-describedby="basic-addon2">
                   </div>
@@ -692,21 +701,21 @@
             </div>
             <div id="view-food-screen-content" class="row justify-content-center fmt-max-height60">
                 <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend fmt-food-input-field">
                     <span class="input-group-text">Description</span>
                     <input id="view-food-screen-food-name" type="text" class="form-control" placeholder="Food description" aria-label="Description" aria-describedby="basic-addon2">
                   </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend fmt-food-input-field">
                     <span class="input-group-text">Brand</span>
                     <input id="view-food-screen-food-brand" type="text" class="form-control" placeholder="Food brand" aria-label="Brand" aria-describedby="basic-addon2">
                   </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1">
-                    <div id="view-food-screen-food-weight" class="input-group-prepend">
+                    <div id="view-food-screen-food-weight" class="input-group-prepend fmt-food-input-field">
                         <span class="input-group-text">Weight</span>
                         <input id="view-food-screen-food-weight-input" type="text" class="form-control" placeholder="Food weight" aria-label="Brand" aria-describedby="basic-addon2">
                     </div>
@@ -718,28 +727,28 @@
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend fmt-food-input-field">
                     <span class="input-group-text">Calories</span>
                     <input id="view-food-screen-food-calories" type="text" class="form-control" placeholder="Calories (Kcal)" aria-label="Calories" aria-describedby="basic-addon2">
                   </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend fmt-food-input-field">
                     <span class="input-group-text">Proteins</span>
                     <input id="view-food-screen-food-proteins" type="text" class="form-control" placeholder="Proteins (g)" aria-label="Proteins" aria-describedby="basic-addon2">
                   </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend fmt-food-input-field">
                     <span class="input-group-text">Carbohydrates</span>
                     <input id="view-food-screen-food-carbohydrates" type="text" class="form-control" placeholder="Carbohydrates (g)" aria-label="Carbohydrates" aria-describedby="basic-addon2">
                   </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend fmt-food-input-field">
                     <span class="input-group-text">Fats</span>
                     <input id="view-food-screen-food-fats" type="text" class="form-control" placeholder="Fats (g)" aria-label="Fats" aria-describedby="basic-addon2">
                   </div>

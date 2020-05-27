@@ -954,7 +954,7 @@ function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj
         const inGroupCont = document.createElement("div");
         inGroupCont.classList.add("input-group", "mb-1");//, "col-12", "col-lg-8", "mb-1");
         const addNutriInGroup = document.createElement("div");
-        addNutriInGroup.classList.add("input-group-prepend");
+        addNutriInGroup.classList.add("input-group-prepend", "fmt-food-input-field");
         addNutriInGroup.setAttribute("id", nutriBaseId);
         const span = document.createElement("span");
         span.classList.add("input-group-text");
