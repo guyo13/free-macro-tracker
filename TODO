@@ -1,12 +1,9 @@
-Implement Foods :
-	Add food -remaining polishing (Error messages to user on food addition)
 Implement Recipes
 Implement Mass Units UI
 Implement custom nutrients UI
-Implement Overview UI
 Implement Export
 Implement Import
 Clear notifications on profile save
 Replace id and class strings with constants
 use constants instead of let/var where applicable
-DB - Mass Units - primary key should be both category and name
+Remove code duplication FMTValidateFoodObject and FMTValidateNutritionalValue

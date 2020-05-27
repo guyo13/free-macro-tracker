@@ -275,6 +275,83 @@ function createIndexes(objectStore, indexesObj) {
     }
 }
 //Functions - Validation
+function FMTValidateNutritionalValue(nutritionalValueObj, mUnitsChart) {
+    if (mUnitsChart == null) {
+        mUnitsChart = fmtAppInstance.massUnitChart;
+    }
+    const result = {};
+    const nutritionalValue = {};
+    let error = null;
+    
+    if (!isNumber(nutritionalValueObj.calories)) {
+        error = `Calories must be a valid number (got ${nutritionalValueObj.calories}`;
+        result.error = error;
+        return result;
+    }
+    nutritionalValue.calories = Number(nutritionalValueObj.calories);
+    
+    if (!isNumber(nutritionalValueObj.proteins)) {
+        error = `Proteins must be a valid number (got ${nutritionalValueObj.proteins}`;
+        result.error = error;
+        return result;
+    }
+    nutritionalValue.proteins = Number(nutritionalValueObj.proteins);
+    
+    if (!isNumber(nutritionalValueObj.carbohydrates)) {
+        error = `Carbohydrates must be a valid number (got ${nutritionalValueObj.carbohydrates}`;
+        result.error = error;
+        return result;
+    }
+    nutritionalValue.carbohydrates = Number(nutritionalValueObj.carbohydrates);
+    
+    if (!isNumber(nutritionalValueObj.fats)) {
+        error = `fats must be a valid number (got ${nutritionalValueObj.fats}`;
+        result.error = error;
+        return result;
+    }
+    nutritionalValue.fats = Number(nutritionalValueObj.fats);
+
+    let additionalNutrients = nutritionalValueObj.additionalNutrients;
+    nutritionalValue.additionalNutrients = {}
+    
+    if (additionalNutrients != null ) {
+        for (const nutrientCategoryName in additionalNutrients) {
+            const nutrientsInCat = additionalNutrients[nutrientCategoryName];
+            if (Array.isArray(nutrientsInCat) && nutrientsInCat.length > 0) {
+                const validatedNutrientsInCat = [];
+                for (const j in nutrientsInCat) {
+                    const validatedNutrient = {};
+                    const nutrient = nutrientsInCat[j];
+                    if (nutrient.name == null || nutrient.name === "") {
+                        error = `Nutrient in Category "${nutrientCategoryName}" has empty name`;
+                        result.error = error;
+                        return result;
+                    }
+                    if (!isNumber(nutrient.mass)) {
+                        error = `Nutrient "${nutrient.name}" (Category ${nutrientCategoryName}) has invalid value "${nutrient.mass}"`;
+                        result.error = error;
+                        return result;
+                    }
+                    if (!(nutrient.unit in mUnitsChart)) {
+                        error = `Nutrient "${nutrient.name}" (Category ${nutrientCategoryName}) has unknown or invalid mass unit "${nutrient.unit}"`;
+                        result.error = error;
+                        return result;
+                    }
+                    validatedNutrient.name = nutrient.name;
+                    validatedNutrient.mass = Number(nutrient.mass);
+                    validatedNutrient.unit = nutrient.unit;
+                    validatedNutrientsInCat.push(validatedNutrient);
+                }
+                if (validatedNutrientsInCat.length > 0) {
+                    nutritionalValue.additionalNutrients[nutrientCategoryName] = validatedNutrientsInCat;
+                }
+            }
+        }
+    }
+    
+    result.nutritionalValue = nutritionalValue;
+    return result;
+}
 /*foodObj - {foodName, foodBrand(optional), referenceWeight, weightUnits, nutritionalValue}
  *nutritionalValue - {calories, proteins, carbohydrates, fats, additionalNutrients}
  *additionalNutrients - {Category1:[nutrient11, ... , nutrient1N],..CategoryM:[nutrientM1, ... , nutrientMN],}
@@ -326,8 +403,8 @@ function FMTValidateFoodObject(foodObj, mUnitsChart) {
             return {"food": null, "error": "Fats value must be a valid number"};
         }
         else { food.nutritionalValue.fats = Number(nutritionalValue.fats); }
-        let additionalNutrients = nutritionalValue.additionalNutrients
-        food.nutritionalValue.additionalNutrients = {}
+        let additionalNutrients = nutritionalValue.additionalNutrients;
+        food.nutritionalValue.additionalNutrients = {};
         if (additionalNutrients != null ) {
             for (const nutrientCategoryName in additionalNutrients) {
                 const nutrientsInCat = additionalNutrients[nutrientCategoryName];
@@ -595,6 +672,100 @@ function FMTValidateProfile(profileObj) {
     
     result.profile = profile;
     result.error = null;
+    return result;
+}
+function FMTValidateMealEntry(mealEntryObj) {
+    const result = {};
+    const mealEntry = {};
+    let error = null;
+    if (!isNumber(mealEntryObj.profile_id) || !Number.isInteger(Number(mealEntryObj.profile_id))) {
+        error = `Profile id must be an integer, got (${mealEntryObj.profile_id})`;
+        result.error = error;
+        return result;
+    }
+    mealEntry.profile_id = Number(mealEntryObj.profile_id);
+    
+    if (!isDate(new Date(mealEntryObj.year, mealEntryObj.month, mealEntryObj.day))) {
+        error = `Year Month and Day must be valid integers, got (${mealEntryObj.year}, ${mealEntryObj.month}, ${mealEntryObj.day})`;
+        result.error = error;
+        return result;
+    }
+    mealEntry.year = Number(mealEntryObj.year);
+    mealEntry.month = Number(mealEntryObj.month);
+    mealEntry.day = Number(mealEntryObj.day);
+    if (mealEntryObj.mealName == null || mealEntryObj.mealName === "") {
+        error = `Meal Name must not be null or empty string (got ${mealEntryObj.mealName})`;
+        result.error = error;
+        return result;
+    }
+    mealEntry.mealName = mealEntryObj.mealName;
+    
+    if (!!mealEntryObj.created && !isDate(new Date(mealEntryObj.created) ) ) {
+        error = `'Created' value must be valid Date (got ${mealEntryObj.created})`;
+        result.error = error;
+        return result;
+    }
+    else { mealEntry.created = mealEntryObj.created; }
+    
+    
+    if (!!mealEntryObj.lastModified && !isDate(new Date(mealEntryObj.lastModified) ) ) {
+        error = `'lastModified ' value must be valid Date (got ${mealEntryObj.lastModified})`;
+        result.error = error;
+        return result;
+    }
+    else { mealEntry.lastModified  = mealEntryObj.lastModified; }
+    
+    if (mealEntryObj.tzMinutes !== undefined && !Number.isInteger(mealEntryObj.tzMinutes)) {
+        error = `Invalid timezone ${mealEntryObj.tzMinutes}`;
+        result.error = error;
+        return result;
+    }
+    else { mealEntry.tzMinutes = mealEntryObj.tzMinutes; }
+    
+    if (!isNumber(mealEntryObj.consumable_id) || !Number.isInteger(Number(mealEntryObj.consumable_id ))) {
+        error = `Consumable id must be an integer, got (${mealEntryObj.consumable_id})`;
+        result.error = error;
+        return result;
+    }
+    mealEntry.consumable_id = Number(mealEntryObj.consumable_id);
+    
+    if (mealEntryObj.consumableName == null || mealEntryObj.consumableName  === "") {
+        error = `Consumable Name  must not be null or empty string (got ${mealEntryObj.consumableName})`;
+        result.error = error;
+        return result;
+    }
+    mealEntry.consumableName = mealEntryObj.consumableName;
+    
+    mealEntry.foodBrand = mealEntryObj.foodBrand;
+    mealEntry.is_recipe = Boolean(mealEntryObj.is_recipe);
+    
+    if (!isNumber(mealEntryObj.weight) || Number(mealEntryObj.weight) <= 0) {
+        error = `Weight is not a positive number (got ${mealEntryObj.weight})`;
+        result.error = error;
+        return result;
+    }
+    mealEntry.weight = mealEntryObj.weight;
+    
+    if (mealEntryObj.weightUnits == null || mealEntryObj.weightUnits === "") {
+        error = `Weight Units must not be null`;
+        result.error = error;
+        return result;
+    }
+    mealEntry.weightUnits = mealEntryObj.weightUnits;
+    
+    if (mealEntryObj.nutritionalValue == null) {
+        error = `Nutritional Value must not be empty`;
+        result.error = error;
+        return result;
+    }
+    const nutriValueValidateRes = FMTValidateNutritionalValue(mealEntryObj.nutritionalValue);
+    if (nutriValueValidateRes.nutritionalValue == null || nutriValueValidateRes.error != null) {
+        result.error = nutriValueValidateRes.error;
+        return result;
+    }
+    mealEntry.nutritionalValue = nutriValueValidateRes.nutritionalValue;
+    
+    result.mealEntry = mealEntry;
     return result;
 }
 //Functions - DB - Entries
