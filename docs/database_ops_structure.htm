@@ -33,7 +33,7 @@
             macroSplit - Object ({"Calories":Number,"Protein":Number,"Carbohydrate":Number,"Fat":Number})<br/>
             lastModified - Date <br/>
             tzMinutes - int <br/>
-            <span class="minor">//TODO - microScplit</span>
+            <span class="minor">//TODO - microNutrientGoals</span>
         </p>
         
 
@@ -71,7 +71,7 @@
         <p>
             KEY PATH = "recipe_id" autoIncrement = true <br/>
             recipe_id - int <br/>
-            recipe_name - String <br/>
+            recipeName - String <br/>
             created - Date <br/>
             lastModified - Date <br/>
             tzMinutes - int <br/>
@@ -83,7 +83,7 @@
         </p>
         <h2>Meal Entries Object Store</h2>
         <p>
-            <span class="major">KEY PATH = ["profile_id", "entry_id"]  || ["profile_id", [year, month, day], "entry_id"] //TODO</span> <br/>
+            <span class="major">KEY PATH = ["entry_id"]</span> <br/>
             entry_id - int <br/>
             profile_id - int (logically references the profile id from profile store) <br/>
             year - int <br/>
@@ -108,7 +108,17 @@
             profile_id - int <br/>
             settings - Object (reduced version of fmtAppInstance) <br/>
         </p>
-
+        <h2 class="med">User Goals Object Store - TODO</h2>
+        <p>
+            KEY PATH = ["profile_id", ["year", "month", "day"]] autoIncrement=false <br/>
+            profile_id - int <br/>
+            year - int <br/>
+            month - int (0-11) <br/>
+            day - int <br/>
+            macroSplit - Object (see above) <br/>
+            <span class="minor">//TODO - microNutrientGoals</span>
+            
+        </p>
     <h1>DB OPERATIONS (TODO):</h1>
         <h2>Profiles:</h2>
         <p>
@@ -165,9 +175,9 @@
         </p>
         <h2 class="major">Meal Entries:</h2>
         <p>
-            <span class="major">Query all by profile id (cursor)</span> <br/>
-            <span class="major">Query by profile id and entry id</span> <br/>
             <span class="major">Query by profile_id and [year, month, day] (cursor)</span> <br/>
+            <span class="major">Query by profile id (cursor - same as above with unbounded date range)</span> <br/>
+            <span class="major">Query by entry id (cursor - this is the obvious query)</span> <br/>
             <span class="major">Create, update, delete</span> <br/>
         </p>
     </body>

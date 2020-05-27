@@ -30,43 +30,46 @@ fmtAppGlobals.FMT_DB_NAME = "fmt";
 fmtAppGlobals.FMT_DB_VER = 1;
 fmtAppGlobals.FMT_DB_READONLY = "readonly";
 fmtAppGlobals.FMT_DB_READWRITE = "readwrite";
-//Globals - DB - Entries Store constants
-fmtAppGlobals.FMT_DB_ENTRIES_STORE = "fmt_food_log";
-fmtAppGlobals.FMT_DB_ENTRIES_KP = "_id";//, "profile_id"];
-fmtAppGlobals.FMT_DB_DATE_INDEX_NAME = "date_index";
-fmtAppGlobals.FMT_DB_DATE_INDEX_KEYS = ["year", "month", "day"];
-fmtAppGlobals.FMT_DB_FOODID_INDEX_NAME = "foodid_index";
-fmtAppGlobals.FMT_DB_FOODID_INDEX_KEYS = ["food_id", "foodName", "foodBrand"];
-fmtAppGlobals.FMT_DB_MEALNAME_INDEX_NAME = "mealname_index";
-fmtAppGlobals.FMT_DB_MEALNAME_INDEX_KEYS = "mealName";
-fmtAppGlobals.FMT_DB_PROFILE_INDEX_NAME = "profile_index";
-fmtAppGlobals.FMT_DB_PROFILE_INDEX_KEYS = "profile_id";
+//Globals - DB - Meal Entries Store constants
+fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE = "fmt_meal_entries";
+fmtAppGlobals.FMT_DB_MEAL_ENTRIES_KP = "entry_id";
+fmtAppGlobals.FMT_DB_MEAL_ENTRIES_INDEXES = {"profile_id_date_index": {"kp": ["profile_id", ["year", "month", "day"]],
+                                                                       "options": { unique: false }
+                                                                      },
+                                            };
 //Globals - DB - Foods Store constants
 fmtAppGlobals.FMT_DB_FOODS_STORE = "fmt_foods";
 fmtAppGlobals.FMT_DB_FOODS_KP = "food_id";
-fmtAppGlobals.FMT_DB_FOOD_NAMES_INDEX_NAME = "food_names_index";
-fmtAppGlobals.FMT_DB_FOOD_NAMES_INDEX_KEYS = ["foodName", "foodBrand"];
-fmtAppGlobals.FMT_DB_FOOD_MACROES_INDEX_NAME = "macroes_index";
-fmtAppGlobals.FMT_DB_FOOD_MACROES_INDEX_KEYS = ["nutritionalValue.calories",
-                                           "nutritionalValue.proteins",
-                                           "nutritionalValue.carbohydrates",
-                                           "nutritionalValue.fats"];
+fmtAppGlobals.FMT_DB_FOODS_INDEXES = {"food_name_index": {"kp": "foodName",
+                                                          "options": { unique: false }
+                                                         },
+                                      "food_brand_index": {"kp": "foodBrand",
+                                                           "options": { unique: false }
+                                                          },
+                                     };
+
 //Globals - DB - Recipes Store constants
 fmtAppGlobals.FMT_DB_RECIPES_STORE = "fmt_recipes";
 fmtAppGlobals.FMT_DB_RECIPES_KP = "recipe_id";
-fmtAppGlobals.FMT_DB_RECIPE_NAMES_INDEX_NAME = "recipe_names_index";
-fmtAppGlobals.FMT_DB_RECIPE_NAMES_INDEX_KEYS = "recipe_name";
+fmtAppGlobals.FMT_DB_RECIPES_INDEXES = {"recipe_name_index": {"kp": "recipeName",
+                                                              "options": { unique: false }
+                                                         }
+                                     };
 //Globals - DB - Profile Store constants
-fmtAppGlobals.FMT_DB_PROFILE_STORE = "fmt_profile";
-fmtAppGlobals.FMT_DB_PROFILE_KP = "profile_id";
+fmtAppGlobals.FMT_DB_PROFILES_STORE = "fmt_profiles";
+fmtAppGlobals.FMT_DB_PROFILES_KP = "profile_id";
 //Globals - DB - Mass Units Store constants
-fmtAppGlobals.FMT_DB_MUNIT_STORE = "fmt_mass_units";
-fmtAppGlobals.FMT_DB_MUNIT_KP = "name";
-fmtAppGlobals.FMT_DB_MUNIT_INDEX_NAME = "mass_unit_index";
-fmtAppGlobals.FMT_DB_MUNIT_INDEX_KEYS = ["value_in_grams", "description"];
+fmtAppGlobals.FMT_DB_MASS_UNITS_STORE = "fmt_mass_units";
+fmtAppGlobals.FMT_DB_MASS_UNITS_KP = "name";
 //Globals - DB - Nutrients Store constants
-fmtAppGlobals.FMT_DB_NUTRI_STORE = "fmt_nutrients";
-fmtAppGlobals.FMT_DB_NUTRI_KP = ["category", "name"];
+fmtAppGlobals.FMT_DB_NUTRIENTS_STORE = "fmt_nutrients";
+fmtAppGlobals.FMT_DB_NUTRIENTS_KP = ["category", "name"];
+//Globals - DB - User Settings Store
+fmtAppGlobals.FMT_DB_USER_SETTINGS_STORE = "fmt_user_settings";
+fmtAppGlobals.FMT_DB_USER_SETTINGS_KP = "profile_id";
+//Globals - DB - User Goals Store
+fmtAppGlobals.FMT_DB_USER_GOALS_STORE = "fmt_user_goals";
+fmtAppGlobals.FMT_DB_USER_GOALS_KP = ["profile_id", ["year", "month", "day"]];
 
 //Globals - Page
 fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-recipes", "goto-profile", "goto-advanced", "goto-export", "goto-import"];
@@ -172,67 +175,47 @@ function prepareDBv1() {
                                          //{"name": "Cobalt", "category": "Trace Minerals", "default_mass_unit": "mcg"},
                                          //{"name": "Molybdenum", "category": "Trace Minerals", "default_mass_unit": "mcg"},
                                         ];
-    //Create entries objectStore
-    let fmtEntriesStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_ENTRIES_STORE,
-                                                                {keyPath: fmtAppGlobals.FMT_DB_ENTRIES_KP, autoIncrement: true});
-    fmtEntriesStore.createIndex(fmtAppGlobals.FMT_DB_DATE_INDEX_NAME,
-                                fmtAppGlobals.FMT_DB_DATE_INDEX_KEYS,
-                                { unique: false });
-    fmtEntriesStore.createIndex(fmtAppGlobals.FMT_DB_FOODID_INDEX_NAME,
-                                fmtAppGlobals.FMT_DB_FOODID_INDEX_KEYS,
-                                { unique: false });
-    fmtEntriesStore.createIndex(fmtAppGlobals.FMT_DB_MEALNAME_INDEX_NAME,
-                                fmtAppGlobals.FMT_DB_MEALNAME_INDEX_KEYS,
-                                { unique: false });
-    fmtEntriesStore.createIndex(fmtAppGlobals.FMT_DB_PROFILE_INDEX_NAME,
-                                fmtAppGlobals.FMT_DB_PROFILE_INDEX_KEYS,
-                                { unique: false });
+    //Create Meal Entries objectStore
+    let fmtMealEntriesStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE,
+                                                                {keyPath: fmtAppGlobals.FMT_DB_MEAL_ENTRIES_KP, autoIncrement: true});
+    createIndexes(fmtMealEntriesStore, fmtAppGlobals.FMT_DB_MEAL_ENTRIES_INDEXES);
     
-    //Create foods objectStore
+    //Create Foods objectStore
     let fmtFoodsStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_FOODS_STORE,
                                                               {keyPath: fmtAppGlobals.FMT_DB_FOODS_KP, autoIncrement: true});
-    fmtFoodsStore.createIndex(fmtAppGlobals.FMT_DB_FOOD_NAMES_INDEX_NAME,
-                              fmtAppGlobals.FMT_DB_FOOD_NAMES_INDEX_KEYS,
-                              { unique: false });
-    for (let i in fmtAppGlobals.FMT_DB_FOOD_MACROES_INDEX_KEYS) {
-        fmtFoodsStore.createIndex(`${fmtAppGlobals.FMT_DB_FOOD_MACROES_INDEX_NAME}_${i}`,
-                                  fmtAppGlobals.FMT_DB_FOOD_MACROES_INDEX_KEYS[i],
-                                  { unique: false});
-    }
+    createIndexes(fmtFoodsStore, fmtAppGlobals.FMT_DB_FOODS_INDEXES);
     
-    //Create recipes objectStore
+    //Create Recipes objectStore
     let fmtRecipesStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_RECIPES_STORE,
                                                                 {keyPath: fmtAppGlobals.FMT_DB_RECIPES_KP, autoIncrement: true});
-    fmtRecipesStore.createIndex(fmtAppGlobals.FMT_DB_RECIPE_NAMES_INDEX_NAME,
-                                fmtAppGlobals.FMT_DB_RECIPE_NAMES_INDEX_KEYS,
-                                { unique: false });
+    createIndexes(fmtRecipesStore, fmtAppGlobals.FMT_DB_RECIPES_INDEXES);
     
-    //Create profile objectStore
-    let fmtProfileStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_PROFILE_STORE,
-                                                                {keyPath: fmtAppGlobals.FMT_DB_PROFILE_KP, autoIncrement: false});
+    //Create Profiles objectStore
+    let fmtProfilesStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_PROFILES_STORE,
+                                                                {keyPath: fmtAppGlobals.FMT_DB_PROFILES_KP, autoIncrement: false});
     
-    //Create mass units objectStore
-    let fmtMassUnitStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_MUNIT_STORE,
-                                                                {keyPath: fmtAppGlobals.FMT_DB_MUNIT_KP, autoIncrement: false});
-    fmtMassUnitStore.createIndex(fmtAppGlobals.FMT_DB_MUNIT_INDEX_NAME,
-                                fmtAppGlobals.FMT_DB_MUNIT_INDEX_KEYS,
-                                { unique: false });
+    //Create Mass Units objectStore and populate default entries
+    let fmtMassUnitsStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_MASS_UNITS_STORE,
+                                                                {keyPath: fmtAppGlobals.FMT_DB_MASS_UNITS_KP, autoIncrement: false});
     for (let i in baseMassUnitChart) {
         console.debug(`Adding Mass unit entry: ${JSON.stringify(baseMassUnitChart[i])}`);
-        fmtMassUnitStore.add(baseMassUnitChart[i]);
+        fmtMassUnitsStore.add(baseMassUnitChart[i]);
     }
     
-    //Create nutrients objectStore
-    let fmtNutrientsStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_NUTRI_STORE,
-                                                                {keyPath: fmtAppGlobals.FMT_DB_NUTRI_KP, autoIncrement: false});
-/*    fmtNutrientsStore.createIndex(fmtAppGlobals.FMT_DB_NUTRI_INDEX_NAME,
-                                fmtAppGlobals.FMT_DB_NUTRI_INDEX_KEYS,
-                                { unique: false });*/
+    //Create Nutrients objectStore and populate default entries
+    let fmtNutrientsStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_NUTRIENTS_STORE,
+                                                                {keyPath: fmtAppGlobals.FMT_DB_NUTRIENTS_KP, autoIncrement: false});
     for (let i in baseAdditionalNutrients) {
         let nutri = baseAdditionalNutrients[i];
         console.debug(`Inserting Additional Nutrient entry: ${JSON.stringify(nutri)}`);
         fmtNutrientsStore.add(nutri);
     }
+    //Create User Settings objectStore
+    let fmtUserSettingsStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_USER_SETTINGS_STORE,
+                                                                {keyPath: fmtAppGlobals.FMT_DB_USER_SETTINGS_KP, autoIncrement: false});
+    //Create User Goals objectStore
+    let fmtUserGoalsStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_USER_GOALS_STORE,
+                                                                {keyPath: fmtAppGlobals.FMT_DB_USER_GOALS_KP, autoIncrement: false});
 }
 function getObjectStore(store_name, mode) {
     if (!fmtAppInstance.fmtDb) {
@@ -242,7 +225,13 @@ function getObjectStore(store_name, mode) {
     var tx = fmtAppInstance.fmtDb.transaction(store_name, mode);
     return tx.objectStore(store_name);
 }
-
+function createIndexes(objectStore, indexesObj) {
+    for (const indexName in indexesObj) {
+        const indexKp = indexesObj[indexName].kp;
+        const indexOptions = indexesObj[indexName].options;
+        objectStore.createIndex(indexName, indexKp, indexOptions);
+    }
+}
 //Functions - Validation
 /*foodObj - {foodName, foodBrand(optional), referenceWeight, weightUnits, nutritionalValue}
  *nutritionalValue - {calories, proteins, carbohydrates, fats, additionalNutrients}
