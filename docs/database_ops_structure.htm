@@ -1,0 +1,154 @@
+<html>
+    <title>FMT DB design and TODO</title>
+    <body>
+        Profile Object Store
+
+        KEY PATH = "profile_id" autoIncrement==false
+        profile_id - int
+        name - String
+        bodyWeight - Number
+        bodyWeightUnits - String (either "Kg" or "Lbs")
+        bodyWeightKg - Number
+        height - Number
+        heightUnits - String (either "Cm" or "Inch")
+        heightCm - Number
+        age - Number //TODO change to and validate as int
+        sex - String (either "Male" or "Female")
+        bodyfat - float (0-100)
+        bodyfatReal - float (0-1)
+        activityLevel - String ("Sedentary", "Light", "Moderate", "High", "Very High", "Custom")
+        activityMultiplier - float
+        formula - String ("Katch-McArdle" or "Mifflin-St Jeor")
+        bmr - Number
+        tdee - Number
+        macroSplit - Object ({"Calories":Number,"Protein":Number,"Carbohydrate":Number,"Fat":Number}) //TODO change to an object structure identical to nutritionalValue
+        lastModified - Date
+        tzMinutes - int
+
+        Mass Units Object Store
+
+        KEY PATH = "name"
+        name - String
+        value_in_grams - float
+        description - String
+
+        Nutrients Object Store
+
+        KEY PATH = "name" // TODO make category part of the key path!
+        name - String
+        category - String 
+        default_mass_unit - String (logically references a Mass Unit "name")
+        help - String
+
+        Foods Object Store
+
+        KEY PATH = "food_id" autoIncrement = true
+        food_id - int
+        foodName - String
+        foodBrand - String
+        created - Date
+        lastModified - Date
+        tzMinutes - int
+        referenceWeight - Number
+        weightUnits - String (logically references a Mass Unit "name")
+        nutritionalValue - Object ({calories-Number,proteins-Number,carbohydrates-Number,fats-Number,additionalNutrients-Object})
+                            additionalNutrients - { "NutrientCategory1": [{"name":String, "mass":Number, "unit":String}, ... , {...}], ... , "NutrientCategoryN": [{...}, ... ,{...}] }
+
+
+        Recipes Object Store
+
+        KEY PATH = "recipe_id" autoIncrement = true
+        recipe_id - int
+        recipe_name - String
+        created - Date
+        lastModified - Date
+        tzMinutes - int
+        referenceWeight - Number
+        weightUnits - String (logically references a Mass Unit "name")
+        foodMakeup - Array of Objects**
+        nutritionalValue - Object (see above)
+        **foodMakeup - {food_id,foodName,foodBrand,weight,weightUnits}
+
+        Meal Entries Object Store
+
+        KEY PATH = ["profile_id", "entry_id"]  || ["profile_id", [year, month, day], "entry_id"] //TODO
+        entry_id - int
+        profile_id - int (logically references the profile id from profile store)
+        year - int
+        month - int (0-11)
+        day - int
+        mealName - String
+        created - Date
+        lastModified - Date
+        tzMinutes - int
+        consumable_id - int
+        consumableName - String
+        foodBrand - String
+        is_recipe - boolean
+        weight - Number
+        weightUnits - String (logically references a Mass Unit "name")
+        nutritionalValue - Object (See above)
+
+
+        User Settings Object Store - TODO
+
+        KEY PATH = profile_id autoIncrement=false
+        profile_id - int
+        settings - Object (reduced version of fmtAppInstance)
+
+
+        DB OPERATIONS:
+
+        Profiles:
+        Read all profiles (getAll)
+        Query profile by profile ID
+        Update Profile
+        Create new Profile
+
+        Mass Units:
+        Read all mass units (getAll)
+        Query mass unit by category and name
+        Create new mass unit
+        Update mass unit
+        Delete mass unit
+
+        Foods:
+        Query food by food ID
+        Query food by food name
+        Query food by food brand
+        Query food by nutrient content (maybe impl outside of db)
+        Add new food
+        Update food
+        Delete food
+        Read all foods (openCursor)
+
+        Recipes:
+        Query recipe by recipe ID
+        Query recipe by recipe name
+        Query recipe by food name
+        Query recipe by nutrient content (maybe impl outside of db)
+        Add new recipe
+        Update recipe
+        Delete recipe
+        Read all recipes (openCursor)
+
+        Nutrients:
+        Query nutrient by category and name
+        Read all nutrients (getAll)
+        Add new nutrient
+        Update nutrient
+        Delete nutrient
+
+        User settings:
+        Query by profile Id
+        Add new
+        Update
+        Delete
+
+        Meal Entries:
+        Query all by profile id (cursor)
+        Query by profile id and entry id
+        Query by profile_id and [year, month, day] (cursor)
+        Create, update, delete
+    </body>
+</html>
