@@ -33,7 +33,7 @@ fmtAppGlobals.FMT_DB_READWRITE = "readwrite";
 //Globals - DB - Meal Entries Store constants
 fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE = "fmt_meal_entries";
 fmtAppGlobals.FMT_DB_MEAL_ENTRIES_KP = "entry_id";
-fmtAppGlobals.FMT_DB_MEAL_ENTRIES_INDEXES = {"profile_id_date_index": {"kp": ["profile_id", ["year", "month", "day"]],
+fmtAppGlobals.FMT_DB_MEAL_ENTRIES_INDEXES = {"profile_id_date_index": {"kp": ["profile_id", "year", "month", "day"],
                                                                        "options": { unique: false }
                                                                       },
                                             };
@@ -69,7 +69,7 @@ fmtAppGlobals.FMT_DB_USER_SETTINGS_STORE = "fmt_user_settings";
 fmtAppGlobals.FMT_DB_USER_SETTINGS_KP = "profile_id";
 //Globals - DB - User Goals Store
 fmtAppGlobals.FMT_DB_USER_GOALS_STORE = "fmt_user_goals";
-fmtAppGlobals.FMT_DB_USER_GOALS_KP = ["profile_id", ["year", "month", "day"]];
+fmtAppGlobals.FMT_DB_USER_GOALS_KP = ["profile_id", "year", "month", "day"];
 
 //Globals - Page
 fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-recipes", "goto-profile", "goto-advanced", "goto-export", "goto-import"];
@@ -139,16 +139,19 @@ function prepareDBv1() {
                               ];
     const baseAdditionalNutrients = [{"name" : "Sugars", "category": "Carbohydrates", "default_mass_unit": "g", "help": "Total Sugars"},
                                          {"name" : "Fiber", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         {"name" : "Starch", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         /*{"name" : "Glucose", "category": "Carbohydrates", "default_mass_unit": "g"},
+                                         {"name" : "Starch", "category": "Carbohydrates", "default_mass_unit": "g", "help": "Total Starch"},
+                                         {"name" : "Glucose", "category": "Carbohydrates", "default_mass_unit": "g"},
                                          {"name" : "Sucrose", "category": "Carbohydrates", "default_mass_unit": "g"},
+                                         {"name" : "Ribose", "category": "Carbohydrates", "default_mass_unit": "g"},
                                          {"name" : "Amylose", "category": "Carbohydrates", "default_mass_unit": "g"},
                                          {"name" : "Amylopectin", "category": "Carbohydrates", "default_mass_unit": "g"},
+                                         {"name" : "Maltose", "category": "Carbohydrates", "default_mass_unit": "g"},
+                                         {"name" : "Galactose", "category": "Carbohydrates", "default_mass_unit": "g"},
                                          {"name" : "Fructose", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         {"name" : "Lactose", "category": "Carbohydrates", "default_mass_unit": "g"},*/
-                                         {"name": "Saturated Fats", "category": "Fats", "default_mass_unit": "g"},
-                                         {"name": "Monounsaturated Fats", "category": "Fats", "default_mass_unit": "g"},
-                                         {"name": "Polyunsaturated Fats", "category": "Fats", "default_mass_unit": "g"},
+                                         {"name" : "Lactose", "category": "Carbohydrates", "default_mass_unit": "g"},
+                                         {"name": "Saturated Fats", "category": "Fats", "default_mass_unit": "g", "help": "Total"},
+                                         {"name": "Monounsaturated Fats", "category": "Fats", "default_mass_unit": "g", "help": "Total"},
+                                         {"name": "Polyunsaturated Fats", "category": "Fats", "default_mass_unit": "g", "help": "Total"},
                                          {"name": "Omega-3", "category": "Fats", "default_mass_unit": "g"},
                                          {"name": "Omega-6", "category": "Fats", "default_mass_unit": "g"},
                                          {"name": "Trans Fats", "category": "Fats", "default_mass_unit": "g"},
@@ -158,22 +161,54 @@ function prepareDBv1() {
                                          {"name": "Potassium", "category": "Minerals", "default_mass_unit": "mg"},
                                          {"name": "Phosphorus", "category": "Minerals", "default_mass_unit": "mg"},
                                          {"name": "Magnesium", "category": "Minerals", "default_mass_unit": "mg"},
-                                         //{"name": "Chloride", "category": "Minerals", "default_mass_unit": "mg"},
-                                         //{"name": "Sulfur", "category": "Minerals", "default_mass_unit": "mg"},
+                                         {"name": "Chloride", "category": "Minerals", "default_mass_unit": "mg"},
+                                         {"name": "Sulfur", "category": "Minerals", "default_mass_unit": "mg"},
+                                         {"name": "Vitamin A", "category": "Vitamins", "default_mass_unit": "mcg"},
                                          {"name": "Vitamin C", "category": "Vitamins", "default_mass_unit": "mg"},
+                                         {"name": "Vitamin E", "category": "Vitamins", "default_mass_unit": "mcg"},
                                          {"name": "Vitamin K", "category": "Vitamins", "default_mass_unit": "mcg"},
                                          {"name": "Vitamin D", "category": "Vitamins", "default_mass_unit": "mcg"},
-                                         {"name": "Vitamin B6", "category": "Vitamins", "default_mass_unit": "mg"},
+                                         {"name": "Vitamin B1", "category": "Vitamins", "default_mass_unit": "mcg"},
+                                         {"name": "Vitamin B2", "category": "Vitamins", "default_mass_unit": "mcg"},
+                                         {"name": "Vitamin B3", "category": "Vitamins", "default_mass_unit": "mcg"},
+                                         {"name": "Vitamin B5", "category": "Vitamins", "default_mass_unit": "mcg"},
+                                         {"name": "Vitamin B6", "category": "Vitamins", "default_mass_unit": "mcg"},
+                                         {"name": "Vitamin B7", "category": "Vitamins", "default_mass_unit": "mcg"},
+                                         {"name": "Vitamin B9", "category": "Vitamins", "default_mass_unit": "mcg"},
                                          {"name": "Vitamin B12", "category": "Vitamins", "default_mass_unit": "mcg"},
+                                         {"name": "Choline", "category": "Vitamins", "default_mass_unit": "mcg"},
                                          {"name": "Iron", "category": "Trace Minerals", "default_mass_unit": "mg"},
                                          {"name": "Zinc", "category": "Trace Minerals", "default_mass_unit": "mg"},
                                          {"name": "Selenium", "category": "Trace Minerals", "default_mass_unit": "mcg"},
-                                         //{"name": "Iodine", "category": "Trace Minerals", "default_mass_unit": "mcg"},
+                                         {"name": "Iodine", "category": "Trace Minerals", "default_mass_unit": "mcg"},
                                          {"name": "Copper", "category": "Trace Minerals", "default_mass_unit": "mg"},
                                          {"name": "Manganese", "category": "Trace Minerals", "default_mass_unit": "mg"},
                                          {"name": "Fluoride", "category": "Trace Minerals", "default_mass_unit": "mcg"},
-                                         //{"name": "Cobalt", "category": "Trace Minerals", "default_mass_unit": "mcg"},
-                                         //{"name": "Molybdenum", "category": "Trace Minerals", "default_mass_unit": "mcg"},
+                                         {"name": "Cobalt", "category": "Trace Minerals", "default_mass_unit": "mcg"},
+                                         {"name": "Molybdenum", "category": "Trace Minerals", "default_mass_unit": "mcg"},
+                                     {"name": "Alanine", "category": "Amino Acids", "default_mass_unit": "mg"},
+                                     {"name": "Arginine", "category": "Amino Acids", "default_mass_unit": "mg"},
+                                     {"name": "Aspartic acid", "category": "Amino Acids", "default_mass_unit": "mg", "help": "Aspartate"},
+                                     {"name": "Asparagine", "category": "Amino Acids", "default_mass_unit": "mg"},
+                                     {"name": "Cysteine", "category": "Amino Acids", "default_mass_unit": "mg"},
+                                     {"name": "Glutamic acid", "category": "Amino Acids", "default_mass_unit": "mg", "help": "Glutamate"},
+                                     {"name": "Glutamine", "category": "Amino Acids", "default_mass_unit": "mg"},
+                                     {"name": "Glycine", "category": "Amino Acids", "default_mass_unit": "mg"},
+                                     {"name": "Histidine", "category": "Amino Acids", "default_mass_unit": "mg"},
+                                     {"name": "Isoleucine", "category": "Amino Acids", "default_mass_unit": "mg"},
+                                     {"name": "Leucine", "category": "Amino Acids", "default_mass_unit": "mg"},
+                                     {"name": "Lysine", "category": "Amino Acids", "default_mass_unit": "mg"},
+                                     {"name": "Methionine", "category": "Amino Acids", "default_mass_unit": "mg"},
+                                     {"name": "Phenylalanine", "category": "Amino Acids", "default_mass_unit": "mg"},
+                                     {"name": "Proline", "category": "Amino Acids", "default_mass_unit": "mg"},
+                                     {"name": "Serine", "category": "Amino Acids", "default_mass_unit": "mg"},
+                                     {"name": "Threonine", "category": "Amino Acids", "default_mass_unit": "mg"},
+                                     {"name": "Tryptophan", "category": "Amino Acids", "default_mass_unit": "mg"},
+                                     {"name": "Tyrosine", "category": "Amino Acids", "default_mass_unit": "mg"},
+                                     {"name": "Valine", "category": "Amino Acids", "default_mass_unit": "mg"},
+                                     {"name": "Water", "category": "Other", "default_mass_unit": "g"},
+                                     {"name": "Ash", "category": "Other", "default_mass_unit": "g"},
+                                     {"name": "Alcohol", "category": "Other", "default_mass_unit": "g"},
                                         ];
     //Create Meal Entries objectStore
     let fmtMealEntriesStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE,
@@ -227,9 +262,16 @@ function getObjectStore(store_name, mode) {
 }
 function createIndexes(objectStore, indexesObj) {
     for (const indexName in indexesObj) {
-        const indexKp = indexesObj[indexName].kp;
-        const indexOptions = indexesObj[indexName].options;
-        objectStore.createIndex(indexName, indexKp, indexOptions);
+        try {
+            const indexKp = indexesObj[indexName].kp;
+            const indexOptions = indexesObj[indexName].options;
+            objectStore.createIndex(indexName, indexKp, indexOptions);            
+        }
+        catch (error) {
+            console.error(error);
+            console.log(indexesObj);
+        }
+
     }
 }
 //Functions - Validation
@@ -587,13 +629,13 @@ function FMTReadProfile(profileId, onsuccessFn, onerrorFn) {
         onerrorFn = onerrorFn || function(e) { console.error(msg); };
         return onerrorFn(msg);
     }
-    let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILE_STORE, fmtAppGlobals.FMT_DB_READONLY);
+    let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILES_STORE, fmtAppGlobals.FMT_DB_READONLY);
     let getRequest = profileStore.get(profileId);
     getRequest.onerror = onerrorFn || function (e) { console.error(`Failed getting Profile id ${profileId}`); };
     getRequest.onsuccess = onsuccessFn;
 }
 function FMTReadAllProfiles(onsuccessFn, onerrorFn) {
-    let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILE_STORE, fmtAppGlobals.FMT_DB_READONLY);
+    let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILES_STORE, fmtAppGlobals.FMT_DB_READONLY);
     let getRequest = profileStore.getAll();
     getRequest.onerror = onerrorFn;
     getRequest.onsuccess = onsuccessFn;
@@ -608,7 +650,7 @@ function FMTAddProfile(profileObj, onsuccessFn, onerrorFn) {
     let date = new Date();
     profile.lastModified = date.toISOString();
     profile.tzMinutes = date.getTimezoneOffset();
-    let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILE_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
     let addRequest = profileStore.add(profile);
     addRequest.onerror = onerrorFn || function() {console.error(`Failed adding Profile ${JSON.stringify(profile)}`)};
     addRequest.onsuccess = onsuccessFn || function() {console.debug(`Success adding Profile ${JSON.stringify(profile)}`)};
@@ -624,13 +666,13 @@ function FMTUpdateProfile(profileId, profileObj, onsuccessFn, onerrorFn) {
     let date = new Date();
     profile.lastModified = date.toISOString();
     profile.tzMinutes = date.getTimezoneOffset();
-    let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILE_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
     let updateRequest = profileStore.put(profile);
     updateRequest.onerror = onerrorFn || function() { console.error(`Failed updating Profile id ${profileId}`) };
     updateRequest.onsuccess = onsuccessFn || function() { console.debug(`Success updating Profile id ${profileId}`) };
 }
 function FMTDeleteProfile(profileId, onsuccessFn, onerrorFn) {
-    let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILE_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
     let delRequest = profileStore.delete(profileId);
     delRequest.onerror = onerrorFn || function() { console.error(`Failed deleting  Profile id ${profileId}`) };
     delRequest.onsuccess = onsuccessFn || function() { console.debug(`Success deleting Profile id ${profileId}`) };
@@ -711,7 +753,7 @@ function FMTAddNutrient(nutrientObj, onsuccessFn, onerrorFn) {
         onerrorFn = onerrorFn || console.error(`Failed validating nutrient object ${nutrientObj}`);
         return onerrorFn();
     }
-    let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRI_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRIENTS_STORE, fmtAppGlobals.FMT_DB_READWRITE);
     let addRequest = nutrientStore.add(nutrient);
     addRequest.onsuccess = onsuccessFn || function(e) { console.debug(`[FMTAddNutrient.onsuccess] - ${JSON.stringify(e)}`) };
     addRequest.onerror = onerrorFn || function(e) { console.debug(`[FMTAddNutrient.onerror] - ${JSON.stringify(e)}`) };
@@ -722,32 +764,32 @@ function FMTUpdateNutrient(nutrientObj, onsuccessFn, onerrorFn) {
         onerrorFn = onerrorFn || console.error(`Failed validating nutrient object ${nutrientObj}`);
         return onerrorFn();
     }
-    let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRI_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRIENTS_STORE, fmtAppGlobals.FMT_DB_READWRITE);
     let addRequest = nutrientStore.put(nutrient);
     addRequest.onsuccess = onsuccessFn || function(e) { console.debug(`[FMTUpdateNutrient.onsuccess] - ${JSON.stringify(e)}`) };
     addRequest.onerror = onerrorFn || function(e) { console.debug(`[FMTUpdateNutrient.onerror] - ${JSON.stringify(e)}`) };
 }
 function FMTReadNutrient(nutrientCat, nutrientName, onsuccessFn, onerrorFn) {
-    let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRI_STORE, fmtAppGlobals.FMT_DB_READONLY);
+    let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRIENTS_STORE, fmtAppGlobals.FMT_DB_READONLY);
     let readRequest = nutrientStore.get([nutrientCat, nutrientName]);
     readRequest.onsuccess = onsuccessFn || function(e) { console.debug(`[FMTReadNutrient.onsuccess] - ${JSON.stringify(e)}`) };
     readRequest.onerror = onerrorFn || function(e) { console.debug(`[FMTReadNutrient.onerror] - ${JSON.stringify(e)}`) };
 }
 function FMTReadAllNutrients(onsuccessFn, onerrorFn) {
-    let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRI_STORE, fmtAppGlobals.FMT_DB_READONLY);
+    let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRIENTS_STORE, fmtAppGlobals.FMT_DB_READONLY);
     let readRequest = nutrientStore.getAll();
     readRequest.onsuccess = onsuccessFn || function(e) { console.debug(`[FMTReadAllNutrients.onsuccess] - ${JSON.stringify(e)}`) };
     readRequest.onerror = onerrorFn || function(e) { console.debug(`[FMTReadAllNutrients.onerror] - ${JSON.stringify(e)}`) };
 }
 /*onsuccessFn must implement success function accessing the cursor*/
 function FMTIterateNutrients(onsuccessFn, onerrorFn) {
-    let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRI_STORE, fmtAppGlobals.FMT_DB_READONLY);
+    let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRIENTS_STORE, fmtAppGlobals.FMT_DB_READONLY);
     let readRequest = nutrientStore.openCursor();
     readRequest.onsuccess = onsuccessFn || function(e) { console.debug(`[FMTIterateNutrients.onsuccess] - ${JSON.stringify(e)}`) };
     readRequest.onerror = onerrorFn || function(e) { console.debug(`[FMTIterateNutrients.onerror] - ${JSON.stringify(e)}`) };
 }
 function FMTDeleteNutrient(nutrientCat, nutrientName, onsuccessFn, onerrorFn) {
-    let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRI_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRIENTS_STORE, fmtAppGlobals.FMT_DB_READWRITE);
     let deleteRequest = nutrientStore.delete([nutrientCat, nutrientName]);
     deleteRequest.onsuccess = onsuccessFn || function(e) { console.debug(`[FMTDeleteNutrient.onsuccess] - ${JSON.stringify(e)}`) };
     deleteRequest.onerror = onerrorFn || function(e) { console.debug(`[FMTDeleteNutrient.onerror] - ${JSON.stringify(e)}`) };
@@ -761,7 +803,7 @@ function FMTAddMassUnit(massUnitObj, onsuccessFn, onerrorFn) {
         onerrorFn();
         return;
     }
-    let munitStore = getObjectStore(fmtAppGlobals.FMT_DB_MUNIT_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let munitStore = getObjectStore(fmtAppGlobals.FMT_DB_MASS_UNITS_STORE, fmtAppGlobals.FMT_DB_READWRITE);
     let addRequest = munitStore.add(massUnit);
     addRequest.onsuccess = onsuccessFn || console.debug(`Successfully added mass unit object ${massUnit}`);
     addRequest.onerror = onerrorFn || console.debug(`Error adding mass unit object ${massUnit}`);
@@ -773,32 +815,32 @@ function FMTUpdateMassUnit(massUnitObj, onsuccessFn, onerrorFn) {
         onerrorFn();
         return;
     }
-    let munitStore = getObjectStore(fmtAppGlobals.FMT_DB_MUNIT_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let munitStore = getObjectStore(fmtAppGlobals.FMT_DB_MASS_UNITS_STORE, fmtAppGlobals.FMT_DB_READWRITE);
     let addRequest = munitStore.put(massUnit);
     addRequest.onsuccess = onsuccessFn || console.debug(`Successfully added mass unit object ${massUnit}`);
     addRequest.onerror = onerrorFn || console.debug(`Error adding mass unit object ${massUnit}`);
 }
 function FMTReadMassUnit(massUnitName, onsuccessFn, onerrorFn) {
-    let munitStore = getObjectStore(fmtAppGlobals.FMT_DB_MUNIT_STORE, fmtAppGlobals.FMT_DB_READONLY);
+    let munitStore = getObjectStore(fmtAppGlobals.FMT_DB_MASS_UNITS_STORE, fmtAppGlobals.FMT_DB_READONLY);
     let readRequest = munitStore.get(massUnitName);
     readRequest.onsuccess = onsuccessFn || console.debug(`Successfully read mass unit ${massUnitName}`);
     readRequest.onerror = onerrorFn || console.debug(`Failed reading mass unit ${massUnitName}`);
 }
 function FMTReadAllMassUnits(onsuccessFn, onerrorFn) {
-    let munitStore = getObjectStore(fmtAppGlobals.FMT_DB_MUNIT_STORE, fmtAppGlobals.FMT_DB_READONLY);
+    let munitStore = getObjectStore(fmtAppGlobals.FMT_DB_MASS_UNITS_STORE, fmtAppGlobals.FMT_DB_READONLY);
     let readRequest = munitStore.getAll();
     readRequest.onsuccess = onsuccessFn || console.debug(`Successfully read all mass units`);
     readRequest.onerror = onerrorFn || console.debug(`Failed reading all mass units`);
 }
 /*onsuccessFn must implement success function accessing the cursor*/
 function FMTIterateMassUnits(onsuccessFn, onerrorFn) {
-    let munitStore = getObjectStore(fmtAppGlobals.FMT_DB_MUNIT_STORE, fmtAppGlobals.FMT_DB_READONLY);
+    let munitStore = getObjectStore(fmtAppGlobals.FMT_DB_MASS_UNITS_STORE, fmtAppGlobals.FMT_DB_READONLY);
     let readRequest = munitStore.openCursor();
     readRequest.onsuccess = onsuccessFn || console.debug(`Successfully iterate mass unit`);
     readRequest.onerror = onerrorFn || console.debug(`Failed mass units iteration`);
 }
 function FMTDeleteMassUnit(massUnitName, onsuccessFn, onerrorFn) {
-    let munitStore = getObjectStore(fmtAppGlobals.FMT_DB_MUNIT_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let munitStore = getObjectStore(fmtAppGlobals.FMT_DB_MASS_UNITS_STORE, fmtAppGlobals.FMT_DB_READWRITE);
     let deleteRequest = munitStore.delete(massUnitName);
     deleteRequest.onsuccess = onsuccessFn || console.debug(`Successfully delete mass unit ${massUnitName}`);
     deleteRequest.onerror = onerrorFn || console.debug(`Failed deleting mass unit ${massUnitName}`);
