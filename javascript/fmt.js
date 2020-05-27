@@ -823,10 +823,10 @@ function FMTQueryMealEntriesByProfileAndDate(profile_id, year, month, day, onsuc
     }
     options.lowerOpen  = (options.lowerOpen == undefined                                 ? false      : options.lowerOpen);
     options.upperOpen  = (options.upperOpen == undefined                                 ? false      : options.upperOpen);
-    options.yYear      = (options.yYear == undefined                                     ? year       : options.yYear;)
-    options.yMonth     = (options.yMonth == undefined                                    ? month      : options.yMonth;)
-    options.yDay       = (options.yDay == undefined                                      ? day        : options.yDay;)
-    options.yProfileId = (options.yProfileId == undefined                                ? profile_id : options.yProfileId;)
+    options.yYear      = (options.yYear == undefined                                     ? year       : options.yYear);
+    options.yMonth     = (options.yMonth == undefined                                    ? month      : options.yMonth);
+    options.yDay       = (options.yDay == undefined                                      ? day        : options.yDay);
+    options.yProfileId = (options.yProfileId == undefined                                ? profile_id : options.yProfileId);
     options.direction  = (fmtAppGlobals.FMT_DB_CURSOR_DIRS.indexOf(options.direction)< 0 ? "next"     : options.direction);
     
     //TODO validate year month day
