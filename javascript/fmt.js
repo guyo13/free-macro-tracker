@@ -30,6 +30,7 @@ fmtAppGlobals.FMT_DB_NAME = "fmt";
 fmtAppGlobals.FMT_DB_VER = 1;
 fmtAppGlobals.FMT_DB_READONLY = "readonly";
 fmtAppGlobals.FMT_DB_READWRITE = "readwrite";
+fmtAppGlobals.FMT_DB_CURSOR_DIRS = ["next", "nextunique", "prev", "prevunique"];
 //Globals - DB - Meal Entries Store constants
 fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE = "fmt_meal_entries";
 fmtAppGlobals.FMT_DB_MEAL_ENTRIES_KP = "entry_id";
@@ -273,6 +274,11 @@ function createIndexes(objectStore, indexesObj) {
         }
 
     }
+}
+function getIndex(store_name, indexName) {
+    const objectStore = getObjectStore(store_name, fmtAppGlobals.FMT_DB_READONLY);
+    const index = objectStore.index(indexName);
+    return index;
 }
 //Functions - Validation
 function FMTValidateNutritionalValue(nutritionalValueObj, mUnitsChart) {
@@ -768,30 +774,100 @@ function FMTValidateMealEntry(mealEntryObj) {
     result.mealEntry = mealEntry;
     return result;
 }
-//Functions - DB - Entries
-function FMTAddEntry(entryObject) {
-    //TODO validate object
-    let entriesStore = getObjectStore(fmtAppGlobals.FMT_DB_ENTRIES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
-    let date = new Date();
-    entryObject.lastModified = date.toISOString();
-    entryObject.tzMinutes = date.getTimezoneOffset();
-    let addRequest = entriesStore.add(entryObject);
+
+//Functions - DB - Meal Entries
+function FMTAddMealEntry(mealEntryObj, onsuccessFn, onerrorFn) {
+    const res = FMTValidateMealEntry(mealEntryObj);
+    if (res.error != null || res.mealEntry == null) {
+        onerrorFn = onerrorFn || function() { console.error(res.error); };
+        return onerrorFn();
+    }
+    let mealEntry = res.mealEntry;
+    const date = new Date();
+    mealEntry.created = date.toISOString();
+    mealEntry.lastModified = date.toISOString();
+    mealEntry.tzMinutes = date.getTimezoneOffset();
+    let mealEntriesStore = getObjectStore(fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let addRequest = mealEntriesStore.add(entryObject);
+    addRequest.onerror = onerrorFn;
+    addRequest.onsuccess = onsuccessFn;
+}
+function FMTUpdateMealEntry(entry_id, mealEntryObj, onsuccessFn, onerrorFn) {
+    mealEntryObj.entry_id = entry_id;
+    const res = FMTValidateMealEntry(mealEntryObj);
+    if (res.error != null || res.mealEntry == null) {
+        onerrorFn = onerrorFn || function() { console.error(res.error); };
+        return onerrorFn();
+    }
+    let mealEntry = res.mealEntry;
+    const date = new Date();
+    mealEntry.created = date.toISOString();
+    mealEntry.lastModified = date.toISOString();
+    mealEntry.tzMinutes = date.getTimezoneOffset();
+    let mealEntriesStore = getObjectStore(fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let updateRequest = mealEntriesStore.put(entryObject);
+    updateRequest.onerror = onerrorFn;
+    updateRequest.onsuccess = onsuccessFn;
+}
+function FMTRemoveMealEntry(entry_id, onsuccessFn, onerrorFn) {
+    let mealEntriesStore = getObjectStore(fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let deleteRequest = mealEntriesStore.delete(entry_id);
+    deleteRequest.onerror = onerrorFn;
+    deleteRequest.onsuccess = onsuccessFn;
+}
+/*options{"queryType": "only"|"bound"|"lowerBound"|"upperBound",
+"lowerOpen":false|true, "upperOpen":false|true, "yYear":int, "yMonth":int, "yDay":int,
+"yProfileId": int", "direction": "next"|"nextunique"|"prev"|"prevunique"}*/
+function FMTQueryMealEntriesByProfileAndDate(profile_id, year, month, day, onsuccessFn, onerrorFn, options) {
+    if (!options) {
+        options = {"queryType": "only"};
+    }
+    options.lowerOpen  = (options.lowerOpen == undefined                                 ? false      : options.lowerOpen);
+    options.upperOpen  = (options.upperOpen == undefined                                 ? false      : options.upperOpen);
+    options.yYear      = (options.yYear == undefined                                     ? year       : options.yYear;)
+    options.yMonth     = (options.yMonth == undefined                                    ? month      : options.yMonth;)
+    options.yDay       = (options.yDay == undefined                                      ? day        : options.yDay;)
+    options.yProfileId = (options.yProfileId == undefined                                ? profile_id : options.yProfileId;)
+    options.direction  = (fmtAppGlobals.FMT_DB_CURSOR_DIRS.indexOf(options.direction)< 0 ? "next"     : options.direction);
     
+    //TODO validate year month day
+    let keyRange = null;
+    switch(options.queryType) {
+        //Doesn't make a lot of sense to use either upperBound or lowerBound because we will then
+        //retreive meal entries that belong to other users (via differing profile_ids)
+        // It is included for completeness
+        case "upperBound":
+            keyRange = IDBKeyRange.upperBound([profile_id, year, month, day], options.upperOpen);
+            break;
+        case "lowerBound":
+            keyRange = IDBKeyRange.lowerBound([profile_id, year, month, day], options.lowerOpen);
+            break;
+        case "bound":
+            keyRange = IDBKeyRange.lowerBound([profile_id, year, month, day],
+                                              [options.yProfileId, options.yYear, options.yMonth, options.yDay],
+                                              options.lowerOpen,
+                                              options.upperOpen);
+            break;
+        case "only":
+            keyRange = IDBKeyRange.only([profile_id, year, month, day]);
+        default:
+            break;
+    }
+    onsuccessFn = onsuccessFn || function(e) { console.debug("[FMTQueryMealEntriesByProfileAndDate] onsuccess - ", keyRange, options) };
+    onerrorFn = onerrorFn || function(e) { console.debug("[FMTQueryMealEntriesByProfileAndDate] onerror - ", keyRange, options) };
+    const pid_date_index = getIndex(fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE, "profile_id_date_index");
+    const cursorRequest = pid_date_index.openKeyCursor(keyRange, options.direction);
+    cursorRequest.onerror = onerrorFn;
+    cursorRequest.onsuccess = onsuccessFn;
 }
-function FMTUpdateEntry(entryObject, entry_id) {
-    //TODO validate object
-    let entriesStore = getObjectStore(fmtAppGlobals.FMT_DB_ENTRIES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
-    let date = new Date();
-    entryObject.lastModified = date.toISOString();
-    entryObject.tzMinutes = date.getTimezoneOffset();
-    entryObject._id = entry_id;
-    let updateRequest = entriesStore.put(entryObject);
+function FMTReadMealEntry(entry_id, onsuccessFn, onerrorFn) {
+    onsuccessFn = onsuccessFn || function(e) { console.debug("[FMTReadMealEntry] onsuccess - ", entry_id, e) };
+    onerrorFn = onerrorFn || function(e) { console.debug("[FMTReadMealEntry] onerror - ", entry_id, e) };
+    const mealEntriesStore = getObjectStore(fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE, fmtAppGlobals.FMT_DB_READONLY);
+    const getRequest = mealEntriesStore.get(entry_id);
+    getRequest.onerror = onerrorFn;
+    getRequest.onsuccess = onsuccessFn;
 }
-function FMTRemoveEntry(entry_id) {
-    let entriesStore = getObjectStore(fmtAppGlobals.FMT_DB_ENTRIES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
-    let deleteRequest = entriesStore.delete(entry_id);
-}
-//TODO - Separate Profile CRUD from UI functions
 
 //Functions - DB - Profile
 function FMTReadProfile(profileId, onsuccessFn, onerrorFn) {
