@@ -3,6 +3,9 @@
     <head>
         <style>
             body p {font-size: 20px;}
+            .major {color: red; font-weight: bolder;}
+            .med {color: orange; font-weight: bold;}
+            .minor {color:fuchsia;}
         </style>
     </head>
     <body>
@@ -18,7 +21,7 @@
             height - Number <br/>
             heightUnits - String (either "Cm" or "Inch") <br/>
             heightCm - Number <br/>
-            age - Number //TODO change to and validate as int <br/>
+            <span class="minor">age - Number //TODO change to and validate as int</span> <br/>
             sex - String (either "Male" or "Female") <br/>
             bodyfat - float (0-100) <br/>
             bodyfatReal - float (0-1) <br/>
@@ -27,9 +30,10 @@
             formula - String ("Katch-McArdle" or "Mifflin-St Jeor") <br/>
             bmr - Number <br/>
             tdee - Number <br/>
-            macroSplit - Object ({"Calories":Number,"Protein":Number,"Carbohydrate":Number,"Fat":Number}) //TODO change to an object structure identical to nutritionalValue <br/>
+            macroSplit - Object ({"Calories":Number,"Protein":Number,"Carbohydrate":Number,"Fat":Number})<br/>
             lastModified - Date <br/>
             tzMinutes - int <br/>
+            <span class="minor">//TODO - microScplit</span>
         </p>
         
 
@@ -108,29 +112,29 @@
     <h1>DB OPERATIONS:</h1>
         <h2>Profiles:</h2>
         <p>
-            Read all profiles (getAll) <br/>
-            Query profile by profile ID <br/>
-            Update Profile <br/>
-            Create new Profile <br/>
+            <del>Read all profiles (getAll)</del> <br/>
+            <del>Query profile by profile ID</del> <br/>
+            <b>Update Profile - NEED TO SEPARATE FROM UI</b> <br/>
+            <b>Create new Profile - NEED TO SEPARATE FROM UI</b> <br/>
         </p>
         <h2>Mass Units:</h2>
         <p>
-            Read all mass units (getAll) <br/>
-            Query mass unit by category and name <br/>
-            Create new mass unit <br/>
-            Update mass unit <br/>
-            Delete mass unit <br/>
+            <del>Read all mass units (getAll+cursor)</del> <br/>
+            <del>Query mass unit by category and name</del> <br/>
+            <del>Create new mass unit</del> <br/>
+            <del>Update mass unit</del> <br/>
+            <del>Delete mass unit</del> <br/>
         </p>
         <h2>Foods:</h2>
         <p>
-            Query food by food ID <br/>
+            <del>Query food by food ID</del> <br/>
             Query food by food name <br/>
             Query food by food brand <br/>
             Query food by nutrient content (maybe impl outside of db) <br/>
-            Add new food <br/>
-            Update food <br/>
-            Delete food <br/>
-            Read all foods (openCursor) <br/>
+            <del>Add new food</del> <br/>
+            <del>Update food</del> <br/>
+            <del>Delete food</del> <br/>
+            <del>Read all foods (openCursor+getAll)</del> <br/>
         </p>
         <h2>Recipes:</h2>
         <p>
@@ -146,11 +150,11 @@
         
         <h2>Nutrients:</h2>
         <p>
-            Query nutrient by category and name <br/>
-            Read all nutrients (getAll) <br/>
-            Add new nutrient <br/>
-            Update nutrient <br/>
-            Delete nutrient <br/>
+            <b>Query nutrient by category and name - NEED TO ADD NUTRIENT CATEGORY AS KP</b> <br/>
+            <del>Read all nutrients (getAll+cursor)</del> <br/>
+            <del>Add new nutrient</del> <br/>
+            <del>Update nutrient</del> <br/>
+            <b>Delete nutrient - NEED TO ADD NUTRIENT CATEGORY AS KP</b> <br/>
         </p>
         <h2>User settings:</h2>
         <p>
