@@ -46,7 +46,7 @@
         </p>
         <h2>Nutrients Object Store</h2>
         <p>
-            <b>KEY PATH = "name" // TODO make category part of the key path!</b> <br/>
+            <b class="med">KEY PATH = "name" // TODO make category part of the key path!</b> <br/>
             name - String <br/>
             category - String  <br/>
             default_mass_unit - String (logically references a Mass Unit "name") <br/>
@@ -83,7 +83,7 @@
         </p>
         <h2>Meal Entries Object Store</h2>
         <p>
-            KEY PATH = ["profile_id", "entry_id"]  || ["profile_id", [year, month, day], "entry_id"] //TODO <br/>
+            <span class="major">KEY PATH = ["profile_id", "entry_id"]  || ["profile_id", [year, month, day], "entry_id"] //TODO</span> <br/>
             entry_id - int <br/>
             profile_id - int (logically references the profile id from profile store) <br/>
             year - int <br/>
@@ -102,7 +102,7 @@
             nutritionalValue - Object (See above) <br/>
         </p>
 
-        <h2>User Settings Object Store - TODO</h2>
+        <h2 class="med">User Settings Object Store - TODO</h2>
         <p>
             KEY PATH = profile_id autoIncrement=false <br/>
             profile_id - int <br/>
@@ -114,8 +114,8 @@
         <p>
             <del>Read all profiles (getAll)</del> <br/>
             <del>Query profile by profile ID</del> <br/>
-            <b>Update Profile - NEED TO SEPARATE FROM UI</b> <br/>
-            <b>Create new Profile - NEED TO SEPARATE FROM UI</b> <br/>
+            <del>Update Profile - NEED TO SEPARATE FROM UI</del> <br/>
+            <del>Create new Profile - NEED TO SEPARATE FROM UI</del> <br/>
         </p>
         <h2>Mass Units:</h2>
         <p>

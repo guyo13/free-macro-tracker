@@ -32,11 +32,11 @@ fmtAppGlobals.FMT_DB_READONLY = "readonly";
 fmtAppGlobals.FMT_DB_READWRITE = "readwrite";
 //Globals - DB - Entries Store constants
 fmtAppGlobals.FMT_DB_ENTRIES_STORE = "fmt_food_log";
-fmtAppGlobals.FMT_DB_ENTRIES_KP = "_id";
+fmtAppGlobals.FMT_DB_ENTRIES_KP = "_id";//, "profile_id"];
 fmtAppGlobals.FMT_DB_DATE_INDEX_NAME = "date_index";
 fmtAppGlobals.FMT_DB_DATE_INDEX_KEYS = ["year", "month", "day"];
 fmtAppGlobals.FMT_DB_FOODID_INDEX_NAME = "foodid_index";
-fmtAppGlobals.FMT_DB_FOODID_INDEX_KEYS = "food_id";
+fmtAppGlobals.FMT_DB_FOODID_INDEX_KEYS = ["food_id", "foodName", "foodBrand"];
 fmtAppGlobals.FMT_DB_MEALNAME_INDEX_NAME = "mealname_index";
 fmtAppGlobals.FMT_DB_MEALNAME_INDEX_KEYS = "mealName";
 fmtAppGlobals.FMT_DB_PROFILE_INDEX_NAME = "profile_index";
@@ -79,52 +79,7 @@ fmtAppGlobals.supportedBodyweightUnits = ["Kg", "Lbs"];
 fmtAppGlobals.supportedHeightUnits = ["Cm", "Inch"];
 fmtAppGlobals.sexes = ["Male", "Female"];
 fmtAppGlobals.supportedActivityLevels = ["Sedentary", "Light", "Moderate", "High", "Very High", "Custom"];
-fmtAppGlobals.baseMassUnitChart = [{"name": "oz", "value_in_grams": 28.34952, "description": "Ounce"},
-                               {"name": "lb", "value_in_grams": 453.5924, "description": "Pound"},
-                               {"name": "st", "value_in_grams": 6350.293, "description": "Stone"},
-                               {"name": "mcg", "value_in_grams": 0.000001, "description": "Microgram"}, 
-                               {"name": "mg", "value_in_grams": 0.001, "description": "Milligram"},
-                               {"name": "g", "value_in_grams": 1, "description": "Gram"},
-                               {"name": "kg", "value_in_grams": 1000, "description": "Kilogram"}
-                              ];
-fmtAppGlobals.baseAdditionalNutrients = [{"name" : "Sugars", "category": "Carbohydrates", "default_mass_unit": "g", "help": "Total Sugars"},
-                                         {"name" : "Fiber", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         {"name" : "Starch", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         /*{"name" : "Glucose", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         {"name" : "Sucrose", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         {"name" : "Amylose", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         {"name" : "Amylopectin", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         {"name" : "Fructose", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         {"name" : "Lactose", "category": "Carbohydrates", "default_mass_unit": "g"},*/
-                                         {"name": "Saturated Fats", "category": "Fats", "default_mass_unit": "g"},
-                                         {"name": "Monounsaturated Fats", "category": "Fats", "default_mass_unit": "g"},
-                                         {"name": "Polyunsaturated Fats", "category": "Fats", "default_mass_unit": "g"},
-                                         {"name": "Omega-3", "category": "Fats", "default_mass_unit": "g"},
-                                         {"name": "Omega-6", "category": "Fats", "default_mass_unit": "g"},
-                                         {"name": "Trans Fats", "category": "Fats", "default_mass_unit": "g"},
-                                         {"name": "Cholesterol", "category": "Sterols", "default_mass_unit": "mg"},
-                                         {"name": "Calcium", "category": "Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Sodium", "category": "Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Potassium", "category": "Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Phosphorus", "category": "Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Magnesium", "category": "Minerals", "default_mass_unit": "mg"},
-                                         //{"name": "Chloride", "category": "Minerals", "default_mass_unit": "mg"},
-                                         //{"name": "Sulfur", "category": "Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Vitamin C", "category": "Vitamins", "default_mass_unit": "mg"},
-                                         {"name": "Vitamin K", "category": "Vitamins", "default_mass_unit": "mcg"},
-                                         {"name": "Vitamin D", "category": "Vitamins", "default_mass_unit": "mcg"},
-                                         {"name": "Vitamin B6", "category": "Vitamins", "default_mass_unit": "mg"},
-                                         {"name": "Vitamin B12", "category": "Vitamins", "default_mass_unit": "mcg"},
-                                         {"name": "Iron", "category": "Trace Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Zinc", "category": "Trace Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Selenium", "category": "Trace Minerals", "default_mass_unit": "mcg"},
-                                         //{"name": "Iodine", "category": "Trace Minerals", "default_mass_unit": "mcg"},
-                                         {"name": "Copper", "category": "Trace Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Manganese", "category": "Trace Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Fluoride", "category": "Trace Minerals", "default_mass_unit": "mcg"},
-                                         //{"name": "Cobalt", "category": "Trace Minerals", "default_mass_unit": "mcg"},
-                                         //{"name": "Molybdenum", "category": "Trace Minerals", "default_mass_unit": "mcg"},
-                                        ];
+
 fmtAppGlobals.dateConstants = {};
 fmtAppGlobals.dateConstants.monthNames = {0: "Jan", 1: "Feb", 2: "Mar", 3: "Apr", 4: "May", 5: "Jun", 6: "Jul", 7: "Aug",
                                           9: "Sep", 9: "Oct", 10: "Nov", 11: "Dec"};
@@ -173,6 +128,52 @@ function prepareDBv1() {
         console.error("fmt DB null reference");
         return;
     }
+    const baseMassUnitChart = [{"name": "oz", "value_in_grams": 28.34952, "description": "Ounce"},
+                               {"name": "lb", "value_in_grams": 453.5924, "description": "Pound"},
+                               {"name": "st", "value_in_grams": 6350.293, "description": "Stone"},
+                               {"name": "mcg", "value_in_grams": 0.000001, "description": "Microgram"}, 
+                               {"name": "mg", "value_in_grams": 0.001, "description": "Milligram"},
+                               {"name": "g", "value_in_grams": 1, "description": "Gram"},
+                               {"name": "kg", "value_in_grams": 1000, "description": "Kilogram"}
+                              ];
+    const baseAdditionalNutrients = [{"name" : "Sugars", "category": "Carbohydrates", "default_mass_unit": "g", "help": "Total Sugars"},
+                                         {"name" : "Fiber", "category": "Carbohydrates", "default_mass_unit": "g"},
+                                         {"name" : "Starch", "category": "Carbohydrates", "default_mass_unit": "g"},
+                                         /*{"name" : "Glucose", "category": "Carbohydrates", "default_mass_unit": "g"},
+                                         {"name" : "Sucrose", "category": "Carbohydrates", "default_mass_unit": "g"},
+                                         {"name" : "Amylose", "category": "Carbohydrates", "default_mass_unit": "g"},
+                                         {"name" : "Amylopectin", "category": "Carbohydrates", "default_mass_unit": "g"},
+                                         {"name" : "Fructose", "category": "Carbohydrates", "default_mass_unit": "g"},
+                                         {"name" : "Lactose", "category": "Carbohydrates", "default_mass_unit": "g"},*/
+                                         {"name": "Saturated Fats", "category": "Fats", "default_mass_unit": "g"},
+                                         {"name": "Monounsaturated Fats", "category": "Fats", "default_mass_unit": "g"},
+                                         {"name": "Polyunsaturated Fats", "category": "Fats", "default_mass_unit": "g"},
+                                         {"name": "Omega-3", "category": "Fats", "default_mass_unit": "g"},
+                                         {"name": "Omega-6", "category": "Fats", "default_mass_unit": "g"},
+                                         {"name": "Trans Fats", "category": "Fats", "default_mass_unit": "g"},
+                                         {"name": "Cholesterol", "category": "Sterols", "default_mass_unit": "mg"},
+                                         {"name": "Calcium", "category": "Minerals", "default_mass_unit": "mg"},
+                                         {"name": "Sodium", "category": "Minerals", "default_mass_unit": "mg"},
+                                         {"name": "Potassium", "category": "Minerals", "default_mass_unit": "mg"},
+                                         {"name": "Phosphorus", "category": "Minerals", "default_mass_unit": "mg"},
+                                         {"name": "Magnesium", "category": "Minerals", "default_mass_unit": "mg"},
+                                         //{"name": "Chloride", "category": "Minerals", "default_mass_unit": "mg"},
+                                         //{"name": "Sulfur", "category": "Minerals", "default_mass_unit": "mg"},
+                                         {"name": "Vitamin C", "category": "Vitamins", "default_mass_unit": "mg"},
+                                         {"name": "Vitamin K", "category": "Vitamins", "default_mass_unit": "mcg"},
+                                         {"name": "Vitamin D", "category": "Vitamins", "default_mass_unit": "mcg"},
+                                         {"name": "Vitamin B6", "category": "Vitamins", "default_mass_unit": "mg"},
+                                         {"name": "Vitamin B12", "category": "Vitamins", "default_mass_unit": "mcg"},
+                                         {"name": "Iron", "category": "Trace Minerals", "default_mass_unit": "mg"},
+                                         {"name": "Zinc", "category": "Trace Minerals", "default_mass_unit": "mg"},
+                                         {"name": "Selenium", "category": "Trace Minerals", "default_mass_unit": "mcg"},
+                                         //{"name": "Iodine", "category": "Trace Minerals", "default_mass_unit": "mcg"},
+                                         {"name": "Copper", "category": "Trace Minerals", "default_mass_unit": "mg"},
+                                         {"name": "Manganese", "category": "Trace Minerals", "default_mass_unit": "mg"},
+                                         {"name": "Fluoride", "category": "Trace Minerals", "default_mass_unit": "mcg"},
+                                         //{"name": "Cobalt", "category": "Trace Minerals", "default_mass_unit": "mcg"},
+                                         //{"name": "Molybdenum", "category": "Trace Minerals", "default_mass_unit": "mcg"},
+                                        ];
     //Create entries objectStore
     let fmtEntriesStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_ENTRIES_STORE,
                                                                 {keyPath: fmtAppGlobals.FMT_DB_ENTRIES_KP, autoIncrement: true});
@@ -218,9 +219,9 @@ function prepareDBv1() {
     fmtMassUnitStore.createIndex(fmtAppGlobals.FMT_DB_MUNIT_INDEX_NAME,
                                 fmtAppGlobals.FMT_DB_MUNIT_INDEX_KEYS,
                                 { unique: false });
-    for (let i in fmtAppGlobals.baseMassUnitChart) {
-        console.debug(`Adding Mass unit entry: ${JSON.stringify(fmtAppGlobals.baseMassUnitChart[i])}`);
-        fmtMassUnitStore.add(fmtAppGlobals.baseMassUnitChart[i]);
+    for (let i in baseMassUnitChart) {
+        console.debug(`Adding Mass unit entry: ${JSON.stringify(baseMassUnitChart[i])}`);
+        fmtMassUnitStore.add(baseMassUnitChart[i]);
     }
     
     //Create nutrients objectStore
@@ -229,17 +230,12 @@ function prepareDBv1() {
     fmtNutrientsStore.createIndex(fmtAppGlobals.FMT_DB_NUTRI_INDEX_NAME,
                                 fmtAppGlobals.FMT_DB_NUTRI_INDEX_KEYS,
                                 { unique: false });
-    for (let i in fmtAppGlobals.baseAdditionalNutrients) {
-        let nutri = fmtAppGlobals.baseAdditionalNutrients[i];
+    for (let i in baseAdditionalNutrients) {
+        let nutri = baseAdditionalNutrients[i];
         console.debug(`Inserting Additional Nutrient entry: ${JSON.stringify(nutri)}`);
         fmtNutrientsStore.add(nutri);
     }
 }
-
-/**
-* @param {string} store_name
-* @param {string} mode either "readonly" or "readwrite"
-*/
 function getObjectStore(store_name, mode) {
     if (!fmtAppInstance.fmtDb) {
         console.error("fmt DB null reference");
@@ -377,7 +373,201 @@ function FMTValidateNutrientObject(nutrientObj) {
     nutrient.help = nutrientObj.help;
     return nutrient;
 }
-
+function FMTValidateMacroSplit(macroSplitObj) {
+    const result = {};
+    const macroSplit = {};
+    let error = null;
+    if (macroSplit == null) {
+        result.macroSplit = macroSplit;
+        return result;
+    }
+    if (macroSplitObj.Calories == null
+        && macroSplitObj.Protein == null
+        && macroSplitObj.Carbohydrate == null
+        && macroSplitObj.Fat == null) {
+        result.macroSplit = macroSplit;
+        return result;
+    }
+    if (macroSplitObj.Calories != null && !isNumber(macroSplitObj.Calories)) {
+        error = `Invalid Calories ${macroSplitObj.Calories}`;
+        result.error = error;
+        return result;
+    }
+    if (macroSplitObj.Protein != null && !isPercent(macroSplitObj.Protein)) {
+        error = `Invalid Protein ${macroSplitObj.Protein}`;
+        result.error = error;
+        return result;
+    }
+    if (macroSplitObj.Carbohydrate != null && !isPercent(macroSplitObj.Carbohydrate)) {
+        error = `Invalid Carbohydrate ${macroSplitObj.Carbohydrate}`;
+        result.error = error;
+        return result;
+    }
+    if (macroSplitObj.Fat != null && !isPercent(macroSplitObj.Fat)) {
+        error = `Invalid Fat ${macroSplitObj.Fat}`;
+        result.error = error;
+        return result;
+    }
+    else {
+        const sum = Number(macroSplitObj.Protein) + Number(macroSplitObj.Carbohydrate) + Number(macroSplitObj.Fat);
+        if ( sum === 100) {
+            macroSplit.Calories = macroSplitObj.Calories;
+            macroSplit.Protein = macroSplitObj.Protein;
+            macroSplit.Carbohydrate = macroSplitObj.Carbohydrate;
+            macroSplit.Fat = macroSplitObj.Fat;
+            result.macroSplit = macroSplit;
+            return result;
+        }
+        else {
+            error = `The sum of Protein, Carbohydrate and Fat Percentages must equal 100, current sum is ${sum}`;
+            result.error = error;
+            return result;
+        }
+    }
+    error = `Error Validating Macro split!`;
+    console.error(macroSplitObj);
+    result.error = error;
+    return result;
+}
+function FMTValidateProfile(profileObj) {
+    const result = {};
+    const profile = {};
+    let error = null;
+    if (!isNumber(profileObj.profile_id) || !Number.isInteger(Number(profileObj.profile_id))) {
+        error = `Profile id must be an integer, got (${profileObj.profile_id})`;
+        result.error = error;
+        return result;
+    }
+    profile.profile_id = Number(profileObj.profile_id);
+    
+    profile.name = profileObj.name
+    
+    if (!isNumber(profileObj.bodyWeight)) {
+        error = `Invalid body weight ${profileObj.bodyWeight}`;
+        result.error = error;
+        return result;
+    }
+    profile.bodyWeight = Number(profileObj.bodyWeight);
+    
+    if (fmtAppGlobals.supportedBodyweightUnits.indexOf(profileObj.bodyWeightUnits) < 0) {
+        error = `Invalid body weight units ${profileObj.bodyWeightUnits}`;
+        result.error = error;
+        return result;
+    }
+    profile.bodyWeightUnits = profileObj.bodyWeightUnits;
+    switch(profile.bodyWeightUnits) {
+        case "Kg":
+            profile.bodyWeightKg = profile.bodyWeight;
+            break;
+        case "Lbs":
+            profile.bodyWeightKg = profile.bodyWeight / 2.2;
+            break;
+    }
+    
+    if (!isNumber(profileObj.height)) {
+        error = `Invalid height ${profileObj.height}`;
+        result.error = error;
+        return result;
+    }
+    profile.height = Number(profileObj.height);
+    
+    if (fmtAppGlobals.supportedHeightUnits.indexOf(profileObj.heightUnits) < 0) {
+        error = `Invalid height units ${profileObj.heightUnits}`;
+        result.error = error;
+        return result;
+    }
+    profile.heightUnits = profileObj.heightUnits;
+    
+    switch(profile.heightUnits) {
+        case "Cm":
+            profile.heightCm = profile.height;
+            break;
+        case "Inch":
+            profile.heightCm = profile.height * 2.54;
+            break;
+    }
+    if ( !(Number.isInteger(Number(profileObj.age)) && Number(profileObj.age) > 0) ) {
+        error = `Invalid age ${profileObj.age}`;
+        result.error = error;
+        return result;
+    }
+    profile.age = Number(profileObj.age);
+    
+    if (fmtAppGlobals.sexes.indexOf(profileObj.sex) < 0) {
+        error = `Invalid sex ${profileObj.sex}`;
+        result.error = error;
+        return result;
+    }
+    profile.sex = profileObj.sex;
+    
+    if (isNumber(profileObj.bodyfat) && isPercent(Number(profileObj.bodyfat))) {
+        profile.bodyfat = Number(profileObj.bodyfat);
+        profile.bodyfatReal = profile.bodyfat / 100;
+        profile.formula = "Katch-McArdle";
+    }
+    else {
+        profile.bodyfatReal = null;
+        profile.bodyfat = null;
+        profile.formula = "Mifflin-St Jeor";
+    }
+    if (fmtAppGlobals.supportedActivityLevels.indexOf(profileObj.activityLevel) < 0) {
+        error = `Invalid activityLevel ${profileObj.activityLevel}`;
+        result.error = error;
+        return result;
+    }
+    profile.activityLevel = profileObj.activityLevel;
+    
+    if (!isNumber(profileObj.activityMultiplier)) {
+        error = `Invalid activity multiplier ${profileObj.activityMultiplier}`;
+        result.error = error;
+        return result;
+    }
+    profile.activityMultiplier = Number(profileObj.activityMultiplier);
+    
+    switch(profile.formula) {
+        case "Katch-McArdle":
+            profile.bmr = katchMcArdle(profile.bodyWeightKg, profile.bodyfatReal);
+            break;
+        case "Mifflin-St Jeor":
+        default:
+            profile.bmr = mifflinStJeor(profile.bodyWeightKg, profile.heightCm, profile.age, profile.sex);
+            break;
+    }
+    if (profile.bmr <= 0) {
+        error = `Invalid BMR ${profile.bmr}`;
+        result.error = error;
+        return result;
+    }
+    
+    profile.tdee = profile.bmr * profile.activityMultiplier;
+    
+    if (profileObj.tzMinutes !== undefined && !Number.isInteger(profileObj.tzMinutes)) {
+        error = `Invalid timezone ${profileObj.tzMinutes}`;
+        result.error = error;
+        return result;
+    }
+    if (profileObj.date !== undefined && !isDate(new Date(profileObj.date))) {
+        error = `Invalid date ${profileObj.date}`;
+        result.error = error;
+        return result;
+    }
+    
+    if (profileObj.macroSplit != null) {
+        const valMSplitRes = FMTValidateMacroSplit(profileObj.macroSplit);
+        if (valMSplitRes.macroSplit == null || valMSplitRes.error != null) {
+            result.error = valMSplitRes.error;
+            return result;
+        }
+        profile.macroSplit = valMSplitRes.macroSplit;
+    }
+    else {
+        profile.macroSplit = {};
+    }
+    
+    result.profile = profile;
+    result.error = null;
+    return result;
+}
 //Functions - DB - Entries
 function FMTAddEntry(entryObject) {
     //TODO validate object
@@ -406,12 +596,13 @@ function FMTRemoveEntry(entry_id) {
 //Functions - DB - Profile
 function FMTReadProfile(profileId, onsuccessFn, onerrorFn) {
     if (isNaN(profileId)) {
-        console.error(`Invalid profile_id ${profileId}`);
-        return null;
+        const msg = `Invalid profile_id ${profileId}`;
+        onerrorFn = onerrorFn || function(e) { console.error(msg); };
+        return onerrorFn(msg);
     }
     let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILE_STORE, fmtAppGlobals.FMT_DB_READONLY);
     let getRequest = profileStore.get(profileId);
-    getRequest.onerror = onerrorFn;
+    getRequest.onerror = onerrorFn || function (e) { console.error(`Failed getting Profile id ${profileId}`); };
     getRequest.onsuccess = onsuccessFn;
 }
 function FMTReadAllProfiles(onsuccessFn, onerrorFn) {
@@ -419,6 +610,43 @@ function FMTReadAllProfiles(onsuccessFn, onerrorFn) {
     let getRequest = profileStore.getAll();
     getRequest.onerror = onerrorFn;
     getRequest.onsuccess = onsuccessFn;
+}
+function FMTAddProfile(profileObj, onsuccessFn, onerrorFn) {
+    let result = FMTValidateProfile(profileObj);
+    if (result.profile == null || result.error != null) {
+        onerrorFn = onerrorFn || function() { console.error(result.error) };
+        return onerrorFn(result.error);
+    }
+    const profile = result.profile;
+    let date = new Date();
+    profile.lastModified = date.toISOString();
+    profile.tzMinutes = date.getTimezoneOffset();
+    let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILE_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let addRequest = profileStore.add(profile);
+    addRequest.onerror = onerrorFn || function() {console.error(`Failed adding Profile ${JSON.stringify(profile)}`)};
+    addRequest.onsuccess = onsuccessFn || function() {console.debug(`Success adding Profile ${JSON.stringify(profile)}`)};
+}
+function FMTUpdateProfile(profileId, profileObj, onsuccessFn, onerrorFn) {
+    profileObj.profile_id = profileId;
+    let result = FMTValidateProfile(profileObj);
+    if (result.profile == null || result.error != null) {
+        onerrorFn = onerrorFn || function(e) { console.error(result.error) };
+        return onerrorFn(result.error);
+    }
+    const profile = result.profile;
+    let date = new Date();
+    profile.lastModified = date.toISOString();
+    profile.tzMinutes = date.getTimezoneOffset();
+    let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILE_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let updateRequest = profileStore.put(profile);
+    updateRequest.onerror = onerrorFn || function() { console.error(`Failed updating Profile id ${profileId}`) };
+    updateRequest.onsuccess = onsuccessFn || function() { console.debug(`Success updating Profile id ${profileId}`) };
+}
+function FMTDeleteProfile(profileId, onsuccessFn, onerrorFn) {
+    let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILE_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let delRequest = profileStore.delete(profileId);
+    delRequest.onerror = onerrorFn || function() { console.error(`Failed deleting  Profile id ${profileId}`) };
+    delRequest.onsuccess = onsuccessFn || function() { console.debug(`Success deleting Profile id ${profileId}`) };
 }
 
 //Functions - DB - Foods
@@ -686,64 +914,6 @@ function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
     profile.activityMultiplier = document.getElementById('profile-activity-mult').getAttribute("value");
     profile.formula = "Mifflin-St Jeor";
     
-    if (isNaN(profile.bodyWeight)) {throw TypeError(`Invalid body weight ${profile.bodyWeight}`);}
-    
-    if (fmtAppGlobals.supportedBodyweightUnits.indexOf(profile.bodyWeightUnits) < 0) {
-        throw TypeError(`Invalid body weight units ${profile.bodyWeightUnits}`);}
-    
-    switch(profile.bodyWeightUnits) {
-        case "Kg":
-            profile.bodyWeightKg = profile.bodyWeight;
-            break;
-        case "Lbs":
-            profile.bodyWeightKg = profile.bodyWeight / 2.2;
-            break;
-    }
-    
-    if (isNaN(profile.height)) {throw TypeError(`Invalid height ${profile.height}`);}
-    
-    if (fmtAppGlobals.supportedHeightUnits.indexOf(profile.heightUnits) < 0) {
-        throw TypeError(`Invalid height units ${profile.heightUnits}`);}
-    
-    switch(profile.heightUnits) {
-        case "Cm":
-            profile.heightCm = profile.height;
-            break;
-        case "Inch":
-            profile.heightCm = profile.height * 2.54;
-            break;
-    }
-    if (isNaN(profile.age)) {throw TypeError(`Invalid age ${profile.age}`);}
-    
-    if (fmtAppGlobals.sexes.indexOf(profile.sex) < 0) {throw TypeError(`Invalid sex ${profile.sex}`);}
-    
-    if (profile.bodyfat !== null) {
-        if (isPercent(profile.bodyfat)) {
-            profile.bodyfatReal = profile.bodyfat / 100;
-            profile.formula = "Katch-McArdle";
-        }
-        else {profile.bodyfatReal = null;}
-    }
-    else {profile.bodyfatReal = null;}
-    if (fmtAppGlobals.supportedActivityLevels.indexOf(profile.activityLevel) < 0)
-        {throw TypeError(`Invalid activityLevel ${profile.activityLevel}`);}
-    if (isNaN(profile.activityMultiplier)) {throw TypeError(`Invalid activity multiplier ${profile.activityMultiplier}`);}
-    
-    switch(profile.formula) {
-        case "Katch-McArdle":
-            profile.bmr = katchMcArdle(profile.bodyWeightKg, profile.bodyfatReal);
-            break;
-        case "Mifflin-St Jeor":
-        default:
-            profile.bmr = mifflinStJeor(profile.bodyWeightKg, profile.heightCm, profile.age, profile.sex);
-            break;
-    }
-    if (profile.bmr <= 0) {throw TypeError(`Invalid BMR ${profile.bmr}`);}
-    
-    profile.tdee = profile.bmr * profile.activityMultiplier;
-    let date = new Date();
-    profile.lastModified = date.toISOString();
-    profile.tzMinutes = date.getTimezoneOffset();
     FMTReadProfile(profileId,
                 function(e) {
                     let res = e.target.result || {};
@@ -751,62 +921,36 @@ function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
                     profile.macroSplit = macroSplit;
                     console.debug(res);
                     console.debug(profile);
-                    let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILE_STORE, fmtAppGlobals.FMT_DB_READWRITE);
-                    let updateRequest = profileStore.put(profile);
-                    updateRequest.onerror = onerrorFn || function (e) {console.error(`Failed updating Profile id ${profileId}`);};
-                    updateRequest.onsuccess = onsuccessFn || function(event) {console.debug(`Profile id ${profileId} successfuly updated!`)};
+                    FMTUpdateProfile(profileId, profile, onsuccessFn, onerrorFn);
                 },
-                function (e) {console.error(`Failed getting Profile id ${profileId}`);}
+                onerrorFn
                );
     
 }
 function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
     if (isNaN(profileId)) {
-        throw TypeError(`Invalid profile_id ${profileId}`);
+        const msg = `Invalid profile_id ${profileId}`;
+        onerrorFn = onerrorFn || function(e) { console.error(msg); }
+        return onerrorFn(msg);
     }
     let macroSplit = {};
-    let Calories = document.getElementById("profile-daily-calories").value;
-    let Protein = document.getElementById("profile-macro-protein").value;
-    let Carbohydrate = document.getElementById("profile-macro-carb").value;
-    let Fat = document.getElementById("profile-macro-fat").value;
+    macroSplit.Calories = document.getElementById("profile-daily-calories").value;
+    macroSplit.Protein = document.getElementById("profile-macro-protein").value;
+    macroSplit.Carbohydrate = document.getElementById("profile-macro-carb").value;
+    macroSplit.Fat = document.getElementById("profile-macro-fat").value;
     FMTReadProfile(profileId,
                 function(e) {
                     let res = e.target.result;
                     console.debug(res);
                     if (res === undefined) {
                         let msg = `Profile with ID ${profileId} does not exist yet. Please create it first by filling in your Personal details and then click "Save Personal Details"`;
-                        return FMTShowAlert("profile-alerts", "warning", msg, fmtAppGlobals.defaultAlertScroll);
-                    }
-                    if (!isNaN(Calories) && Calories>0) {macroSplit.Calories = Number(Calories);}
-                    else {
-                        return FMTShowAlert("profile-alerts", "danger", `Invalid Calories '${Calories}'`, fmtAppGlobals.defaultAlertScroll);
-                    }
-                    if (isPercent(Protein) && Protein>0) {macroSplit.Protein = Number(Protein);}
-                    else {
-                        return FMTShowAlert("profile-alerts", "danger", `Invalid Protein Percentage '${Protein}'`, fmtAppGlobals.defaultAlertScroll);
-                         }
-                    if (isPercent(Carbohydrate) && Carbohydrate>0) {macroSplit.Carbohydrate = Number(Carbohydrate);}
-                    else {
-                        return FMTShowAlert("profile-alerts", "danger", `Invalid Carbohydrate Percentage '${Carbohydrate}'`, fmtAppGlobals.defaultAlertScroll);
-                    }
-                    if (isPercent(Fat) && Fat>0) {macroSplit.Fat = Number(Fat);}
-                    else {
-                        return FMTShowAlert("profile-alerts", "danger", `Invalid Fat Percentage '${Fat}'`, fmtAppGlobals.defaultAlertScroll);
-                    }
-                    let sum = macroSplit.Carbohydrate + macroSplit.Fat + macroSplit.Protein; 
-                    if (sum !== 100) {
-                        return FMTDisplayProfile(profileId, function(e) {
-                            let msg = `The sum of Protein, Carbohydrate and Fat Percentages must equal 100, current sum is ${sum}`;
-                            return FMTShowAlert("profile-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
-                        });
+                        onerrorFn || function (e) { console.error(`${msg}`) };
+                        return onerrorFn(msg);
                     }
                     res.macroSplit = macroSplit;
-                    let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILE_STORE, fmtAppGlobals.FMT_DB_READWRITE);
-                    let updateRequest = profileStore.put(res);
-                    updateRequest.onerror = onerrorFn || function (e) {console.error(`Failed updating Macro Split for Profile id ${profileId}`)};
-                    updateRequest.onsuccess = onsuccessFn || function (e) {console.debug(`Macro Split for Profile id ${profileId} updated successfully`)};
+                    FMTUpdateProfile(profileId, res, onsuccessFn, onerrorFn);
                 },
-                function (e) {console.error(`Failed getting Profile id ${profileId}`);}
+                onerrorFn
                );
 }
 function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
@@ -843,13 +987,18 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
                     document.getElementById("profile-formula").innerHTML = profile.formula;
                     let macroSplit = profile.macroSplit;
                     if (macroSplit !== null) {
-                        document.getElementById("profile-daily-calories").value = macroSplit.Calories;
-                        document.getElementById("profile-macro-protein").value = macroSplit.Protein;
-                        document.getElementById("profile-macro-carb").value = macroSplit.Carbohydrate;
-                        document.getElementById("profile-macro-fat").value = macroSplit.Fat;
-                        document.getElementById("profile-macro-protein-grams").innerHTML = `${Math.round(macroSplit.Calories * macroSplit.Protein/100 / 4)} gram`;
-                        document.getElementById("profile-macro-carb-grams").innerHTML = `${Math.round(macroSplit.Calories * macroSplit.Carbohydrate/100 / 4)} gram`;
-                        document.getElementById("profile-macro-fat-grams").innerHTML = `${Math.round(macroSplit.Calories * macroSplit.Fat/100 / 9)} gram`;
+                        document.getElementById("profile-daily-calories").value = macroSplit.Calories || "";
+                        document.getElementById("profile-macro-protein").value = macroSplit.Protein || "";
+                        document.getElementById("profile-macro-carb").value = macroSplit.Carbohydrate || "";
+                        document.getElementById("profile-macro-fat").value = macroSplit.Fat || "";
+                        const gramP = Math.round(macroSplit.Calories * macroSplit.Protein/100 / 4);
+                        const gramC = Math.round(macroSplit.Calories * macroSplit.Carbohydrate/100 / 4);
+                        const gramF = Math.round(macroSplit.Calories * macroSplit.Fat/100 / 9);
+                        if (!isNaN(gramC) && !isNaN(gramF) && !isNaN(gramP)) {
+                            document.getElementById("profile-macro-protein-grams").innerHTML = `${gramP} gram`;
+                            document.getElementById("profile-macro-carb-grams").innerHTML = `${gramC} gram`;
+                            document.getElementById("profile-macro-fat-grams").innerHTML = `${gramF} gram`;                            
+                        }
                     }
                     if (onsuccessFn) {onsuccessFn();}
                 },
@@ -1622,7 +1771,7 @@ function prepareEventHandlers() {
             console.debug(`Profile ${fmtAppInstance.currentProfileId} updated successfully`);
             FMTDisplayProfile(fmtAppInstance.currentProfileId)
         };
-        let onerrorFn = null;
+        let onerrorFn = function(msg) { FMTShowAlert("profile-alerts", "danger", msg || "Error!", fmtAppGlobals.defaultAlertScroll); };
         FMTUpdateProfileForm(fmtAppInstance.currentProfileId, onsuccessFn, onerrorFn);
         });
     $("#save-profile-macro").click( (e) => {
@@ -1630,7 +1779,7 @@ function prepareEventHandlers() {
             console.debug(`Profile ${fmtAppInstance.currentProfileId} updated successfully`);
             FMTDisplayProfile(fmtAppInstance.currentProfileId)
         };
-        let onerrorFn = null;
+        let onerrorFn = function(msg) { FMTShowAlert("profile-alerts", "danger", msg || "Error!", fmtAppGlobals.defaultAlertScroll); };
         FMTUpdateMacroesForm(fmtAppInstance.currentProfileId, onsuccessFn, onerrorFn);
         });
     $("#foods-add-food").click( (e) => {
