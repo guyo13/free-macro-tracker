@@ -85,6 +85,7 @@ button {
     border-bottom-color: white;
     background-color: #e9ecef;
 }
+.fmt-progress-bar-container{}
 .footer {
   position: fixed;
   left: 0;
