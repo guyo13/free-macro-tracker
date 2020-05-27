@@ -1327,7 +1327,7 @@ function FMTFoodItemScreenClear(baseScreenID) {
     FMTFoodItemScreenShowLess(baseScreenID);
 }
 function FMTFoodItemScreenSave(baseScreenID, action, optionsObj, onsuccessFn, onerrorFn) {
-    onerrorFn = onerrorFn || function() { console.error("[FMTFoodItemScreenSave] - Failed"); }
+    onerrorFn = onerrorFn || function(err) { console.error(`[FMTFoodItemScreenSave] - Failed ${err}`); }
     if (baseScreenID == null) { console.error(`[FMTFoodItemScreenSave] - Invalid baseScreenID "${baseScreenID}"`); return onerrorFn(); }
     if (!(action == "add" || action == "edit")) { console.error(`[FMTFoodItemScreenSave] - Invalid action "${action}"`); return onerrorFn(); }
     if (action == "edit" && (!optionsObj || !isNumber(optionsObj.foodId)) ) { console.error("[FMTFoodItemScreenSave] - Missing foodId for edit action"); return onerrorFn(); }
@@ -1362,12 +1362,6 @@ function FMTFoodItemScreenSave(baseScreenID, action, optionsObj, onsuccessFn, on
             if (addNutri.length > 0) { foodObj.nutritionalValue.additionalNutrients[category] = addNutri; }
         }
     }
-    onerrorFn = onerrorFn || function(e) {
-        console.error(`[FMTFoodItemScreenSave] - Failed adding food: ${JSON.stringify(foodObj)}`);
-        FMTShowAlert("add-food-screen-alerts", "danger",
-                     `Failed adding food!\n${e}`,
-                     fmtAppGlobals.defaultAlertScroll);
-    };
     switch(action) {
         case "add":
             onsuccessFn = onsuccessFn || function(e, food) {
@@ -1495,6 +1489,7 @@ var pageController = {
                 const foodId = Number(e.currentTarget.getAttribute("food_id"));
                 //TODO - Acceess this menu also from Overview TAB -> Check last value -> update multiplier
                 pageController.showViewFoodDynamicScreen(foodId, 1, true);
+                document.getElementById("foods-alerts").innerHTML = "";
             });
         };
         let onerrorFn = function(e) {
@@ -1541,6 +1536,7 @@ var pageController = {
     closeAddFoodDynamicScreen: function() {
         pageController.closeDynamicScreen("add-food-screen");
         FMTFoodItemScreenClear("add-food-screen");
+        document.getElementById("foods-alerts").innerHTML = "";
     },
     showEditFoodDynamicScreen: function(foodId) {
         if (!isNumber(foodId)) { console.error(`Food ID (${foodId}) is not a number`); return; }
@@ -1817,17 +1813,40 @@ function prepareEventHandlers() {
     });
     $("#add-food-screen-more").click( (e) => { FMTFoodItemScreenShowMore("add-food-screen"); } );
     $("#add-food-screen-less").click( (e) => { FMTFoodItemScreenShowLess("add-food-screen"); } );
-    $("#add-food-screen-save").click( (e) => { FMTFoodItemScreenSave("add-food-screen", "add", {}/*, onsuccessFn, onerrorFn*/); } );
+    $("#add-food-screen-save").click( (e) => {
+        onerrorFn = function(err) {
+            const msg = `Failed adding food - ${err}`;
+            console.error(msg);
+            FMTShowAlert(`add-food-screen-alerts`, "danger", msg, fmtAppGlobals.defaultAlertScroll);
+        }
+        onsuccessFn = function(ev, food) {
+            const msg = `Successfully added food: ${(food.foodName)}`;
+            pageController.closeAddFoodDynamicScreen();
+            if (fmtAppInstance.pageState.activeTab === "foods") { pageController.showFoods(); }
+            FMTShowAlert(`${fmtAppInstance.pageState.activeTab}-alerts`, "success", msg);
+        }
+        FMTFoodItemScreenSave("add-food-screen", "add", {}, onsuccessFn, onerrorFn);
+    });
     $("#edit-food-screen-cancel").click( (e) => {
         //TODO check for changes and prompt if needed
         pageController.closeEditFoodDynamicScreen();
     });
     $("#edit-food-screen-more").click( (e) => { FMTFoodItemScreenShowMore("edit-food-screen"); } );
     $("#edit-food-screen-less").click( (e) => { FMTFoodItemScreenShowLess("edit-food-screen"); } );
-    $("#edit-food-screen-save").click( (e) => { 
+    $("#edit-food-screen-save").click( (e) => {
+        onerrorFn = function(err) {
+            const msg = `Failed editing food - ${err}`;
+            console.error(msg);
+            FMTShowAlert(`edit-food-screen-alerts`, "danger", msg, fmtAppGlobals.defaultAlertScroll);
+        }
+        onsuccessFn = function(ev) {
+            const msg = `Successfully updated food: ${(ev.target.result)}`;
+            pageController.closeAddFoodDynamicScreen();
+            FMTShowAlert(`${fmtAppInstance.pageState.activeTab}-alerts`, "success", msg);
+        }
         const foodId = Number(e.currentTarget.getAttribute("food_id"));
         if (!isNumber(foodId)) { console.error(`Food ID (${foodId}) is not a number`); return; }
-        FMTFoodItemScreenSave("edit-food-screen", "edit", {"foodId": foodId}/*, onsuccessFn, onerrorFn*/); } );
+        FMTFoodItemScreenSave("edit-food-screen", "edit", {"foodId": foodId}, onsuccessFn, onerrorFn); } );
     $("#edit-food-screen-delete").click( (e) => {
         let foodId = e.currentTarget.getAttribute("food_id");
         if (!isNumber(foodId)) {
