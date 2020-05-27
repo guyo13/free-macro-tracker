@@ -801,7 +801,6 @@ function FMTUpdateMealEntry(entry_id, mealEntryObj, onsuccessFn, onerrorFn) {
     }
     let mealEntry = res.mealEntry;
     const date = new Date();
-    mealEntry.created = date.toISOString();
     mealEntry.lastModified = date.toISOString();
     mealEntry.tzMinutes = date.getTimezoneOffset();
     let mealEntriesStore = getObjectStore(fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
