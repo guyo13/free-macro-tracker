@@ -34,23 +34,14 @@ button {
 .fmt-food-name-cell {}
 .fmt-food-brand-cell {}
 .fmt-food-table-row {}
-.fmt-dynamic-screen {
-    border-style: dashed;
-    border-color: darkgoldenrod;
-}
+.fmt-dynamic-screen {}
 .fmt-add-nutri {}
 .fmt-mass-unit-igroup {}
 .fmt-mass-unit-btn {
     background-color: rgb(233, 236, 239)!important;
 }
-.fmt-allfather {
-    border-style: solid;
-    border-color: red;
-}
-.fmt-tab {
-    border-style: dotted;
-    border-color: aqua;
-}
+.fmt-allfather {}
+.fmt-tab {}
 .fmt-text-lg {
     font-size: 1.2rem;
     font-weight: 300;
@@ -65,24 +56,32 @@ button {
 .fmt-left-text {
     text-align: left;
 }
-.fmt-meals-container {
-    border-style: double;
-    border-color: dodgerblue;
-}
+.fmt-meals-container {}
 .fmt-meal {
-    border-style: dotted;
-    border-color: burlywood;
+    border-style: solid;
+    border-color: black;
+    border-width: thin;
+    background-color: black;
+    border-radius: 2px;
 }
 .fmt-meal-entry {
+    border-bottom-style: solid;
+    border-bottom-width: thin;
+    border-bottom-color: white;
     background-color: #e9ecef;
+    transition-duration: 0.3s;
+}
+.fmt-meal-entry:hover {
+    background-color: azure;
 }
 .fmt-meal-footer {
     background-color: #e9ecef;
 }
 .fmt-meal-header {
-    border-color: grey;
+    border-bottom-style: solid;
+    border-bottom-width: medium;
+    border-bottom-color: white;
     background-color: #e9ecef;
-    border-radius: 3px;
 }
 .footer {
   position: fixed;
@@ -111,6 +110,22 @@ button {
 #main-screens {
     padding-left: 1rem;
     padding-right: 1rem;
+}
+.fmt-font-sm {
+    font-size: 1rem;
+    font-weight: 300;
+}
+@media screen and (max-width: 768px) {
+    .fmt-font-sm {
+            font-size: 0.8rem;
+        font-weight: 400;
+    }
+}
+@media screen and (max-width: 576px) {
+    .fmt-font-sm {
+            font-size: 0.7rem;
+        font-weight: 400;
+    }
 }
 .fmt-font-1 {
     font-size: 1.2rem;

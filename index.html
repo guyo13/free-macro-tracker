@@ -16,25 +16,25 @@
         <div id="tabs" class="row justify-content-center">
         <ul id="main-screens" class="nav nav-tabs">
           <li class="nav-item">
-            <a class="nav-link active" id="goto-overview" href="#">Overview</a>
+            <a class="nav-link active fmt-font-1" id="goto-overview" href="#">Overview</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="goto-foods" href="#">Foods</a>
+            <a class="nav-link fmt-font-1" id="goto-foods" href="#">Foods</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="goto-recipes" href="#">Recipes</a>
+            <a class="nav-link fmt-font-1" id="goto-recipes" href="#">Recipes</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="goto-profile" href="#">Profile</a>
+            <a class="nav-link fmt-font-1" id="goto-profile" href="#">Profile</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="goto-advanced" href="#">Advanced</a>
+            <a class="nav-link fmt-font-1" id="goto-advanced" href="#">Advanced</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="goto-export" href="#">Export</a>
+            <a class="nav-link fmt-font-1" id="goto-export" href="#">Export</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="goto-import" href="#">Import</a>
+            <a class="nav-link fmt-font-1" id="goto-import" href="#">Import</a>
           </li>
         </ul>
         </div>
@@ -89,7 +89,7 @@
                 <div id="overview-meals-container" class="fmt-meals-container">
                     
                     <div id="overview-meal-MEAL_NAME" class="fmt-meal container mb-2">
-                        <div id="overview-meal-MEAL_NAME-header" class="fmt-meal-header row justify-content-center mb-1">
+                        <div id="overview-meal-MEAL_NAME-header" class="fmt-meal-header row justify-content-center">
                             <div class="col">
                                 <span class="fmt-font-2 float-left">Meal Name</span>
                             </div>
@@ -101,12 +101,34 @@
                             </div>
                         </div>
                         <div id="overview-meal-MEAL_NAME-entries" class="row justify-content-center">
-                            <div id="overview-meal-MEAL_NAME-ENTRYID1" class="fmt-meal-entry mb-1 col">
-                                Data1
+                            <div id="overview-meal-MEAL_NAME-ENTRYID1" class="fmt-meal-entry col row">
+                                <div class="col-6">
+                                    <span class="fmt-font-1 float-left">Cheescake</span>
+                                </div>
+                                <div class="col-6">
+                                    <span class="fmt-font-1 float-right">150kCal</span>
+                                </div>
+                                <div class="col-6">
+                                    <span class="fmt-font-sm float-left">Brand name, 123g</span>
+                                </div>
+                                <div class="col-6">
+                                    <span class="fmt-font-sm float-right">Carb:12 Fat:3 Protein:5</span>
+                                </div>
                             </div>
                             <div class="w-100"></div>
-                            <div id="overview-meal-MEAL_NAME-ENTRYID2" class="fmt-meal-entry mb-1 col">
-                                data2
+                            <div id="overview-meal-MEAL_NAME-ENTRYID2" class="fmt-meal-entry col row">
+                                <div class="col-6">
+                                    <span class="fmt-font-1 float-left">Cottage 5%</span>
+                                </div>
+                                <div class="col-6">
+                                    <span class="fmt-font-1 float-right">230kCal</span>
+                                </div>
+                                <div class="col-6">
+                                    <span class="fmt-font-sm float-left">Tnuva, 250g</span>
+                                </div>
+                                <div class="col-6">
+                                    <span class="fmt-font-sm float-right">Carb:10 Fat:12.5 Protein:27.5</span>
+                                </div>
                             </div>
                         </div>
                         <div id="overview-meal-MEAL_NAME-footer" class="fmt-meal-footer row justify-content-between pb-1">
@@ -121,14 +143,17 @@
                                 <span class="fmt-font-1">Fats</span>
                             </div>
                             <div class="w-100"></div>
-                            <div id="overview-meal-MEAL_NAME-carb-progress-bar" class="progress fmt-macro-progress-inverse col-3 ml-1 mr-1">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div id="overview-meal-MEAL_NAME-carb-progress-bar" class="fmt-center-text  col-3 ml-1 mr-1">
+                                <!--<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>-->
+                                <span class="fmt-font-1">15</span>
                             </div>
-                            <div id="overview-meal-MEAL_NAME-protein-progress-bar" class="progress fmt-macro-progress-inverse col-3">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div id="overview-meal-MEAL_NAME-protein-progress-bar" class="fmt-center-text  col-3">
+                                <!--<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>-->
+                                <span class="fmt-font-1">30</span>
                             </div>
-                            <div id="overview-meal-MEAL_NAME-fat-progress-bar" class="progress fmt-macro-progress-inverse col-3 ml-1 mr-1">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div id="overview-meal-MEAL_NAME-fat-progress-bar" class="fmt-center-text  col-3 ml-1 mr-1">
+                                <!--<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>-->
+                                <span class="fmt-font-1">10</span>
                             </div>
                         </div>
                     </div>
