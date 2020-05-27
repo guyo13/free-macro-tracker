@@ -21,7 +21,7 @@
             height - Number <br/>
             heightUnits - String (either "Cm" or "Inch") <br/>
             heightCm - Number <br/>
-            <span class="minor">age - Number //TODO change to and validate as int</span> <br/>
+            age - Number //TODO change to and validate as int <br/>
             sex - String (either "Male" or "Female") <br/>
             bodyfat - float (0-100) <br/>
             bodyfatReal - float (0-1) <br/>
@@ -46,7 +46,7 @@
         </p>
         <h2>Nutrients Object Store</h2>
         <p>
-            <b class="med">KEY PATH = "name" // TODO make category part of the key path!</b> <br/>
+            <b>KEY PATH = ["category", "name"]</b> <br/>
             name - String <br/>
             category - String  <br/>
             default_mass_unit - String (logically references a Mass Unit "name") <br/>
@@ -79,7 +79,7 @@
             weightUnits - String (logically references a Mass Unit "name") <br/>
             foodMakeup - Array of Objects** <br/>
             nutritionalValue - Object (see above) <br/>
-            **foodMakeup - {food_id,foodName,foodBrand,weight,weightUnits} <br/>
+            **foodMakeup - [{food_id,foodName,foodBrand,weight,weightUnits}, ... , {}] <br/>
         </p>
         <h2>Meal Entries Object Store</h2>
         <p>
@@ -109,7 +109,7 @@
             settings - Object (reduced version of fmtAppInstance) <br/>
         </p>
 
-    <h1>DB OPERATIONS:</h1>
+    <h1>DB OPERATIONS (TODO):</h1>
         <h2>Profiles:</h2>
         <p>
             <del>Read all profiles (getAll)</del> <br/>
@@ -128,47 +128,47 @@
         <h2>Foods:</h2>
         <p>
             <del>Query food by food ID</del> <br/>
-            Query food by food name <br/>
-            Query food by food brand <br/>
-            Query food by nutrient content (maybe impl outside of db) <br/>
+            <span class="minor">Query food by food name</span> <br/>
+            <span class="minor">Query food by food brand</span> <br/>
+            <span class="minor">Query food by nutrient content (maybe impl outside of db)</span> <br/>
             <del>Add new food</del> <br/>
             <del>Update food</del> <br/>
             <del>Delete food</del> <br/>
             <del>Read all foods (openCursor+getAll)</del> <br/>
         </p>
-        <h2>Recipes:</h2>
+        <h2 class="med">Recipes:</h2>
         <p>
-            Query recipe by recipe ID <br/>
-            Query recipe by recipe name <br/>
-            Query recipe by food name <br/>
-            Query recipe by nutrient content (maybe impl outside of db) <br/>
-            Add new recipe <br/>
-            Update recipe <br/>
-            Delete recipe <br/>
-            Read all recipes (openCursor) <br/>
+            <span class="med">Query recipe by recipe ID</span> <br/>
+            <span class="med">Query recipe by recipe name</span> <br/>
+            <span class="med">Query recipe by food name</span> <br/>
+            <span class="med">Query recipe by nutrient content (maybe impl outside of db)</span> <br/>
+            <span class="med">Add new recipe</span> <br/>
+            <span class="med">Update recipe</span> <br/>
+            <span class="med">Delete recipe</span> <br/>
+            <span class="med">Read all recipes (openCursor)</span> <br/>
         </p>
         
         <h2>Nutrients:</h2>
         <p>
-            <b>Query nutrient by category and name - NEED TO ADD NUTRIENT CATEGORY AS KP</b> <br/>
+            <del>Query nutrient by category and name - NEED TO ADD NUTRIENT CATEGORY AS KP</del> <br/>
             <del>Read all nutrients (getAll+cursor)</del> <br/>
             <del>Add new nutrient</del> <br/>
             <del>Update nutrient</del> <br/>
-            <b>Delete nutrient - NEED TO ADD NUTRIENT CATEGORY AS KP</b> <br/>
+            <del>Delete nutrient - NEED TO ADD NUTRIENT CATEGORY AS KP</del> <br/>
         </p>
-        <h2>User settings:</h2>
+        <h2 class="minor">User settings:</h2>
         <p>
-            Query by profile Id <br/>
-            Add new <br/>
-            Update <br/>
-            Delete <br/>
+            <span class="minor">Query by profile Id</span> <br/>
+            <span class="minor">Add new</span> <br/>
+            <span class="minor">Update</span> <br/>
+            <span class="minor">Delete</span> <br/>
         </p>
-        <h2>Meal Entries:</h2>
+        <h2 class="major">Meal Entries:</h2>
         <p>
-            Query all by profile id (cursor) <br/>
-            Query by profile id and entry id <br/>
-            Query by profile_id and [year, month, day] (cursor) <br/>
-            Create, update, delete <br/>
+            <span class="major">Query all by profile id (cursor)</span> <br/>
+            <span class="major">Query by profile id and entry id</span> <br/>
+            <span class="major">Query by profile_id and [year, month, day] (cursor)</span> <br/>
+            <span class="major">Create, update, delete</span> <br/>
         </p>
     </body>
 </html>

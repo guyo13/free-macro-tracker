@@ -8,3 +8,4 @@ FMTValidateFoodObject(foodObj2);
 FMTValidateFoodObject(foodObj3);
 FMTValidateFoodObject(foodObj4);
 FMTValidateFoodObject(foodObj5);
+FMTReadAllNutrients(function(e) {let res= e.target.result.filter(function(entry) {if (entry.category === "Minerals") return true;} ); console.log(res);});

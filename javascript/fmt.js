@@ -66,9 +66,7 @@ fmtAppGlobals.FMT_DB_MUNIT_INDEX_NAME = "mass_unit_index";
 fmtAppGlobals.FMT_DB_MUNIT_INDEX_KEYS = ["value_in_grams", "description"];
 //Globals - DB - Nutrients Store constants
 fmtAppGlobals.FMT_DB_NUTRI_STORE = "fmt_nutrients";
-fmtAppGlobals.FMT_DB_NUTRI_KP = "name";
-fmtAppGlobals.FMT_DB_NUTRI_INDEX_NAME = "nutri_category_index";
-fmtAppGlobals.FMT_DB_NUTRI_INDEX_KEYS = "category";
+fmtAppGlobals.FMT_DB_NUTRI_KP = ["category", "name"];
 
 //Globals - Page
 fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-recipes", "goto-profile", "goto-advanced", "goto-export", "goto-import"];
@@ -227,9 +225,9 @@ function prepareDBv1() {
     //Create nutrients objectStore
     let fmtNutrientsStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_NUTRI_STORE,
                                                                 {keyPath: fmtAppGlobals.FMT_DB_NUTRI_KP, autoIncrement: false});
-    fmtNutrientsStore.createIndex(fmtAppGlobals.FMT_DB_NUTRI_INDEX_NAME,
+/*    fmtNutrientsStore.createIndex(fmtAppGlobals.FMT_DB_NUTRI_INDEX_NAME,
                                 fmtAppGlobals.FMT_DB_NUTRI_INDEX_KEYS,
-                                { unique: false });
+                                { unique: false });*/
     for (let i in baseAdditionalNutrients) {
         let nutri = baseAdditionalNutrients[i];
         console.debug(`Inserting Additional Nutrient entry: ${JSON.stringify(nutri)}`);
@@ -722,50 +720,48 @@ function FMTAddNutrient(nutrientObj, onsuccessFn, onerrorFn) {
     let nutrient = FMTValidateNutrientObject(nutrientObj);
     if (nutrient == null) {
         onerrorFn = onerrorFn || console.error(`Failed validating nutrient object ${nutrientObj}`);
-        onerrorFn();
-        return;
+        return onerrorFn();
     }
     let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRI_STORE, fmtAppGlobals.FMT_DB_READWRITE);
     let addRequest = nutrientStore.add(nutrient);
-    addRequest.onsuccess = onsuccessFn || console.debug(`Successfully added nutrient object ${nutrient}`);
-    addRequest.onerror = onerrorFn || console.debug(`Error adding nutrient object ${nutrient}`);
+    addRequest.onsuccess = onsuccessFn || function(e) { console.debug(`[FMTAddNutrient.onsuccess] - ${JSON.stringify(e)}`) };
+    addRequest.onerror = onerrorFn || function(e) { console.debug(`[FMTAddNutrient.onerror] - ${JSON.stringify(e)}`) };
 }
 function FMTUpdateNutrient(nutrientObj, onsuccessFn, onerrorFn) {
     let nutrient = FMTValidateNutrientObject(nutrientObj);
     if (nutrient == null) {
         onerrorFn = onerrorFn || console.error(`Failed validating nutrient object ${nutrientObj}`);
-        onerrorFn();
-        return;
+        return onerrorFn();
     }
     let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRI_STORE, fmtAppGlobals.FMT_DB_READWRITE);
     let addRequest = nutrientStore.put(nutrient);
-    addRequest.onsuccess = onsuccessFn || console.debug(`Successfully udated nutrient object ${nutrient}`);
-    addRequest.onerror = onerrorFn || console.debug(`Error updating nutrient object ${nutrient}`);
+    addRequest.onsuccess = onsuccessFn || function(e) { console.debug(`[FMTUpdateNutrient.onsuccess] - ${JSON.stringify(e)}`) };
+    addRequest.onerror = onerrorFn || function(e) { console.debug(`[FMTUpdateNutrient.onerror] - ${JSON.stringify(e)}`) };
 }
-function FMTReadNutrient(nutrientName, onsuccessFn, onerrorFn) {
+function FMTReadNutrient(nutrientCat, nutrientName, onsuccessFn, onerrorFn) {
     let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRI_STORE, fmtAppGlobals.FMT_DB_READONLY);
-    let readRequest = nutrientStore.get(nutrientName);
-    readRequest.onsuccess = onsuccessFn || console.debug(`Successfully read nutrient ${nutrientName}`);
-    readRequest.onerror = onerrorFn || console.debug(`Failed reading nutrient ${nutrientName}`);
+    let readRequest = nutrientStore.get([nutrientCat, nutrientName]);
+    readRequest.onsuccess = onsuccessFn || function(e) { console.debug(`[FMTReadNutrient.onsuccess] - ${JSON.stringify(e)}`) };
+    readRequest.onerror = onerrorFn || function(e) { console.debug(`[FMTReadNutrient.onerror] - ${JSON.stringify(e)}`) };
 }
 function FMTReadAllNutrients(onsuccessFn, onerrorFn) {
     let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRI_STORE, fmtAppGlobals.FMT_DB_READONLY);
     let readRequest = nutrientStore.getAll();
-    readRequest.onsuccess = onsuccessFn || console.debug(`Successfully read all nutrients`);
-    readRequest.onerror = onerrorFn || console.debug(`Failed reading nutrients`);
+    readRequest.onsuccess = onsuccessFn || function(e) { console.debug(`[FMTReadAllNutrients.onsuccess] - ${JSON.stringify(e)}`) };
+    readRequest.onerror = onerrorFn || function(e) { console.debug(`[FMTReadAllNutrients.onerror] - ${JSON.stringify(e)}`) };
 }
 /*onsuccessFn must implement success function accessing the cursor*/
 function FMTIterateNutrients(onsuccessFn, onerrorFn) {
     let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRI_STORE, fmtAppGlobals.FMT_DB_READONLY);
     let readRequest = nutrientStore.openCursor();
-    readRequest.onsuccess = onsuccessFn || console.debug(`Successfully iterating nutrients`);
-    readRequest.onerror = onerrorFn || console.debug(`Failed iterating nutrients`);
+    readRequest.onsuccess = onsuccessFn || function(e) { console.debug(`[FMTIterateNutrients.onsuccess] - ${JSON.stringify(e)}`) };
+    readRequest.onerror = onerrorFn || function(e) { console.debug(`[FMTIterateNutrients.onerror] - ${JSON.stringify(e)}`) };
 }
-function FMTDeleteNutrient(nutrientName, onsuccessFn, onerrorFn) {
+function FMTDeleteNutrient(nutrientCat, nutrientName, onsuccessFn, onerrorFn) {
     let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRI_STORE, fmtAppGlobals.FMT_DB_READWRITE);
-    let deleteRequest = nutrientStore.delete(nutrientName);
-    deleteRequest.onsuccess = onsuccessFn || console.debug(`Successfully deleted nutrient ${nutrientName}`);
-    deleteRequest.onerror = onerrorFn || console.debug(`Failed deleting nutrient ${nutrientName}`);
+    let deleteRequest = nutrientStore.delete([nutrientCat, nutrientName]);
+    deleteRequest.onsuccess = onsuccessFn || function(e) { console.debug(`[FMTDeleteNutrient.onsuccess] - ${JSON.stringify(e)}`) };
+    deleteRequest.onerror = onerrorFn || function(e) { console.debug(`[FMTDeleteNutrient.onerror] - ${JSON.stringify(e)}`) };
 }
 
 //Functions - DB - Mass Units
@@ -960,7 +956,6 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
                     console.debug(`Loaded Profile: ${JSON.stringify(profile)}`);
                     if (profile === undefined) {
                         return;
-                        //throw ReferenceError(`Profile with ID ${profileId} does not exist.`);
                     }
                     if (profile.name) {document.getElementById("profile-name").value = profile.name;}
                     document.getElementById("profile-weight").value = profile.bodyWeight;
@@ -1514,6 +1509,7 @@ var pageController = {
     showAdvanced: function () {pageController.setTabActive("goto-advanced");},
     showProfile: function () {
         pageController.setTabActive("goto-profile");
+        document.getElementById("profile-alerts").innerHTML = "";
         FMTDisplayProfile(fmtAppInstance.currentProfileId);
     },
     hideDynamicScreens: function () {
