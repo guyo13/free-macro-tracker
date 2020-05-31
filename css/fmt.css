@@ -34,7 +34,12 @@ button {
 .fmt-food-name-cell {}
 .fmt-food-brand-cell {}
 .fmt-food-table-row {}
-.fmt-dynamic-screen {}
+.fmt-dynamic-screen {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: white;
+}
 .fmt-add-nutri {}
 .fmt-mass-unit-igroup {}
 .fmt-bg-light {
@@ -45,7 +50,13 @@ button {
     background-color: rgb(233, 236, 239)!important;
 }
 .fmt-allfather {}
-.fmt-tab {}
+.fmt-tab {
+    position: absolute;
+    z-index: 0;
+    height: 100%;
+    width: 100%;
+    background-color: white;
+}
 .fmt-text-lg {
     font-size: 1.2rem;
     font-weight: 300;
