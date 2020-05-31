@@ -9,3 +9,62 @@ FMTValidateFoodObject(foodObj3);
 FMTValidateFoodObject(foodObj4);
 FMTValidateFoodObject(foodObj5);
 FMTReadAllNutrients(function(e) {let res= e.target.result.filter(function(entry) {if (entry.category === "Minerals") return true;} ); console.log(res);});
+
+
+function mealEntryAddTest(mepd) {
+    var count = 0;
+    let mealObj= {};
+    let mealNames = ["Breakfast", "Snack 1", "Snack 2", "Lunch", "Dinner"];
+    let nutritionalValues = [{calories:600, proteins:33, carbohydrates:22, fats:12},
+                             {calories:600, proteins:33, carbohydrates:22, fats:12, additionalNutrients: null},
+                             {calories:600, proteins:33, carbohydrates:22, fats:12, additionalNutrients: { "Minerals": [{"name":"Calcium", "mass":10, "unit":"mg"},                                                                                                                                     {"name":"Chloride", "mass":15 ,"unit":"mg"}],
+                                                                                                          "Amino Acids":[{"name":"Alanine", "mass":1500, "unit":"mg"},                                                      {"name":"Arginine", "mass":2000, "unit":"mg"}]
+                                                                                                        }
+                             },
+                             {calories:600, proteins:33, carbohydrates:22, fats:12, additionalNutrients: {}}
+                            ];
+    const startTime = Date.now();
+    mepd = mepd || 100;
+    for (let pid=1; pid<3; pid++) {
+        let date = new Date();
+        mealObj.profile_id = pid;
+        for (let d=1; d<=365; d++) {
+            date.setDate(date.getDate()-1);
+            for (let i=0; i<mepd; i++) {
+                //mealObj.entry_id = pid*10000000 + d*10000 + i;
+                mealObj.year = date.getFullYear();
+                mealObj.month = date.getMonth();
+                mealObj.day = date.getDate();
+                let r = Math.floor(Math.random() + Math.random()*4);
+                mealObj.mealName = mealNames[r];
+                mealObj.consumable_id = Math.round(Math.random()*10000);
+                let k = Math.random();
+                mealObj.foodBrand = (k < 0.5 ? null : "Test Brand");
+                mealObj.is_recipe = (k < 0.5 ? true : false);
+                mealObj.weight = 50 + Math.random() * 300;
+                mealObj.weightUnits = "g";
+                r = Math.floor(Math.random() + Math.random()*3);
+                mealObj.nutritionalValue = nutritionalValues[r];
+                mealObj.consumableName = `consumable ${r}` ;
+                FMTAddMealEntry(mealObj);
+            }
+        }
+    }
+    const mealEntriesStore = getObjectStore(fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE, fmtAppGlobals.FMT_DB_READONLY);
+    //let count = 0;
+    let request  = mealEntriesStore.openCursor();
+    request.onsuccess = function(event) {
+      var cursor = event.target.result;
+      if(cursor) {
+        count++;
+        cursor.continue();
+      } else {
+        const endTime = Date.now();
+        console.log(`Meal Entry count - ${count} == ${2*365*mepd} ? ${count == 2*365*mepd}. Run time - ${(endTime - startTime)/1000} Seconds.`);
+        navigator.storage.estimate().then((e) => {console.log(`Quota: ${e.quota/1000000} MB, Usage: ${e.usage/1000000} MB`)});
+      }
+    };    
+}
+//mealEntryAddTest();
+
+

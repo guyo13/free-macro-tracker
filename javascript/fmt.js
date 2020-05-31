@@ -788,7 +788,7 @@ function FMTAddMealEntry(mealEntryObj, onsuccessFn, onerrorFn) {
     mealEntry.lastModified = date.toISOString();
     mealEntry.tzMinutes = date.getTimezoneOffset();
     let mealEntriesStore = getObjectStore(fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
-    let addRequest = mealEntriesStore.add(entryObject);
+    let addRequest = mealEntriesStore.add(mealEntry);
     addRequest.onerror = onerrorFn;
     addRequest.onsuccess = onsuccessFn;
 }
@@ -804,7 +804,7 @@ function FMTUpdateMealEntry(entry_id, mealEntryObj, onsuccessFn, onerrorFn) {
     mealEntry.lastModified = date.toISOString();
     mealEntry.tzMinutes = date.getTimezoneOffset();
     let mealEntriesStore = getObjectStore(fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
-    let updateRequest = mealEntriesStore.put(entryObject);
+    let updateRequest = mealEntriesStore.put(mealEntry);
     updateRequest.onerror = onerrorFn;
     updateRequest.onsuccess = onsuccessFn;
 }
