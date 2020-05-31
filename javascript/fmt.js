@@ -529,10 +529,10 @@ function FMTValidateMacroSplit(macroSplitObj) {
     else {
         const sum = Number(macroSplitObj.Protein) + Number(macroSplitObj.Carbohydrate) + Number(macroSplitObj.Fat);
         if ( sum === 100) {
-            macroSplit.Calories = macroSplitObj.Calories;
-            macroSplit.Protein = macroSplitObj.Protein;
-            macroSplit.Carbohydrate = macroSplitObj.Carbohydrate;
-            macroSplit.Fat = macroSplitObj.Fat;
+            macroSplit.Calories = Number(macroSplitObj.Calories);
+            macroSplit.Protein = Number(macroSplitObj.Protein);
+            macroSplit.Carbohydrate = Number(macroSplitObj.Carbohydrate);
+            macroSplit.Fat = Number(macroSplitObj.Fat);
             result.macroSplit = macroSplit;
             return result;
         }
@@ -776,6 +776,9 @@ function FMTValidateMealEntry(mealEntryObj) {
         return result;
     }
     mealEntry.nutritionalValue = nutriValueValidateRes.nutritionalValue;
+    if ("entry_id" in mealEntryObj) {
+        mealEntry.entry_id = mealEntryObj.entry_id;
+    }
     
     result.mealEntry = mealEntry;
     return result;
@@ -1710,14 +1713,316 @@ function FMTUpdateViewFoodValuesOnWeightChange(e) {
 }
 //Functions - UI - Recipes
 //Functions - UI - Overview
-function FMTCreateMealNode(mealEntryObj) {
+function FMTOverviewCreateMealNode(mealEntryObj, validate) {
+    let mealEntry = mealEntryObj;
+    if (validate) {
+        let res = FMTValidateMealEntry(mealEntryObj);
+        if (res.mealEntry == null || res.error != null ) {
+            console.error(`Error validating Meal Entry Object (${mealEntryObj}) . Error - ${res.error}`);
+            return;
+        }
+        mealEntry = res.mealEntry;
+    }
+    const normalizedMealName = mealEntry.mealName.replace(" ", "_").replace("-", "_");
+    const mealDiv = document.createElement("div");
+    mealDiv.setAttribute("id", `overview-meal-${normalizedMealName}`);
+    mealDiv.classList.add("fmt-meal", "container");
     
+    
+    const mealHeaderDiv = document.createElement("div");
+    const mealEntriesDiv = document.createElement("div");
+    const mealFooterDiv = document.createElement("div");
+    mealHeaderDiv.setAttribute("id", `overview-meal-${normalizedMealName}-header`);
+    mealEntriesDiv.setAttribute("id", `overview-meal-${normalizedMealName}-entries`);
+    mealFooterDiv.setAttribute("id", `overview-meal-${normalizedMealName}-footer`);
+    
+    mealHeaderDiv.classList.add("fmt-meal-header", "row", "justify-content-center");
+    mealEntriesDiv.classList.add("fmt-meal-entries", "row", "justify-content-center");
+    mealFooterDiv.classList.add("fmt-meal-footer", "row", "justify-content-between", "pb-1");
+    
+    //Meal Header
+    const mNameSpan = document.createElement("span");
+    mNameSpan.classList.add("fmt-font-2", "float-left");
+    mNameSpan.innerHTML = mealEntry.mealName;
+    const mNameDiv = document.createElement("div");
+    mNameDiv.classList.add("col");
+    mNameDiv.appendChild(mNameSpan);
+    
+    const kCalSpan = document.createElement("span");
+    kCalSpan.setAttribute("id", `overview-meal-${normalizedMealName}-calories-progress`);
+    kCalSpan.classList.add("fmt-font-2", "float-right");
+    //First Set to 0 later update
+    kCalSpan.innerHTML = "0";
+    const kCalDiv = document.createElement("div");
+    kCalDiv.classList.add("col");
+    kCalDiv.appendChild(kCalSpan);
+
+    const optsBtn = document.createElement("button");
+    optsBtn.classList.add("fmt-font-1", "float-right", "ml-3", "btn", "btn-outline-dark");
+    optsBtn.innerHTML = "&#9776";
+    optsBtn.setAttribute("type", "button");
+    optsBtn.setAttribute("meal_name", normalizedMealName);
+    optsBtn.setAttribute("meal_year", mealEntry.year);
+    optsBtn.setAttribute("meal_month", mealEntry.month);
+    optsBtn.setAttribute("meal_day", mealEntry.day);
+    const optsBtnDiv = document.createElement("div");
+    optsBtnDiv.classList.add("col-2", "col-lg-1");
+    optsBtnDiv.appendChild(optsBtn);
+    
+    mealHeaderDiv.appendChild(mNameSpan);
+    mealHeaderDiv.appendChild(kCalDiv);
+    mealHeaderDiv.appendChild(optsBtnDiv);
+    
+    //Meal Footer
+    const carbSpanMd = document.createElement("span");
+    const carbSpanSm = document.createElement("span");
+    carbSpanMd.classList.add("fmt-font-1", "d-none", "d-sm-block", "fmt-meal-carbs");
+    carbSpanSm.classList.add("fmt-font-1", "d-sm-none", "fmt-meal-carbs");
+    carbSpanMd.innerHTML = "Carbohydrates";
+    carbSpanSm.innerHTML = "Carbs";
+    const mCarbsDiv = document.createElement("div");
+    mCarbsDiv.classList.add("col-3", "fmt-center-text");
+    mCarbsDiv.appendChild(carbSpanMd);
+    mCarbsDiv.appendChild(carbSpanSm);
+    
+    const proteinSpan = document.createElement("span");
+    proteinSpan.classList.add("fmt-font-1", "fmt-meal-proteins");
+    proteinSpan.innerHTML = "Proteins";
+    const mProtDiv = document.createElement("div");
+    mProtDiv.classList.add("col-3", "fmt-center-text");
+    mProtDiv.appendChild(proteinSpan);
+
+    const fatsSpan = document.createElement("span");
+    fatsSpan.classList.add("fmt-font-1", "fmt-meal-fats");
+    fatsSpan.innerHTML = "Fats";
+    const mFatsDiv = document.createElement("div");
+    mFatsDiv.classList.add("col-3", "fmt-center-text");
+    mFatsDiv.appendChild(fatsSpan);
+    
+    const w100 = document.createElement("div");
+    w100.classList.add("w-100");
+    
+    const mCarbsProg = document.createElement("span");
+    mCarbsProg.setAttribute("id", `overview-meal-${normalizedMealName}-carb-progress`);
+    mCarbsProg.classList.add("fmt-font-1");
+    //Inner HTML is 0 at creation and updated later with each meal
+    mCarbsProg.innerHTML = "0";
+    const mCarbsProgDiv = document.createElement("div");
+    mCarbsProgDiv.classList.add("fmt-center-text",  "col-3", "ml-1", "mr-1");
+    mCarbsProgDiv.appendChild(mCarbsProg);
+    
+    const mProtProg = document.createElement("span");
+    mProtProg.setAttribute("id", `overview-meal-${normalizedMealName}-protein-progress`);
+    mProtProg.classList.add("fmt-font-1");
+    mProtProg.innerHTML = "0";
+    const mProtProgDiv = document.createElement("div");
+    mProtProgDiv.classList.add("fmt-center-text",  "col-3");
+    mProtProgDiv.appendChild(mProtProg);
+    
+    const mFatsProg = document.createElement("span");
+    mFatsProg.setAttribute("id", `overview-meal-${normalizedMealName}-fat-progress`);
+    mFatsProg.classList.add("fmt-font-1");
+    mFatsProg.innerHTML = "0";
+    const mFatsProgDiv = document.createElement("div");
+    mFatsProgDiv.classList.add("fmt-center-text",  "col-3", "ml-1", "mr-1");
+    mFatsProgDiv.appendChild(mFatsProg);
+    
+    mealFooterDiv.appendChild(mCarbsDiv);
+    mealFooterDiv.appendChild(mProtDiv);
+    mealFooterDiv.appendChild(mFatsDiv);
+    mealFooterDiv.appendChild(w100);
+    mealFooterDiv.appendChild(mCarbsProgDiv);
+    mealFooterDiv.appendChild(mProtProgDiv);
+    mealFooterDiv.appendChild(mFatsProgDiv);
+    
+    //Final Meal
+    mealDiv.appendChild(mealHeaderDiv);
+    mealDiv.appendChild(mealEntriesDiv);
+    mealDiv.appendChild(mealFooterDiv);
+    return mealDiv;
 }
-function FMTCreateMealEntryNode(mealEntryObj) {
+function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
+    let mealEntry = mealEntryObj;
+    if (validate) {
+        let res = FMTValidateMealEntry(mealEntryObj);
+        if (res.mealEntry == null || res.error != null ) {
+            console.error(`Error validating Meal Entry Object (${mealEntryObj}) . Error - ${res.error}`);
+            return;
+        }
+        mealEntry = res.mealEntry;
+    }
+    const normalizedMealName = mealEntry.mealName.replace(" ", "_").replace("-", "_");
     
+    const mealEntryDiv = document.createElement("div");
+    const mealEntryId = `overview-meal-${mealEntry.entry_id}`;
+    mealEntryDiv.classList.add("fmt-meal-entry", "col", "row");
+    mealEntryDiv.setAttribute("id", mealEntryId);
+    mealEntryDiv.setAttribute("entry_id", mealEntry.entry_id);
+    mealEntryDiv.setAttribute("calories", mealEntry.nutritionalValue.calories);
+    mealEntryDiv.setAttribute("carbohydrates", mealEntry.nutritionalValue.carbohydrates);
+    mealEntryDiv.setAttribute("proteins", mealEntry.nutritionalValue.proteins);
+    mealEntryDiv.setAttribute("fats", mealEntry.nutritionalValue.fats);
+    mealEntryDiv.addEventListener("click", function(e) {
+        const mealDiv = document.getElementById(mealEntryId);
+        console.log(`Meal Entry with ID ${mealDiv.getAttribute("entry_id")} Clicked`);
+        //TODO
+    });
+    
+    const consNameSpan = document.createElement("span");
+    consNameSpan.classList.add("fmt-font-1", "float-left");
+    consNameSpan.innerHTML = `${mealEntry.consumableName}`;
+    const consNameDiv = document.createElement("div");
+    consNameDiv.classList.add("col-6");
+    consNameDiv.appendChild(consNameSpan);
+    
+    const consKcalSpan = document.createElement("span");
+    consKcalSpan.classList.add("fmt-font-1", "float-right");
+    consKcalSpan.innerHTML = `${mealEntry.nutritionalValue.calories}kCal`;
+    const consKcalDiv = document.createElement("div");
+    consKcalDiv.classList.add("col-6");
+    consKcalDiv.appendChild(consKcalSpan);
+    
+    const consDetailsSpan = document.createElement("span");
+    consDetailsSpan.classList.add("fmt-font-sm", "float-left");
+    consDetailsSpan.innerHTML = `${mealEntry.foodBrand != null ? `${mealEntry.foodBrand}, `: ""}${mealEntry.weight}${mealEntry.weightUnits}`;
+    const consDetailsDiv = document.createElement("div");
+    consDetailsDiv.classList.add("col-6");
+    consDetailsDiv.appendChild(consDetailsSpan);
+    
+    const consNutriValueSpan = document.createElement("span");
+    consNutriValueSpan.classList.add("fmt-font-sm", "float-left");
+    consNutriValueSpan.innerHTML = `Carb:${mealEntry.nutritionalValue.carbohydrates} Fat:${mealEntry.nutritionalValue.fats} Protein:${mealEntry.nutritionalValue.proteins}`;
+    const consNutriValueDiv = document.createElement("div");
+    consNutriValueDiv.classList.add("col-6");
+    consNutriValueDiv.appendChild(consNutriValueSpan);
+    
+    mealEntryDiv.appendChild(consNameDiv);
+    mealEntryDiv.appendChild(consKcalDiv);
+    mealEntryDiv.appendChild(consDetailsDiv);
+    mealEntryDiv.appendChild(consNutriValueDiv);
+    return mealEntryDiv;
 }
-function FMTOverviewAddMealEntry(mealEntryObj) {
-    
+function FMTOverviewUpdateMealProgress(targetID) {
+    const mealDiv = document.getElementById(targetID);
+    const mealEntries = mealDiv.getElementsByClassName("fmt-meal-entry");
+    const totalNutriValue = {"calories": 0, "proteins": 0, "carbohydrates": 0, "fats": 0};
+    for (let i=0; i<mealEntries.length; i++) {
+        const mealEntryDiv = mealEntries[i];
+        const cal = Number(mealEntryDiv.getAttribute("calories"));
+        const carb = Number(mealEntryDiv.getAttribute("carbohydrates"));
+        const prot = Number(mealEntryDiv.getAttribute("proteins"));
+        const fat = Number(mealEntryDiv.getAttribute("fats"));
+        totalNutriValue.calories += cal;
+        totalNutriValue.carbohydrates += carb;
+        totalNutriValue.proteins += prot;
+        totalNutriValue.fats += fat;
+    }
+    const calProgSpan = document.getElementById(`${targetID}-calories-progress`);
+    const carbProgSpan = document.getElementById(`${targetID}-carb-progress`);
+    const proteinProgSpan = document.getElementById(`${targetID}-protein-progress`);
+    const fatProgSpan = document.getElementById(`${targetID}-fat-progress`);
+    calProgSpan.innerHTML = totalNutriValue.calories;
+    carbProgSpan.innerHTML = totalNutriValue.carbohydrates;
+    proteinProgSpan.innerHTML = totalNutriValue.proteins;
+    fatProgSpan.innerHTML = totalNutriValue.fats;
+};
+function FMTOverviewUpdateTotalProgress(sourceID) {
+    const mealsContainerDiv = document.getElementById(sourceID);
+    const mealEntries = mealsContainerDiv.getElementsByClassName("fmt-meal-entry");
+    const totalNutriValue = {"calories": 0, "proteins": 0, "carbohydrates": 0, "fats": 0};
+    for (let i=0; i<mealEntries.length; i++) {
+        const mealEntryDiv = mealEntries[i];
+        const cal = Number(mealEntryDiv.getAttribute("calories"));
+        const carb = Number(mealEntryDiv.getAttribute("carbohydrates"));
+        const prot = Number(mealEntryDiv.getAttribute("proteins"));
+        const fat = Number(mealEntryDiv.getAttribute("fats"));
+        totalNutriValue.calories += cal;
+        totalNutriValue.carbohydrates += carb;
+        totalNutriValue.proteins += prot;
+        totalNutriValue.fats += fat;
+    }
+    onProfileReadFn = function(e) {
+        let profile = e.target.result;
+        if (profile == null) {
+            FMTShowAlert("overview-alerts", "danger", "Failed Reading Profile", fmtAppGlobals.defaultAlertScroll);
+            return;
+        }
+        const calProgBar = document.getElementById("calories-progress-bar");
+        const carbProgBar = document.getElementById("carb-progress-bar");
+        const proteinProgBar = document.getElementById("protein-progress-bar");
+        const fatProgBar = document.getElementById("fat-progress-bar");
+        
+        calProgBar.innerHTML = totalNutriValue.calories;
+        calPercent = (totalNutriValue.calories / profile.macroSplit.Calories) * 100;
+        calProgBar.setAttribute("aria-valuenow", calPercent);
+        calProgBar.style.width = `${calPercent >= 100? 100 : calPercent}%`;
+        if (calPercent > 100) {
+            calProgBar.classList.add("bg-danger");
+        }
+        else {
+            calProgBar.classList.remove("bg-danger");
+        }
+        
+        carbProgBar.innerHTML = totalNutriValue.carbohydrates;
+        carbPercent = (totalNutriValue.carbohydrates / (profile.macroSplit.Carbohydrate/100 * profile.macroSplit.Calories / 4 )) * 100;
+        carbProgBar.setAttribute("aria-valuenow", carbPercent);
+        carbProgBar.style.width = `${carbPercent >= 100? 100 : carbPercent}%`;
+        if (carbPercent > 100) {
+            carbProgBar.classList.add("bg-danger");
+        }
+        else {
+            carbProgBar.classList.remove("bg-danger");
+        }
+        
+        proteinProgBar.innerHTML = totalNutriValue.proteins;
+        proteinPercent = (totalNutriValue.proteins / (profile.macroSplit.Protein/100 * profile.macroSplit.Calories / 4 )) * 100;
+        proteinProgBar.setAttribute("aria-valuenow", proteinPercent);
+        proteinProgBar.style.width = `${proteinPercent >= 100? 100 : proteinPercent}%`;
+        if (proteinPercent > 100) {
+            proteinProgBar.classList.add("bg-danger");
+        }
+        else {
+            proteinProgBar.classList.remove("bg-danger");
+        }
+        
+        fatProgBar.innerHTML = totalNutriValue.fats;
+        fatPercent = (totalNutriValue.fats / (profile.macroSplit.Fat/100 * profile.macroSplit.Calories / 9 )) * 100;
+        fatProgBar.setAttribute("aria-valuenow", fatPercent);
+        fatProgBar.style.width = `${fatPercent >= 100? 100 : fatPercent}%`;
+        if (fatPercent > 100) {
+            fatProgBar.classList.add("bg-danger");
+        }
+        else {
+            fatProgBar.classList.remove("bg-danger");
+        }
+        
+    };
+    FMTReadProfile(fmtAppInstance.currentProfileId, onProfileReadFn);
+}
+function FMTOverviewAddMealEntry(mealEntryObj, validate) {
+    let mealEntry = mealEntryObj;
+    if (validate) {
+        let res = FMTValidateMealEntry(mealEntryObj);
+        if (res.mealEntry == null || res.error != null ) {
+            console.error(`Error validating Meal Entry Object (${mealEntryObj}) . Error - ${res.error}`);
+            return;
+        }
+        mealEntry = res.mealEntry;
+    }
+    const normalizedMealName = mealEntry.mealName.replace(" ", "_").replace("-", "_");
+    let mealDiv = document.getElementById(`overview-meal-${normalizedMealName}`);
+    if (!mealDiv) {
+        mealDiv = FMTOverviewCreateMealNode(mealEntry, false);
+        document.getElementById("overview-meals-container").appendChild(mealDiv);
+        mealDiv = document.getElementById(`overview-meal-${normalizedMealName}`);
+    }
+    let mealEntryDiv = FMTOverviewCreateMealEntryNode(mealEntry, false);
+    const w100 = document.createElement("div");
+    w100.classList.add("w-100");
+    const mealEntriesDiv = document.getElementById(`overview-meal-${normalizedMealName}-entries`);
+    mealEntriesDiv.appendChild(mealEntryDiv);
+    mealEntriesDiv.appendChild(w100);
+    FMTOverviewUpdateMealProgress(`overview-meal-${normalizedMealName}`);
 }
 function FMTOverviewSetDateStrings(dateStr) {
     for (let i=0; i < fmtAppGlobals.dateDivIDs.length; i++) {
@@ -1726,6 +2031,7 @@ function FMTOverviewSetDateStrings(dateStr) {
     }
 }
 function FMTOverviewLoadCurrentDay(onsuccessFn, onerrorFn) {
+    //Handle dates
     FMTToday();
     const cYear = fmtAppInstance.today.getFullYear();
     const cMonth = fmtAppInstance.today.getMonth();
@@ -1740,21 +2046,24 @@ function FMTOverviewLoadCurrentDay(onsuccessFn, onerrorFn) {
     else {
         FMTOverviewSetDateStrings(getDateString(fmtAppInstance.currentDay));
     }
+    //Query for Meals based on current Profile ID and currentDate
     let queryOpts = {"queryType": "only"};
     let entryCount = 0;
+    document.getElementById("overview-meals-container").innerHTML = "";
     onOpenCursorSuccessFn = function(event) {
         let cursor = event.target.result;
         if (cursor) {
             let mealEntryObj = cursor.value;
-            FMTOverviewAddMealEntry(mealEntryObj);
-            //console.debug(mealEntryObj);
+            FMTOverviewAddMealEntry(mealEntryObj, true);
             entryCount++;
             cursor.continue();
         }
         else {
             console.debug(`Loaded ${entryCount} meal entry records`);
+            FMTOverviewUpdateTotalProgress("overview-meals-container");
         }
     }
+    
     FMTQueryMealEntriesByProfileAndDate(fmtAppInstance.currentProfileId,
                                         fmtAppInstance.currentDay.getFullYear(),
                                         fmtAppInstance.currentDay.getMonth(),

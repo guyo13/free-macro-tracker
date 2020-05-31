@@ -15,13 +15,13 @@ function mealEntryAddTest(mepd, pidstart, pidstop, dstart, dstop, direction) {
     var count = 0;
     let mealObj= {};
     let mealNames = ["Breakfast", "Snack 1", "Snack 2", "Lunch", "Dinner"];
-    let nutritionalValues = [{calories:600, proteins:33, carbohydrates:22, fats:12},
+    let nutritionalValues = [{calories:60, proteins:12, carbohydrates:3, fats:5},
                              {calories:600, proteins:33, carbohydrates:22, fats:12, additionalNutrients: null},
-                             {calories:600, proteins:33, carbohydrates:22, fats:12, additionalNutrients: { "Minerals": [{"name":"Calcium", "mass":10, "unit":"mg"},                                                                                                                                     {"name":"Chloride", "mass":15 ,"unit":"mg"}],
+                             {calories:550, proteins:20, carbohydrates:15, fats:3, additionalNutrients: { "Minerals": [{"name":"Calcium", "mass":10, "unit":"mg"},                                                                                                                                     {"name":"Chloride", "mass":15 ,"unit":"mg"}],
                                                                                                           "Amino Acids":[{"name":"Alanine", "mass":1500, "unit":"mg"},                                                      {"name":"Arginine", "mass":2000, "unit":"mg"}]
                                                                                                         }
                              },
-                             {calories:600, proteins:33, carbohydrates:22, fats:12, additionalNutrients: {}}
+                             {calories:425, proteins:18, carbohydrates:32.5, fats:5.5, additionalNutrients: {}}
                             ];
     const startTime = Date.now();
     mepd = mepd || 100;
@@ -48,7 +48,7 @@ function mealEntryAddTest(mepd, pidstart, pidstop, dstart, dstop, direction) {
                 let k = Math.random();
                 mealObj.foodBrand = (k < 0.5 ? null : "Test Brand");
                 mealObj.is_recipe = (k < 0.5 ? true : false);
-                mealObj.weight = 50 + Math.random() * 300;
+                mealObj.weight = Math.round(50 + Math.random() * 300);
                 mealObj.weightUnits = "g";
                 r = Math.floor(Math.random() + Math.random()*3);
                 mealObj.nutritionalValue = nutritionalValues[r];

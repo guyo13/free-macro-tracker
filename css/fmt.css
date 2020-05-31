@@ -70,6 +70,9 @@ button {
     background-color: black;
     border-radius: 2px;
 }
+.fmt-meal-carbs {}
+.fmt-meal-proteins {}
+.fmt-meal-fats {}
 .fmt-meal-entry {
     border-bottom-style: solid;
     border-bottom-width: thin;
@@ -83,6 +86,7 @@ button {
 .fmt-meal-footer {
     background-color: #e9ecef;
 }
+.fmt-meal-entries {}
 .fmt-meal-header {
 /*    border-bottom-style: solid;
     border-bottom-width: medium;
