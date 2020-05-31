@@ -76,6 +76,7 @@ fmtAppGlobals.FMT_DB_USER_GOALS_KP = ["profile_id", "year", "month", "day"];
 fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-recipes", "goto-profile", "goto-advanced", "goto-export", "goto-import"];
 fmtAppGlobals.dynamicScreenIds = ["add-food-screen", "edit-food-screen", "view-food-screen"];
 fmtAppGlobals.foodItemScreenStaticViewInputFields = ["food-name", "food-brand", /*"food-weight-input",*/ "food-calories", "food-proteins", "food-carbohydrates", "food-fats"];
+fmtAppGlobals.dateDivIDs = ["overview-date-day-large", "overview-date-day-small"];
 //Globals - Units
 fmtAppGlobals.supportedBodyweightUnits = ["Kg", "Lbs"];
 fmtAppGlobals.supportedHeightUnits = ["Cm", "Inch"];
@@ -122,6 +123,11 @@ function isNumber(input) {
 }
 function isDate(date) {
     return date && Object.prototype.toString.call(date) === "[object Date]" && !isNaN(date);
+}
+function isSameDay(d1, d2) {
+    return (d1.getFullYear() === d2.getFullYear()
+            && d1.getMonth() === d2.getMonth()
+            && d1.getDate() === d2.getDate());
 }
 //Functions - DB
 function prepareDBv1() {
@@ -1703,9 +1709,27 @@ function FMTUpdateViewFoodValuesOnWeightChange(e) {
 }
 //Functions - UI - Recipes
 //Functions - UI - Overview
+function FMTOverviewSetDateStrings(dateStr) {
+    for (let i=0; i < fmtAppGlobals.dateDivIDs.length; i++) {
+        const _id = fmtAppGlobals.dateDivIDs[i];
+        document.getElementById(_id).innerHTML = dateStr;
+    }
+}
 function FMTOverviewLoadCurrentDay(onsuccessFn, onerrorFn) {
-    document.getElementById("overview-date-day-large").innerHTML = getDateString(fmtAppInstance.currentDay);
-    document.getElementById("overview-date-day-small").innerHTML = getDateString(fmtAppInstance.currentDay);
+    FMTToday();
+    const cYear = fmtAppInstance.today.getFullYear();
+    const cMonth = fmtAppInstance.today.getMonth();
+    const cDay = fmtAppInstance.today.getDate();
+
+    const tomorrow = new Date(cYear, cMonth, cDay+1);
+    const yesterday = new Date(cYear, cMonth, cDay-1);
+
+    if ( isSameDay(fmtAppInstance.currentDay, fmtAppInstance.today) ) { FMTOverviewSetDateStrings("Today"); }
+    else if (isSameDay(fmtAppInstance.currentDay, yesterday) ) { FMTOverviewSetDateStrings("Yesterday"); }
+    else if (isSameDay(fmtAppInstance.currentDay, tomorrow) ) { FMTOverviewSetDateStrings("Tomorrow"); }
+    else {
+        FMTOverviewSetDateStrings(getDateString(fmtAppInstance.currentDay));
+    }
 }
 //Functions - State
 //Functions - State - Date
