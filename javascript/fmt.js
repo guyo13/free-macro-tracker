@@ -1891,7 +1891,7 @@ function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
     
     const consNutriValueSpan = document.createElement("span");
     consNutriValueSpan.classList.add("fmt-font-sm", "float-left");
-    consNutriValueSpan.innerHTML = `Carb:${mealEntry.nutritionalValue.carbohydrates} Fat:${mealEntry.nutritionalValue.fats} Protein:${mealEntry.nutritionalValue.proteins}`;
+    consNutriValueSpan.innerHTML = `Carb:${mealEntry.nutritionalValue.carbohydrates} Protein:${mealEntry.nutritionalValue.proteins} Fat:${mealEntry.nutritionalValue.fats}`;
     const consNutriValueDiv = document.createElement("div");
     consNutriValueDiv.classList.add("col-6");
     consNutriValueDiv.appendChild(consNutriValueSpan);
