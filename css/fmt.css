@@ -84,10 +84,11 @@ button {
     background-color: #e9ecef;
 }
 .fmt-meal-header {
-    border-bottom-style: solid;
+/*    border-bottom-style: solid;
     border-bottom-width: medium;
-    border-bottom-color: white;
-    background-color: #e9ecef;
+    border-bottom-color: white;*/
+    /*background-color: #e9ecef;*/
+    background-color: #bbbec4;
 }
 .fmt-progress-bar-container{}
 .footer {
