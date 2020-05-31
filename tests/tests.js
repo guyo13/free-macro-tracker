@@ -73,4 +73,6 @@ function mealEntryAddTest(mepd, pidstart, pidstop, dstart, dstop, direction) {
 }
 //mealEntryAddTest(50, 1, 2, -3, 31, 1);
 
-
+console.log(fmtAppInstance.pageState.activeDynamicScreens)
+console.log(pageController.updateZIndexes(true))
+console.log(pageController.updateZIndexes())
