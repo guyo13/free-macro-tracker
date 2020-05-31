@@ -855,13 +855,14 @@ function FMTQueryMealEntriesByProfileAndDate(profile_id, year, month, day, onsuc
             break;
         case "only":
             keyRange = IDBKeyRange.only([profile_id, year, month, day]);
+            break;
         default:
             break;
     }
     onsuccessFn = onsuccessFn || function(e) { console.debug("[FMTQueryMealEntriesByProfileAndDate] onsuccess - ", keyRange, options) };
     onerrorFn = onerrorFn || function(e) { console.debug("[FMTQueryMealEntriesByProfileAndDate] onerror - ", keyRange, options) };
     const pid_date_index = getIndex(fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE, "profile_id_date_index");
-    const cursorRequest = pid_date_index.openKeyCursor(keyRange, options.direction);
+    const cursorRequest = pid_date_index.openCursor(keyRange, options.direction);
     cursorRequest.onerror = onerrorFn;
     cursorRequest.onsuccess = onsuccessFn;
 }
@@ -1709,6 +1710,15 @@ function FMTUpdateViewFoodValuesOnWeightChange(e) {
 }
 //Functions - UI - Recipes
 //Functions - UI - Overview
+function FMTCreateMealNode(mealEntryObj) {
+    
+}
+function FMTCreateMealEntryNode(mealEntryObj) {
+    
+}
+function FMTOverviewAddMealEntry(mealEntryObj) {
+    
+}
 function FMTOverviewSetDateStrings(dateStr) {
     for (let i=0; i < fmtAppGlobals.dateDivIDs.length; i++) {
         const _id = fmtAppGlobals.dateDivIDs[i];
@@ -1730,6 +1740,26 @@ function FMTOverviewLoadCurrentDay(onsuccessFn, onerrorFn) {
     else {
         FMTOverviewSetDateStrings(getDateString(fmtAppInstance.currentDay));
     }
+    let queryOpts = {"queryType": "only"};
+    let entryCount = 0;
+    onOpenCursorSuccessFn = function(event) {
+        let cursor = event.target.result;
+        if (cursor) {
+            let mealEntryObj = cursor.value;
+            FMTOverviewAddMealEntry(mealEntryObj);
+            //console.debug(mealEntryObj);
+            entryCount++;
+            cursor.continue();
+        }
+        else {
+            console.debug(`Loaded ${entryCount} meal entry records`);
+        }
+    }
+    FMTQueryMealEntriesByProfileAndDate(fmtAppInstance.currentProfileId,
+                                        fmtAppInstance.currentDay.getFullYear(),
+                                        fmtAppInstance.currentDay.getMonth(),
+                                        fmtAppInstance.currentDay.getDate(),
+                                        onOpenCursorSuccessFn, onerrorFn, queryOpts);
 }
 //Functions - State
 //Functions - State - Date

@@ -11,7 +11,7 @@ FMTValidateFoodObject(foodObj5);
 FMTReadAllNutrients(function(e) {let res= e.target.result.filter(function(entry) {if (entry.category === "Minerals") return true;} ); console.log(res);});
 
 
-function mealEntryAddTest(mepd) {
+function mealEntryAddTest(mepd, pidstart, pidstop, dstart, dstop, direction) {
     var count = 0;
     let mealObj= {};
     let mealNames = ["Breakfast", "Snack 1", "Snack 2", "Lunch", "Dinner"];
@@ -25,13 +25,20 @@ function mealEntryAddTest(mepd) {
                             ];
     const startTime = Date.now();
     mepd = mepd || 100;
-    for (let pid=1; pid<3; pid++) {
-        let date = new Date();
+    pidstart = pidstart || 1;
+    pidstop = pidstop || 3;
+    dstart = dstart || 1;
+    dstop = dstop || 31;
+    direction = direction || 1;
+    
+    for (let pid=pidstart; pid<pidstop; pid++) {
+        
         mealObj.profile_id = pid;
-        for (let d=1; d<=365; d++) {
-            date.setDate(date.getDate()-1);
+        
+        for (let d=dstart; d<dstop; d++) {
+            let date = new Date();
+            date.setDate(date.getDate() + d*direction);
             for (let i=0; i<mepd; i++) {
-                //mealObj.entry_id = pid*10000000 + d*10000 + i;
                 mealObj.year = date.getFullYear();
                 mealObj.month = date.getMonth();
                 mealObj.day = date.getDate();
@@ -51,7 +58,6 @@ function mealEntryAddTest(mepd) {
         }
     }
     const mealEntriesStore = getObjectStore(fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE, fmtAppGlobals.FMT_DB_READONLY);
-    //let count = 0;
     let request  = mealEntriesStore.openCursor();
     request.onsuccess = function(event) {
       var cursor = event.target.result;
@@ -60,11 +66,11 @@ function mealEntryAddTest(mepd) {
         cursor.continue();
       } else {
         const endTime = Date.now();
-        console.log(`Meal Entry count - ${count} == ${2*365*mepd} ? ${count == 2*365*mepd}. Run time - ${(endTime - startTime)/1000} Seconds.`);
+        console.log(`Meal Entry count - ${count} == ${(pidstop-pidstart)*(dstop-dstart)*mepd} ? ${count == (pidstop-pidstart)*(dstop-dstart)*mepd}. Run time - ${(endTime - startTime)/1000} Seconds.`);
         navigator.storage.estimate().then((e) => {console.log(`Quota: ${e.quota/1000000} MB, Usage: ${e.usage/1000000} MB`)});
       }
     };    
 }
-//mealEntryAddTest();
+//mealEntryAddTest(50, 1, 2, -3, 31, 1);
 
 
