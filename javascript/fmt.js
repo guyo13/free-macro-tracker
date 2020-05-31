@@ -1718,7 +1718,7 @@ function FMTUpdateViewFoodValuesOnWeightChange(e) {
         FMTShowAlert("view-food-screen-alerts", "danger", "Error while calculating nutritional value. Please reload page", fmtAppGlobals.defaultAlertScroll);
     }
     else {
-        pageController.showViewFoodDynamicScreen(foodId, multiplier, false, weightValue, weightUnits);
+        pageController.openViewFoodDynamicScreen(foodId, multiplier, false, weightValue, weightUnits);
     }
 }
 //Functions - UI - Recipes
@@ -2143,7 +2143,7 @@ var pageController = {
         };
         const events = {"click": function(e) {
                             const foodId = Number(e.currentTarget.getAttribute("food_id"));
-                            pageController.showViewFoodDynamicScreen(foodId, 1, true);
+                            pageController.openViewFoodDynamicScreen(foodId, 1, true);
                             document.getElementById("foods-alerts").innerHTML = "";
                             }
                        };
@@ -2193,7 +2193,7 @@ var pageController = {
         delete fmtAppInstance.pageState.activeDynamicScreens[dynamicScreenId];
         pageController.updateZIndexes();
     },
-    showAddFoodDynamicScreen: function() {
+    openAddFoodDynamicScreen: function() {
         pageController.openDynamicScreen("add-food-screen");
         FMTFoodItemScreenClear("add-food-screen");
         FMTFoodItemScreenPopulate("add-food-screen");
@@ -2203,7 +2203,7 @@ var pageController = {
         FMTFoodItemScreenClear("add-food-screen");
         document.getElementById("foods-alerts").innerHTML = "";
     },
-    showEditFoodDynamicScreen: function(foodId) {
+    openEditFoodDynamicScreen: function(foodId) {
         if (!isNumber(foodId)) { console.error(`Food ID (${foodId}) is not a number`); return; }
         foodId = Number(foodId);
         pageController.openDynamicScreen("edit-food-screen");
@@ -2216,7 +2216,7 @@ var pageController = {
         pageController.closeDynamicScreen("edit-food-screen");
         FMTFoodItemScreenClear("edit-food-screen");
     },
-    showViewFoodDynamicScreen: function(foodId, multiplier, clear, currentWeightValue, currentWeightUnits) {
+    openViewFoodDynamicScreen: function(foodId, multiplier, clear, currentWeightValue, currentWeightUnits) {
         if (!isNumber(foodId)) { console.error(`Food ID (${foodId}) is not a number`); return; }
         if (!isNumber(multiplier)) { console.error(`Multiplier (${multiplier}) is not a number`); return; }
         foodId = Number(foodId);
@@ -2237,13 +2237,13 @@ var pageController = {
         pageController.closeDynamicScreen("view-food-screen");
         FMTFoodItemScreenClear("view-food-screen");
     },
-    showAddToMealDynamicScreen: function() {
+    openAddToMealDynamicScreen: function() {
         pageController.openDynamicScreen("add-to-meal-screen");
         let onsuccessFn = function() {
-            console.debug("[showAddToMealDynamicScreen] - Foods loaded successfully");
+            console.debug("[openAddToMealDynamicScreen] - Foods loaded successfully");
             $(".fmt-food-table-row").click(function(e) {
                 const foodId = Number(e.currentTarget.getAttribute("food_id"));
-                pageController.showViewFoodDynamicScreen(foodId, 1, true);
+                pageController.openViewFoodDynamicScreen(foodId, 1, true);
             });
         };
         let onerrorFn = function(e) {
@@ -2252,7 +2252,7 @@ var pageController = {
         };
         const events = {"click": function(e) {
                     const foodId = Number(e.currentTarget.getAttribute("food_id"));
-                    pageController.showViewFoodDynamicScreen(foodId, 1, true);
+                    pageController.openViewFoodDynamicScreen(foodId, 1, true);
                     }
                };
         FMTDisplayFoodsTable("add-to-meal-screen", onsuccessFn, onerrorFn, events);
@@ -2463,7 +2463,7 @@ function prepareEventHandlers() {
         FMTUpdateMacroesForm(fmtAppInstance.currentProfileId, onsuccessFn, onerrorFn);
         });
     $("#foods-add-food").click( (e) => {
-        pageController.showAddFoodDynamicScreen();
+        pageController.openAddFoodDynamicScreen();
     });
     $("#add-food-screen-cancel").click( (e) => {
         if(fmtAppInstance.promptSettings.promptOnUnsavedFood) {
@@ -2583,18 +2583,22 @@ function prepareEventHandlers() {
             return;
         }
         pageController.closeViewFoodDynamicScreen();
-        pageController.showEditFoodDynamicScreen(foodId);
+        pageController.openEditFoodDynamicScreen(foodId);
     });
     $("#overview-add-to-meal").click( (e) => { 
-        pageController.showAddToMealDynamicScreen();
+        pageController.openAddToMealDynamicScreen();
     });
     $("#add-to-meal-screen-cancel").click( (e) => { 
         pageController.closeAddToMealDynamicScreen();
     });
     //Search functions
-    $("#myfood-search").keyup( (e) => {
+    $("#foods-food-search").keyup( (e) => {
         let query = e.currentTarget.value;
-        FMTQueryFoodsTable(query)
+        FMTQueryFoodsTable(query, "foods");
+    });
+    $("#add-to-meal-screen-food-search").keyup( (e) => {
+        let query = e.currentTarget.value;
+        FMTQueryFoodsTable(query, "add-to-meal-screen");
     });
     $(".fmt-prev-day-btn").click( (e) => { FMTPreviousDay(FMTOverviewLoadCurrentDay); } );
     $(".fmt-next-day-btn").click( (e) => { FMTNextDay(FMTOverviewLoadCurrentDay); } );
