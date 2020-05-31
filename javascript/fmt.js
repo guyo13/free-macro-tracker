@@ -74,7 +74,7 @@ fmtAppGlobals.FMT_DB_USER_GOALS_KP = ["profile_id", "year", "month", "day"];
 
 //Globals - Page
 fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-recipes", "goto-profile", "goto-advanced", "goto-export", "goto-import"];
-fmtAppGlobals.dynamicScreenIds = ["add-food-screen", "edit-food-screen", "view-food-screen"];
+fmtAppGlobals.dynamicScreenIds = ["add-food-screen", "edit-food-screen", "view-food-screen", "add-to-meal-screen"];
 fmtAppGlobals.foodItemScreenStaticViewInputFields = ["food-name", "food-brand", /*"food-weight-input",*/ "food-calories", "food-proteins", "food-carbohydrates", "food-fats"];
 fmtAppGlobals.dateDivIDs = ["overview-date-day-large", "overview-date-day-small"];
 //Globals - Units
@@ -2212,6 +2212,12 @@ var pageController = {
         pageController.closeDynamicScreen("view-food-screen");
         FMTFoodItemScreenClear("view-food-screen");
     },
+    showAddToMealDynamicScreen: function() {
+        pageController.setDynamicScreenActive("add-to-meal-screen");
+    },
+    closeAddToMealDynamicScreen: function() {
+        pageController.closeDynamicScreen("add-to-meal-screen");
+    },
 };
 
 //Functions - DB - Init
@@ -2529,6 +2535,12 @@ function prepareEventHandlers() {
         }
         pageController.closeViewFoodDynamicScreen();
         pageController.showEditFoodDynamicScreen(foodId);
+    });
+    $("#overview-add-to-meal").click( (e) => { 
+        pageController.showAddToMealDynamicScreen();
+    });
+    $("#add-to-meal-screen-cancel").click( (e) => { 
+        pageController.closeAddToMealDynamicScreen();
     });
     //Search functions
     $("#myfood-search").keyup( (e) => {

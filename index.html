@@ -9,10 +9,6 @@
 </head>
 <body>
     <div id="odin" class="fmt-allfather">
-<!--        <div id="page-title" class="row justify-content-center">
-            <h1 class="display-4 d-none d-md-block">Free Macro Tracker - Development</h1>
-            <h4 class="d-md-none">Free Macro Tracker - Development</h4>
-        </div>-->
         <div id="tabs" class="row justify-content-center">
         <nav class="navbar navbar-expand-md navbar-light fmt-bg-light">
           <!-- Brand -->
@@ -626,6 +622,37 @@
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-4 mb-1">
                     <button id="view-food-screen-save" class="btn btn-outline-dark flex-fill" type="button">Add to Meal</button>
+                </div>
+            </div>
+        </div>
+        <div id="add-to-meal-screen" class="fmt-dynamic-screen">
+            <div id="add-to-meal-alerts" class="row justify-content-center"></div>
+            <div class="d-flex justify-content-center mt-3">
+                <div class="d-flex col-12 col-lg-8 mb-1 justify-content-between">
+                    <div class="">
+                        <h4 class="d-none d-md-block">Add to Meal</h4>
+                        <h5 class="d-md-none">Add to Meal</h5>
+                    </div>
+                    <div class="">
+                        <button id="add-to-meal-screen-add-food" class="btn btn-outline-dark fmt-text-btn1 mr-4" type="button">New</button>
+                        <button id="add-to-meal-screen-cancel" class="btn btn-outline-dark fmt-text-btn1" type="button">&times;</button>
+                    </div>
+                </div>
+            </div>
+            <div id="add-to-meal-screen-menu-container" class="row justify-content-center">
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-8 mb-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Search</span>
+                        <input id="add-to-meal-screen-search" type="text" class="form-control" placeholder="Type to Search..." aria-label="Search" aria-describedby="basic-addon2">
+                    </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-8 mb-1 fmt-table-height">
+                    <table id="add-to-meal-screen-food-table" class="table table-striped table-hover">
+                      <tbody id="add-to-meal-screen-food-table-body">
+                      </tbody>
+                    </table>
                 </div>
             </div>
         </div>
