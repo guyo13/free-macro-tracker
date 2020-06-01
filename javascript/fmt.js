@@ -75,8 +75,8 @@ fmtAppGlobals.FMT_DB_USER_GOALS_KP = ["profile_id", "year", "month", "day"];
 
 //Globals - Page
 fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-recipes", "goto-profile", "goto-advanced", "goto-export", "goto-import"];
-fmtAppGlobals.dynamicScreenIds = ["add-food-screen", "edit-food-screen", "view-food-screen", "add-to-meal-screen"];
-fmtAppGlobals.foodItemScreenStaticViewInputFields = ["food-name", "food-brand", /*"food-weight-input",*/ "food-calories", "food-proteins", "food-carbohydrates", "food-fats"];
+fmtAppGlobals.dynamicScreenIds = ["add-food-screen", "edit-food-screen", "view-food-screen", "add-to-meal-screen", "edit-meal-entry-screen"];
+fmtAppGlobals.consumableItemScreenStaticViewInputFields = ["-name", "-brand", "-calories", "-proteins", "-carbohydrates", "-fats"];
 fmtAppGlobals.dateDivIDs = ["overview-date-day-large", "overview-date-day-small"];
 fmtAppGlobals.maxDynamicScreens = 1000;
 //Globals - Units
@@ -755,8 +755,8 @@ function FMTValidateMealEntry(mealEntryObj) {
     }
     mealEntry.consumableName = mealEntryObj.consumableName;
     
-    mealEntry.foodBrand = mealEntryObj.foodBrand;
-    mealEntry.is_recipe = Boolean(mealEntryObj.is_recipe);
+    mealEntry.consumableBrand = mealEntryObj.consumableBrand;
+    mealEntry.consumableType = mealEntryObj.consumableType || "";
     
     if (!isNumber(mealEntryObj.weight) || Number(mealEntryObj.weight) <= 0) {
         error = `Weight is not a positive number (got ${mealEntryObj.weight})`;
@@ -1516,15 +1516,15 @@ function FMTQueryFoodsTable(query, baseID) {
         }
     }
 }
-function FMTFoodItemScreenPopulateAdditionalNutrients(baseScreenID, readonly) {
-    if (!fmtAppInstance.additionalNutrients) {return false;}
-    
+function FMTFoodItemScreenPopulateAdditionalNutrients(baseScreenID, readonly, qualifier) {
+    if (!fmtAppInstance.additionalNutrients) { return false; }
+    qualifier = qualifier || "food";
     const mUnitsChart = fmtAppInstance.massUnitChart;
-    const additionalNutriDivId = `${baseScreenID}-food-additional`;
+    const additionalNutriDivId = `${baseScreenID}-${qualifier}-additional`;
     const additionalNutriDiv = document.getElementById(additionalNutriDivId);
     const categories = Object.keys(fmtAppInstance.additionalNutrients);
     const isStatic = !fmtAppInstance.additionalNutrientsSettings.allowNonDefaultUnits;
-    const baseID = `${baseScreenID}-food-addi`;
+    const baseID = `${baseScreenID}-${qualifier}-addi`;
     for (let j=0; j<categories.length; j++) {
         let category = categories[j];
         let nutrientsInCategory = fmtAppInstance.additionalNutrients[category];
@@ -1542,21 +1542,22 @@ function FMTFoodItemScreenPopulateAdditionalNutrients(baseScreenID, readonly) {
     }
     return true;
 }
-//TODO - optionsObj {foodId(int),readonly(bool),date(str YYYY-MM-DD),mealName(str),eventListenersObj}
+//TODO - optionsObj {consumableId(int),readonly(bool),date(str YYYY-MM-DD),mealName(str),eventListenersObj}
 //evenListenerObj{"DOM ID1": {"event": fn},...,"DOM IDN": {"event": fn}}
-function FMTFoodItemScreenPopulate(baseScreenID, optionsObj) {
+function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier) {
+    qualifier = qualifier || "food";
     optionsObj = optionsObj || {"readonly": false};
-    const weightBaseName = `${baseScreenID}-food-weight`;
+    const weightBaseName = `${baseScreenID}-${qualifier}-weight`;
     const weightTargetDiv = weightBaseName;
     const mUnitsChart = fmtAppInstance.massUnitChart;
     const readonly = optionsObj.readonly || false;
     FMTCreateMassUnitDropdownMenu(weightBaseName, weightTargetDiv, mUnitsChart, false, "g", readonly);
     
     const saveOrAddBtn = document.getElementById(`${baseScreenID}-save`);
-    if (isNumber(optionsObj.foodId)) {
-        saveOrAddBtn.setAttribute("food_id", optionsObj.foodId);
+    if (isNumber(optionsObj.consumableId)) {
+        saveOrAddBtn.setAttribute(`${qualifier}_id`, optionsObj.consumableId);
     }
-    const res = FMTFoodItemScreenPopulateAdditionalNutrients(baseScreenID, readonly);
+    const res = FMTFoodItemScreenPopulateAdditionalNutrients(baseScreenID, readonly, qualifier);
     if (!res) { console.warn("Failed populating user defined values in add food screen"); }
     if (optionsObj.eventListenersObj) {
         for (const elemName in optionsObj.eventListenersObj) {
@@ -1569,14 +1570,32 @@ function FMTFoodItemScreenPopulate(baseScreenID, optionsObj) {
         }
     }
 }
-function FMTFoodItemScreenPopulateSavedValues(baseScreenID, foodId, multiplier,
+function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableId, qualifier, objectType, multiplier,
                                               readonly, focusDivId, currentWeightValue,
                                                currentWeightUnits , onCompleteFn) {
     if (multiplier !== 0) {
         multiplier = multiplier || 1;
     }
+    qualifier = qualifier || "food";
+    objectType = objectType || "Food Item";
+    const _funcName = "FMTPopulateSavedValuesInConsumableItemScreen";
+    let nameProp, brandProp, weightProp, idProp;
+    switch (objectType) {
+        case "Food Item":
+            nameProp = "foodName";
+            brandProp = "foodBrand";
+            weightProp = "referenceWeight";
+            idProp = "food_id";
+            break;
+        case "Meal Entry":
+            nameProp = "consumableName";
+            brandProp = "consumableBrand";
+            weightProp = "weight";
+            idProp = "entry_id";//TODO - revise (there is also consumable_id which one we need?)
+            break;
+    }
     let onerrorFn = function(e) {
-        const msg = `[FMTFoodItemScreenPopulateSavedValues] - Failed loading Food Id (${foodId})`;
+        const msg = `[${_funcName}] - Failed loading Consumable Id (${consumableId})`;
         console.error(msg);
         FMTShowAlert(`${baseScreenID}-alerts`, "danger", msg, fmtAppGlobals.defaultAlertScroll);
     };
@@ -1584,39 +1603,39 @@ function FMTFoodItemScreenPopulateSavedValues(baseScreenID, foodId, multiplier,
         //TODO Add option to not validate
         const result = FMTValidateFoodObject(e.target.result, fmtAppInstance.massUnitChart);
         if (result.error != null) {
-            const msg = `[FMTFoodItemScreenPopulateSavedValues] - Food Id (${foodId}) loaded but failed validation`;
+            const msg = `[${_funcName}] - Consumable Id (${consumableId}) loaded but failed validation`;
             console.error(msg);
             console.error(e.target.result);
             FMTShowAlert(`${baseScreenID}-alerts`, "warning", msg, fmtAppGlobals.defaultAlertScroll);
             return;
         }
-        const food = result.food;
-        document.getElementById(`${baseScreenID}-food-name`).value = food.foodName;
-        document.getElementById(`${baseScreenID}-food-brand`).value = food.foodBrand;
+        const consumableItem = result.food;
+        document.getElementById(`${baseScreenID}-${qualifier}-name`).value = consumableItem[nameProp];
+        document.getElementById(`${baseScreenID}-${qualifier}-brand`).value = consumableItem[brandProp];
         if (!isNumber(currentWeightValue) || !(currentWeightUnits in fmtAppInstance.massUnitChart)) {
-            document.getElementById(`${baseScreenID}-food-weight-input`).value = food.referenceWeight;
-            document.getElementById(`${baseScreenID}-food-weight-input`).setAttribute("reference_weight", food.referenceWeight);
-            document.getElementById(`${baseScreenID}-food-weight-input`).setAttribute("reference_weight_units", food.weightUnits);
-            document.getElementById(`${baseScreenID}-food-weight-unit-${food.weightUnits}`).dispatchEvent(new Event("click"));
+            document.getElementById(`${baseScreenID}-${qualifier}-weight-input`).value = consumableItem.referenceWeight;
+            document.getElementById(`${baseScreenID}-${qualifier}-weight-input`).setAttribute("reference_weight", consumableItem.referenceWeight);
+            document.getElementById(`${baseScreenID}-${qualifier}-weight-input`).setAttribute("reference_weight_units", consumableItem.weightUnits);
+            document.getElementById(`${baseScreenID}-${qualifier}-weight-unit-${consumableItem.weightUnits}`).dispatchEvent(new Event("click"));
         }//Else dont touch these fields
-        document.getElementById(`${baseScreenID}-food-calories`).value = food.nutritionalValue.calories * multiplier;
-        document.getElementById(`${baseScreenID}-food-proteins`).value = food.nutritionalValue.proteins * multiplier;
-        document.getElementById(`${baseScreenID}-food-carbohydrates`).value = food.nutritionalValue.carbohydrates * multiplier;
-        document.getElementById(`${baseScreenID}-food-fats`).value = food.nutritionalValue.fats * multiplier;
+        document.getElementById(`${baseScreenID}-${qualifier}-calories`).value = consumableItem.nutritionalValue.calories * multiplier;
+        document.getElementById(`${baseScreenID}-${qualifier}-proteins`).value = consumableItem.nutritionalValue.proteins * multiplier;
+        document.getElementById(`${baseScreenID}-${qualifier}-carbohydrates`).value = consumableItem.nutritionalValue.carbohydrates * multiplier;
+        document.getElementById(`${baseScreenID}-${qualifier}-fats`).value = consumableItem.nutritionalValue.fats * multiplier;
         
         if (readonly) {
-            for (const j in fmtAppGlobals.foodItemScreenStaticViewInputFields) {
-                document.getElementById(`${baseScreenID}-${fmtAppGlobals.foodItemScreenStaticViewInputFields[j]}`).setAttribute("readonly", true);
+            for (const j in fmtAppGlobals.consumableItemScreenStaticViewInputFields) {
+                document.getElementById(`${baseScreenID}-${qualifier}-${fmtAppGlobals.consumableItemScreenStaticViewInputFields[j]}`).setAttribute("readonly", true);
             }
         }
 
-        if (!!food.nutritionalValue.additionalNutrients) {
-            for (const nutriCatName in food.nutritionalValue.additionalNutrients) {
-                const nutrientsList = food.nutritionalValue.additionalNutrients[nutriCatName];
+        if (!!consumableItem.nutritionalValue.additionalNutrients) {
+            for (const nutriCatName in consumableItem.nutritionalValue.additionalNutrients) {
+                const nutrientsList = consumableItem.nutritionalValue.additionalNutrients[nutriCatName];
                 for (const i in nutrientsList) {
                     const nutrient = nutrientsList[i];
                     if (nutrient.mass == 0) { continue; }
-                    const baseElementId = `${baseScreenID}-food-addi-${nutriCatName.replace(" ", "_")}-${nutrient.name.replace(" ", "_")}`;
+                    const baseElementId = `${baseScreenID}-${qualifier}-addi-${nutriCatName.replace(" ", "_")}-${nutrient.name.replace(" ", "_")}`;
                     const inputElementId = `${baseElementId}-input`;
                     const mUnitDropdownItemId = `${baseElementId}-unit-${nutrient.unit}`;
                     const inputElement = document.getElementById(inputElementId);
@@ -1627,12 +1646,12 @@ function FMTFoodItemScreenPopulateSavedValues(baseScreenID, foodId, multiplier,
                     }
                     else {
                         //TODO - Lazy Load inexisting nutrients/categories based on APP settings
-                        console.warn(`[FMTFoodItemScreenPopulateSavedValues] - Food Id (${foodId}), could not find DOM elements "${inputElementId}", "${mUnitDropdownItemId}"`);
+                        console.warn(`[${_funcName}] - Consumable Id (${consumableId}), could not find DOM elements "${inputElementId}", "${mUnitDropdownItemId}"`);
                     }
                 }
             }
             if (readonly) {
-                const addiNutriDiv = document.getElementById(`${baseScreenID}-food-additional`);
+                const addiNutriDiv = document.getElementById(`${baseScreenID}-${qualifier}-additional`);
                 const addiNutrients = addiNutriDiv.getElementsByClassName("fmt-add-nutri");
                 for (let k=0; k<addiNutrients.length; k++) {
                     addiNutrients[k].setAttribute("readonly", true);
@@ -1649,30 +1668,33 @@ function FMTFoodItemScreenPopulateSavedValues(baseScreenID, foodId, multiplier,
         }
         if (onCompleteFn) { onCompleteFn(); }
     };
-    FMTReadFood(foodId, onsuccessFn, onerrorFn);
+    FMTReadFood(consumableId, onsuccessFn, onerrorFn);
 }
-function FMTFoodItemScreenShowMore(baseScreenID) {
+function FMTConsumableItemScreenShowMore(baseScreenID, qualifier) {
+    qualifier = qualifier || "food";
     $(`#${baseScreenID}-more`).hide();
     $(`#${baseScreenID}-less`).removeClass("d-none");
     $(`#${baseScreenID}-less`).show();
-    $(`#${baseScreenID}-food-additional`).removeClass("d-none");
-    $(`#${baseScreenID}-food-additional`).show();
+    $(`#${baseScreenID}-${qualifier}-additional`).removeClass("d-none");
+    $(`#${baseScreenID}-${qualifier}-additional`).show();
 }
-function FMTFoodItemScreenShowLess(baseScreenID) {
+function FMTConsumableItemScreenShowLess(baseScreenID, qualifier) {
+    qualifier = qualifier || "food";
     $(`#${baseScreenID}-less`).hide();
     if (!$(`#${baseScreenID}-less`).hasClass("d-none")) {
         $(`#${baseScreenID}-less`).addClass("d-none");
     }
     $(`#${baseScreenID}-more`).show();
-    $(`#${baseScreenID}-food-additional`).hide();
-        if (!$(`#${baseScreenID}-food-additional`).hasClass("d-none")) {
-        $(`#${baseScreenID}-food-additional`).addClass("d-none");
+    $(`#${baseScreenID}-${qualifier}-additional`).hide();
+        if (!$(`#${baseScreenID}-${qualifier}-additional`).hasClass("d-none")) {
+        $(`#${baseScreenID}-${qualifier}-additional`).addClass("d-none");
     }
 }
-function FMTViewFoodItemScreenClear(baseScreenID) {
-    FMTFoodItemScreenClear(baseScreenID);
+function FMTClearViewConsumableItemScreen(baseScreenID, qualifier) {
+    qualifier = qualifier || "food";
+    FMTClearConsumableItemScreen(baseScreenID, qualifier);
     const saveBtn = document.getElementById(`${baseScreenID}-save`);
-    saveBtn.removeAttribute("food_id");
+    saveBtn.removeAttribute(`${qualifier}_id`);
     saveBtn.removeAttribute("meal_name");
     saveBtn.removeAttribute("meal_year");
     saveBtn.removeAttribute("meal_month");
@@ -1682,19 +1704,20 @@ function FMTViewFoodItemScreenClear(baseScreenID) {
     document.getElementById(`${baseScreenID}-meal-month`).value = "";
     document.getElementById(`${baseScreenID}-meal-day`).value = "";
     document.getElementById(`${baseScreenID}-meal-name`).value = "";
-    document.getElementById("view-food-screen-add-to-meal").classList.add("d-none");
+    document.getElementById(`${baseScreenID}-add-to-meal`).classList.add("d-none");
 }
-function FMTFoodItemScreenClear(baseScreenID) {
+function FMTClearConsumableItemScreen(baseScreenID, qualifier) {
+    qualifier = qualifier || "food";
     document.getElementById(`${baseScreenID}-alerts`).innerHTML = "";
-    document.getElementById(`${baseScreenID}-food-name`).value = "";
-    document.getElementById(`${baseScreenID}-food-brand`).value = "";
-    document.getElementById(`${baseScreenID}-food-calories`).value = "";
-    document.getElementById(`${baseScreenID}-food-proteins`).value = "";
-    document.getElementById(`${baseScreenID}-food-carbohydrates`).value = "";
-    document.getElementById(`${baseScreenID}-food-fats`).value = "";
-    document.getElementById(`${baseScreenID}-food-weight-input`).value = "";
-    document.getElementById(`${baseScreenID}-food-additional`).innerHTML = "";
-    FMTFoodItemScreenShowLess(baseScreenID);
+    document.getElementById(`${baseScreenID}-${qualifier}-name`).value = "";
+    document.getElementById(`${baseScreenID}-${qualifier}-brand`).value = "";
+    document.getElementById(`${baseScreenID}-${qualifier}-calories`).value = "";
+    document.getElementById(`${baseScreenID}-${qualifier}-proteins`).value = "";
+    document.getElementById(`${baseScreenID}-${qualifier}-carbohydrates`).value = "";
+    document.getElementById(`${baseScreenID}-${qualifier}-fats`).value = "";
+    document.getElementById(`${baseScreenID}-${qualifier}-weight-input`).value = "";
+    document.getElementById(`${baseScreenID}-${qualifier}-additional`).innerHTML = "";
+    FMTConsumableItemScreenShowLess(baseScreenID, qualifier);
 }
 function FMTFoodItemScreenSave(baseScreenID, action, optionsObj, onsuccessFn, onerrorFn) {
     onerrorFn = onerrorFn || function(err) { console.error(`[FMTFoodItemScreenSave] - Failed ${err}`); }
@@ -1796,6 +1819,11 @@ function FMTUpdateViewFoodValuesOnWeightChange(e) {
     }
 }
 //Functions - UI - Recipes
+//Functions - UI - Meal Entries
+function FMTPopulateEditMealEntry(baseScreenID, mealEntry, qualifier) {
+    qualifier = qualifier || "consumable";
+    
+}
 //Functions - UI - Overview
 function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     let mealEntry = mealEntryObj;
@@ -1985,7 +2013,7 @@ function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
     
     const consDetailsSpan = document.createElement("span");
     consDetailsSpan.classList.add("fmt-font-sm", "float-left");
-    consDetailsSpan.innerHTML = `${!!mealEntry.foodBrand ? `${mealEntry.foodBrand}, `: ""}${mealEntry.weight}${mealEntry.weightUnits}`;
+    consDetailsSpan.innerHTML = `${!!mealEntry.consumableBrand ? `${mealEntry.consumableBrand}, `: ""}${mealEntry.weight}${mealEntry.weightUnits}`;
     const consDetailsDiv = document.createElement("div");
     consDetailsDiv.classList.add("col-6");
     consDetailsDiv.appendChild(consDetailsSpan);
@@ -2314,26 +2342,26 @@ var pageController = {
     },
     openAddFoodDynamicScreen: function() {
         pageController.openDynamicScreen("add-food-screen");
-        FMTFoodItemScreenClear("add-food-screen");
-        FMTFoodItemScreenPopulate("add-food-screen");
+        FMTClearConsumableItemScreen("add-food-screen", "food");
+        FMTPopulateConsumableItemScreen("add-food-screen", "food");
     },
     closeAddFoodDynamicScreen: function() {
         pageController.closeDynamicScreen("add-food-screen");
-        FMTFoodItemScreenClear("add-food-screen");
+        FMTClearConsumableItemScreen("add-food-screen", "food");
         document.getElementById("foods-alerts").innerHTML = "";
     },
     openEditFoodDynamicScreen: function(foodId) {
         if (!isNumber(foodId)) { console.error(`Food ID (${foodId}) is not a number`); return; }
         foodId = Number(foodId);
         pageController.openDynamicScreen("edit-food-screen");
-        FMTFoodItemScreenClear("edit-food-screen");
-        FMTFoodItemScreenPopulate("edit-food-screen", {"foodId": foodId});
-        FMTFoodItemScreenPopulateSavedValues("edit-food-screen", foodId, 1, false, null);
+        FMTClearConsumableItemScreen("edit-food-screen", "food");
+        FMTPopulateConsumableItemScreen("edit-food-screen", {"consumableId": foodId}, "food");
+        FMTPopulateSavedValuesInConsumableItemScreen("edit-food-screen", foodId, "food", "Food Item", 1, false, null);
         document.getElementById("edit-food-screen-delete").setAttribute("food_id", foodId);
     },
     closeEditFoodDynamicScreen: function() {
         pageController.closeDynamicScreen("edit-food-screen");
-        FMTFoodItemScreenClear("edit-food-screen");
+        FMTClearConsumableItemScreen("edit-food-screen", "food");
     },
     openViewFoodDynamicScreen: function(foodId, multiplier, clear, currentWeightValue, currentWeightUnits, mealIdentifierObj) {
         //Argument Validation
@@ -2346,11 +2374,11 @@ var pageController = {
         pageController.openDynamicScreen("view-food-screen");
         //Sync Tasks
         if (clear) {
-            FMTViewFoodItemScreenClear("view-food-screen");
+            FMTClearViewConsumableItemScreen("view-food-screen");
             const eventListenerObj = {"view-food-screen-food-weight-units":
                                       {"massUnitChanged": FMTUpdateViewFoodValuesOnWeightChange,}
                                      };
-            FMTFoodItemScreenPopulate("view-food-screen", {"foodId": foodId, "eventListenersObj": eventListenerObj });
+            FMTPopulateConsumableItemScreen("view-food-screen", {"consumableId": foodId, "eventListenersObj": eventListenerObj }, "food");
         }
         const addToMealBtn = document.getElementById("view-food-screen-save");
         const editFoodBtn = document.getElementById("view-food-screen-edit");
@@ -2381,11 +2409,11 @@ var pageController = {
             document.getElementById("view-food-screen-meal-day").value = mealIdentifier.meal_day;
         }
         //Async Tasks
-        FMTFoodItemScreenPopulateSavedValues("view-food-screen", foodId, multiplier, true, "view-food-screen-food-weight-input", currentWeightValue, currentWeightUnits);
+        FMTPopulateSavedValuesInConsumableItemScreen("view-food-screen", foodId, "food", "Food Item", multiplier, true, "view-food-screen-food-weight-input", currentWeightValue, currentWeightUnits);
     },
     closeViewFoodDynamicScreen: function() {
         pageController.closeDynamicScreen("view-food-screen");
-        FMTViewFoodItemScreenClear("view-food-screen");
+        FMTClearViewConsumableItemScreen("view-food-screen");
     },
     openAddToMealDynamicScreen: function(mealIdentifierObj) {
         pageController.openDynamicScreen("add-to-meal-screen");
@@ -2406,6 +2434,38 @@ var pageController = {
     closeAddToMealDynamicScreen: function() {
         pageController.closeDynamicScreen("add-to-meal-screen");
     },
+    openEditMealEntryDynamicScreen: function(entry_id) {
+        if (!entry_id || !isNumber(entry_id) || !Number.isInteger(Number(entry_id)) ) { return; }
+        const alertDivId = `${(pageController.openedDynamicScreensCount() > 0) ? `${pageController.updateZIndexes(true)[0]}` : fmtAppInstance.pageState.activeTab}-alerts`;
+        FMTReadMealEntry(entry_id,
+                         //OnSuccess
+                         function(e) {
+            const mealEntryObj = e.target.result;
+            if (!mealEntryObj) {
+                FMTShowAlert(alertDivId, "warning", `Couldn't find meal entry with ID (${entry_id})`);
+                return;
+            }
+            const validateResult = FMTValidateMealEntry(mealEntryObj);
+            if (validateResult.mealEntry == null || validateResult.error != null) {
+                FMTShowAlert(alertDivId, "Danger", `Error - Meal entry with ID (${entry_id}) failed validation - ${validateResult.error}`);
+                return;
+            }
+            pageController.openDynamicScreen("edit-meal-entry-screen");
+            FMTPopulateEditMealEntry("edit-meal-entry-screen", validateResult.mealEntry, qualifier);
+        },
+                         //OnError
+                        function(e) {
+            FMTShowAlert(alertDivId, "Danger", `Error reading Meal entry with ID (${entry_id})`);
+            console.error(e);
+            return;
+        });
+        
+    },
+    closeEditMealEntryDynamicScreen: function() {
+        //TODO - CLeanup
+        pageController.closeDynamicScreen("edit-meal-entry-screen");
+    },
+    openedDynamicScreensCount: function() { return Object.keys(fmtAppInstance.pageState.activeDynamicScreens).length;},
 };
 
 //Functions - DB - Init
@@ -2642,8 +2702,8 @@ function prepareEventHandlers() {
             pageController.closeAddFoodDynamicScreen();
         }
     });
-    $("#add-food-screen-more").click( (e) => { FMTFoodItemScreenShowMore("add-food-screen"); } );
-    $("#add-food-screen-less").click( (e) => { FMTFoodItemScreenShowLess("add-food-screen"); } );
+    $("#add-food-screen-more").click( (e) => { FMTConsumableItemScreenShowMore("add-food-screen", "food"); } );
+    $("#add-food-screen-less").click( (e) => { FMTConsumableItemScreenShowLess("add-food-screen", "food"); } );
     $("#add-food-screen-save").click( (e) => {
         onerrorFn = function(err) {
             const msg = `Failed adding food - ${err}`;
@@ -2670,8 +2730,8 @@ function prepareEventHandlers() {
         //TODO check for changes and prompt if needed
         pageController.closeEditFoodDynamicScreen();
     });
-    $("#edit-food-screen-more").click( (e) => { FMTFoodItemScreenShowMore("edit-food-screen"); } );
-    $("#edit-food-screen-less").click( (e) => { FMTFoodItemScreenShowLess("edit-food-screen"); } );
+    $("#edit-food-screen-more").click( (e) => { FMTConsumableItemScreenShowMore("edit-food-screen", "food"); } );
+    $("#edit-food-screen-less").click( (e) => { FMTConsumableItemScreenShowLess("edit-food-screen", "food"); } );
     $("#edit-food-screen-save").click( (e) => {
         onerrorFn = function(err) {
             const msg = `Failed editing food - ${err}`;
@@ -2744,8 +2804,8 @@ function prepareEventHandlers() {
         });
     });
     $("#view-food-screen-food-weight-input").keyup(FMTUpdateViewFoodValuesOnWeightChange);
-    $("#view-food-screen-more").click( (e) => { FMTFoodItemScreenShowMore("view-food-screen"); } );
-    $("#view-food-screen-less").click( (e) => { FMTFoodItemScreenShowLess("view-food-screen"); } );
+    $("#view-food-screen-more").click( (e) => { FMTConsumableItemScreenShowMore("view-food-screen", "food"); } );
+    $("#view-food-screen-less").click( (e) => { FMTConsumableItemScreenShowLess("view-food-screen", "food"); } );
     $("#view-food-screen-cancel").click( (e) => { pageController.closeViewFoodDynamicScreen(); } );
     $("#view-food-screen-edit").click( (e) => {
         let foodId = e.currentTarget.getAttribute("food_id");
@@ -2771,7 +2831,7 @@ function prepareEventHandlers() {
             || !mealIdentifierObj.meal_day
             || !mealIdentifierObj.meal_name) {
             document.getElementById("view-food-screen-add-to-meal").classList.remove("d-none");
-            FMTShowAlert("view-food-screen-alerts", "primary", "Please fill Year, Month, Day and Meal Name you wish to add to");
+            FMTShowAlert("view-food-screen-alerts", "primary", "Please fill Year, Month, Day and Meal Name of the meal you wish to add to");
             return;
         }
         const validateMealIdentifierObjRes = FMTValidateMealIdentifier(mealIdentifierObj);
@@ -2791,8 +2851,8 @@ function prepareEventHandlers() {
         mealEntryObj.mealName = mealIdentifier.meal_name;
         mealEntryObj.consumable_id = Number(addToMealBtn.getAttribute("food_id"));
         mealEntryObj.consumableName = consumableValues.foodName;
-        mealEntryObj.foodBrand = consumableValues.foodBrand;
-        mealEntryObj.is_recipe = false;
+        mealEntryObj.consumableBrand = consumableValues.foodBrand;
+        mealEntryObj.consumableType = "Food Item";
         mealEntryObj.weight = consumableValues.referenceWeight;
         mealEntryObj.weightUnits = consumableValues.weightUnits;
         mealEntryObj.nutritionalValue = consumableValues.nutritionalValue;

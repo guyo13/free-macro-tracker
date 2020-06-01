@@ -691,6 +691,101 @@
                 </div>
             </div>
         </div>
+        <div id="edit-meal-entry-screen" class="fmt-dynamic-screen">
+            <div id="edit-meal-entry-screen-alerts" class="row justify-content-center"></div>
+            <div class="d-flex justify-content-center mt-3">
+                <div class="d-flex col-12 col-lg-8 mb-1 justify-content-between">
+                    <div class="col-5 col-lg-3">
+                        <h4 class="d-none d-md-block">Edit Meal Entry</h4>
+                        <h5 class="d-md-none">Edit Meal Entry</h5>
+                    </div>
+                    <div class="col-2 col-lg-2 d-flex mr-3">
+                        <button id="edit-meal-entry-screen-delete" type="button" class="btn  btn-danger fmt-text-btn1 flex-fill">Delete</button>
+                    </div>
+                    <div class="input-group col-4 col-lg-2">
+                        <button id="edit-meal-entry-screen-save" type="button" class="btn  btn-danger fmt-text-btn1 flex-fill">Update</button>
+                    </div>
+                    <div class="col-1 col-lg-1">
+                        <button id="edit-meal-entry-screen-cancel" class="btn btn-outline-dark fmt-text-btn1" type="button">&times;</button>
+                    </div>
+                </div>
+            </div>
+            <div id="edit-meal-entry-screen-content" class="row justify-content-center fmt-max-height60">
+                <div class="input-group col-12 col-lg-8 mb-1">
+                  <div class="input-group-prepend fmt-food-input-field">
+                    <span class="input-group-text">Name</span>
+                    <input id="edit-meal-entry-screen-consumable-name" type="text" class="form-control" aria-label="Consumable Name" aria-describedby="basic-addon2" readonly="true">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-8 mb-1">
+                  <div class="input-group-prepend fmt-food-input-field">
+                    <span class="input-group-text">Brand</span>
+                    <input id="edit-meal-entry-screen-consumable-brand" type="text" class="form-control" aria-label="Brand (if Food Item)" aria-describedby="basic-addon2" readonly="true">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-8 mb-1">
+                  <div class="input-group-prepend fmt-food-input-field">
+                    <span class="input-group-text">Type</span>
+                    <input id="edit-meal-entry-screen-consumable-type" type="text" class="form-control" aria-label="Consumable Type" aria-describedby="basic-addon2" readonly="true">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-8 mb-1">
+                    <div id="edit-food-screen-food-weight" class="input-group-prepend fmt-food-input-field">
+                        <span class="input-group-text">Weight</span>
+                        <input id="edit-meal-entry-screen-consumable-weight-input" type="text" class="form-control" placeholder="Weight (Required)" aria-label="Consumable Weight" aria-describedby="basic-addon2">
+                    </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="col-12 col-lg-8 mb-1">
+                    <h4 class="d-none d-md-block">Nutritional Facts</h4>
+                    <h5 class="d-md-none">Nutritional Facts</h5>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-8 mb-1">
+                  <div class="input-group-prepend fmt-food-input-field">
+                    <span class="input-group-text">Calories</span>
+                    <input id="edit-meal-entry-screen-consumable-calories" type="text" class="form-control" placeholder="Calories (Kcal)" aria-label="Calories" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-8 mb-1">
+                  <div class="input-group-prepend fmt-food-input-field">
+                    <span class="input-group-text">Proteins</span>
+                    <input id="edit-meal-entry-screen-consumable-proteins" type="text" class="form-control" placeholder="Proteins (g)" aria-label="Proteins" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-8 mb-1">
+                  <div class="input-group-prepend fmt-food-input-field">
+                    <span class="input-group-text">Carbohydrates</span>
+                    <input id="edit-meal-entry-screen-consumable-carbohydrates" type="text" class="form-control" placeholder="Carbohydrates (g)" aria-label="Carbohydrates" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-8 mb-1">
+                  <div class="input-group-prepend fmt-food-input-field">
+                    <span class="input-group-text">Fats</span>
+                    <input id="edit-meal-entry-screen-consumable-fats" type="text" class="form-control" placeholder="Fats (g)" aria-label="Fats" aria-describedby="basic-addon2">
+                  </div>
+                </div>
+                <div class="w-100"></div>
+                <div id="edit-meal-entry-screen-consumable-additional" class="d-none col-12 col-lg-8">
+                </div>
+            </div>
+            <div id="edit-meal-entry-screen-footer" class="row justify-content-center">
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <button id="edit-meal-entry-screen-more" class="btn btn-outline-dark flex-fill" type="button">Show More</button>
+                    <button id="edit-meal-entry-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Show Less</button>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <button id="edit-meal-entry-screen-save" class="btn btn-outline-dark flex-fill" type="button">Save Entry</button>
+                </div>
+            </div>
+        </div>
     </div><!--Ragnarok-->
     <!--JavaScript-->
     <script src="javascript/jquery-3.4.1.min.js"></script>
