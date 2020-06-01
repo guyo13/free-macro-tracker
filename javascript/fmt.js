@@ -1717,10 +1717,11 @@ function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
     }
 }
 function FMTFoodItemScreenSave(baseScreenID, action, optionsObj, onsuccessFn, onerrorFn) {
-    onerrorFn = onerrorFn || function(err) { console.error(`[FMTFoodItemScreenSave] - Failed ${err}`); }
-    if (baseScreenID == null) { console.error(`[FMTFoodItemScreenSave] - Invalid baseScreenID "${baseScreenID}"`); return onerrorFn(); }
-    if (!(action == "add" || action == "edit" || action == "get-object")) { console.error(`[FMTFoodItemScreenSave] - Invalid action "${action}"`); return onerrorFn(); }
-    if (action == "edit" && (!optionsObj || !isNumber(optionsObj.foodId)) ) { console.error("[FMTFoodItemScreenSave] - Missing foodId for edit action"); return onerrorFn(); }
+    const _funcName = "FMTFoodItemScreenSave"
+    onerrorFn = onerrorFn || function(err) { console.error(`[${_funcName}] - Failed ${err}`); }
+    if (baseScreenID == null) { console.error(`[${_funcName}] - Invalid baseScreenID "${baseScreenID}"`); return onerrorFn(); }
+    if (!(action == "add" || action == "edit" || action == "get-object")) { console.error(`[${_funcName}] - Invalid action "${action}"`); return onerrorFn(); }
+    if (action == "edit" && (!optionsObj || !isNumber(optionsObj.foodId)) ) { console.error("[${_funcName}] - Missing foodId for edit action"); return onerrorFn(); }
     const mUnitsChart = fmtAppInstance.massUnitChart;
     let foodObj = {}
     foodObj.foodName = document.getElementById(`${baseScreenID}-food-name`).value;
@@ -1755,14 +1756,14 @@ function FMTFoodItemScreenSave(baseScreenID, action, optionsObj, onsuccessFn, on
     switch(action) {
         case "add":
             onsuccessFn = onsuccessFn || function(e, food) {
-                console.debug(`[FMTFoodItemScreenSave] - Successfully added food: ${JSON.stringify(food)}, id ${e.target.result}`);
+                console.debug(`[${_funcName}] - Successfully added food: ${JSON.stringify(food)}, id ${e.target.result}`);
                 pageController.closeAddFoodDynamicScreen();
             };
             FMTAddFood(foodObj, mUnitsChart, onsuccessFn, onerrorFn);
             break;
         case "edit":
             onsuccessFn = onsuccessFn || function(e) {
-                console.debug(`[FMTFoodItemScreenSave] - Successfully updated food: ${JSON.stringify(e.target.result)}`);
+                console.debug(`[${_funcName}] - Successfully updated food: ${JSON.stringify(e.target.result)}`);
                 pageController.closeEditFoodDynamicScreen();
             };
             FMTUpdateFood(optionsObj.foodId, foodObj, mUnitsChart, onsuccessFn, onerrorFn);
