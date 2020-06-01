@@ -2522,6 +2522,8 @@ var pageController = {
                                          };
                 FMTClearConsumableItemScreen(screenID, qualifier);
                 FMTPopulateConsumableItemScreen(screenID, {"consumableId": validateResult.mealEntry.entry_id, "eventListenersObj": eventListenersObj }, qualifier, objectType);
+                const delBtn = document.getElementById("edit-meal-entry-screen-delete");
+                delBtn.setAttribute("entry_id", entry_id);
             }
             FMTPopulateSavedValuesInConsumableItemScreen(screenID, validateResult.mealEntry, qualifier, objectType, multiplier, true, focusDivID, currentWeightValue, currentWeightUnits);
         },
@@ -2966,7 +2968,43 @@ function prepareEventHandlers() {
         pageController.openAddFoodDynamicScreen();
     });
     $("#edit-meal-entry-screen-delete").click( (e) => {
-        //TODO
+        const alertsDivId = "edit-meal-entry-screen-alerts";
+        const delBtn = document.getElementById("edit-meal-entry-screen-delete");
+        let entry_id = delBtn.getAttribute("entry_id");
+        if (!isNumber(entry_id) || !Number.isInteger(Number(entry_id)) ) {
+            const msg = `Invalid Entry ID (${entry_id}). Please reload`;
+            FMTShowAlert(alertsDivId, "danger", msg, fmtAppGlobals.defaultAlertScroll);
+            return;
+        }
+        entry_id = Number(entry_id);
+        const msg = `Are you sure you would like to delete this Entry ? (Entry ID ${entry_id})`;
+        FMTShowPrompt(alertsDivId, "warning", msg, fmtAppGlobals.defaultAlertScroll,
+                      function(delEntry) {
+            if (delEntry) {
+                FMTRemoveMealEntry(entry_id,
+                              function(e) {
+                    pageController.closeEditMealEntryDynamicScreen();
+                    const openScreens = pageController.updateZIndexes(true);
+                    const msg = `Successfully deleted Entry! (Entry ID ${entry_id})`;
+                    if (openScreens.length < 1 && fmtAppInstance.pageState.activeTab === "overview") {
+                        pageController.showOverview();
+                        FMTShowAlert("overview-alerts", "success", msg, fmtAppGlobals.defaultAlertScroll);
+                    }
+                },
+                              function(e) {
+                    pageController.closeEditMealEntryDynamicScreen();
+                    const openScreens = pageController.updateZIndexes(true);
+                    const msg = `Failed deleting Entry! (Entry ID ${entry_id})`;
+                    if (openScreens.length < 1 && fmtAppInstance.pageState.activeTab === "foods") {
+                        pageController.showOverview();
+                        FMTShowAlert("overview-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
+                    }
+                });
+            }
+            else {
+                FMTShowAlert(alertsDivId, "success", `Entry not deleted! (Entry ID ${entry_id})`, fmtAppGlobals.defaultAlertScroll);
+            }
+        });
     });
     $("#edit-meal-entry-screen-save").click( (e) => {
         
