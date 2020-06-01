@@ -2192,7 +2192,14 @@ var pageController = {
         fmtAppInstance.pageState.activeTab = tabId;
         pageController.closeDynamicScreens();
     },
-    showOverview: function () {pageController.setTabActive("goto-overview");},
+    showOverview: function (showToday) {
+        pageController.setTabActive("goto-overview");
+        if (showToday === true) {
+            FMTToday();
+            FMTSetCurrentDate(fmtAppInstance.today);
+            FMTOverviewLoadCurrentDay();
+        }
+    },
     showFoods: function () {
         pageController.setTabActive("goto-foods");
         let onsuccessFn = function() {
@@ -2422,14 +2429,11 @@ function FMTLoadProfile() {
 }
 function onDbSuccess(event) {  
     fmtAppInstance.fmtDb = event.target.result;
-    FMTToday();
-    FMTSetCurrentDate(fmtAppInstance.today);
-    pageController.showOverview();
     prepareEventHandlers();
     FMTLoadMassUnits();
     FMTLoadAdditionalNutrients();
     FMTLoadProfile();
-    FMTOverviewLoadCurrentDay();
+    pageController.showOverview(true);
 }
 
 function onUpgradeNeeded(event) {
@@ -2446,7 +2450,7 @@ function prepareEventHandlers() {
     //On click functions
     //Tabs
     $("#goto-overview").click( (e) => {
-        pageController.showOverview();
+        pageController.showOverview(true);
     });
     $("#goto-foods").click( (e) => {
         pageController.showFoods();
