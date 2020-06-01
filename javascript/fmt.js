@@ -788,28 +788,28 @@ function FMTValidateMealIdentifier(mealIdentifierObj) {
     const result = {};
     const mealIdentifier = {};
     let error = null;
-    if (!isNumber(mealIdentifierObj.meal_year)) {
+    if (!isNumber(mealIdentifierObj.meal_year) || !Number.isInteger(Number(mealIdentifierObj.meal_year)) ) {
         error = `Meal Year must be a valid integer. Got (${mealIdentifierObj.meal_year})`;
         result.error = error;
         return result;
     }
     mealIdentifier.meal_year = Number(mealIdentifierObj.meal_year);
 
-    if (!isNumber(mealIdentifierObj.meal_month)) {
+    if (!isNumber(mealIdentifierObj.meal_month) || !Number.isInteger(Number(mealIdentifierObj.meal_month)) ) {
         error = `Meal Month must be a valid integer. Got (${mealIdentifierObj.meal_month})`;
         result.error = error;
         return result;
     }
     mealIdentifier.meal_month = Number(mealIdentifierObj.meal_month);
 
-    if (!isNumber(mealIdentifierObj.meal_day)) {
+    if (!isNumber(mealIdentifierObj.meal_day) || !Number.isInteger(Number(mealIdentifierObj.meal_day)) ) {
         error = `Meal Day must be a valid integer. Got (${mealIdentifierObj.meal_day})`;
         result.error = error;
         return result;
     }
     mealIdentifier.meal_day = Number(mealIdentifierObj.meal_day);
 
-    if (!isNumber(mealIdentifierObj.profile_id)) {
+    if (!isNumber(mealIdentifierObj.profile_id) || !Number.isInteger(Number(mealIdentifierObj.profile_id)) ) {
         error = `Profile ID must be a valid integer. Got (${mealIdentifierObj.profile_id})`;
         result.error = error;
         return result;
