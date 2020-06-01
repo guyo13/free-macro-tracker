@@ -46,8 +46,8 @@ function mealEntryAddTest(mepd, pidstart, pidstop, dstart, dstop, direction) {
                 mealObj.mealName = mealNames[r];
                 mealObj.consumable_id = Math.round(Math.random()*10000);
                 let k = Math.random();
-                mealObj.foodBrand = (k < 0.5 ? null : "Test Brand");
-                mealObj.is_recipe = (k < 0.5 ? true : false);
+                mealObj.consumableBrand = (k < 0.5 ? null : "Test Brand");
+                mealObj.consumableType = (k < 0.5 ? "Food Item" : "Recipe Item");
                 mealObj.weight = Math.round(50 + Math.random() * 300);
                 mealObj.weightUnits = "g";
                 r = Math.floor(Math.random() + Math.random()*3);
