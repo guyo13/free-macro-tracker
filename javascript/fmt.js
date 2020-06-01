@@ -1679,7 +1679,7 @@ function FMTFoodItemScreenClear(baseScreenID) {
 function FMTFoodItemScreenSave(baseScreenID, action, optionsObj, onsuccessFn, onerrorFn) {
     onerrorFn = onerrorFn || function(err) { console.error(`[FMTFoodItemScreenSave] - Failed ${err}`); }
     if (baseScreenID == null) { console.error(`[FMTFoodItemScreenSave] - Invalid baseScreenID "${baseScreenID}"`); return onerrorFn(); }
-    if (!(action == "add" || action == "edit")) { console.error(`[FMTFoodItemScreenSave] - Invalid action "${action}"`); return onerrorFn(); }
+    if (!(action == "add" || action == "edit" || action == "get-object")) { console.error(`[FMTFoodItemScreenSave] - Invalid action "${action}"`); return onerrorFn(); }
     if (action == "edit" && (!optionsObj || !isNumber(optionsObj.foodId)) ) { console.error("[FMTFoodItemScreenSave] - Missing foodId for edit action"); return onerrorFn(); }
     const mUnitsChart = fmtAppInstance.massUnitChart;
     let foodObj = {}
@@ -1726,6 +1726,9 @@ function FMTFoodItemScreenSave(baseScreenID, action, optionsObj, onsuccessFn, on
                 pageController.closeEditFoodDynamicScreen();
             };
             FMTUpdateFood(optionsObj.foodId, foodObj, mUnitsChart, onsuccessFn, onerrorFn);
+            break;
+        case "get-object":
+            return foodObj;
             break;
     }
 }
@@ -1835,6 +1838,23 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     mealHeaderDiv.appendChild(optsBtnDiv);
     
     //Meal Footer
+    const mealFooterAddDiv = document.createElement("div");
+    mealFooterAddDiv.classList.add("col-12", "fmt-meal-footer-add", "fmt-center-text", "d-flex");
+    const mealFooterAddBtn = document.createElement("button");
+    mealFooterAddBtn.classList.add("fmt-font-2", "btn", "btn-outline-dark", "flex-fill");
+    mealFooterAddBtn.innerHTML = "+";
+    mealFooterAddBtn.addEventListener("click", function() {
+        mealIdentifierObj = {};
+        mealIdentifierObj.meal_year = mealEntryObj.year;
+        mealIdentifierObj.meal_month = mealEntryObj.month;
+        mealIdentifierObj.meal_day = mealEntryObj.day;
+        mealIdentifierObj.meal_name = mealEntryObj.mealName;
+        mealIdentifierObj.profile_id = mealEntryObj.profile_id;
+        pageController.openAddToMealDynamicScreen(mealIdentifierObj);
+    });
+    mealFooterAddDiv.appendChild(mealFooterAddBtn);
+
+
     const carbSpanMd = document.createElement("span");
     const carbSpanSm = document.createElement("span");
     carbSpanMd.classList.add("fmt-font-1", "d-none", "d-sm-block", "fmt-meal-carbs");
@@ -1888,6 +1908,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     mFatsProgDiv.classList.add("fmt-center-text",  "col-3", "ml-1", "mr-1");
     mFatsProgDiv.appendChild(mFatsProg);
     
+    mealFooterDiv.appendChild(mealFooterAddDiv);
     mealFooterDiv.appendChild(mCarbsDiv);
     mealFooterDiv.appendChild(mProtDiv);
     mealFooterDiv.appendChild(mFatsDiv);
@@ -1945,7 +1966,7 @@ function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
     
     const consDetailsSpan = document.createElement("span");
     consDetailsSpan.classList.add("fmt-font-sm", "float-left");
-    consDetailsSpan.innerHTML = `${mealEntry.foodBrand != null ? `${mealEntry.foodBrand}, `: ""}${mealEntry.weight}${mealEntry.weightUnits}`;
+    consDetailsSpan.innerHTML = `${!!mealEntry.foodBrand ? `${mealEntry.foodBrand}, `: ""}${mealEntry.weight}${mealEntry.weightUnits}`;
     const consDetailsDiv = document.createElement("div");
     consDetailsDiv.classList.add("col-6");
     consDetailsDiv.appendChild(consDetailsSpan);
@@ -2203,8 +2224,8 @@ var pageController = {
         if (showToday === true) {
             FMTToday();
             FMTSetCurrentDate(fmtAppInstance.today);
-            FMTOverviewLoadCurrentDay();
         }
+        FMTOverviewLoadCurrentDay();
     },
     showFoods: function () {
         pageController.setTabActive("goto-foods");
@@ -2342,7 +2363,7 @@ var pageController = {
         pageController.closeDynamicScreen("view-food-screen");
         FMTFoodItemScreenClear("view-food-screen");
     },
-    openAddToMealDynamicScreen: function() {
+    openAddToMealDynamicScreen: function(mealIdentifierObj) {
         pageController.openDynamicScreen("add-to-meal-screen");
         let onsuccessFn = function() {
             console.debug("[openAddToMealDynamicScreen] - Foods loaded successfully");
@@ -2351,16 +2372,9 @@ var pageController = {
             FMTShowAlert("add-to-meal-screen-alerts", "danger", "Failed loading food", fmtAppGlobals.defaultAlertScroll);
             console.error(e);
         };
-        const overviewAddToMealBtn = document.getElementById("overview-add-to-meal");
-        const mealIdentifier = {};
-        mealIdentifier.meal_year = overviewAddToMealBtn.getAttribute("meal_year");
-        mealIdentifier.meal_month = overviewAddToMealBtn.getAttribute("meal_month");
-        mealIdentifier.meal_day = overviewAddToMealBtn.getAttribute("meal_day");
-        mealIdentifier.meal_name = null;
-        mealIdentifier.profile_id = fmtAppInstance.currentProfileId;
         const events = {"click": function(e) {
                     const foodId = Number(e.currentTarget.getAttribute("food_id"));
-                    pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, mealIdentifier);
+                    pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, mealIdentifierObj);
                     }
                };
         FMTDisplayFoodsTable("add-to-meal-screen", onsuccessFn, onerrorFn, events);
@@ -2719,8 +2733,68 @@ function prepareEventHandlers() {
         pageController.closeViewFoodDynamicScreen();
         pageController.openEditFoodDynamicScreen(foodId);
     });
+    $("#view-food-screen-save").click( (e) => {
+        const addToMealBtn = document.getElementById("view-food-screen-save");
+        const mealIdentifierObj = {};
+        mealIdentifierObj.meal_year = addToMealBtn.getAttribute("meal_year");
+        mealIdentifierObj.meal_month = addToMealBtn.getAttribute("meal_month");
+        mealIdentifierObj.meal_day = addToMealBtn.getAttribute("meal_day");
+        mealIdentifierObj.meal_name = addToMealBtn.getAttribute("meal_name");
+        mealIdentifierObj.profile_id = addToMealBtn.getAttribute("profile_id") || fmtAppInstance.currentProfileId;
+
+        if (!mealIdentifierObj.meal_year
+            || !mealIdentifierObj.meal_month
+            || !mealIdentifierObj.meal_day
+            || !mealIdentifierObj.meal_name) {
+            console.warn("Missing value on meal identifier");
+            return;
+        }
+        const validateMealIdentifierObjRes = FMTValidateMealIdentifier(mealIdentifierObj);
+        if (validateMealIdentifierObjRes.mealIdentifier == null || validateMealIdentifierObjRes.error != null) {
+            console.error(validateMealIdentifierObjRes.error);
+            FMTShowAlert("view-food-screen-alerts", "danger", `Application state corrupted or was tampered with.\nKindly reload Free Macro Tracker :)`);
+            return;
+        }
+        const mealIdentifier = validateMealIdentifierObjRes.mealIdentifier;
+        //Collect values from screen and insert to DB
+        const consumableValues = FMTFoodItemScreenSave("view-food-screen", "get-object");
+        const mealEntryObj = {};
+        mealEntryObj.profile_id = mealIdentifier.profile_id;
+        mealEntryObj.year = mealIdentifier.meal_year;
+        mealEntryObj.month = mealIdentifier.meal_month;
+        mealEntryObj.day = mealIdentifier.meal_day;
+        mealEntryObj.mealName = mealIdentifier.meal_name;
+        mealEntryObj.consumable_id = Number(addToMealBtn.getAttribute("food_id"));
+        mealEntryObj.consumableName = consumableValues.foodName;
+        mealEntryObj.foodBrand = consumableValues.foodBrand;
+        mealEntryObj.is_recipe = false;
+        mealEntryObj.weight = consumableValues.referenceWeight;
+        mealEntryObj.weightUnits = consumableValues.weightUnits;
+        mealEntryObj.nutritionalValue = consumableValues.nutritionalValue;
+        FMTAddMealEntry(mealEntryObj,
+                       function(e) {
+            console.debug("Successfully added meal entry");
+            console.log(mealEntryObj);
+            pageController.closeViewFoodDynamicScreen();
+            pageController.showOverview(false);
+        },
+                       function(e) {
+            const msg = "Failed adding meal entry";
+            console.error(msg);
+            console.error(mealEntryObj);
+            FMTShowAlert("view-food-screen-alerts", "danger", msg);
+        });
+
+    });
     $("#overview-add-to-meal").click( (e) => { 
-        pageController.openAddToMealDynamicScreen();
+        const overviewAddToMealBtn = document.getElementById("overview-add-to-meal");
+        const mealIdentifierObj = {};
+        mealIdentifierObj.meal_year = overviewAddToMealBtn.getAttribute("meal_year");
+        mealIdentifierObj.meal_month = overviewAddToMealBtn.getAttribute("meal_month");
+        mealIdentifierObj.meal_day = overviewAddToMealBtn.getAttribute("meal_day");
+        mealIdentifierObj.meal_name = null;
+        mealIdentifierObj.profile_id = fmtAppInstance.currentProfileId;
+        pageController.openAddToMealDynamicScreen(mealIdentifierObj);
     });
     $("#add-to-meal-screen-cancel").click( (e) => { 
         pageController.closeAddToMealDynamicScreen();
