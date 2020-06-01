@@ -1,6 +1,4 @@
-body {
-    margin-bottom: 2rem;
-}
+body {}
 button {
     touch-action: manipulation;
 }
@@ -71,7 +69,10 @@ button {
 .fmt-left-text {
     text-align: left;
 }
-.fmt-meals-container {}
+.fmt-meals-container {
+    max-height: 65vh;
+    overflow-y: auto;
+}
 .fmt-meal {
     border-style: solid;
     border-color: black;

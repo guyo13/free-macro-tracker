@@ -10,6 +10,7 @@ fmtAppInstance.promptSettings.promptOnUnsavedFood = true;
 fmtAppInstance.promptSettings.promptOnNoProfileCreated = true;
 fmtAppInstance.additionalNutrientsSettings = {};
 fmtAppInstance.additionalNutrientsSettings.allowNonDefaultUnits = true;
+fmtAppInstance.roundingPrecision = 1;
 //Instance - State - Page
 fmtAppInstance.pageState = {};
 fmtAppInstance.pageState.activeTab = null;
@@ -129,6 +130,11 @@ function isSameDay(d1, d2) {
     return (d1.getFullYear() === d2.getFullYear()
             && d1.getMonth() === d2.getMonth()
             && d1.getDate() === d2.getDate());
+}
+function roundedToFixed(_float, _digits){
+  _digits = _digits || fmtAppInstance.roundingPrecision;
+  let rounded = Math.pow(10, _digits);
+  return (Math.round(_float * rounded) / rounded).toFixed(_digits);
 }
 //Functions - DB
 function prepareDBv1() {
@@ -788,22 +794,28 @@ function FMTValidateMealIdentifier(mealIdentifierObj) {
     const result = {};
     const mealIdentifier = {};
     let error = null;
-    if (!isNumber(mealIdentifierObj.meal_year) || !Number.isInteger(Number(mealIdentifierObj.meal_year)) ) {
-        error = `Meal Year must be a valid integer. Got (${mealIdentifierObj.meal_year})`;
+    if (!isNumber(mealIdentifierObj.meal_year)
+        || !Number.isInteger(Number(mealIdentifierObj.meal_year))
+        || !(Number(mealIdentifierObj.meal_year) > 0) ) {
+        error = `Meal Year must be a positive integer. Got (${mealIdentifierObj.meal_year})`;
         result.error = error;
         return result;
     }
     mealIdentifier.meal_year = Number(mealIdentifierObj.meal_year);
 
-    if (!isNumber(mealIdentifierObj.meal_month) || !Number.isInteger(Number(mealIdentifierObj.meal_month)) ) {
-        error = `Meal Month must be a valid integer. Got (${mealIdentifierObj.meal_month})`;
+    if (!isNumber(mealIdentifierObj.meal_month)
+        || !Number.isInteger(Number(mealIdentifierObj.meal_month)) 
+        || !(Number(mealIdentifierObj.meal_month) >= 0 && Number(mealIdentifierObj.meal_month) < 12) ) {
+        error = `Meal Month must be a valid Month number. Got (${mealIdentifierObj.meal_month})`;
         result.error = error;
         return result;
     }
     mealIdentifier.meal_month = Number(mealIdentifierObj.meal_month);
 
-    if (!isNumber(mealIdentifierObj.meal_day) || !Number.isInteger(Number(mealIdentifierObj.meal_day)) ) {
-        error = `Meal Day must be a valid integer. Got (${mealIdentifierObj.meal_day})`;
+    if (!isNumber(mealIdentifierObj.meal_day)
+        || !Number.isInteger(Number(mealIdentifierObj.meal_day))
+        || !(Number(mealIdentifierObj.meal_day) > 0 && Number(mealIdentifierObj.meal_day) < 32) ) {
+        error = `Meal Day must be an integer in range of 1-31. Got (${mealIdentifierObj.meal_day})`;
         result.error = error;
         return result;
     }
@@ -1657,6 +1669,21 @@ function FMTFoodItemScreenShowLess(baseScreenID) {
         $(`#${baseScreenID}-food-additional`).addClass("d-none");
     }
 }
+function FMTViewFoodItemScreenClear(baseScreenID) {
+    FMTFoodItemScreenClear(baseScreenID);
+    const saveBtn = document.getElementById(`${baseScreenID}-save`);
+    saveBtn.removeAttribute("food_id");
+    saveBtn.removeAttribute("meal_name");
+    saveBtn.removeAttribute("meal_year");
+    saveBtn.removeAttribute("meal_month");
+    saveBtn.removeAttribute("meal_day");
+    saveBtn.removeAttribute("profile_id");
+    document.getElementById(`${baseScreenID}-meal-year`).value = "";
+    document.getElementById(`${baseScreenID}-meal-month`).value = "";
+    document.getElementById(`${baseScreenID}-meal-day`).value = "";
+    document.getElementById(`${baseScreenID}-meal-name`).value = "";
+    document.getElementById("view-food-screen-add-to-meal").classList.add("d-none");
+}
 function FMTFoodItemScreenClear(baseScreenID) {
     document.getElementById(`${baseScreenID}-alerts`).innerHTML = "";
     document.getElementById(`${baseScreenID}-food-name`).value = "";
@@ -1667,13 +1694,6 @@ function FMTFoodItemScreenClear(baseScreenID) {
     document.getElementById(`${baseScreenID}-food-fats`).value = "";
     document.getElementById(`${baseScreenID}-food-weight-input`).value = "";
     document.getElementById(`${baseScreenID}-food-additional`).innerHTML = "";
-    const saveBtn = document.getElementById(`${baseScreenID}-save`);
-    saveBtn.removeAttribute("food_id");
-    saveBtn.removeAttribute("meal_name");
-    saveBtn.removeAttribute("meal_year");
-    saveBtn.removeAttribute("meal_month");
-    saveBtn.removeAttribute("meal_day");
-    saveBtn.removeAttribute("profile_id");
     FMTFoodItemScreenShowLess(baseScreenID);
 }
 function FMTFoodItemScreenSave(baseScreenID, action, optionsObj, onsuccessFn, onerrorFn) {
@@ -1854,7 +1874,6 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     });
     mealFooterAddDiv.appendChild(mealFooterAddBtn);
 
-
     const carbSpanMd = document.createElement("span");
     const carbSpanSm = document.createElement("span");
     carbSpanMd.classList.add("fmt-font-1", "d-none", "d-sm-block", "fmt-meal-carbs");
@@ -1959,7 +1978,7 @@ function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
     
     const consKcalSpan = document.createElement("span");
     consKcalSpan.classList.add("fmt-font-1", "float-right");
-    consKcalSpan.innerHTML = `${mealEntry.nutritionalValue.calories}kCal`;
+    consKcalSpan.innerHTML = `${roundedToFixed(mealEntry.nutritionalValue.calories)}kCal`;
     const consKcalDiv = document.createElement("div");
     consKcalDiv.classList.add("col-6");
     consKcalDiv.appendChild(consKcalSpan);
@@ -1973,7 +1992,7 @@ function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
     
     const consNutriValueSpan = document.createElement("span");
     consNutriValueSpan.classList.add("fmt-font-sm", "float-left");
-    consNutriValueSpan.innerHTML = `Carb:${mealEntry.nutritionalValue.carbohydrates} Protein:${mealEntry.nutritionalValue.proteins} Fat:${mealEntry.nutritionalValue.fats}`;
+    consNutriValueSpan.innerHTML = `Carb:${roundedToFixed(mealEntry.nutritionalValue.carbohydrates)} Protein:${roundedToFixed(mealEntry.nutritionalValue.proteins)} Fat:${roundedToFixed(mealEntry.nutritionalValue.fats)}`;
     const consNutriValueDiv = document.createElement("div");
     consNutriValueDiv.classList.add("col-6");
     consNutriValueDiv.appendChild(consNutriValueSpan);
@@ -2003,10 +2022,10 @@ function FMTOverviewUpdateMealProgress(targetID) {
     const carbProgSpan = document.getElementById(`${targetID}-carb-progress`);
     const proteinProgSpan = document.getElementById(`${targetID}-protein-progress`);
     const fatProgSpan = document.getElementById(`${targetID}-fat-progress`);
-    calProgSpan.innerHTML = totalNutriValue.calories;
-    carbProgSpan.innerHTML = totalNutriValue.carbohydrates;
-    proteinProgSpan.innerHTML = totalNutriValue.proteins;
-    fatProgSpan.innerHTML = totalNutriValue.fats;
+    calProgSpan.innerHTML = roundedToFixed(totalNutriValue.calories);
+    carbProgSpan.innerHTML = roundedToFixed(totalNutriValue.carbohydrates);
+    proteinProgSpan.innerHTML = roundedToFixed(totalNutriValue.proteins);
+    fatProgSpan.innerHTML = roundedToFixed(totalNutriValue.fats);
 };
 function FMTOverviewUpdateTotalProgress(sourceID) {
     const mealsContainerDiv = document.getElementById(sourceID);
@@ -2034,8 +2053,8 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
         const proteinProgBar = document.getElementById("protein-progress-bar");
         const fatProgBar = document.getElementById("fat-progress-bar");
         
-        calProgBar.innerHTML = totalNutriValue.calories;
-        calPercent = (totalNutriValue.calories / profile.macroSplit.Calories) * 100;
+        calProgBar.innerHTML = roundedToFixed(totalNutriValue.calories);
+        calPercent = roundedToFixed((totalNutriValue.calories / profile.macroSplit.Calories) * 100);
         calProgBar.setAttribute("aria-valuenow", calPercent);
         calProgBar.style.width = `${calPercent >= 100? 100 : calPercent}%`;
         if (calPercent > 100) {
@@ -2045,8 +2064,8 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
             calProgBar.classList.remove("bg-danger");
         }
         
-        carbProgBar.innerHTML = totalNutriValue.carbohydrates;
-        carbPercent = (totalNutriValue.carbohydrates / (profile.macroSplit.Carbohydrate/100 * profile.macroSplit.Calories / 4 )) * 100;
+        carbProgBar.innerHTML = roundedToFixed(totalNutriValue.carbohydrates);
+        carbPercent = roundedToFixed((totalNutriValue.carbohydrates / (profile.macroSplit.Carbohydrate/100 * profile.macroSplit.Calories / 4 )) * 100);
         carbProgBar.setAttribute("aria-valuenow", carbPercent);
         carbProgBar.style.width = `${carbPercent >= 100? 100 : carbPercent}%`;
         if (carbPercent > 100) {
@@ -2056,8 +2075,8 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
             carbProgBar.classList.remove("bg-danger");
         }
         
-        proteinProgBar.innerHTML = totalNutriValue.proteins;
-        proteinPercent = (totalNutriValue.proteins / (profile.macroSplit.Protein/100 * profile.macroSplit.Calories / 4 )) * 100;
+        proteinProgBar.innerHTML = roundedToFixed(totalNutriValue.proteins);
+        proteinPercent = roundedToFixed((totalNutriValue.proteins / (profile.macroSplit.Protein/100 * profile.macroSplit.Calories / 4 )) * 100);
         proteinProgBar.setAttribute("aria-valuenow", proteinPercent);
         proteinProgBar.style.width = `${proteinPercent >= 100? 100 : proteinPercent}%`;
         if (proteinPercent > 100) {
@@ -2067,8 +2086,8 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
             proteinProgBar.classList.remove("bg-danger");
         }
         
-        fatProgBar.innerHTML = totalNutriValue.fats;
-        fatPercent = (totalNutriValue.fats / (profile.macroSplit.Fat/100 * profile.macroSplit.Calories / 9 )) * 100;
+        fatProgBar.innerHTML = roundedToFixed(totalNutriValue.fats);
+        fatPercent = roundedToFixed((totalNutriValue.fats / (profile.macroSplit.Fat/100 * profile.macroSplit.Calories / 9 )) * 100);
         fatProgBar.setAttribute("aria-valuenow", fatPercent);
         fatProgBar.style.width = `${fatPercent >= 100? 100 : fatPercent}%`;
         if (fatPercent > 100) {
@@ -2327,7 +2346,7 @@ var pageController = {
         pageController.openDynamicScreen("view-food-screen");
         //Sync Tasks
         if (clear) {
-            FMTFoodItemScreenClear("view-food-screen");
+            FMTViewFoodItemScreenClear("view-food-screen");
             const eventListenerObj = {"view-food-screen-food-weight-units":
                                       {"massUnitChanged": FMTUpdateViewFoodValuesOnWeightChange,}
                                      };
@@ -2346,22 +2365,27 @@ var pageController = {
             const mealIdentifier = validateMealIdentifierObjRes.mealIdentifier;
             if (!!mealIdentifier.meal_name) {
                 addToMealBtn.setAttribute("meal_name", mealIdentifier.meal_name);
+                document.getElementById("view-food-screen-meal-name").value = mealIdentifier.meal_name;
             }
             else {
                 addToMealBtn.removeAttribute("meal_name");
-                //TODO - and prompt for meal Name
+                document.getElementById("view-food-screen-meal-name").value = "";
+                document.getElementById("view-food-screen-add-to-meal").classList.remove("d-none");
             }
             addToMealBtn.setAttribute("meal_year", mealIdentifier.meal_year);
             addToMealBtn.setAttribute("meal_month", mealIdentifier.meal_month);
             addToMealBtn.setAttribute("meal_day", mealIdentifier.meal_day);
             addToMealBtn.setAttribute("profile_id", mealIdentifier.profile_id);
+            document.getElementById("view-food-screen-meal-year").value = mealIdentifier.meal_year;
+            document.getElementById("view-food-screen-meal-month").value = mealIdentifier.meal_month+1;
+            document.getElementById("view-food-screen-meal-day").value = mealIdentifier.meal_day;
         }
         //Async Tasks
         FMTFoodItemScreenPopulateSavedValues("view-food-screen", foodId, multiplier, true, "view-food-screen-food-weight-input", currentWeightValue, currentWeightUnits);
     },
     closeViewFoodDynamicScreen: function() {
         pageController.closeDynamicScreen("view-food-screen");
-        FMTFoodItemScreenClear("view-food-screen");
+        FMTViewFoodItemScreenClear("view-food-screen");
     },
     openAddToMealDynamicScreen: function(mealIdentifierObj) {
         pageController.openDynamicScreen("add-to-meal-screen");
@@ -2736,23 +2760,24 @@ function prepareEventHandlers() {
     $("#view-food-screen-save").click( (e) => {
         const addToMealBtn = document.getElementById("view-food-screen-save");
         const mealIdentifierObj = {};
-        mealIdentifierObj.meal_year = addToMealBtn.getAttribute("meal_year");
-        mealIdentifierObj.meal_month = addToMealBtn.getAttribute("meal_month");
-        mealIdentifierObj.meal_day = addToMealBtn.getAttribute("meal_day");
-        mealIdentifierObj.meal_name = addToMealBtn.getAttribute("meal_name");
+        mealIdentifierObj.meal_year = addToMealBtn.getAttribute("meal_year") || document.getElementById("view-food-screen-meal-year").value;
+        mealIdentifierObj.meal_month = addToMealBtn.getAttribute("meal_month") || (Number(document.getElementById("view-food-screen-meal-month").value) - 1);
+        mealIdentifierObj.meal_day = addToMealBtn.getAttribute("meal_day") || document.getElementById("view-food-screen-meal-day").value;
+        mealIdentifierObj.meal_name = addToMealBtn.getAttribute("meal_name") || document.getElementById("view-food-screen-meal-name").value;
         mealIdentifierObj.profile_id = addToMealBtn.getAttribute("profile_id") || fmtAppInstance.currentProfileId;
 
         if (!mealIdentifierObj.meal_year
             || !mealIdentifierObj.meal_month
             || !mealIdentifierObj.meal_day
             || !mealIdentifierObj.meal_name) {
-            console.warn("Missing value on meal identifier");
+            document.getElementById("view-food-screen-add-to-meal").classList.remove("d-none");
+            FMTShowAlert("view-food-screen-alerts", "primary", "Please fill Year, Month, Day and Meal Name you wish to add to");
             return;
         }
         const validateMealIdentifierObjRes = FMTValidateMealIdentifier(mealIdentifierObj);
         if (validateMealIdentifierObjRes.mealIdentifier == null || validateMealIdentifierObjRes.error != null) {
             console.error(validateMealIdentifierObjRes.error);
-            FMTShowAlert("view-food-screen-alerts", "danger", `Application state corrupted or was tampered with.\nKindly reload Free Macro Tracker :)`);
+            FMTShowAlert("view-food-screen-alerts", "danger", `Error - ${validateMealIdentifierObjRes.error}`);
             return;
         }
         const mealIdentifier = validateMealIdentifierObjRes.mealIdentifier;
