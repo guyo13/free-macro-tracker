@@ -1413,7 +1413,7 @@ function FMTCreateMassUnitDropdownMenu(baseName, targetDivId, mUnitsChart, isSta
     }
 }
 
-//Functions - UI - Foods
+//Functions - UI - Consumables (Food Items, Recipe Items, Meal Entries)
 function FMTCreateNutrientCategoryHeading(category, targetDivID) {
     const headingElements = [];
     const spacer = document.createElement("div");
@@ -1518,7 +1518,7 @@ function FMTQueryFoodsTable(query, baseID) {
         }
     }
 }
-function FMTFoodItemScreenPopulateAdditionalNutrients(baseScreenID, readonly, qualifier) {
+function FMTPopulateAdditionalNutrientsInConsumableItemScreen(baseScreenID, readonly, qualifier) {
     if (!fmtAppInstance.additionalNutrients) { return false; }
     qualifier = qualifier || "food";
     const mUnitsChart = fmtAppInstance.massUnitChart;
@@ -1559,7 +1559,7 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier) {
     if (isNumber(optionsObj.consumableId)) {
         saveOrAddBtn.setAttribute(`${qualifier}_id`, optionsObj.consumableId);
     }
-    const res = FMTFoodItemScreenPopulateAdditionalNutrients(baseScreenID, readonly, qualifier);
+    const res = FMTPopulateAdditionalNutrientsInConsumableItemScreen(baseScreenID, readonly, qualifier);
     if (!res) { console.warn("Failed populating user defined values in add food screen"); }
     if (optionsObj.eventListenersObj) {
         for (const elemName in optionsObj.eventListenersObj) {
@@ -1800,12 +1800,7 @@ function FMTUpdateViewFoodValuesOnWeightChange(e) {
         pageController.openViewFoodDynamicScreen(foodId, multiplier, false, weightValue, weightUnits);
     }
 }
-//Functions - UI - Recipes
-//Functions - UI - Meal Entries
-function FMTPopulateEditMealEntry(baseScreenID, mealEntry, qualifier) {
-    qualifier = qualifier || "consumable";
-    
-}
+
 //Functions - UI - Overview
 function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     let mealEntry = mealEntryObj;
