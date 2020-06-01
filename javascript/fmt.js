@@ -1667,7 +1667,13 @@ function FMTFoodItemScreenClear(baseScreenID) {
     document.getElementById(`${baseScreenID}-food-fats`).value = "";
     document.getElementById(`${baseScreenID}-food-weight-input`).value = "";
     document.getElementById(`${baseScreenID}-food-additional`).innerHTML = "";
-    document.getElementById(`${baseScreenID}-save`).removeAttribute("food_id");
+    const saveBtn = document.getElementById(`${baseScreenID}-save`);
+    saveBtn.removeAttribute("food_id");
+    saveBtn.removeAttribute("meal_name");
+    saveBtn.removeAttribute("meal_year");
+    saveBtn.removeAttribute("meal_month");
+    saveBtn.removeAttribute("meal_day");
+    saveBtn.removeAttribute("profile_id");
     FMTFoodItemScreenShowLess(baseScreenID);
 }
 function FMTFoodItemScreenSave(baseScreenID, action, optionsObj, onsuccessFn, onerrorFn) {
@@ -2304,7 +2310,7 @@ var pageController = {
             const eventListenerObj = {"view-food-screen-food-weight-units":
                                       {"massUnitChanged": FMTUpdateViewFoodValuesOnWeightChange,}
                                      };
-            FMTFoodItemScreenPopulate("view-food-screen", {"foodId": foodId, "eventListenersObj": eventListenerObj });            
+            FMTFoodItemScreenPopulate("view-food-screen", {"foodId": foodId, "eventListenersObj": eventListenerObj });
         }
         const addToMealBtn = document.getElementById("view-food-screen-save");
         const editFoodBtn = document.getElementById("view-food-screen-edit");
@@ -2321,20 +2327,13 @@ var pageController = {
                 addToMealBtn.setAttribute("meal_name", mealIdentifier.meal_name);
             }
             else {
-                //TODO - prompt for meal Name
+                addToMealBtn.removeAttribute("meal_name");
+                //TODO - and prompt for meal Name
             }
             addToMealBtn.setAttribute("meal_year", mealIdentifier.meal_year);
             addToMealBtn.setAttribute("meal_month", mealIdentifier.meal_month);
             addToMealBtn.setAttribute("meal_day", mealIdentifier.meal_day);
             addToMealBtn.setAttribute("profile_id", mealIdentifier.profile_id);
-        }
-        else {
-            //TODO - prompt user
-            addToMealBtn.removeAttribute("meal_name");
-            addToMealBtn.removeAttribute("meal_year");
-            addToMealBtn.removeAttribute("meal_month");
-            addToMealBtn.removeAttribute("meal_day");
-            addToMealBtn.removeAttribute("profile_id");
         }
         //Async Tasks
         FMTFoodItemScreenPopulateSavedValues("view-food-screen", foodId, multiplier, true, "view-food-screen-food-weight-input", currentWeightValue, currentWeightUnits);
