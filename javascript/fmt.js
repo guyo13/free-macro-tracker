@@ -76,7 +76,7 @@ fmtAppGlobals.FMT_DB_USER_GOALS_KP = ["profile_id", "year", "month", "day"];
 //Globals - Page
 fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-recipes", "goto-profile", "goto-advanced", "goto-export", "goto-import"];
 fmtAppGlobals.dynamicScreenIds = ["add-food-screen", "edit-food-screen", "view-food-screen", "add-to-meal-screen", "edit-meal-entry-screen"];
-fmtAppGlobals.consumableItemScreenStaticViewInputFields = ["-name", "-brand", "-calories", "-proteins", "-carbohydrates", "-fats"];
+fmtAppGlobals.consumableItemScreenStaticViewInputFields = ["name", "brand", "calories", "proteins", "carbohydrates", "fats"];
 fmtAppGlobals.dateDivIDs = ["overview-date-day-large", "overview-date-day-small"];
 fmtAppGlobals.maxDynamicScreens = 1000;
 //Globals - Units
@@ -377,48 +377,50 @@ function FMTValidateNutritionalValue(nutritionalValueObj, mUnitsChart) {
  *nutrient - {name,unit,mass}
 */
 function FMTValidateFoodObject(foodObj, mUnitsChart) {
+    const _funcName = "FMTValidateFoodObject";
+    mUnitsChart = mUnitsChart || fmtAppInstance.massUnitChart;
     const result = {};
     let food = {};
     if (foodObj.foodName == null || foodObj.foodName === "") {
-        console.debug(`[FMTValidateFoodObject] - null foodName`);
+        console.debug(`[${_funcName}] - null foodName`);
         return {"food": null, "error": "Food Description must not be empty"};
     }
     else { food.foodName = foodObj.foodName; }
     food.foodBrand = foodObj.foodBrand;
     if (!isNumber(foodObj.referenceWeight) || Number(foodObj.referenceWeight) <= 0) {
-        console.debug(`[FMTValidateFoodObject] - referenceWeight is not a positive number`);
+        console.debug(`[${_funcName}] - referenceWeight is not a positive number`);
         return {"food": null, "error": "Weight must be positive number"};
     }
     else { food.referenceWeight = Number(foodObj.referenceWeight); }
     if (foodObj.weightUnits == null) {
-        console.debug(`[FMTValidateFoodObject] - null weightUnits`);
+        console.debug(`[${_funcName}] - null weightUnits`);
         return {"food": null, "error": "Invalid Weight units"};
     }
     else { food.weightUnits = foodObj.weightUnits; }
     if (foodObj.nutritionalValue == null) {
-        console.debug(`[FMTValidateFoodObject] - null nutritionalValue`);
+        console.debug(`[${_funcName}] - null nutritionalValue`);
         return {"food": null, "error": "Nutritional Value must not be empty"};
     }
     else {
         let nutritionalValue = foodObj.nutritionalValue;
         food.nutritionalValue = {};
         if (!isNumber(nutritionalValue.calories)) {
-            console.debug(`[FMTValidateFoodObject] - nutritionalValue.calories is NaN`);
+            console.debug(`[${_funcName}] - nutritionalValue.calories is NaN`);
             return {"food": null, "error": "Calories value must be a valid number"};
         }
         else { food.nutritionalValue.calories = Number(nutritionalValue.calories); }
         if (!isNumber(nutritionalValue.proteins)) {
-            console.debug(`[FMTValidateFoodObject] - nutritionalValue.proteins is NaN`);
+            console.debug(`[${_funcName}] - nutritionalValue.proteins is NaN`);
             return{"food": null, "error": "Proteins value must be a valid number"};
         }
         else { food.nutritionalValue.proteins = Number(nutritionalValue.proteins); }
         if (!isNumber(nutritionalValue.carbohydrates)) {
-            console.debug(`[FMTValidateFoodObject] - nutritionalValue.carbohydrates is NaN`);
+            console.debug(`[${_funcName}] - nutritionalValue.carbohydrates is NaN`);
             return {"food": null, "error": "Carbohydrates value must be a valid number"};
         }
         else { food.nutritionalValue.carbohydrates = Number(nutritionalValue.carbohydrates); }
         if (!isNumber(nutritionalValue.fats)) {
-            console.debug(`[FMTValidateFoodObject] - nutritionalValue.fats is NaN`);
+            console.debug(`[${_funcName}] - nutritionalValue.fats is NaN`);
             return {"food": null, "error": "Fats value must be a valid number"};
         }
         else { food.nutritionalValue.fats = Number(nutritionalValue.fats); }
@@ -433,17 +435,17 @@ function FMTValidateFoodObject(foodObj, mUnitsChart) {
                         const validatedNutrient = {};
                         const nutrient = nutrientsInCat[j];
                         if (nutrient.name == null || nutrient.name === "") {
-                            console.debug(`[FMTValidateFoodObject] - nutrient.name is null ${JSON.stringify(nutrient)}`);
+                            console.debug(`[${_funcName}] - nutrient.name is null ${JSON.stringify(nutrient)}`);
                             const errMsg = `Nutrient in Category "${nutrientCategoryName}" has empty name`;
                             return {"food": null, "error": errMsg};
                         }
                         if (!isNumber(nutrient.mass)) {
-                            console.debug(`[FMTValidateFoodObject] - nutrient.mass is not a number ${JSON.stringify(nutrient)}`);
+                            console.debug(`[${_funcName}] - nutrient.mass is not a number ${JSON.stringify(nutrient)}`);
                             const errMsg = `Nutrient "${nutrient.name}" (Category ${nutrientCategoryName}) has invalid value "${nutrient.mass}"`;
                             return {"food": null, "error": errMsg};
                         }
                         if (!(nutrient.unit in mUnitsChart)) {
-                            console.debug(`[FMTValidateFoodObject] - nutrient.unit is not in Mass Unit chart ${JSON.stringify(nutrient)}\n${JSON.stringify(mUnitsChart)}`);
+                            console.debug(`[${_funcName}] - nutrient.unit is not in Mass Unit chart ${JSON.stringify(nutrient)}\n${JSON.stringify(mUnitsChart)}`);
                             const errMsg = `Nutrient "${nutrient.name}" (Category ${nutrientCategoryName}) has unknown or invalid mass unit "${nutrient.unit}"`;
                             return {"food": null, "error": errMsg};
                         }
@@ -1570,9 +1572,8 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier) {
         }
     }
 }
-function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableId, qualifier, objectType, multiplier,
-                                              readonly, focusDivId, currentWeightValue,
-                                               currentWeightUnits , onCompleteFn) {
+function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableItem, qualifier, objectType, multiplier,
+                                                      readonly, focusDivId, currentWeightValue, currentWeightUnits) {
     if (multiplier !== 0) {
         multiplier = multiplier || 1;
     }
@@ -1594,81 +1595,62 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableId
             idProp = "entry_id";//TODO - revise (there is also consumable_id which one we need?)
             break;
     }
-    let onerrorFn = function(e) {
-        const msg = `[${_funcName}] - Failed loading Consumable Id (${consumableId})`;
-        console.error(msg);
-        FMTShowAlert(`${baseScreenID}-alerts`, "danger", msg, fmtAppGlobals.defaultAlertScroll);
-    };
-    let onsuccessFn = function (e) {
-        //TODO Add option to not validate
-        const result = FMTValidateFoodObject(e.target.result, fmtAppInstance.massUnitChart);
-        if (result.error != null) {
-            const msg = `[${_funcName}] - Consumable Id (${consumableId}) loaded but failed validation`;
-            console.error(msg);
-            console.error(e.target.result);
-            FMTShowAlert(`${baseScreenID}-alerts`, "warning", msg, fmtAppGlobals.defaultAlertScroll);
-            return;
-        }
-        const consumableItem = result.food;
-        document.getElementById(`${baseScreenID}-${qualifier}-name`).value = consumableItem[nameProp];
-        document.getElementById(`${baseScreenID}-${qualifier}-brand`).value = consumableItem[brandProp];
-        if (!isNumber(currentWeightValue) || !(currentWeightUnits in fmtAppInstance.massUnitChart)) {
-            document.getElementById(`${baseScreenID}-${qualifier}-weight-input`).value = consumableItem.referenceWeight;
-            document.getElementById(`${baseScreenID}-${qualifier}-weight-input`).setAttribute("reference_weight", consumableItem.referenceWeight);
-            document.getElementById(`${baseScreenID}-${qualifier}-weight-input`).setAttribute("reference_weight_units", consumableItem.weightUnits);
-            document.getElementById(`${baseScreenID}-${qualifier}-weight-unit-${consumableItem.weightUnits}`).dispatchEvent(new Event("click"));
-        }//Else dont touch these fields
-        document.getElementById(`${baseScreenID}-${qualifier}-calories`).value = consumableItem.nutritionalValue.calories * multiplier;
-        document.getElementById(`${baseScreenID}-${qualifier}-proteins`).value = consumableItem.nutritionalValue.proteins * multiplier;
-        document.getElementById(`${baseScreenID}-${qualifier}-carbohydrates`).value = consumableItem.nutritionalValue.carbohydrates * multiplier;
-        document.getElementById(`${baseScreenID}-${qualifier}-fats`).value = consumableItem.nutritionalValue.fats * multiplier;
-        
-        if (readonly) {
-            for (const j in fmtAppGlobals.consumableItemScreenStaticViewInputFields) {
-                document.getElementById(`${baseScreenID}-${qualifier}-${fmtAppGlobals.consumableItemScreenStaticViewInputFields[j]}`).setAttribute("readonly", true);
-            }
-        }
+    document.getElementById(`${baseScreenID}-${qualifier}-name`).value = consumableItem[nameProp];
+    document.getElementById(`${baseScreenID}-${qualifier}-brand`).value = consumableItem[brandProp];
+    if (!isNumber(currentWeightValue) || !(currentWeightUnits in fmtAppInstance.massUnitChart)) {
+        document.getElementById(`${baseScreenID}-${qualifier}-weight-input`).value = consumableItem[weightProp];
+        document.getElementById(`${baseScreenID}-${qualifier}-weight-input`).setAttribute("reference_weight", consumableItem[weightProp]);
+        document.getElementById(`${baseScreenID}-${qualifier}-weight-input`).setAttribute("reference_weight_units", consumableItem.weightUnits);
+        document.getElementById(`${baseScreenID}-${qualifier}-weight-unit-${consumableItem.weightUnits}`).dispatchEvent(new Event("click"));
+    }//Else dont touch these fields
+    document.getElementById(`${baseScreenID}-${qualifier}-calories`).value = consumableItem.nutritionalValue.calories * multiplier;
+    document.getElementById(`${baseScreenID}-${qualifier}-proteins`).value = consumableItem.nutritionalValue.proteins * multiplier;
+    document.getElementById(`${baseScreenID}-${qualifier}-carbohydrates`).value = consumableItem.nutritionalValue.carbohydrates * multiplier;
+    document.getElementById(`${baseScreenID}-${qualifier}-fats`).value = consumableItem.nutritionalValue.fats * multiplier;
 
-        if (!!consumableItem.nutritionalValue.additionalNutrients) {
-            for (const nutriCatName in consumableItem.nutritionalValue.additionalNutrients) {
-                const nutrientsList = consumableItem.nutritionalValue.additionalNutrients[nutriCatName];
-                for (const i in nutrientsList) {
-                    const nutrient = nutrientsList[i];
-                    if (nutrient.mass == 0) { continue; }
-                    const baseElementId = `${baseScreenID}-${qualifier}-addi-${nutriCatName.replace(" ", "_")}-${nutrient.name.replace(" ", "_")}`;
-                    const inputElementId = `${baseElementId}-input`;
-                    const mUnitDropdownItemId = `${baseElementId}-unit-${nutrient.unit}`;
-                    const inputElement = document.getElementById(inputElementId);
-                    const mUnitDropdownItem = document.getElementById(mUnitDropdownItemId);
-                    if (inputElement && mUnitDropdownItem) {
-                        inputElement.value = nutrient.mass * multiplier;
-                        mUnitDropdownItem.dispatchEvent(new Event("click"));
-                    }
-                    else {
-                        //TODO - Lazy Load inexisting nutrients/categories based on APP settings
-                        console.warn(`[${_funcName}] - Consumable Id (${consumableId}), could not find DOM elements "${inputElementId}", "${mUnitDropdownItemId}"`);
-                    }
+    if (readonly) {
+        for (const j in fmtAppGlobals.consumableItemScreenStaticViewInputFields) {
+            document.getElementById(`${baseScreenID}-${qualifier}-${fmtAppGlobals.consumableItemScreenStaticViewInputFields[j]}`).setAttribute("readonly", true);
+        }
+    }
+
+    if (!!consumableItem.nutritionalValue.additionalNutrients) {
+        for (const nutriCatName in consumableItem.nutritionalValue.additionalNutrients) {
+            const nutrientsList = consumableItem.nutritionalValue.additionalNutrients[nutriCatName];
+            for (const i in nutrientsList) {
+                const nutrient = nutrientsList[i];
+                if (nutrient.mass == 0) { continue; }
+                const baseElementId = `${baseScreenID}-${qualifier}-addi-${nutriCatName.replace(" ", "_")}-${nutrient.name.replace(" ", "_")}`;
+                const inputElementId = `${baseElementId}-input`;
+                const mUnitDropdownItemId = `${baseElementId}-unit-${nutrient.unit}`;
+                const inputElement = document.getElementById(inputElementId);
+                const mUnitDropdownItem = document.getElementById(mUnitDropdownItemId);
+                if (inputElement && mUnitDropdownItem) {
+                    inputElement.value = nutrient.mass * multiplier;
+                    mUnitDropdownItem.dispatchEvent(new Event("click"));
                 }
-            }
-            if (readonly) {
-                const addiNutriDiv = document.getElementById(`${baseScreenID}-${qualifier}-additional`);
-                const addiNutrients = addiNutriDiv.getElementsByClassName("fmt-add-nutri");
-                for (let k=0; k<addiNutrients.length; k++) {
-                    addiNutrients[k].setAttribute("readonly", true);
-                }
-                const ddToggles = addiNutriDiv.getElementsByClassName("dropdown-toggle");
-                for (let k=0; k<ddToggles.length; k++) {
-                    ddToggles[k].classList.add("d-none");
+                else {
+                    //TODO - Lazy Load inexisting nutrients/categories based on APP settings
+                    console.warn(`[${_funcName}] - Consumable Id (${consumableId}), could not find DOM elements "${inputElementId}", "${mUnitDropdownItemId}"`);
                 }
             }
         }
-        if (focusDivId) {
-            const fDiv = document.getElementById(focusDivId)
-            if (fDiv) { fDiv.focus(); }
+        if (readonly) {
+            const addiNutriDiv = document.getElementById(`${baseScreenID}-${qualifier}-additional`);
+            const addiNutrients = addiNutriDiv.getElementsByClassName("fmt-add-nutri");
+            for (let k=0; k<addiNutrients.length; k++) {
+                addiNutrients[k].setAttribute("readonly", true);
+            }
+            const ddToggles = addiNutriDiv.getElementsByClassName("dropdown-toggle");
+            for (let k=0; k<ddToggles.length; k++) {
+                ddToggles[k].classList.add("d-none");
+            }
         }
-        if (onCompleteFn) { onCompleteFn(); }
-    };
-    FMTReadFood(consumableId, onsuccessFn, onerrorFn);
+    }
+    if (focusDivId) {
+        const fDiv = document.getElementById(focusDivId)
+        if (fDiv) { fDiv.focus(); }
+    }
 }
 function FMTConsumableItemScreenShowMore(baseScreenID, qualifier) {
     qualifier = qualifier || "food";
@@ -2351,65 +2333,114 @@ var pageController = {
         document.getElementById("foods-alerts").innerHTML = "";
     },
     openEditFoodDynamicScreen: function(foodId) {
-        if (!isNumber(foodId)) { console.error(`Food ID (${foodId}) is not a number`); return; }
+        //Sync Tasks
+        if (!foodId || !isNumber(foodId) || !Number.isInteger(Number(foodId)) ) { console.error(`Invalid Food ID (${foodId})`); return; }
         foodId = Number(foodId);
-        pageController.openDynamicScreen("edit-food-screen");
-        FMTClearConsumableItemScreen("edit-food-screen", "food");
-        FMTPopulateConsumableItemScreen("edit-food-screen", {"consumableId": foodId}, "food");
-        FMTPopulateSavedValuesInConsumableItemScreen("edit-food-screen", foodId, "food", "Food Item", 1, false, null);
-        document.getElementById("edit-food-screen-delete").setAttribute("food_id", foodId);
+        const alertDivId = pageController.getAlertDivId();
+        //Async Tasks
+        FMTReadFood(foodId,
+                    //OnSuccess
+                    function(e) {
+            const foodObj = e.target.result;
+            if (!foodObj) {
+                FMTShowAlert(alertDivId, "warning", `Couldn't find Food item with ID (${foodId})`);
+                return;
+            }
+            const validateResult = FMTValidateFoodObject(foodObj, fmtAppInstance.massUnitChart);
+            if (validateResult.food == null || validateResult.error != null) {
+                FMTShowAlert(alertDivId, "Danger", `Error - Food item with ID (${foodId}) failed validation - ${validateResult.error}`);
+                return;
+            }
+            pageController.openDynamicScreen("edit-food-screen");
+            FMTClearConsumableItemScreen("edit-food-screen", "food");
+            FMTPopulateConsumableItemScreen("edit-food-screen", {"consumableId": foodId}, "food");
+            document.getElementById("edit-food-screen-delete").setAttribute("food_id", foodId);
+            const food = validateResult.food;
+            FMTPopulateSavedValuesInConsumableItemScreen("edit-food-screen", food, "food", "Food Item", 1, false, null);
+        },
+                    //OnError
+                    function(e) {
+            FMTShowAlert(alertDivId, "Danger", `Error reading Food Item with ID (${foodId})`);
+            console.error(e);
+            return;
+        },
+                   );
     },
     closeEditFoodDynamicScreen: function() {
         pageController.closeDynamicScreen("edit-food-screen");
         FMTClearConsumableItemScreen("edit-food-screen", "food");
     },
     openViewFoodDynamicScreen: function(foodId, multiplier, clear, currentWeightValue, currentWeightUnits, mealIdentifierObj) {
+        //Sync Tasks
         //Argument Validation
-        if (!isNumber(foodId)) { console.error(`Food ID (${foodId}) is not a number`); return; }
-        if (!isNumber(multiplier)) { console.error(`Multiplier (${multiplier}) is not a number`); return; }
+        if (!foodId || !isNumber(foodId) || !Number.isInteger(Number(foodId)) ) { console.error(`Invalid Food ID: ${foodId}`); return; }
+        if (!isNumber(multiplier)) { console.error(`Invalid Multiplier: ${multiplier}`); return; }
         foodId = Number(foodId);
         multiplier = Number(multiplier);
         if (clear !== false) { clear = clear || true; }
-        //Open Screen
-        pageController.openDynamicScreen("view-food-screen");
-        //Sync Tasks
-        if (clear) {
-            FMTClearViewConsumableItemScreen("view-food-screen");
-            const eventListenerObj = {"view-food-screen-food-weight-units":
-                                      {"massUnitChanged": FMTUpdateViewFoodValuesOnWeightChange,}
-                                     };
-            FMTPopulateConsumableItemScreen("view-food-screen", {"consumableId": foodId, "eventListenersObj": eventListenerObj }, "food");
-        }
-        const addToMealBtn = document.getElementById("view-food-screen-save");
-        const editFoodBtn = document.getElementById("view-food-screen-edit");
-        editFoodBtn.setAttribute("food_id", foodId);
-        if (!!mealIdentifierObj) {
-            const validateMealIdentifierObjRes = FMTValidateMealIdentifier(mealIdentifierObj);
-            if (validateMealIdentifierObjRes.mealIdentifier == null || validateMealIdentifierObjRes.error != null) {
-                console.error(validateMealIdentifierObjRes.error);
-                FMTShowAlert("view-food-screen-alerts", "danger", `Application state corrupted or was tampered with.\nKindly reload Free Macro Tracker :)`);
+        const alertDivId = pageController.getAlertDivId();
+        //Async Tasks
+        FMTReadFood(foodId,
+                    //OnSuccess
+                    function(e) {
+            const foodObj = e.target.result;
+            if (!foodObj) {
+                FMTShowAlert(alertDivId, "warning", `Couldn't find Food item with ID (${foodId})`);
                 return;
             }
-            const mealIdentifier = validateMealIdentifierObjRes.mealIdentifier;
-            if (!!mealIdentifier.meal_name) {
-                addToMealBtn.setAttribute("meal_name", mealIdentifier.meal_name);
-                document.getElementById("view-food-screen-meal-name").value = mealIdentifier.meal_name;
+            const validateResult = FMTValidateFoodObject(foodObj, fmtAppInstance.massUnitChart);
+            if (validateResult.food == null || validateResult.error != null) {
+                FMTShowAlert(alertDivId, "Danger", `Error - Food item with ID (${foodId}) failed validation - ${validateResult.error}`);
+                return;
             }
-            else {
-                addToMealBtn.removeAttribute("meal_name");
-                document.getElementById("view-food-screen-meal-name").value = "";
-                document.getElementById("view-food-screen-add-to-meal").classList.remove("d-none");
+            //Open Screen
+            pageController.openDynamicScreen("view-food-screen");
+            //Clear Screen if needed
+            if (clear) {
+                FMTClearViewConsumableItemScreen("view-food-screen");
+                const eventListenerObj = {"view-food-screen-food-weight-units":
+                                          {"massUnitChanged": FMTUpdateViewFoodValuesOnWeightChange,}
+                                         };
+                FMTPopulateConsumableItemScreen("view-food-screen", {"consumableId": foodId, "eventListenersObj": eventListenerObj }, "food");
             }
-            addToMealBtn.setAttribute("meal_year", mealIdentifier.meal_year);
-            addToMealBtn.setAttribute("meal_month", mealIdentifier.meal_month);
-            addToMealBtn.setAttribute("meal_day", mealIdentifier.meal_day);
-            addToMealBtn.setAttribute("profile_id", mealIdentifier.profile_id);
-            document.getElementById("view-food-screen-meal-year").value = mealIdentifier.meal_year;
-            document.getElementById("view-food-screen-meal-month").value = mealIdentifier.meal_month+1;
-            document.getElementById("view-food-screen-meal-day").value = mealIdentifier.meal_day;
-        }
-        //Async Tasks
-        FMTPopulateSavedValuesInConsumableItemScreen("view-food-screen", foodId, "food", "Food Item", multiplier, true, "view-food-screen-food-weight-input", currentWeightValue, currentWeightUnits);
+            const food = validateResult.food;
+            const addToMealBtn = document.getElementById("view-food-screen-save");
+            const editFoodBtn = document.getElementById("view-food-screen-edit");
+            editFoodBtn.setAttribute("food_id", foodId);
+            if (!!mealIdentifierObj) {
+                const validateMealIdentifierObjRes = FMTValidateMealIdentifier(mealIdentifierObj);
+                if (validateMealIdentifierObjRes.mealIdentifier == null || validateMealIdentifierObjRes.error != null) {
+                    console.error(validateMealIdentifierObjRes.error);
+                    FMTShowAlert("view-food-screen-alerts", "danger", `Application state corrupted or was tampered with.\nKindly reload Free Macro Tracker :)`);
+                    return;
+                }
+                const mealIdentifier = validateMealIdentifierObjRes.mealIdentifier;
+                if (!!mealIdentifier.meal_name) {
+                    addToMealBtn.setAttribute("meal_name", mealIdentifier.meal_name);
+                    document.getElementById("view-food-screen-meal-name").value = mealIdentifier.meal_name;
+                }
+                else {
+                    addToMealBtn.removeAttribute("meal_name");
+                    document.getElementById("view-food-screen-meal-name").value = "";
+                    document.getElementById("view-food-screen-add-to-meal").classList.remove("d-none");
+                }
+                addToMealBtn.setAttribute("meal_year", mealIdentifier.meal_year);
+                addToMealBtn.setAttribute("meal_month", mealIdentifier.meal_month);
+                addToMealBtn.setAttribute("meal_day", mealIdentifier.meal_day);
+                addToMealBtn.setAttribute("profile_id", mealIdentifier.profile_id);
+                document.getElementById("view-food-screen-meal-year").value = mealIdentifier.meal_year;
+                document.getElementById("view-food-screen-meal-month").value = mealIdentifier.meal_month+1;
+                document.getElementById("view-food-screen-meal-day").value = mealIdentifier.meal_day;
+            }
+            FMTPopulateSavedValuesInConsumableItemScreen("view-food-screen", food, "food", "Food Item", multiplier, true, "view-food-screen-food-weight-input", currentWeightValue, currentWeightUnits);
+        },
+                    //OnError
+                    function(e) {
+            FMTShowAlert(alertDivId, "Danger", `Error reading Food Item with ID (${foodId})`);
+            console.error(e);
+            return;
+        },
+                   );
     },
     closeViewFoodDynamicScreen: function() {
         pageController.closeDynamicScreen("view-food-screen");
@@ -2436,7 +2467,8 @@ var pageController = {
     },
     openEditMealEntryDynamicScreen: function(entry_id) {
         if (!entry_id || !isNumber(entry_id) || !Number.isInteger(Number(entry_id)) ) { return; }
-        const alertDivId = `${(pageController.openedDynamicScreensCount() > 0) ? `${pageController.updateZIndexes(true)[0]}` : fmtAppInstance.pageState.activeTab}-alerts`;
+        entry_id = Number(entry_id);
+        const alertDivId = pageController.getAlertDivId();
         FMTReadMealEntry(entry_id,
                          //OnSuccess
                          function(e) {
@@ -2466,6 +2498,10 @@ var pageController = {
         pageController.closeDynamicScreen("edit-meal-entry-screen");
     },
     openedDynamicScreensCount: function() { return Object.keys(fmtAppInstance.pageState.activeDynamicScreens).length;},
+    getAlertDivId: function() {
+        const alertDivId = `${(pageController.openedDynamicScreensCount() > 0) ? `${pageController.updateZIndexes(true)[0]}` : fmtAppInstance.pageState.activeTab}-alerts`;
+        return alertDivId;
+    },
 };
 
 //Functions - DB - Init
