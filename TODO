@@ -1,9 +1,0 @@
-Implement Recipes
-Implement Mass Units UI
-Implement custom nutrients UI
-Implement Export
-Implement Import
-Clear notifications on profile save
-Replace id and class strings with constants
-use constants instead of let/var where applicable
-Remove code duplication FMTValidateFoodObject and FMTValidateNutritionalValue
