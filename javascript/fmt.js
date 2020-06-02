@@ -134,9 +134,9 @@ function isSameDay(d1, d2) {
             && d1.getDate() === d2.getDate());
 }
 function roundedToFixed(_float, _digits){
-  _digits = _digits || fmtAppInstance.roundingPrecision;
-  let rounded = Math.pow(10, _digits);
-  return (Math.round(_float * rounded) / rounded).toFixed(_digits);
+    if (_digits == null) { _digits = fmtAppInstance.roundingPrecision; }
+    let rounded = Math.pow(10, _digits);
+    return (Math.round(_float * rounded) / rounded).toFixed(_digits);
 }
 //Functions - DB
 function prepareDBv1() {
@@ -1972,7 +1972,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     optsBtnDiv.classList.add("col-2", "col-lg-1");
     optsBtnDiv.appendChild(optsBtn);
     
-    mealHeaderDiv.appendChild(mNameSpan);
+    mealHeaderDiv.appendChild(mNameDiv);
     mealHeaderDiv.appendChild(kCalDiv);
     mealHeaderDiv.appendChild(optsBtnDiv);
     
@@ -2098,7 +2098,7 @@ function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
     
     const consKcalSpan = document.createElement("span");
     consKcalSpan.classList.add("fmt-font-1", "float-right");
-    consKcalSpan.innerHTML = `${roundedToFixed(mealEntry.nutritionalValue.calories)}kCal`;
+    consKcalSpan.innerHTML = `${roundedToFixed(mealEntry.nutritionalValue.calories, 0)}kCal`;
     const consKcalDiv = document.createElement("div");
     consKcalDiv.classList.add("col-6");
     consKcalDiv.appendChild(consKcalSpan);
@@ -2111,7 +2111,7 @@ function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
     consDetailsDiv.appendChild(consDetailsSpan);
     
     const consNutriValueSpan = document.createElement("span");
-    consNutriValueSpan.classList.add("fmt-font-sm", "float-left");
+    consNutriValueSpan.classList.add("fmt-font-sm", "float-right");
     consNutriValueSpan.innerHTML = `Carb:${roundedToFixed(mealEntry.nutritionalValue.carbohydrates)} Protein:${roundedToFixed(mealEntry.nutritionalValue.proteins)} Fat:${roundedToFixed(mealEntry.nutritionalValue.fats)}`;
     const consNutriValueDiv = document.createElement("div");
     consNutriValueDiv.classList.add("col-6");
@@ -2142,7 +2142,7 @@ function FMTOverviewUpdateMealProgress(targetID) {
     const carbProgSpan = document.getElementById(`${targetID}-carb-progress`);
     const proteinProgSpan = document.getElementById(`${targetID}-protein-progress`);
     const fatProgSpan = document.getElementById(`${targetID}-fat-progress`);
-    calProgSpan.innerHTML = roundedToFixed(totalNutriValue.calories);
+    calProgSpan.innerHTML = `${roundedToFixed(totalNutriValue.calories, 0)}kCal`;
     carbProgSpan.innerHTML = roundedToFixed(totalNutriValue.carbohydrates);
     proteinProgSpan.innerHTML = roundedToFixed(totalNutriValue.proteins);
     fatProgSpan.innerHTML = roundedToFixed(totalNutriValue.fats);
@@ -2173,7 +2173,7 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
         const proteinProgBar = document.getElementById("protein-progress-bar");
         const fatProgBar = document.getElementById("fat-progress-bar");
         
-        calProgBar.innerHTML = roundedToFixed(totalNutriValue.calories);
+        calProgBar.innerHTML = roundedToFixed(totalNutriValue.calories, 0);
         calPercent = roundedToFixed((totalNutriValue.calories / profile.macroSplit.Calories) * 100);
         calProgBar.setAttribute("aria-valuenow", calPercent);
         calProgBar.style.width = `${calPercent >= 100? 100 : calPercent}%`;
@@ -2184,7 +2184,7 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
             calProgBar.classList.remove("bg-danger");
         }
         
-        carbProgBar.innerHTML = roundedToFixed(totalNutriValue.carbohydrates);
+        carbProgBar.innerHTML = roundedToFixed(totalNutriValue.carbohydrates, 0);
         carbPercent = roundedToFixed((totalNutriValue.carbohydrates / (profile.macroSplit.Carbohydrate/100 * profile.macroSplit.Calories / 4 )) * 100);
         carbProgBar.setAttribute("aria-valuenow", carbPercent);
         carbProgBar.style.width = `${carbPercent >= 100? 100 : carbPercent}%`;
@@ -2195,7 +2195,7 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
             carbProgBar.classList.remove("bg-danger");
         }
         
-        proteinProgBar.innerHTML = roundedToFixed(totalNutriValue.proteins);
+        proteinProgBar.innerHTML = roundedToFixed(totalNutriValue.proteins, 0);
         proteinPercent = roundedToFixed((totalNutriValue.proteins / (profile.macroSplit.Protein/100 * profile.macroSplit.Calories / 4 )) * 100);
         proteinProgBar.setAttribute("aria-valuenow", proteinPercent);
         proteinProgBar.style.width = `${proteinPercent >= 100? 100 : proteinPercent}%`;
@@ -2206,7 +2206,7 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
             proteinProgBar.classList.remove("bg-danger");
         }
         
-        fatProgBar.innerHTML = roundedToFixed(totalNutriValue.fats);
+        fatProgBar.innerHTML = roundedToFixed(totalNutriValue.fats, 0);
         fatPercent = roundedToFixed((totalNutriValue.fats / (profile.macroSplit.Fat/100 * profile.macroSplit.Calories / 9 )) * 100);
         fatProgBar.setAttribute("aria-valuenow", fatPercent);
         fatProgBar.style.width = `${fatPercent >= 100? 100 : fatPercent}%`;
