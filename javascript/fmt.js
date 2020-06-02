@@ -2454,16 +2454,25 @@ var pageController = {
             saveBtn.removeAttribute("foods-table-body-id");
         }
     },
-    openEditFoodDynamicScreen: function(foodId, foodsTableBodyID) {
+    openEditFoodDynamicScreen: function(foodId, foodsTableBodyID, mealIdentifier) {
         //Sync Tasks
         if (!foodId || !isNumber(foodId) || !Number.isInteger(Number(foodId)) ) { console.error(`Invalid Food ID (${foodId})`); return; }
         foodId = Number(foodId);
         const alertDivId = pageController.getAlertDivId();
+        const saveBtn = document.getElementById("edit-food-screen-save");
         if (!!foodsTableBodyID) {
-            const saveBtn = document.getElementById("edit-food-screen-save");
             const delBtn = document.getElementById("edit-food-screen-delete");
             saveBtn.setAttribute("foods-table-body-id", foodsTableBodyID);
             delBtn.setAttribute("foods-table-body-id", foodsTableBodyID);
+        }
+        if (!!mealIdentifier) {
+            if (!!mealIdentifier.meal_name) {
+                saveBtn.setAttribute("meal_name", mealIdentifier.meal_name);
+            }
+            saveBtn.setAttribute("meal_year", mealIdentifier.meal_year);
+            saveBtn.setAttribute("meal_month", mealIdentifier.meal_month);
+            saveBtn.setAttribute("meal_day", mealIdentifier.meal_day);
+            saveBtn.setAttribute("profile_id", mealIdentifier.profile_id);
         }
         //Async Tasks
         FMTReadFood(foodId,
@@ -2500,6 +2509,11 @@ var pageController = {
         const saveBtn = document.getElementById("edit-food-screen-save");
         const delBtn = document.getElementById("edit-food-screen-delete");
         saveBtn.removeAttribute("foods-table-body-id");
+        saveBtn.removeAttribute("meal_name");
+        saveBtn.removeAttribute("meal_year");
+        saveBtn.removeAttribute("meal_month");
+        saveBtn.removeAttribute("meal_day");
+        saveBtn.removeAttribute("profile_id");
         delBtn.removeAttribute("foods-table-body-id");
     },
     openViewFoodDynamicScreen: function(foodId, multiplier, clear, currentWeightValue, currentWeightUnits, mealIdentifierObj, foodsTableBodyID) {
@@ -2968,10 +2982,21 @@ function prepareEventHandlers() {
                 }
             }
             const msg = `Successfully updated food: ${(document.getElementById("edit-food-screen-food-name").value)}`;
+            
+            const mealIdentifierObj = {};
+            mealIdentifierObj.meal_year = saveBtn.getAttribute("meal_year");
+            mealIdentifierObj.meal_month = saveBtn.getAttribute("meal_month");
+            mealIdentifierObj.meal_day = saveBtn.getAttribute("meal_day");
+            mealIdentifierObj.meal_name = saveBtn.getAttribute("meal_name");
+            mealIdentifierObj.profile_id = saveBtn.getAttribute("profile_id");
+            const validateMealIdentifierObjRes = FMTValidateMealIdentifier(mealIdentifierObj);
+            if (validateMealIdentifierObjRes.mealIdentifier == null || validateMealIdentifierObjRes.error != null) {
+                console.error(validateMealIdentifierObjRes.error);
+            }
+            const mealIdentifier = validateMealIdentifierObjRes.mealIdentifier;
+            
             pageController.closeEditFoodDynamicScreen();
-            //TODO - pass a mealIdentifierObj
-            //const mealIdentifierObj = {}
-            pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined/*, mealIdentifierObj*/);
+            pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, mealIdentifier);
             const alertDivID = pageController.getAlertDivId();
             FMTShowAlert(alertDivID, "success", msg);
         }
@@ -3042,7 +3067,19 @@ function prepareEventHandlers() {
         if (!!editBtn) {
             foodsTableBodyID = editBtn.getAttribute("foods-table-body-id");
         }
-        pageController.openEditFoodDynamicScreen(foodId, foodsTableBodyID);
+        const addToMealBtn = document.getElementById("view-food-screen-save");
+        const mealIdentifierObj = {};
+        mealIdentifierObj.meal_year = addToMealBtn.getAttribute("meal_year") || document.getElementById("view-food-screen-meal-year").value;
+        mealIdentifierObj.meal_month = addToMealBtn.getAttribute("meal_month") || (Number(document.getElementById("view-food-screen-meal-month").value) - 1);
+        mealIdentifierObj.meal_day = addToMealBtn.getAttribute("meal_day") || document.getElementById("view-food-screen-meal-day").value;
+        mealIdentifierObj.meal_name = addToMealBtn.getAttribute("meal_name") || document.getElementById("view-food-screen-meal-name").value;
+        mealIdentifierObj.profile_id = addToMealBtn.getAttribute("profile_id") || fmtAppInstance.currentProfileId;
+        const validateMealIdentifierObjRes = FMTValidateMealIdentifier(mealIdentifierObj);
+        if (validateMealIdentifierObjRes.mealIdentifier == null || validateMealIdentifierObjRes.error != null) {
+            console.error(validateMealIdentifierObjRes.error);
+        }
+        const mealIdentifier = validateMealIdentifierObjRes.mealIdentifier;
+        pageController.openEditFoodDynamicScreen(foodId, foodsTableBodyID, mealIdentifier);
     });
     $("#view-food-screen-save").click( (e) => {
         const addToMealBtn = document.getElementById("view-food-screen-save");
@@ -3112,7 +3149,8 @@ function prepareEventHandlers() {
         pageController.closeAddToMealDynamicScreen();
     });
     $("#add-to-meal-screen-add-food").click( (e) => {
-        pageController.openAddFoodDynamicScreen();
+        const foodsTableBodyID = "add-to-meal-screen-food-table-body";
+        pageController.openAddFoodDynamicScreen(foodsTableBodyID);
     });
     $("#edit-meal-entry-screen-delete").click( (e) => {
         const alertsDivId = "edit-meal-entry-screen-alerts";
