@@ -18,6 +18,8 @@ fmtAppInstance.pageState.activeDynamicScreens = {};
 //Instance - State - Log
 fmtAppInstance.today = null;
 fmtAppInstance.currentDay = null;
+//Instance - State - function pointers
+fmtAppInstance.eventFunctions = {};
 //Instance - User defined metrics
 fmtAppInstance.massUnitChart = null;
 fmtAppInstance.additionalNutrients = null;
@@ -1481,15 +1483,27 @@ function FMTDisplayFoodsTable(targetDivID, onsuccessFn, onerrorFn, eventListener
         console.warn(`[FMTDisplayFoodsTable] - targetDiv (ID = ${targetDivID}) doesn't exist`);
         if (onerrorFn) { onerrorFn(); }
     }
-    
+
     let foodTableBody = document.getElementById(`${targetDivID}-food-table-body`);
     foodTableBody.innerHTML = "";
-    foodTableBody.addEventListener("onFoodAdded", function(event) {
+
+
+    //Clear previous Event Listeners (Javascript API is horrible. Why can't I get/remove all previous attached events?)
+    if (fmtAppInstance.eventFunctions.foodsTableOnFoodAdded != null) {
+        foodTableBody.removeEventListener("onFoodAdded", fmtAppInstance.eventFunctions.foodsTableOnFoodAdded);
+    }
+    if (fmtAppInstance.eventFunctions.foodsTableOnFoodDeleted != null) {
+        foodTableBody.removeEventListener("onFoodDeleted", fmtAppInstance.eventFunctions.foodsTableOnFoodDeleted);
+    }
+    if (fmtAppInstance.eventFunctions.foodsTableOnFoodEdited != null) {
+        foodTableBody.removeEventListener("onFoodEdited", fmtAppInstance.eventFunctions.foodsTableOnFoodEdited);
+    }
+
+    fmtAppInstance.eventFunctions.foodsTableOnFoodAdded = function(event) {
         const newFoodRow = FMTCreateFoodsTableRowElement(event.foodObj, eventListeners);
         foodTableBody.appendChild(newFoodRow);
-    });
-    
-    foodTableBody.addEventListener("onFoodDeleted", function(event) {
+    };
+    fmtAppInstance.eventFunctions.foodsTableOnFoodDeleted = function(event) {
         const foodRows = foodTableBody.getElementsByClassName("fmt-food-table-row");
         for (let i=0; i<foodRows.length; i++) {
             const tableRow = foodRows[i];
@@ -1500,20 +1514,22 @@ function FMTDisplayFoodsTable(targetDivID, onsuccessFn, onerrorFn, eventListener
         }
         console.warn(`onFoodDeleted fired on ${foodTableBody.id} but no matching table row found. event:`);
         console.warn(event);
-    });
-    
-    foodTableBody.addEventListener("onFoodEdited", function(event) {
+    };
+    fmtAppInstance.eventFunctions.foodsTableOnFoodEdited = function(event) {
         const foodRows = foodTableBody.getElementsByClassName("fmt-food-table-row");
         for (let i=0; i<foodRows.length; i++) {
             const tableRow = foodRows[i];
             if (tableRow.getAttribute("food_id") === `${event.foodObj.food_id}`) {
                 tableRow.parentNode.removeChild(tableRow);
-                return;
             }
         }
         const newFoodRow = FMTCreateFoodsTableRowElement(event.foodObj, eventListeners);
         foodTableBody.appendChild(newFoodRow);
-    });
+    };
+
+    foodTableBody.addEventListener("onFoodAdded", fmtAppInstance.eventFunctions.foodsTableOnFoodAdded);
+    foodTableBody.addEventListener("onFoodDeleted", fmtAppInstance.eventFunctions.foodsTableOnFoodDeleted);
+    foodTableBody.addEventListener("onFoodEdited", fmtAppInstance.eventFunctions.foodsTableOnFoodEdited);
     
     FMTIterateFoods(function(e) {
         let cursor = e.target.result;
