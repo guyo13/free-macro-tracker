@@ -1487,23 +1487,25 @@ function FMTDisplayFoodsTable(targetDivID, onsuccessFn, onerrorFn, eventListener
     let foodTableBody = document.getElementById(`${targetDivID}-food-table-body`);
     foodTableBody.innerHTML = "";
 
-
+    if (fmtAppInstance.eventFunctions[targetDivID] == undefined) {
+        fmtAppInstance.eventFunctions[targetDivID] = {};
+    }
     //Clear previous Event Listeners (Javascript API is horrible. Why can't I get/remove all previous attached events?)
-    if (fmtAppInstance.eventFunctions.foodsTableOnFoodAdded != null) {
-        foodTableBody.removeEventListener("onFoodAdded", fmtAppInstance.eventFunctions.foodsTableOnFoodAdded);
+    if (fmtAppInstance.eventFunctions[targetDivID].foodsTableOnFoodAdded != null) {
+        foodTableBody.removeEventListener("onFoodAdded", fmtAppInstance.eventFunctions[targetDivID].foodsTableOnFoodAdded);
     }
-    if (fmtAppInstance.eventFunctions.foodsTableOnFoodDeleted != null) {
-        foodTableBody.removeEventListener("onFoodDeleted", fmtAppInstance.eventFunctions.foodsTableOnFoodDeleted);
+    if (fmtAppInstance.eventFunctions[targetDivID].foodsTableOnFoodDeleted != null) {
+        foodTableBody.removeEventListener("onFoodDeleted", fmtAppInstance.eventFunctions[targetDivID].foodsTableOnFoodDeleted);
     }
-    if (fmtAppInstance.eventFunctions.foodsTableOnFoodEdited != null) {
-        foodTableBody.removeEventListener("onFoodEdited", fmtAppInstance.eventFunctions.foodsTableOnFoodEdited);
+    if (fmtAppInstance.eventFunctions[targetDivID].foodsTableOnFoodEdited != null) {
+        foodTableBody.removeEventListener("onFoodEdited", fmtAppInstance.eventFunctions[targetDivID].foodsTableOnFoodEdited);
     }
 
-    fmtAppInstance.eventFunctions.foodsTableOnFoodAdded = function(event) {
+    fmtAppInstance.eventFunctions[targetDivID].foodsTableOnFoodAdded = function(event) {
         const newFoodRow = FMTCreateFoodsTableRowElement(event.foodObj, eventListeners);
         foodTableBody.appendChild(newFoodRow);
     };
-    fmtAppInstance.eventFunctions.foodsTableOnFoodDeleted = function(event) {
+    fmtAppInstance.eventFunctions[targetDivID].foodsTableOnFoodDeleted = function(event) {
         const foodRows = foodTableBody.getElementsByClassName("fmt-food-table-row");
         for (let i=0; i<foodRows.length; i++) {
             const tableRow = foodRows[i];
@@ -1515,7 +1517,7 @@ function FMTDisplayFoodsTable(targetDivID, onsuccessFn, onerrorFn, eventListener
         console.warn(`onFoodDeleted fired on ${foodTableBody.id} but no matching table row found. event:`);
         console.warn(event);
     };
-    fmtAppInstance.eventFunctions.foodsTableOnFoodEdited = function(event) {
+    fmtAppInstance.eventFunctions[targetDivID].foodsTableOnFoodEdited = function(event) {
         const foodRows = foodTableBody.getElementsByClassName("fmt-food-table-row");
         for (let i=0; i<foodRows.length; i++) {
             const tableRow = foodRows[i];
@@ -1527,9 +1529,9 @@ function FMTDisplayFoodsTable(targetDivID, onsuccessFn, onerrorFn, eventListener
         foodTableBody.appendChild(newFoodRow);
     };
 
-    foodTableBody.addEventListener("onFoodAdded", fmtAppInstance.eventFunctions.foodsTableOnFoodAdded);
-    foodTableBody.addEventListener("onFoodDeleted", fmtAppInstance.eventFunctions.foodsTableOnFoodDeleted);
-    foodTableBody.addEventListener("onFoodEdited", fmtAppInstance.eventFunctions.foodsTableOnFoodEdited);
+    foodTableBody.addEventListener("onFoodAdded", fmtAppInstance.eventFunctions[targetDivID].foodsTableOnFoodAdded);
+    foodTableBody.addEventListener("onFoodDeleted", fmtAppInstance.eventFunctions[targetDivID].foodsTableOnFoodDeleted);
+    foodTableBody.addEventListener("onFoodEdited", fmtAppInstance.eventFunctions[targetDivID].foodsTableOnFoodEdited);
     
     FMTIterateFoods(function(e) {
         let cursor = e.target.result;
