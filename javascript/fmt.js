@@ -2379,10 +2379,16 @@ var pageController = {
         delete fmtAppInstance.pageState.activeDynamicScreens[dynamicScreenId];
         pageController.updateZIndexes();
     },
-    openAddFoodDynamicScreen: function() {
+    openAddFoodDynamicScreen: function(foodsTableID) {
         pageController.openDynamicScreen("add-food-screen");
         FMTClearConsumableItemScreen("add-food-screen", "food");
         FMTPopulateConsumableItemScreen("add-food-screen", undefined, "food", "Food Item");
+        if (!!foodsTableID) {
+            const saveBtn = document.getElementById("add-food-screen-save");
+            if (!!saveBtn) {
+                saveBtn.setAttribute("foods-table-id", foodsTableID);
+            }
+        }
     },
     closeAddFoodDynamicScreen: function() {
         pageController.closeDynamicScreen("add-food-screen");
@@ -2855,32 +2861,31 @@ function prepareEventHandlers() {
     $("#edit-food-screen-more").click( (e) => { FMTConsumableItemScreenShowMore("edit-food-screen", "food"); } );
     $("#edit-food-screen-less").click( (e) => { FMTConsumableItemScreenShowLess("edit-food-screen", "food"); } );
     $("#edit-food-screen-save").click( (e) => {
+        let foodId = e.currentTarget.getAttribute("food_id");
+        if ( !isNumber(foodId) || !Number.isInteger(Number(foodId)) ) { console.error(`Invalid Food ID (${foodId})`); return; }
+        foodId = Number(foodId);
+
         onerrorFn = function(err) {
             const msg = `Failed editing food - ${err}`;
             console.error(msg);
             FMTShowAlert(`edit-food-screen-alerts`, "danger", msg, fmtAppGlobals.defaultAlertScroll);
         }
+
         onsuccessFn = function(ev) {
             const msg = `Successfully updated food: ${(document.getElementById("edit-food-screen-food-name").value)}`;
             pageController.closeEditFoodDynamicScreen();
-            const openScreens = pageController.updateZIndexes(true);
-            if (openScreens.length < 1 && fmtAppInstance.pageState.activeTab === "foods") {
-                pageController.showFoods();
-                FMTShowAlert(`${fmtAppInstance.pageState.activeTab}-alerts`, "success", msg);
-            }
-            else {
-                if (openScreens[0] === "add-to-meal-screen") { pageController.openAddToMealDynamicScreen(); }
-                else { pageController.openDynamicScreen(openScreens[0]); }
-                FMTShowAlert(`${openScreens[0]}-alerts`, "success", msg);
-            }
+            //TODO - pass a mealIdentifierObj
+            //const mealIdentifierObj = {}
+            pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined/*, mealIdentifierObj*/);
+            const alertDivID = pageController.getAlertDivId();
+            FMTShowAlert(alertDivID, "success", msg);
         }
-        const foodId = Number(e.currentTarget.getAttribute("food_id"));
-        if (!isNumber(foodId)) { console.error(`Food ID (${foodId}) is not a number`); return; }
+
         FMTSaveConsumableItemScreen("edit-food-screen", "edit", {"consumableId": foodId}, "food", "Food Item", onsuccessFn, onerrorFn);
     });
     $("#edit-food-screen-delete").click( (e) => {
         let foodId = e.currentTarget.getAttribute("food_id");
-        if (!isNumber(foodId)) {
+        if ( !isNumber(foodId) || !Number.isInteger(Number(foodId)) ) {
             const msg = `Invalid Food ID (${foodId}). Please reload`;
             FMTShowAlert("edit-food-screen-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
             return;
@@ -2895,29 +2900,18 @@ function prepareEventHandlers() {
                     pageController.closeEditFoodDynamicScreen();
                     const openScreens = pageController.updateZIndexes(true);
                     const msg = `Successfully deleted Food! (Food ID ${foodId})`;
-                    if (openScreens.length < 1 && fmtAppInstance.pageState.activeTab === "foods") {
-                        pageController.showFoods();
-                        FMTShowAlert("foods-alerts", "success", msg, fmtAppGlobals.defaultAlertScroll);
-                    }
-                    else {
-                        if (openScreens[0] === "add-to-meal-screen") { pageController.openAddToMealDynamicScreen(); }
-                        else { pageController.openDynamicScreen(openScreens[0]); }
-                        FMTShowAlert(`${openScreens[0]}-alerts`, "success", msg);
-                    }
+                    pageController.closeViewFoodDynamicScreen();
+                    const alertDivID = pageController.getAlertDivId();
+                    FMTShowAlert(alertDivID, "success", msg, fmtAppGlobals.defaultAlertScroll);
+                    //TODO - pass event food deleted so that underlying screen/tab can update it's foods table
                 },
                               function(e) {
                     pageController.closeEditFoodDynamicScreen();
                     const openScreens = pageController.updateZIndexes(true);
                     const msg = `Failed deleting Food! (Food ID ${foodId})`;
-                    if (openScreens.length < 1 && fmtAppInstance.pageState.activeTab === "foods") {
-                        pageController.showFoods();
-                        FMTShowAlert("foods-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
-                    }
-                    else {
-                        if (openScreens[0] === "add-to-meal-screen") { pageController.openAddToMealDynamicScreen(); }
-                        else { pageController.openDynamicScreen(openScreens[0]); }
-                        FMTShowAlert(`${openScreens[0]}-alerts`, "danger", msg);
-                    }
+                    pageController.closeViewFoodDynamicScreen();
+                    const alertDivID = pageController.getAlertDivId();
+                    FMTShowAlert(alertDivID, "success", msg, fmtAppGlobals.defaultAlertScroll);
                 });
             }
             else {
@@ -2931,12 +2925,12 @@ function prepareEventHandlers() {
     $("#view-food-screen-cancel").click( (e) => { pageController.closeViewFoodDynamicScreen(); } );
     $("#view-food-screen-edit").click( (e) => {
         let foodId = e.currentTarget.getAttribute("food_id");
-        if (!isNumber(foodId)) {
+        if ( !isNumber(foodId) || !Number.isInteger(Number(foodId)) ) {
             const msg = `Invalid Food ID (${foodId}). Please reload`;
+            console.error(msg);
             FMTShowAlert("view-food-screen-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
             return;
         }
-        pageController.closeViewFoodDynamicScreen();
         pageController.openEditFoodDynamicScreen(foodId);
     });
     $("#view-food-screen-save").click( (e) => {
