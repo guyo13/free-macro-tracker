@@ -1043,7 +1043,7 @@ function FMTUpdateFood(foodId, foodObj, mUnitsChart, onsuccessFn, onerrorFn) {
         let foodStore = getObjectStore(fmtAppGlobals.FMT_DB_FOODS_STORE, fmtAppGlobals.FMT_DB_READWRITE);
         let addRequest = foodStore.put(food);
         addRequest.onerror = onerrorFn || function(e) {console.debug(`[FMTUpdateFood] - failed updating food object - ${JSON.stringify(food)}`);};
-        addRequest.onsuccess = onsuccessFn || function(e) {console.debug(`[FMTUpdateFood] - food object updated successfully ${JSON.stringify(food)}`)};
+        addRequest.onsuccess = function(e) { onsuccessFn(e, food); } || function(e) {console.debug(`[FMTUpdateFood] - food object updated successfully ${JSON.stringify(food)}`)};
     }
     else {
         onerrorFn = onerrorFn || function() {console.debug(`[FMTUpdateFood] - food object validation failed - ${JSON.stringify(foodObj)}`);}
@@ -1463,6 +1463,18 @@ function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj
         FMTCreateMassUnitDropdownMenu(nutriBaseId, nutriBaseId, mUnitsChart, isStatic, nutriObj.default_mass_unit, readonly);
     }
 }
+function FMTCreateFoodsTableRowElement(foodObj, eventListeners) {
+    let foodRow = document.createElement("tr");
+    foodRow.setAttribute("food_id", foodObj.food_id);
+    foodRow.classList.add("fmt-food-table-row");
+    foodRow.innerHTML = `<th scope="row" class="fmt-food-id-cell ${fmtAppInstance.displaySettings.showFoodIdColumn? "" : "d-none"}">${foodObj.food_id}</th><td class= "fmt-food-name-cell">${foodObj.foodName}</td>${foodObj.foodBrand != null ? `<td class="fmt-food-brand-cell">${foodObj.foodBrand}</td>` : "<td class=\"fmt-food-brand-cell\"></td>"}`
+    const events = Object.keys(eventListeners);
+    for (let k=0; k<events.length; k++) {
+        const eventName = events[k];
+        foodRow.addEventListener(eventName, eventListeners[eventName]);
+    }
+    return foodRow;
+}
 function FMTDisplayFoodsTable(targetDivID, onsuccessFn, onerrorFn, eventListeners) {
     const targetDiv = document.getElementById(targetDivID);
     if (!targetDiv) {
@@ -1472,19 +1484,42 @@ function FMTDisplayFoodsTable(targetDivID, onsuccessFn, onerrorFn, eventListener
     
     let foodTableBody = document.getElementById(`${targetDivID}-food-table-body`);
     foodTableBody.innerHTML = "";
+    foodTableBody.addEventListener("onFoodAdded", function(event) {
+        const newFoodRow = FMTCreateFoodsTableRowElement(event.foodObj, eventListeners);
+        foodTableBody.appendChild(newFoodRow);
+    });
+    
+    foodTableBody.addEventListener("onFoodDeleted", function(event) {
+        const foodRows = foodTableBody.getElementsByClassName("fmt-food-table-row");
+        for (let i=0; i<foodRows.length; i++) {
+            const tableRow = foodRows[i];
+            if (tableRow.getAttribute("food_id") === `${event.food_id}`) {
+                tableRow.parentNode.removeChild(tableRow);
+                return;
+            }
+        }
+        console.warn(`onFoodDeleted fired on ${foodTableBody.id} but no matching table row found. event:`);
+        console.warn(event);
+    });
+    
+    foodTableBody.addEventListener("onFoodEdited", function(event) {
+        const foodRows = foodTableBody.getElementsByClassName("fmt-food-table-row");
+        for (let i=0; i<foodRows.length; i++) {
+            const tableRow = foodRows[i];
+            if (tableRow.getAttribute("food_id") === `${event.foodObj.food_id}`) {
+                tableRow.parentNode.removeChild(tableRow);
+                return;
+            }
+        }
+        const newFoodRow = FMTCreateFoodsTableRowElement(event.foodObj, eventListeners);
+        foodTableBody.appendChild(newFoodRow);
+    });
+    
     FMTIterateFoods(function(e) {
         let cursor = e.target.result;
         if (cursor) {
             let record = cursor.value;
-            let foodRow = document.createElement("tr");
-            foodRow.setAttribute("food_id", record.food_id);
-            foodRow.classList.add("fmt-food-table-row");
-            foodRow.innerHTML = `<th scope="row" class="fmt-food-id-cell ${fmtAppInstance.displaySettings.showFoodIdColumn? "" : "d-none"}">${record.food_id}</th><td class= "fmt-food-name-cell">${record.foodName}</td>${record.foodBrand != null ? `<td class="fmt-food-brand-cell">${record.foodBrand}</td>` : "<td class=\"fmt-food-brand-cell\"></td>"}`
-            const events = Object.keys(eventListeners);
-            for (let k=0; k<events.length; k++) {
-                const eventName = events[k];
-                foodRow.addEventListener(eventName, eventListeners[eventName]);
-            }
+            const foodRow = FMTCreateFoodsTableRowElement(record, eventListeners);
             foodTableBody.appendChild(foodRow);
             cursor.continue();
         }
@@ -1795,7 +1830,7 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
             FMTAddFood(consumableObj, mUnitsChart, onsuccessFn, onerrorFn);
             break;
         case "edit":
-            onsuccessFn = onsuccessFn || function(e) {
+            onsuccessFn = onsuccessFn || function(e, food) {
                 console.debug(`[${_funcName}] - Successfully updated food: ${JSON.stringify(e.target.result)}`);
                 pageController.closeEditFoodDynamicScreen();
             };
@@ -2323,9 +2358,11 @@ var pageController = {
             FMTShowAlert("foods-alerts", "danger", "Failed loading food", fmtAppGlobals.defaultAlertScroll);
             console.error(e);
         };
+        const foodsTableBodyID = "foods-food-table-body";
+        document.getElementById("foods-add-food").setAttribute("foods-table-body-id", foodsTableBodyID);
         const events = {"click": function(e) {
                             const foodId = Number(e.currentTarget.getAttribute("food_id"));
-                            pageController.openViewFoodDynamicScreen(foodId, 1, true);
+                            pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, undefined, foodsTableBodyID);
                             document.getElementById("foods-alerts").innerHTML = "";
                             }
                        };
@@ -2379,14 +2416,14 @@ var pageController = {
         delete fmtAppInstance.pageState.activeDynamicScreens[dynamicScreenId];
         pageController.updateZIndexes();
     },
-    openAddFoodDynamicScreen: function(foodsTableID) {
+    openAddFoodDynamicScreen: function(foodsTableBodyID) {
         pageController.openDynamicScreen("add-food-screen");
         FMTClearConsumableItemScreen("add-food-screen", "food");
         FMTPopulateConsumableItemScreen("add-food-screen", undefined, "food", "Food Item");
-        if (!!foodsTableID) {
+        if (!!foodsTableBodyID) {
             const saveBtn = document.getElementById("add-food-screen-save");
             if (!!saveBtn) {
-                saveBtn.setAttribute("foods-table-id", foodsTableID);
+                saveBtn.setAttribute("foods-table-body-id", foodsTableBodyID);
             }
         }
     },
@@ -2394,12 +2431,22 @@ var pageController = {
         pageController.closeDynamicScreen("add-food-screen");
         FMTClearConsumableItemScreen("add-food-screen", "food");
         document.getElementById("foods-alerts").innerHTML = "";
+        const saveBtn = document.getElementById("add-food-screen-save");
+        if (!!saveBtn) {
+            saveBtn.removeAttribute("foods-table-body-id");
+        }
     },
-    openEditFoodDynamicScreen: function(foodId) {
+    openEditFoodDynamicScreen: function(foodId, foodsTableBodyID) {
         //Sync Tasks
         if (!foodId || !isNumber(foodId) || !Number.isInteger(Number(foodId)) ) { console.error(`Invalid Food ID (${foodId})`); return; }
         foodId = Number(foodId);
         const alertDivId = pageController.getAlertDivId();
+        if (!!foodsTableBodyID) {
+            const saveBtn = document.getElementById("edit-food-screen-save");
+            const delBtn = document.getElementById("edit-food-screen-delete");
+            saveBtn.setAttribute("foods-table-body-id", foodsTableBodyID);
+            delBtn.setAttribute("foods-table-body-id", foodsTableBodyID);
+        }
         //Async Tasks
         FMTReadFood(foodId,
                     //OnSuccess
@@ -2432,8 +2479,12 @@ var pageController = {
     closeEditFoodDynamicScreen: function() {
         pageController.closeDynamicScreen("edit-food-screen");
         FMTClearConsumableItemScreen("edit-food-screen", "food");
+        const saveBtn = document.getElementById("edit-food-screen-save");
+        const delBtn = document.getElementById("edit-food-screen-delete");
+        saveBtn.removeAttribute("foods-table-body-id");
+        delBtn.removeAttribute("foods-table-body-id");
     },
-    openViewFoodDynamicScreen: function(foodId, multiplier, clear, currentWeightValue, currentWeightUnits, mealIdentifierObj) {
+    openViewFoodDynamicScreen: function(foodId, multiplier, clear, currentWeightValue, currentWeightUnits, mealIdentifierObj, foodsTableBodyID) {
         //Sync Tasks
         //Argument Validation
         if (!foodId || !isNumber(foodId) || !Number.isInteger(Number(foodId)) ) { console.error(`Invalid Food ID: ${foodId}`); return; }
@@ -2461,6 +2512,9 @@ var pageController = {
             const qualifier = "food";
             const objectType = "Food Item";
             pageController.openDynamicScreen(screenID);
+            const food = validateResult.food;
+            const addToMealBtn = document.getElementById("view-food-screen-save");
+            const editFoodBtn = document.getElementById("view-food-screen-edit");
             //Clear Screen if needed
             if (clear) {
                 FMTClearViewConsumableItemScreen(screenID);
@@ -2468,10 +2522,11 @@ var pageController = {
                                           {"massUnitChanged": function(event) { FMTUpdateConsumableValuesOnWeightChange(event, screenID, qualifier, objectType); },}
                                          };
                 FMTPopulateConsumableItemScreen("view-food-screen", {"consumableId": foodId, "eventListenersObj": eventListenersObj }, qualifier, objectType);
+                const foodsTableBodyNode = document.getElementById(foodsTableBodyID);
+                if (!!foodsTableBodyNode) {
+                    editFoodBtn.setAttribute("foods-table-body-id", foodsTableBodyID);
+                }
             }
-            const food = validateResult.food;
-            const addToMealBtn = document.getElementById("view-food-screen-save");
-            const editFoodBtn = document.getElementById("view-food-screen-edit");
             editFoodBtn.setAttribute("food_id", foodId);
             if (!!mealIdentifierObj) {
                 const validateMealIdentifierObjRes = FMTValidateMealIdentifier(mealIdentifierObj);
@@ -2511,6 +2566,10 @@ var pageController = {
     closeViewFoodDynamicScreen: function() {
         pageController.closeDynamicScreen("view-food-screen");
         FMTClearViewConsumableItemScreen("view-food-screen");
+        const editFoodBtn = document.getElementById("view-food-screen-edit");
+        if (!!editFoodBtn) {
+            editFoodBtn.removeAttribute("foods-table-body-id");
+        }
     },
     openAddToMealDynamicScreen: function(mealIdentifierObj) {
         pageController.openDynamicScreen("add-to-meal-screen");
@@ -2521,9 +2580,10 @@ var pageController = {
             FMTShowAlert("add-to-meal-screen-alerts", "danger", "Failed loading food", fmtAppGlobals.defaultAlertScroll);
             console.error(e);
         };
+        const foodsTableBodyID = "add-to-meal-screen-food-table-body";
         const events = {"click": function(e) {
                     const foodId = Number(e.currentTarget.getAttribute("food_id"));
-                    pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, mealIdentifierObj);
+                    pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, mealIdentifierObj, foodsTableBodyID);
                     }
                };
         FMTDisplayFoodsTable("add-to-meal-screen", onsuccessFn, onerrorFn, events);
@@ -2794,7 +2854,8 @@ function prepareEventHandlers() {
         FMTUpdateMacroesForm(fmtAppInstance.currentProfileId, onsuccessFn, onerrorFn);
         });
     $("#foods-add-food").click( (e) => {
-        pageController.openAddFoodDynamicScreen();
+        const foodsTableBodyID = document.getElementById("foods-add-food").getAttribute("foods-table-body-id");
+        pageController.openAddFoodDynamicScreen(foodsTableBodyID);
     });
     $("#add-food-screen-cancel").click( (e) => {
         if(fmtAppInstance.promptSettings.promptOnUnsavedFood) {
@@ -2839,18 +2900,23 @@ function prepareEventHandlers() {
             FMTShowAlert(`add-food-screen-alerts`, "danger", msg, fmtAppGlobals.defaultAlertScroll);
         }
         onsuccessFn = function(ev, food) {
+            const foodId = ev.target.result;
+            food.food_id = foodId;
             const msg = `Successfully added food: ${(food.foodName)}`;
+            const saveBtn = document.getElementById("add-food-screen-save");
+            if (!!saveBtn) {
+                const foodsTableBodyID = saveBtn.getAttribute("foods-table-body-id");
+                const foodsTableBodyNode = document.getElementById(foodsTableBodyID);
+                if (!!foodsTableBodyNode) {
+                    console.debug(`Firing onFoodAdded event to ${foodsTableBodyID}`);
+                    const event = new Event("onFoodAdded");
+                    event.foodObj = food;
+                    foodsTableBodyNode.dispatchEvent(event);
+                }
+            }
             pageController.closeAddFoodDynamicScreen();
-            const openScreens = pageController.updateZIndexes(true);
-            if (openScreens.length < 1 && fmtAppInstance.pageState.activeTab === "foods") {
-                pageController.showFoods();
-                FMTShowAlert(`${fmtAppInstance.pageState.activeTab}-alerts`, "success", msg);
-            }
-            else {
-                if (openScreens[0] === "add-to-meal-screen") { pageController.openAddToMealDynamicScreen(); }
-                else { pageController.openDynamicScreen(openScreens[0]); }
-                FMTShowAlert(`${openScreens[0]}-alerts`, "success", msg);
-            }
+            const alertDivID = pageController.getAlertDivId();
+            FMTShowAlert(alertDivID, "success", msg);
         }
         FMTSaveConsumableItemScreen("add-food-screen", "add", {}, "food", "Food Item", onsuccessFn, onerrorFn);
     });
@@ -2871,7 +2937,18 @@ function prepareEventHandlers() {
             FMTShowAlert(`edit-food-screen-alerts`, "danger", msg, fmtAppGlobals.defaultAlertScroll);
         }
 
-        onsuccessFn = function(ev) {
+        onsuccessFn = function(ev, food) {
+            const saveBtn = document.getElementById("edit-food-screen-save");
+            if (!!saveBtn) {
+                const foodsTableBodyID = saveBtn.getAttribute("foods-table-body-id");
+                const foodsTableBodyNode = document.getElementById(foodsTableBodyID);
+                if (!!foodsTableBodyNode) {
+                    console.debug(`Firing onFoodEdited event to ${foodsTableBodyID}`);
+                    const event = new Event("onFoodEdited");
+                    event.foodObj = food;
+                    foodsTableBodyNode.dispatchEvent(event);
+                }
+            }
             const msg = `Successfully updated food: ${(document.getElementById("edit-food-screen-food-name").value)}`;
             pageController.closeEditFoodDynamicScreen();
             //TODO - pass a mealIdentifierObj
@@ -2897,6 +2974,17 @@ function prepareEventHandlers() {
             if (delFood) {
                 FMTDeleteFood(foodId,
                               function(e) {
+                    const delBtn = document.getElementById("edit-food-screen-delete");
+                    if (!!delBtn) {
+                        const foodsTableBodyID = delBtn.getAttribute("foods-table-body-id");
+                        const foodsTableBodyNode = document.getElementById(foodsTableBodyID);
+                        if (!!foodsTableBodyNode) {
+                            console.debug(`Firing onFoodEdited event to ${foodsTableBodyID}`);
+                            const event = new Event("onFoodDeleted");
+                            event.food_id = foodId;
+                            foodsTableBodyNode.dispatchEvent(event);
+                        }
+                    }
                     pageController.closeEditFoodDynamicScreen();
                     const openScreens = pageController.updateZIndexes(true);
                     const msg = `Successfully deleted Food! (Food ID ${foodId})`;
@@ -2931,7 +3019,12 @@ function prepareEventHandlers() {
             FMTShowAlert("view-food-screen-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
             return;
         }
-        pageController.openEditFoodDynamicScreen(foodId);
+        const editBtn = document.getElementById("view-food-screen-edit");
+        let foodsTableBodyID;
+        if (!!editBtn) {
+            foodsTableBodyID = editBtn.getAttribute("foods-table-body-id");
+        }
+        pageController.openEditFoodDynamicScreen(foodId, foodsTableBodyID);
     });
     $("#view-food-screen-save").click( (e) => {
         const addToMealBtn = document.getElementById("view-food-screen-save");
