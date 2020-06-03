@@ -3053,9 +3053,9 @@ function prepareEventHandlers() {
             mealIdentifierObj.meal_name = saveBtn.getAttribute("meal_name");
             mealIdentifierObj.profile_id = saveBtn.getAttribute("profile_id");
             const validateMealIdentifierObjRes = FMTValidateMealIdentifier(mealIdentifierObj);
-            if (validateMealIdentifierObjRes.mealIdentifier == null || validateMealIdentifierObjRes.error != null) {
+/*            if (validateMealIdentifierObjRes.mealIdentifier == null || validateMealIdentifierObjRes.error != null) {
                 console.error(validateMealIdentifierObjRes.error);
-            }
+            }*/
             const mealIdentifier = validateMealIdentifierObjRes.mealIdentifier;
             
             pageController.closeEditFoodDynamicScreen();
@@ -3138,9 +3138,10 @@ function prepareEventHandlers() {
         mealIdentifierObj.meal_name = addToMealBtn.getAttribute("meal_name") || document.getElementById("view-food-screen-meal-name").value;
         mealIdentifierObj.profile_id = addToMealBtn.getAttribute("profile_id") || fmtAppInstance.currentProfileId;
         const validateMealIdentifierObjRes = FMTValidateMealIdentifier(mealIdentifierObj);
-        if (validateMealIdentifierObjRes.mealIdentifier == null || validateMealIdentifierObjRes.error != null) {
+/*        if (validateMealIdentifierObjRes.mealIdentifier == null || validateMealIdentifierObjRes.error != null) {
             console.error(validateMealIdentifierObjRes.error);
-        }
+        }*/
+        // Will either be a valid mealIDentifier Object and get proccessed by Edit screen or undefined and ignored by it
         const mealIdentifier = validateMealIdentifierObjRes.mealIdentifier;
         pageController.openEditFoodDynamicScreen(foodId, foodsTableBodyID, mealIdentifier);
     });
