@@ -2717,7 +2717,6 @@ var pageController = {
         setTimeout(function() {
             msg.classList.remove("fmt-faded");
             msg.classList.add("fmt-fadein");
-            //setTimeout(pageController.closeFirstTimeScreen, 3300);
         }, 1050);
     },
     closeFirstTimeScreen: function() {
@@ -2784,7 +2783,6 @@ function FMTLoadProfile(profile_id, onloadedFn, onNoProfileFn) {
                 function(e) {
                     let _report = JSON.stringify({"globals": fmtAppGlobals, "instance": fmtAppInstance});
                     let msg = `Failed loading profiles. Please report problem on Github and include the following data:\n${_report}`
-                    FMTShowAlert("overview-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
                     throw ReferenceError(msg);
                 }
    );
@@ -2811,15 +2809,11 @@ function onDbSuccess(event) {
                             document.getElementById("fmt-app-first-time-overlay").click();
                             pageController.showProfile();    
                         }, 3000);
-
                     }
-
                 });
             });
         });
-
     }, 500);
-
 }
 
 function onUpgradeNeeded(event) {

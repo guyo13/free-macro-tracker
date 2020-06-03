@@ -231,7 +231,7 @@ button {
 }
 @media screen and (max-width: 768px) {
     .fmt-profile-input-field {
-        width: 70%;
+        width: 100%;
     }
 }
 .fmt-font-white-bold {
