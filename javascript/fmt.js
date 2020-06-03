@@ -10,6 +10,7 @@ fmtAppInstance.promptSettings.promptOnUnsavedFood = true;
 fmtAppInstance.promptSettings.promptOnNoProfileCreated = true;
 fmtAppInstance.additionalNutrientsSettings = {};
 fmtAppInstance.additionalNutrientsSettings.allowNonDefaultUnits = true;
+fmtAppInstance.firstTimeScreenAutomatic = false;
 fmtAppInstance.roundingPrecision = 1;
 //Instance - State - Page
 fmtAppInstance.pageState = {};
@@ -2711,11 +2712,13 @@ var pageController = {
         const msg = document.getElementById("fmt-app-first-time-overlay-msg");
         overlay.classList.remove("d-none");
         overlay.style.zIndex = fmtAppGlobals.maxDynamicScreens + 2;
-        welcome.classList.add("fmt-fadeinout");
+        welcome.classList.add("fmt-fadein");
+        welcome.classList.remove("fmt-faded");
         setTimeout(function() {
-            msg.classList.add("fmt-fadeinout");
-            setTimeout(pageController.closeFirstTimeScreen, 3300);
-        }, 2000);
+            msg.classList.remove("fmt-faded");
+            msg.classList.add("fmt-fadein");
+            //setTimeout(pageController.closeFirstTimeScreen, 3300);
+        }, 1050);
     },
     closeFirstTimeScreen: function() {
         const overlay = document.getElementById("fmt-app-first-time-overlay");
@@ -2723,8 +2726,10 @@ var pageController = {
         const msg = document.getElementById("fmt-app-first-time-overlay-msg");
         overlay.classList.add("d-none");
         overlay.style.zIndex = -2;
-        welcome.classList.remove("fmt-fadeinout");
-        msg.classList.remove("fmt-fadeinout");
+        welcome.classList.remove("fmt-fadein");
+        msg.classList.remove("fmt-fadein");
+        welcome.classList.remove("fmt-faded");
+        msg.classList.remove("fmt-faded");
     },
 };
 
@@ -2801,12 +2806,19 @@ function onDbSuccess(event) {
                     console.warn("No user Profile could be loaded");
                     pageController.showFirstTimeScreen();
                     pageController.closeLoadingScreen();
-                    pageController.showProfile();
+                    if (fmtAppInstance.firstTimeScreenAutomatic) {
+                        setTimeout(() => {
+                            document.getElementById("fmt-app-first-time-overlay").click();
+                            pageController.showProfile();    
+                        }, 3000);
+
+                    }
+
                 });
             });
         });
 
-    }, 1000);
+    }, 500);
 
 }
 
@@ -3287,6 +3299,10 @@ function prepareEventHandlers() {
     });
     $("#edit-meal-entry-screen-less").click( (e) => {
         FMTConsumableItemScreenShowLess("edit-meal-entry-screen", "consumable");
+    });
+    $("#fmt-app-first-time-overlay").click( () => {
+        pageController.closeFirstTimeScreen();
+        pageController.showProfile();
     });
     //Search functions
     $("#foods-food-search").keyup( (e) => {

@@ -6,6 +6,8 @@
     <title>Free Macro Tracker</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/fmt.css" rel="stylesheet">
+<!--    <link href="css/fontawesome.min.css" rel="stylesheet">
+    <link href="css/light.min.css" rel="stylesheet">-->
 </head>
 <body>
     <div id="odin" class="fmt-allfather">
@@ -822,10 +824,12 @@
         <div id="fmt-app-first-time-overlay" class="d-none fmt-overlay fmt-bg-dark-green container-fluid">
             <div class="row justify-content-center fmt-center-text fmt-loading-screen-position">
                 <div class="col-12">
-                    <span id="fmt-app-first-time-overlay-welcome" class="fmt-loading-screen-font-responsive fmt-faded">Welcome</span>
+                    <span id="fmt-app-first-time-overlay-welcome" class="fmt-loading-screen-font-responsive fmt-faded">Welcome.</span>
                 </div>
-                <div class="col-12">
-                    <span id="fmt-app-first-time-overlay-msg" class="fmt-loading-screen-font-responsive fmt-faded">Create a new Profile to start!</span>
+                <div class="col-12 fmt-faded" id="fmt-app-first-time-overlay-msg">
+                    <span class="fmt-loading-screen-font-responsive-sm-1 ">Tap anywhere to</span>
+                    <div class="w-100"></div>
+                    <span class="fmt-loading-screen-font-responsive-sm-1 ">Create a new Profile!</span>
                 </div>
             </div>
         </div>

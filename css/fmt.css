@@ -293,6 +293,25 @@ button {
         font-size: 3.2rem;
     }
 }
+.fmt-loading-screen-font-responsive-sm-1 {
+    font-size: 3.5rem;
+    color: white;
+    letter-spacing: -0.2rem;
+}
+@media screen and (max-width: 576px) {
+    .fmt-loading-screen-font-responsive-sm-1 {
+        font-size: 2.5rem;
+    }
+}
+.fmt-border-white {
+    border-style: solid;
+    border-color: white;
+    border-radius: 1rem;
+}
+#fmt-app-first-time-overlay-msg {
+    font-style: oblique;
+    text-decoration: underline white; 
+}
 .fmt-loading-screen-logo {
     width: 5rem;
     height: 5rem;
@@ -335,7 +354,7 @@ button {
     to   {opacity: 0%;}
 }
 .fmt-fadein {
-    animation: fmt-fadein-keyframe 1.5s;
+    animation: fmt-fadein-keyframe 1.1s;
 }
 .fmt-fadeout {
     animation: fmt-fadeout-keyframe 1.5s;
