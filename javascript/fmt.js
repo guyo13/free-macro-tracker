@@ -1945,7 +1945,10 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     
     //Meal Header
     const mNameSpan = document.createElement("span");
-    mNameSpan.classList.add("fmt-font-2", "float-left");
+    //background-color: rgb(40, 167, 69);
+    //background-color: rgb(36, 139, 59);
+    //background-color: rgb(42, 118, 59);
+    mNameSpan.classList.add("fmt-font-2", "float-left", "fmt-font-white-bold");
     mNameSpan.innerHTML = mealEntry.mealName;
     const mNameDiv = document.createElement("div");
     mNameDiv.classList.add("col");
@@ -1953,7 +1956,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     
     const kCalSpan = document.createElement("span");
     kCalSpan.setAttribute("id", `overview-meal-${normalizedMealName}-calories-progress`);
-    kCalSpan.classList.add("fmt-font-2", "float-right");
+    kCalSpan.classList.add("fmt-font-2", "float-right", "fmt-font-white-bold");
     //First Set to 0 later update
     kCalSpan.innerHTML = "0";
     const kCalDiv = document.createElement("div");
@@ -1961,7 +1964,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     kCalDiv.appendChild(kCalSpan);
 
     const optsBtn = document.createElement("button");
-    optsBtn.classList.add("fmt-font-1", "float-right", "ml-3", "btn", "btn-outline-dark");
+    optsBtn.classList.add("fmt-font-1", "float-right", "ml-3", "btn", "fmt-btn-outline-light");
     optsBtn.innerHTML = "&#9776";
     optsBtn.setAttribute("type", "button");
     optsBtn.setAttribute("meal_name", mealEntry.mealName);
@@ -1978,10 +1981,10 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     
     //Meal Footer
     const mealFooterAddDiv = document.createElement("div");
-    mealFooterAddDiv.classList.add("col-12", "fmt-meal-footer-add", "fmt-center-text", "d-flex");
+    mealFooterAddDiv.classList.add("col-12", "fmt-meal-footer-add", "fmt-center-text", "d-flex", "pr-0", "pl-0");
     const mealFooterAddBtn = document.createElement("button");
-    mealFooterAddBtn.classList.add("fmt-font-2", "btn", "btn-outline-success", "flex-fill");
-    mealFooterAddBtn.innerHTML = "+";
+    mealFooterAddBtn.classList.add("fmt-font-1", "btn", "btn-outline-success", "flex-fill");
+    mealFooterAddBtn.innerHTML = `Add to ${mealEntry.mealName}`//"+";
     mealFooterAddBtn.addEventListener("click", function() {
         mealIdentifierObj = {};
         mealIdentifierObj.meal_year = mealEntryObj.year;

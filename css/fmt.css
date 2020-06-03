@@ -93,7 +93,8 @@ button {
     transition-duration: 0.3s;
 }
 .fmt-meal-entry:hover {
-    background-color: azure;
+    background-color: rgb(54, 157, 77);
+    color: white;
 }
 .fmt-meal-footer {
     background-color: #e9ecef;
@@ -105,7 +106,8 @@ button {
     border-bottom-width: medium;
     border-bottom-color: white;*/
     /*background-color: #e9ecef;*/
-    background-color: #bbbec4;
+    /*background-color: #bbbec4;*/
+    background-color: rgb(42, 118, 59);
 }
 .fmt-progress-bar-container{}
 .footer {
@@ -207,4 +209,27 @@ button {
     .fmt-food-input-field {
         width: 100%;
     }
+}
+.fmt-font-white-bold {
+    color: white;
+    font-weight: bold;
+}
+.fmt-btn-outline-success {
+    color: #28a745;
+    border-color: #28a745;
+    background-color: #e9ecef;
+}
+.fmt-btn-outline-success:hover {
+    color: white!important;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+.fmt-btn-outline-light {
+    color: #f8f9fa;
+    border-style: none;
+}
+.fmt-btn-outline-light:hover {
+    color: #212529;
+    background-color: #f8f9fa;
+    border-style: none;
 }
