@@ -2711,12 +2711,11 @@ var pageController = {
         const msg = document.getElementById("fmt-app-first-time-overlay-msg");
         overlay.classList.remove("d-none");
         overlay.style.zIndex = fmtAppGlobals.maxDynamicScreens + 2;
-        welcome.classList.add("fmt-fadein");
-        setTimeout(600, function() {
-            msg.classList.add("fmt-fadein");
-            welcome.classList.add("fmt-fadeout");
-            setTimeout(1100, pageController.closeFirstTimeScreen);
-        });
+        welcome.classList.add("fmt-fadeinout");
+        setTimeout(function() {
+            msg.classList.add("fmt-fadeinout");
+            setTimeout(pageController.closeFirstTimeScreen, 3300);
+        }, 2000);
     },
     closeFirstTimeScreen: function() {
         const overlay = document.getElementById("fmt-app-first-time-overlay");
@@ -2724,9 +2723,8 @@ var pageController = {
         const msg = document.getElementById("fmt-app-first-time-overlay-msg");
         overlay.classList.add("d-none");
         overlay.style.zIndex = -2;
-        welcome.classList.remove("fmt-fadein");
-        welcome.classList.remove("fmt-fadeout");
-        msg.classList.remove("fmt-fadein");
+        welcome.classList.remove("fmt-fadeinout");
+        msg.classList.remove("fmt-fadeinout");
     },
 };
 
@@ -2801,7 +2799,9 @@ function onDbSuccess(event) {
                               //onNoProfile
                               function() {
                     console.warn("No user Profile could be loaded");
+                    pageController.showFirstTimeScreen();
                     pageController.closeLoadingScreen();
+                    pageController.showProfile();
                 });
             });
         });

@@ -248,6 +248,11 @@ button {
     background-color: var(--fmt-lighter-green);
     border-color: var(--fmt-lighter-green);
 }
+.fmt-outline-success {
+    color: white!important;
+    background-color: var(--fmt-lighter-green);
+    border-color: var(--fmt-lighter-green);
+}
 .fmt-btn-outline-light {
     color: var(--light);
     border-style: none;
@@ -324,11 +329,19 @@ button {
     from {opacity: 100%;}
     to   {opacity: 0;}
 }
+@keyframes fmt-fadeinout-keyframe {
+    from {opacity: 0%;}
+    50%  {opacity: 100%}
+    to   {opacity: 0%;}
+}
 .fmt-fadein {
-    animation: fmt-fadein-keyframe 0.5s;
+    animation: fmt-fadein-keyframe 1.5s;
 }
 .fmt-fadeout {
     animation: fmt-fadeout-keyframe 1.5s;
+}
+.fmt-fadeinout {
+    animation: fmt-fadeinout-keyframe 3s;
 }
 .fmt-faded {
     opacity: 0;
