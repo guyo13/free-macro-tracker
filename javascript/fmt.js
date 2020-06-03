@@ -2705,6 +2705,29 @@ var pageController = {
         loadingScreen.classList.add("d-none");
         loadingScreen.style.zIndex = -1;
     },
+    showFirstTimeScreen: function() {
+        const overlay = document.getElementById("fmt-app-first-time-overlay");
+        const welcome = document.getElementById("fmt-app-first-time-overlay-welcome");
+        const msg = document.getElementById("fmt-app-first-time-overlay-msg");
+        overlay.classList.remove("d-none");
+        overlay.style.zIndex = fmtAppGlobals.maxDynamicScreens + 2;
+        welcome.classList.add("fmt-fadein");
+        setTimeout(600, function() {
+            msg.classList.add("fmt-fadein");
+            welcome.classList.add("fmt-fadeout");
+            setTimeout(1100, pageController.closeFirstTimeScreen);
+        });
+    },
+    closeFirstTimeScreen: function() {
+        const overlay = document.getElementById("fmt-app-first-time-overlay");
+        const welcome = document.getElementById("fmt-app-first-time-overlay-welcome");
+        const msg = document.getElementById("fmt-app-first-time-overlay-msg");
+        overlay.classList.add("d-none");
+        overlay.style.zIndex = -2;
+        welcome.classList.remove("fmt-fadein");
+        welcome.classList.remove("fmt-fadeout");
+        msg.classList.remove("fmt-fadein");
+    },
 };
 
 //Functions - DB - Init
@@ -2753,16 +2776,6 @@ function FMTLoadProfile(profile_id, onloadedFn, onNoProfileFn) {
         else {
             if (onNoProfileFn) { onNoProfileFn(); }
         }
-/*        if (profiles.length === 0) {
-            console.debug("No profiles exist yet!");
-            if (fmtAppInstance.promptSettings.promptOnNoProfileCreated) {
-                pageController.showProfile();
-                FMTShowAlert("profile-alerts", "success", "Please create a new Profile :)", fmtAppGlobals.defaultAlertScroll);   
-            }
-        }
-        else {
-            console.debug(`Selected profile id ${fmtAppInstance.currentProfileId}`);
-        }*/
     },
                 //FIXME - make a standard error reporting call
                 function(e) {
@@ -2770,7 +2783,6 @@ function FMTLoadProfile(profile_id, onloadedFn, onNoProfileFn) {
                     let msg = `Failed loading profiles. Please report problem on Github and include the following data:\n${_report}`
                     FMTShowAlert("overview-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
                     throw ReferenceError(msg);
-                    onNoProfileFn();
                 }
    );
 }
@@ -2794,7 +2806,7 @@ function onDbSuccess(event) {
             });
         });
 
-    }, 2000);
+    }, 1000);
 
 }
 

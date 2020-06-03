@@ -316,6 +316,23 @@ button {
         left: 25%;
     }
 }
+@keyframes fmt-fadein-keyframe {
+    from {opacity: 0;}
+    to   {opacity: 100%;}
+}
+@keyframes fmt-fadeout-keyframe {
+    from {opacity: 100%;}
+    to   {opacity: 0;}
+}
+.fmt-fadein {
+    animation: fmt-fadein-keyframe 0.5s;
+}
+.fmt-fadeout {
+    animation: fmt-fadeout-keyframe 1.5s;
+}
+.fmt-faded {
+    opacity: 0;
+}
 /*Table Colors*/
 /*.table-striped>tbody>tr:nth-child(odd)>td, 
 .table-striped>tbody>tr:nth-child(odd)>th {
