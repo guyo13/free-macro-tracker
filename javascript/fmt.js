@@ -1362,14 +1362,14 @@ function FMTCreateMassUnitDropdownMenu(baseName, targetDivId, mUnitsChart, isSta
         inputGroup.setAttribute("id", inputGroupId);
         let selectedBtn = document.createElement("button");
         let selectedBtnId = `${baseName}-units`;
-        selectedBtn.classList.add("btn", "btn-outline-dark", "fmt-mass-unit-btn");
+        selectedBtn.classList.add("btn", "btn-outline-dark", "fmt-outline-success");//, "fmt-mass-unit-btn");
         selectedBtn.setAttribute("type", "button");
         selectedBtn.setAttribute("id", selectedBtnId);
         inputGroup.appendChild(selectedBtn);
 
         if (!isStatic) {
             let ddBtn = document.createElement("div");
-            ddBtn.classList.add("btn", "btn-outline-dark", "dropdown-toggle", "dropdown-toggle-split");
+            ddBtn.classList.add("btn", "btn-outline-dark", "dropdown-toggle", "dropdown-toggle-split", "fmt-outline-success");
             ddBtn.setAttribute("type", "button");
             ddBtn.setAttribute("data-toggle", "dropdown");
             ddBtn.setAttribute("aria-haspopup", "true");
@@ -1448,7 +1448,7 @@ function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj
         addNutriInGroup.classList.add("input-group-prepend", "fmt-food-input-field");
         addNutriInGroup.setAttribute("id", nutriBaseId);
         const span = document.createElement("span");
-        span.classList.add("input-group-text");
+        span.classList.add("input-group-text", "fmt-outline-success");
         span.innerHTML = `${nutriObj.name}${nutriObj.help != null ? ` (${nutriObj.help})` : ''}`;
         addNutriInGroup.appendChild(span);
         const inputField = document.createElement("input");

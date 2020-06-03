@@ -251,7 +251,7 @@ button {
 .fmt-outline-success {
     color: white!important;
     background-color: var(--fmt-lighter-green);
-    border-color: var(--fmt-lighter-green);
+    border-color: white;
 }
 .fmt-btn-outline-light {
     color: var(--light);
