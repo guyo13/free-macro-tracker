@@ -1,3 +1,10 @@
+:root {
+    --fmt-light-gray: rgb(233, 236, 239); /*#e9ecef*/
+    --fmt-purple: rgb(147, 56, 188); /*#9338bc;*/
+    --fmt-lighter-green: rgb(40, 167, 69); /*#28a745*/
+    --fmt-light-green: rgb(54, 157, 77);
+    --fmt-dark-green: rgb(42, 118, 59);
+}
 body {}
 button {
     touch-action: manipulation;
@@ -41,11 +48,11 @@ button {
 .fmt-add-nutri {}
 .fmt-mass-unit-igroup {}
 .fmt-bg-light {
-    background-color: rgb(233, 236, 239);
+    background-color: var(--fmt-light-gray);/*rgb(233, 236, 239);*/
 }
 
 .fmt-mass-unit-btn {
-    background-color: rgb(233, 236, 239)!important;
+    background-color: var(--fmt-light-gray)!important;
 }
 .fmt-allfather {}
 .fmt-tab {
@@ -89,15 +96,15 @@ button {
     border-bottom-style: solid;
     border-bottom-width: thin;
     border-bottom-color: white;
-    background-color: #e9ecef;
+    background-color: var(--fmt-light-gray);
     transition-duration: 0.3s;
 }
 .fmt-meal-entry:hover {
-    background-color: rgb(54, 157, 77);
+    background-color: var(--fmt-light-green);
     color: white;
 }
 .fmt-meal-footer {
-    background-color: #e9ecef;
+    background-color: var(--fmt-light-gray);
 }
 .fmt-meal-footer-add {}
 .fmt-meal-entries {}
@@ -105,9 +112,9 @@ button {
 /*    border-bottom-style: solid;
     border-bottom-width: medium;
     border-bottom-color: white;*/
-    /*background-color: #e9ecef;*/
+    /*background-color: var(--fmt-light-gray);*/
     /*background-color: #bbbec4;*/
-    background-color: rgb(42, 118, 59);
+    background-color: var(--fmt-dark-green);
 }
 .fmt-progress-bar-container{}
 .footer {
@@ -218,35 +225,35 @@ button {
     font-weight: bold;
 }
 .fmt-btn-outline-success {
-    color: #28a745;
-    border-color: #28a745;
-    background-color: #e9ecef;
+    color: var(--fmt-lighter-green);
+    border-color: var(--fmt-lighter-green);
+    background-color: var(--fmt-light-gray);
 }
 .fmt-btn-outline-success:hover {
     color: white!important;
-    background-color: #28a745;
-    border-color: #28a745;
+    background-color: var(--fmt-lighter-green);
+    border-color: var(--fmt-lighter-green);
 }
 .fmt-btn-outline-light {
-    color: #f8f9fa;
+    color: var(--light);
     border-style: none;
 }
 .fmt-btn-outline-light:hover {
     color: #212529;
-    background-color: #f8f9fa;
+    background-color: var(--light);
     border-style: none;
 }
 .fmt-bg-violet {
-    background-color: #9338bc;
+    background-color: var(--fmt-purple);
 }
 .fmt-btn-success {
     color: white;
-    background-color: rgb(54, 157, 77);/*#28a745;*/
-    border-color: rgb(54, 157, 77);/*#28a745;*/
+    background-color: var(--fmt-light-green);
+    border-color: var(--fmt-light-green);
 }
 .fmt-btn-success:hover {
     color: white!important;
-    background-color: rgb(54, 157, 77);/*#28a745;*/
+    background-color: var(--fmt-light-green);
     border-color: #fff;
 }
 
