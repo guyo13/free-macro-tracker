@@ -78,6 +78,7 @@ fmtAppGlobals.FMT_DB_USER_GOALS_KP = ["profile_id", "year", "month", "day"];
 //Globals - Page
 fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-recipes", "goto-profile", "goto-advanced", "goto-export", "goto-import"];
 fmtAppGlobals.dynamicScreenIds = ["add-food-screen", "edit-food-screen", "view-food-screen", "add-to-meal-screen", "edit-meal-entry-screen"];
+fmtAppGlobals.overlaysIds = ["fmt-app-load-overlay"];
 fmtAppGlobals.consumableItemScreenStaticViewInputFields = ["name", "brand", "calories", "proteins", "carbohydrates", "fats"];
 fmtAppGlobals.dateDivIDs = ["overview-date-day-large", "overview-date-day-small"];
 fmtAppGlobals.maxDynamicScreens = 1000;
@@ -2168,7 +2169,7 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
     onProfileReadFn = function(e) {
         let profile = e.target.result;
         if (profile == null) {
-            FMTShowAlert("overview-alerts", "danger", "Failed Reading Profile", fmtAppGlobals.defaultAlertScroll);
+            //FMTShowAlert("overview-alerts", "danger", "Failed Reading Profile", fmtAppGlobals.defaultAlertScroll);
             return;
         }
         const calProgBar = document.getElementById("calories-progress-bar");
@@ -2292,7 +2293,7 @@ function FMTOverviewLoadCurrentDay(onsuccessFn, onerrorFn) {
         else {
             //Sync tasks
             console.debug(`Loaded ${entryCount} meal entry records`);
-            const overviewAddToMealBtn = document.getElementById("overview-add-to-meal");
+/*            const overviewAddToMealBtn = document.getElementById("overview-add-to-meal");
             if (lastMealEntry) {
                 overviewAddToMealBtn.setAttribute("meal_year", lastMealEntry.year);
                 overviewAddToMealBtn.setAttribute("meal_month", lastMealEntry.month);
@@ -2304,7 +2305,7 @@ function FMTOverviewLoadCurrentDay(onsuccessFn, onerrorFn) {
                 overviewAddToMealBtn.setAttribute("meal_month", fmtAppInstance.currentDay.getMonth());
                 overviewAddToMealBtn.setAttribute("meal_day", fmtAppInstance.currentDay.getDate());
                 overviewAddToMealBtn.setAttribute("profile_id", fmtAppInstance.currentProfileId);
-            }
+            }*/
             //Async tasks
             FMTOverviewUpdateTotalProgress("overview-meals-container");
         }
@@ -2694,10 +2695,20 @@ var pageController = {
         const alertDivId = `${(pageController.openedDynamicScreensCount() > 0) ? `${pageController.updateZIndexes(true)[0]}` : fmtAppInstance.pageState.activeTab}-alerts`;
         return alertDivId;
     },
+    showLoadingScreen: function() {
+        const loadingScreen = document.getElementById("fmt-app-load-overlay");
+        loadingScreen.classList.remove("d-none");
+        loadingScreen.style.zIndex = fmtAppGlobals.maxDynamicScreens + 1;
+    },
+    closeLoadingScreen: function() {
+        const loadingScreen = document.getElementById("fmt-app-load-overlay");
+        loadingScreen.classList.add("d-none");
+        loadingScreen.style.zIndex = -1;
+    },
 };
 
 //Functions - DB - Init
-function FMTLoadMassUnits() {
+function FMTLoadMassUnits(onloadedFn) {
     FMTReadAllMassUnits(function(e) {
         let massUnits = e.target.result;
         fmtAppInstance.massUnitChart = {};
@@ -2707,10 +2718,11 @@ function FMTLoadMassUnits() {
                                                        "description": unit.description};
         }
         console.debug(`Mass units loaded into Application instance ${JSON.stringify(fmtAppInstance.massUnitChart)}`);
+        if (onloadedFn) { onloadedFn(); }
     },
     function(e) {throw ReferenceError("Failed reading mass units");}); 
 }
-function FMTLoadAdditionalNutrients() {
+function FMTLoadAdditionalNutrients(onloadedFn) {
     FMTReadAllNutrients(function(e) {
         let addNutri = e.target.result;
         fmtAppInstance.additionalNutrients = {};
@@ -2725,14 +2737,23 @@ function FMTLoadAdditionalNutrients() {
             fmtAppInstance.additionalNutrients[nutri.category].push(_nutri);
         }
         console.debug(`Additional Nutrients loaded into Application instance ${JSON.stringify(fmtAppInstance.additionalNutrients)}`);
+        if (onloadedFn) { onloadedFn(); }
     },
     function(e) {throw ReferenceError("Failed reading additional nutrients");});
 }
-function FMTLoadProfile() {
-    fmtAppInstance.currentProfileId = 1;
-    FMTReadAllProfiles(function(e) {
-        let profiles = e.target.result;
-        if (profiles.length === 0) {
+function FMTLoadProfile(profile_id, onloadedFn, onNoProfileFn) {
+    fmtAppInstance.currentProfileId = profile_id;
+    FMTReadProfile(fmtAppInstance.currentProfileId,
+                   function(e) {
+        let profile = e.target.result;
+        if (!!profile) {
+            fmtAppInstance.currentProfile = profile;
+            if (onloadedFn) { onloadedFn(); }
+        }
+        else {
+            if (onNoProfileFn) { onNoProfileFn(); }
+        }
+/*        if (profiles.length === 0) {
             console.debug("No profiles exist yet!");
             if (fmtAppInstance.promptSettings.promptOnNoProfileCreated) {
                 pageController.showProfile();
@@ -2741,24 +2762,40 @@ function FMTLoadProfile() {
         }
         else {
             console.debug(`Selected profile id ${fmtAppInstance.currentProfileId}`);
-        }
+        }*/
     },
-       //FIXME - make a standard error reporting call
-    function(e) {
-        let _report = JSON.stringify({"globals": fmtAppGlobals, "instance": fmtAppInstance});
-        let msg = `Failed loading profiles. Please report problem on Github and include the following data:\n${_report}`
-        FMTShowAlert("overview-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
-        throw ReferenceError(msg);
-    }
+                //FIXME - make a standard error reporting call
+                function(e) {
+                    let _report = JSON.stringify({"globals": fmtAppGlobals, "instance": fmtAppInstance});
+                    let msg = `Failed loading profiles. Please report problem on Github and include the following data:\n${_report}`
+                    FMTShowAlert("overview-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
+                    throw ReferenceError(msg);
+                    onNoProfileFn();
+                }
    );
 }
-function onDbSuccess(event) {  
+function onDbSuccess(event) {
     fmtAppInstance.fmtDb = event.target.result;
-    prepareEventHandlers();
-    FMTLoadMassUnits();
-    FMTLoadAdditionalNutrients();
-    FMTLoadProfile();
-    pageController.showOverview(true);
+    setTimeout(function() {
+        prepareEventHandlers();
+        FMTLoadMassUnits(function() {
+            FMTLoadAdditionalNutrients(function() {
+                FMTLoadProfile(1,
+                               //onloaded
+                               function() {
+                    pageController.showOverview(true);
+                    pageController.closeLoadingScreen();
+                },
+                              //onNoProfile
+                              function() {
+                    console.warn("No user Profile could be loaded");
+                    pageController.closeLoadingScreen();
+                });
+            });
+        });
+
+    }, 2000);
+
 }
 
 function onUpgradeNeeded(event) {
@@ -3143,7 +3180,7 @@ function prepareEventHandlers() {
         });
 
     });
-    $("#overview-add-to-meal").click( (e) => { 
+/*    $("#overview-add-to-meal").click( (e) => { 
         const overviewAddToMealBtn = document.getElementById("overview-add-to-meal");
         const mealIdentifierObj = {};
         mealIdentifierObj.meal_year = overviewAddToMealBtn.getAttribute("meal_year");
@@ -3152,7 +3189,7 @@ function prepareEventHandlers() {
         mealIdentifierObj.meal_name = null;
         mealIdentifierObj.profile_id = fmtAppInstance.currentProfileId;
         pageController.openAddToMealDynamicScreen(mealIdentifierObj);
-    });
+    });*/
     $("#add-to-meal-screen-cancel").click( (e) => { 
         pageController.closeAddToMealDynamicScreen();
     });

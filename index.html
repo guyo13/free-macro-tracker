@@ -43,7 +43,7 @@
           </div>
         </nav>
         </div>
-        <div id="overview" class="fmt-tab">
+        <div id="overview" class="fmt-tab container-fluid">
             <div id="overview-alerts" class="row justify-content-center"></div>
             <div id="overview-container" class="">
                 <div id="overview-date-container" class="mb-3 mt-3 row justify-content-center">
@@ -115,16 +115,14 @@
                 </div>
                 <div id="overview-meals-container" class="fmt-meals-container">
                 </div>
-                <div id="overview-footer" class="container">
-                    <div class="row justify-content-center">
-                        <div class="input-group col pr-0 pl-0">
-                            <button id="overview-add-to-meal" class="btn fmt-btn-outline-success fmt-text-btn1 flex-fill" type="button">Add to Meal</button>
-                        </div>
+<!--                <div id="overview-footer" class="row justify-content-center">
+                    <div class="input-group col-12 col-lg-9 ">
+                        <button id="overview-add-to-meal" class="btn fmt-btn-outline-success fmt-text-btn1 flex-fill" type="button">Add to Meal</button>
                     </div>
-                </div>
+                </div>-->
             </div>
         </div>
-        <div id="foods" class="fmt-tab">
+        <div id="foods" class="fmt-tab container-fluid">
             <div id="foods-alerts" class="row justify-content-center"></div>
             <div class="d-flex justify-content-center mt-3">
                 <div class="d-flex col-12 col-lg-8 mb-1 justify-content-between">
@@ -154,7 +152,7 @@
                 </div>
             </div>
         </div>
-        <div id="recipes" class="fmt-tab">
+        <div id="recipes" class="fmt-tab container-fluid">
             <div id="recipes-alerts" class="row justify-content-center"></div>
             <div class="d-flex justify-content-center mt-3">
                 <div class="d-flex col-12 col-lg-8 mb-1 justify-content-between">
@@ -184,7 +182,7 @@
                 </div>
             </div>
         </div>
-        <div id="profile" class="fmt-tab">
+        <div id="profile" class="fmt-tab container-fluid">
             <div id="profile-alerts" class="row justify-content-center"></div>
             <div id="bodily-details" class="row justify-content-center">
                 <div class="input-group col-12 col-lg-8 mb-1">
@@ -367,7 +365,7 @@
                 </div>
             </div>
         </div>
-        <div id="export" class="fmt-tab">
+        <div id="export" class="fmt-tab container-fluid">
             <div id="export-alerts" class="row justify-content-center"></div>
             <div id="export-menu" class="row justify-content-center">
                 <div class="input-group col-12 col-lg-4 mb-1">
@@ -380,7 +378,7 @@
                 </div>
             </div>
         </div>
-        <div id="import" class="fmt-tab">
+        <div id="import" class="fmt-tab container-fluid">
             <div id="import-alerts" class="row justify-content-center"></div>
             <div id="import-menu" class="row justify-content-center">
                 <div class="input-group col-12 col-lg-4 mb-1">
@@ -393,9 +391,9 @@
                 </div>
             </div>
         </div>
-        <div id="advanced" class="fmt-tab">Advanced Settings, custom nutrients, mass units, etc...</div>
+        <div id="advanced" class="fmt-tab container-fluid">Advanced Settings, custom nutrients, mass units, etc...</div>
         <!--Dynamic Screens-->
-        <div id="add-food-screen" class="fmt-dynamic-screen">
+        <div id="add-food-screen" class="fmt-dynamic-screen container-fluid">
             <div id="add-food-screen-alerts" class="row justify-content-center"></div>
             <div class="d-flex justify-content-center mt-3">
                 <div class="d-flex col-12 col-lg-8 mb-1 justify-content-between">
@@ -477,7 +475,7 @@
                 </div>
             </div>
         </div>
-        <div id="edit-food-screen" class="fmt-dynamic-screen">
+        <div id="edit-food-screen" class="fmt-dynamic-screen container-fluid">
             <div id="edit-food-screen-alerts" class="row justify-content-center"></div>
             <div class="d-flex justify-content-center mt-3">
                 <div class="d-flex col-12 col-lg-8 mb-1 justify-content-between">
@@ -564,7 +562,7 @@
                 </div>
             </div>
         </div>
-        <div id="view-food-screen" class="fmt-dynamic-screen">
+        <div id="view-food-screen" class="fmt-dynamic-screen container-fluid">
             <div id="view-food-screen-alerts" class="row justify-content-center"></div>
             <div class="d-flex justify-content-center mt-3">
                 <div class="d-flex col-12 col-lg-8 mb-1 justify-content-between">
@@ -676,7 +674,7 @@
 
             </div>
         </div>
-        <div id="add-to-meal-screen" class="fmt-dynamic-screen">
+        <div id="add-to-meal-screen" class="fmt-dynamic-screen container-fluid">
             <div id="add-to-meal-screen-alerts" class="row justify-content-center"></div>
             <div class="d-flex justify-content-center mt-3">
                 <div class="d-flex col-12 col-lg-8 mb-1 justify-content-between">
@@ -709,7 +707,7 @@
                 </div>
             </div>
         </div>
-        <div id="edit-meal-entry-screen" class="fmt-dynamic-screen">
+        <div id="edit-meal-entry-screen" class="fmt-dynamic-screen container-fluid">
             <div id="edit-meal-entry-screen-alerts" class="row justify-content-center"></div>
 
             <div class="container-fluid">
@@ -799,6 +797,25 @@
                 <div class="input-group col-12 col-lg-4 mb-1">
                     <button id="edit-meal-entry-screen-more" class="btn btn-outline-dark flex-fill" type="button">Show More</button>
                     <button id="edit-meal-entry-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Show Less</button>
+                </div>
+            </div>
+        </div>
+        <!--Overlays-->
+        <div id="fmt-app-load-overlay" class="fmt-overlay fmt-bg-dark-green container-fluid">
+            <div class="row justify-content-center fmt-center-text fmt-loading-screen-position">
+                <div class="col-12">
+                    <span class="fmt-font-white-bold fmt-loading-screen-font">Free</span>
+                </div>
+                <div class="col-12">
+                    <span class="fmt-loading-screen-font-responsive">Macro Tracker</span>
+                </div>
+                <div class="col-12 mb-3">
+                    <span class="fmt-loading-screen-logo">Logo</span>
+                </div>
+                <div class="col-12">
+                    <div class="spinner-border text-light" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
                 </div>
             </div>
         </div>

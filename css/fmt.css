@@ -27,8 +27,8 @@ button {
     font-size: 1.5rem;
 }
 .fmt-table-height {
-    height: 50vh;
-    overflow-y: auto;
+    /*height: 50vh;
+    overflow-y: auto;*/
 }
 .fmt-max-height60 {
     max-height: 60vh;
@@ -41,9 +41,18 @@ button {
 .fmt-food-table-row {}
 .fmt-dynamic-screen {
     position: absolute;
-    height: 100%;
+    height: 100vh;
     width: 100%;
     background-color: white;
+}
+.fmt-overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 3000;
+    overflow: hidden;
 }
 .fmt-add-nutri {}
 .fmt-mass-unit-igroup {}
@@ -57,9 +66,9 @@ button {
 .fmt-allfather {}
 .fmt-tab {
     position: absolute;
-    z-index: 0;
-    height: 100%;
+    height: 100vh;
     width: 100%;
+    z-index: 0;
     background-color: white;
 }
 .fmt-text-lg {
@@ -220,6 +229,11 @@ button {
         width: 100%;
     }
 }
+@media screen and (max-width: 768px) {
+    .fmt-profile-input-field {
+        width: 70%;
+    }
+}
 .fmt-font-white-bold {
     color: white;
     font-weight: bold;
@@ -246,6 +260,9 @@ button {
 .fmt-bg-violet {
     background-color: var(--fmt-purple);
 }
+.fmt-bg-dark-green {
+    background-color: var(--fmt-dark-green);
+}
 .fmt-btn-success {
     color: white;
     background-color: var(--fmt-light-green);
@@ -256,7 +273,49 @@ button {
     background-color: var(--fmt-light-green);
     border-color: #fff;
 }
-
+.fmt-loading-screen-font {
+    font-size: 4.5rem;
+    color: white;
+    letter-spacing: -0.2rem;
+}
+.fmt-loading-screen-font-responsive {
+    font-size: 4.5rem;
+    color: white;
+    letter-spacing: -0.2rem;
+}
+@media screen and (max-width: 576px) {
+    .fmt-loading-screen-font-responsive {
+        font-size: 3.2rem;
+    }
+}
+.fmt-loading-screen-logo {
+    width: 5rem;
+    height: 5rem;
+    border: solid;
+    border-color: white;
+    display:inline-block;
+    color:white;
+    border-radius: 2rem;
+}
+.fmt-loading-screen-position {
+    position:absolute;
+    top: 30%;
+}
+@media screen and (min-width: 743px) {
+    .fmt-loading-screen-position {
+        left: 10%;
+    }
+}
+@media screen and (min-width: 1000px) {
+    .fmt-loading-screen-position {
+        left: 20%;
+    }
+}
+@media screen and (min-width: 1300px) {
+    .fmt-loading-screen-position {
+        left: 25%;
+    }
+}
 /*Table Colors*/
 /*.table-striped>tbody>tr:nth-child(odd)>td, 
 .table-striped>tbody>tr:nth-child(odd)>th {
