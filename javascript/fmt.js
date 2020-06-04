@@ -1396,15 +1396,28 @@ function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
     macroSplit.Fat = document.getElementById("profile-macro-fat").value;
     FMTReadProfile(profileId,
                 function(e) {
-                    let res = e.target.result;
-                    console.debug(res);
-                    if (res === undefined) {
+                    let profile = e.target.result;
+                    console.debug(profile);
+                    if (profile === undefined) {
                         let msg = `Profile with ID ${profileId} does not exist yet. Please create it first by filling in your Personal details and then click "Save Personal Details"`;
                         onerrorFn || function (e) { console.error(`${msg}`) };
                         return onerrorFn(msg);
                     }
-                    res.macroSplit = macroSplit;
-                    FMTUpdateProfile(profileId, res, onsuccessFn, onerrorFn);
+                    profile.macroSplit = macroSplit;
+                    const onProfileUpdatedFn = function(event) {
+                      FMTReadUserGoalEntry(fmtAppInstance.currentProfileId, fmtAppInstance.today.getFullYear(), fmtAppInstance.today.getMonth(), fmtAppInstance.today.getDate(),
+                                           function(res) {
+                                             let userGoals = res.target.result;
+                                             if (!!userGoals) {
+                                               userGoals.macroSplit = profile.macroSplit;
+                                               FMTUpdateUserGoalEntry(userGoals.profile_id, userGoals.year, userGoals.month, userGoals.day, userGoals, onsuccessFn);
+                                             } else { if (onsuccessFn) onsuccessFn(); }
+                                           },
+                                           function(err) {
+                                             console.error(`Failed reading User Goals for ${fmtAppInstance.today}`);
+                                           });
+                    };
+                    FMTUpdateProfile(profileId, profile, onProfileUpdatedFn, onerrorFn);
                 },
                 onerrorFn
                );
