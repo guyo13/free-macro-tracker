@@ -2302,6 +2302,11 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
     const proteinTotalSpan = document.getElementById("overview-total-proteins");
     const fatTotalSpan = document.getElementById("overview-total-fats");
 
+    const calTotalVerbSpan = document.getElementById("overview-total-calories-verb");
+    const carbTotalVerbSpan = document.getElementById("overview-total-carbs-verb");
+    const proteinTotalVerbSpan = document.getElementById("overview-total-proteins-verb");
+    const fatTotalVerbSpan = document.getElementById("overview-total-fats-verb");
+
     calTotalSpan.innerHTML = `${roundedToFixed(totalNutriValue.calories, 0)}kCal`;
     carbTotalSpan.innerHTML = `${roundedToFixed(totalNutriValue.carbohydrates, 0)}g`;
     proteinTotalSpan.innerHTML = `${roundedToFixed(totalNutriValue.proteins, 0)}g`;
@@ -2309,6 +2314,11 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
 
     if (fmtAppInstance.currentDayUserGoals) {
       const profile = fmtAppInstance.currentDayUserGoals;
+
+      const dailyProtein = (profile.macroSplit.Protein/100 * profile.macroSplit.Calories / 4 );
+      const dailyCarbs = (profile.macroSplit.Carbohydrate/100 * profile.macroSplit.Calories / 4 );
+      const dailyFats = (profile.macroSplit.Fat/100 * profile.macroSplit.Calories / 9 );
+
       calPercent = roundedToFixed((totalNutriValue.calories / profile.macroSplit.Calories) * 100);
       calProgBar.setAttribute("aria-valuenow", calPercent);
       calProgBar.style.width = `${calPercent >= 100? 100 : calPercent}%`;
@@ -2318,8 +2328,9 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
       else {
           calProgBar.classList.remove("bg-danger");
       }
+      calTotalVerbSpan.innerHTML = `${roundedToFixed(totalNutriValue.calories, 0)}/${roundedToFixed(profile.macroSplit.Calories, 0)}kCal`;
 
-      carbPercent = roundedToFixed((totalNutriValue.carbohydrates / (profile.macroSplit.Carbohydrate/100 * profile.macroSplit.Calories / 4 )) * 100);
+      carbPercent = roundedToFixed((totalNutriValue.carbohydrates / dailyCarbs) * 100);
       carbProgBar.setAttribute("aria-valuenow", carbPercent);
       carbProgBar.style.width = `${carbPercent >= 100? 100 : carbPercent}%`;
       if (carbPercent > 100) {
@@ -2328,8 +2339,9 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
       else {
           carbProgBar.classList.remove("bg-danger");
       }
+      carbTotalVerbSpan.innerHTML = `${roundedToFixed(totalNutriValue.carbohydrates, 0)}/${roundedToFixed(dailyCarbs, 0)}g`;
 
-      proteinPercent = roundedToFixed((totalNutriValue.proteins / (profile.macroSplit.Protein/100 * profile.macroSplit.Calories / 4 )) * 100);
+      proteinPercent = roundedToFixed((totalNutriValue.proteins / dailyProtein) * 100);
       proteinProgBar.setAttribute("aria-valuenow", proteinPercent);
       proteinProgBar.style.width = `${proteinPercent >= 100? 100 : proteinPercent}%`;
       if (proteinPercent > 100) {
@@ -2338,8 +2350,9 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
       else {
           proteinProgBar.classList.remove("bg-danger");
       }
+      proteinTotalVerbSpan.innerHTML = `${roundedToFixed(totalNutriValue.proteins, 0)}/${roundedToFixed(dailyProtein, 0)}g`;
 
-      fatPercent = roundedToFixed((totalNutriValue.fats / (profile.macroSplit.Fat/100 * profile.macroSplit.Calories / 9 )) * 100);
+      fatPercent = roundedToFixed((totalNutriValue.fats / dailyFats) * 100);
       fatProgBar.setAttribute("aria-valuenow", fatPercent);
       fatProgBar.style.width = `${fatPercent >= 100? 100 : fatPercent}%`;
       if (fatPercent > 100) {
@@ -2348,6 +2361,13 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
       else {
           fatProgBar.classList.remove("bg-danger");
       }
+      fatTotalVerbSpan.innerHTML = `${roundedToFixed(totalNutriValue.fats, 0)}/${roundedToFixed(dailyFats, 0)}g`;
+    }
+    else {
+      calTotalVerbSpan.innerHTML = `${roundedToFixed(totalNutriValue.calories, 0)}kCal`;
+      carbTotalVerbSpan.innerHTML = `${roundedToFixed(totalNutriValue.carbohydrates, 0)}g`;
+      proteinTotalVerbSpan.innerHTML = `${roundedToFixed(totalNutriValue.proteins, 0)}g`;
+      fatTotalVerbSpan.innerHTML = `${roundedToFixed(totalNutriValue.fats, 0)}g`;
     }
 }
 function FMTOverviewAddMealEntry(mealEntryObj, validate) {
@@ -3478,6 +3498,38 @@ function prepareEventHandlers() {
             pageController.showOverview();
             FMTShowAlert("overview-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
         });
+    });
+    $("#overview-total-calories").click( (e) => {
+      document.getElementById("overview-total-calories").classList.add("d-none");
+      document.getElementById("overview-total-calories-verb").classList.remove("d-none");
+    });
+    $("#overview-total-calories-verb").click( (e) => {
+      document.getElementById("overview-total-calories-verb").classList.add("d-none");
+      document.getElementById("overview-total-calories").classList.remove("d-none");
+    });
+    $("#overview-total-carbs").click( (e) => {
+      document.getElementById("overview-total-carbs").classList.add("d-none");
+      document.getElementById("overview-total-carbs-verb").classList.remove("d-none");
+    });
+    $("#overview-total-carbs-verb").click( (e) => {
+      document.getElementById("overview-total-carbs-verb").classList.add("d-none");
+      document.getElementById("overview-total-carbs").classList.remove("d-none");
+    });
+    $("#overview-total-proteins").click( (e) => {
+      document.getElementById("overview-total-proteins").classList.add("d-none");
+      document.getElementById("overview-total-proteins-verb").classList.remove("d-none");
+    });
+    $("#overview-total-proteins-verb").click( (e) => {
+      document.getElementById("overview-total-proteins-verb").classList.add("d-none");
+      document.getElementById("overview-total-proteins").classList.remove("d-none");
+    });
+    $("#overview-total-fats").click( (e) => {
+      document.getElementById("overview-total-fats").classList.add("d-none");
+      document.getElementById("overview-total-fats-verb").classList.remove("d-none");
+    });
+    $("#overview-total-fats-verb").click( (e) => {
+      document.getElementById("overview-total-fats-verb").classList.add("d-none");
+      document.getElementById("overview-total-fats").classList.remove("d-none");
     });
     $("#edit-meal-entry-screen-cancel").click( (e) => {
         pageController.closeEditMealEntryDynamicScreen();
