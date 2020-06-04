@@ -102,7 +102,7 @@ fmtAppGlobals.defaultAlertScroll = {top: 0, left: 0, behavior: 'smooth'};
 function isPercent(num) {
     if (!isNaN(num)) {
         if (num >= 0 && num <= 100) {return true;}
-        else {return false;} 
+        else {return false;}
     }
     else {return false;}
 }
@@ -116,7 +116,7 @@ function getDateString(d) {
         console.error(error);
         return "";
     }
-    
+
 }
 function appendChildren(DOMElement, childrenArray) {
     for (let k=0; k<childrenArray.length; k++) {
@@ -150,7 +150,7 @@ function prepareDBv1() {
     const baseMassUnitChart = [{"name": "oz", "value_in_grams": 28.34952, "description": "Ounce"},
                                {"name": "lb", "value_in_grams": 453.5924, "description": "Pound"},
                                {"name": "st", "value_in_grams": 6350.293, "description": "Stone"},
-                               {"name": "mcg", "value_in_grams": 0.000001, "description": "Microgram"}, 
+                               {"name": "mcg", "value_in_grams": 0.000001, "description": "Microgram"},
                                {"name": "mg", "value_in_grams": 0.001, "description": "Milligram"},
                                {"name": "g", "value_in_grams": 1, "description": "Gram"},
                                {"name": "kg", "value_in_grams": 1000, "description": "Kilogram"}
@@ -232,21 +232,21 @@ function prepareDBv1() {
     let fmtMealEntriesStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE,
                                                                 {keyPath: fmtAppGlobals.FMT_DB_MEAL_ENTRIES_KP, autoIncrement: true});
     createIndexes(fmtMealEntriesStore, fmtAppGlobals.FMT_DB_MEAL_ENTRIES_INDEXES);
-    
+
     //Create Foods objectStore
     let fmtFoodsStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_FOODS_STORE,
                                                               {keyPath: fmtAppGlobals.FMT_DB_FOODS_KP, autoIncrement: true});
     createIndexes(fmtFoodsStore, fmtAppGlobals.FMT_DB_FOODS_INDEXES);
-    
+
     //Create Recipes objectStore
     let fmtRecipesStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_RECIPES_STORE,
                                                                 {keyPath: fmtAppGlobals.FMT_DB_RECIPES_KP, autoIncrement: true});
     createIndexes(fmtRecipesStore, fmtAppGlobals.FMT_DB_RECIPES_INDEXES);
-    
+
     //Create Profiles objectStore
     let fmtProfilesStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_PROFILES_STORE,
                                                                 {keyPath: fmtAppGlobals.FMT_DB_PROFILES_KP, autoIncrement: false});
-    
+
     //Create Mass Units objectStore and populate default entries
     let fmtMassUnitsStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_MASS_UNITS_STORE,
                                                                 {keyPath: fmtAppGlobals.FMT_DB_MASS_UNITS_KP, autoIncrement: false});
@@ -254,7 +254,7 @@ function prepareDBv1() {
         console.debug(`Adding Mass unit entry: ${JSON.stringify(baseMassUnitChart[i])}`);
         fmtMassUnitsStore.add(baseMassUnitChart[i]);
     }
-    
+
     //Create Nutrients objectStore and populate default entries
     let fmtNutrientsStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_NUTRIENTS_STORE,
                                                                 {keyPath: fmtAppGlobals.FMT_DB_NUTRIENTS_KP, autoIncrement: false});
@@ -283,7 +283,7 @@ function createIndexes(objectStore, indexesObj) {
         try {
             const indexKp = indexesObj[indexName].kp;
             const indexOptions = indexesObj[indexName].options;
-            objectStore.createIndex(indexName, indexKp, indexOptions);            
+            objectStore.createIndex(indexName, indexKp, indexOptions);
         }
         catch (error) {
             console.error(error);
@@ -305,28 +305,28 @@ function FMTValidateNutritionalValue(nutritionalValueObj, mUnitsChart) {
     const result = {};
     const nutritionalValue = {};
     let error = null;
-    
+
     if (!isNumber(nutritionalValueObj.calories)) {
         error = `Calories must be a valid number (got ${nutritionalValueObj.calories}`;
         result.error = error;
         return result;
     }
     nutritionalValue.calories = Number(nutritionalValueObj.calories);
-    
+
     if (!isNumber(nutritionalValueObj.proteins)) {
         error = `Proteins must be a valid number (got ${nutritionalValueObj.proteins}`;
         result.error = error;
         return result;
     }
     nutritionalValue.proteins = Number(nutritionalValueObj.proteins);
-    
+
     if (!isNumber(nutritionalValueObj.carbohydrates)) {
         error = `Carbohydrates must be a valid number (got ${nutritionalValueObj.carbohydrates}`;
         result.error = error;
         return result;
     }
     nutritionalValue.carbohydrates = Number(nutritionalValueObj.carbohydrates);
-    
+
     if (!isNumber(nutritionalValueObj.fats)) {
         error = `fats must be a valid number (got ${nutritionalValueObj.fats}`;
         result.error = error;
@@ -336,7 +336,7 @@ function FMTValidateNutritionalValue(nutritionalValueObj, mUnitsChart) {
 
     let additionalNutrients = nutritionalValueObj.additionalNutrients;
     nutritionalValue.additionalNutrients = {}
-    
+
     if (additionalNutrients != null ) {
         for (const nutrientCategoryName in additionalNutrients) {
             const nutrientsInCat = additionalNutrients[nutrientCategoryName];
@@ -371,7 +371,7 @@ function FMTValidateNutritionalValue(nutritionalValueObj, mUnitsChart) {
             }
         }
     }
-    
+
     result.nutritionalValue = nutritionalValue;
     return result;
 }
@@ -570,16 +570,16 @@ function FMTValidateProfile(profileObj) {
         return result;
     }
     profile.profile_id = Number(profileObj.profile_id);
-    
+
     profile.name = profileObj.name
-    
+
     if (!isNumber(profileObj.bodyWeight)) {
         error = `Invalid body weight ${profileObj.bodyWeight}`;
         result.error = error;
         return result;
     }
     profile.bodyWeight = Number(profileObj.bodyWeight);
-    
+
     if (fmtAppGlobals.supportedBodyweightUnits.indexOf(profileObj.bodyWeightUnits) < 0) {
         error = `Invalid body weight units ${profileObj.bodyWeightUnits}`;
         result.error = error;
@@ -594,21 +594,21 @@ function FMTValidateProfile(profileObj) {
             profile.bodyWeightKg = profile.bodyWeight / 2.2;
             break;
     }
-    
+
     if (!isNumber(profileObj.height)) {
         error = `Invalid height ${profileObj.height}`;
         result.error = error;
         return result;
     }
     profile.height = Number(profileObj.height);
-    
+
     if (fmtAppGlobals.supportedHeightUnits.indexOf(profileObj.heightUnits) < 0) {
         error = `Invalid height units ${profileObj.heightUnits}`;
         result.error = error;
         return result;
     }
     profile.heightUnits = profileObj.heightUnits;
-    
+
     switch(profile.heightUnits) {
         case "Cm":
             profile.heightCm = profile.height;
@@ -623,14 +623,14 @@ function FMTValidateProfile(profileObj) {
         return result;
     }
     profile.age = Number(profileObj.age);
-    
+
     if (fmtAppGlobals.sexes.indexOf(profileObj.sex) < 0) {
         error = `Invalid sex ${profileObj.sex}`;
         result.error = error;
         return result;
     }
     profile.sex = profileObj.sex;
-    
+
     if (isNumber(profileObj.bodyfat) && isPercent(Number(profileObj.bodyfat))) {
         profile.bodyfat = Number(profileObj.bodyfat);
         profile.bodyfatReal = profile.bodyfat / 100;
@@ -647,14 +647,14 @@ function FMTValidateProfile(profileObj) {
         return result;
     }
     profile.activityLevel = profileObj.activityLevel;
-    
+
     if (!isNumber(profileObj.activityMultiplier)) {
         error = `Invalid activity multiplier ${profileObj.activityMultiplier}`;
         result.error = error;
         return result;
     }
     profile.activityMultiplier = Number(profileObj.activityMultiplier);
-    
+
     switch(profile.formula) {
         case "Katch-McArdle":
             profile.bmr = katchMcArdle(profile.bodyWeightKg, profile.bodyfatReal);
@@ -669,9 +669,9 @@ function FMTValidateProfile(profileObj) {
         result.error = error;
         return result;
     }
-    
+
     profile.tdee = profile.bmr * profile.activityMultiplier;
-    
+
     if (profileObj.tzMinutes !== undefined && !Number.isInteger(profileObj.tzMinutes)) {
         error = `Invalid timezone ${profileObj.tzMinutes}`;
         result.error = error;
@@ -682,7 +682,7 @@ function FMTValidateProfile(profileObj) {
         result.error = error;
         return result;
     }
-    
+
     if (profileObj.macroSplit != null) {
         const valMSplitRes = FMTValidateMacroSplit(profileObj.macroSplit);
         if (valMSplitRes.macroSplit == null || valMSplitRes.error != null) {
@@ -694,7 +694,7 @@ function FMTValidateProfile(profileObj) {
     else {
         profile.macroSplit = {};
     }
-    
+
     result.profile = profile;
     result.error = null;
     return result;
@@ -709,7 +709,7 @@ function FMTValidateMealEntry(mealEntryObj) {
         return result;
     }
     mealEntry.profile_id = Number(mealEntryObj.profile_id);
-    
+
     if (!isDate(new Date(mealEntryObj.year, mealEntryObj.month, mealEntryObj.day))) {
         error = `Year Month and Day must be valid integers, got (${mealEntryObj.year}, ${mealEntryObj.month}, ${mealEntryObj.day})`;
         result.error = error;
@@ -724,60 +724,60 @@ function FMTValidateMealEntry(mealEntryObj) {
         return result;
     }
     mealEntry.mealName = mealEntryObj.mealName;
-    
+
     if (!!mealEntryObj.created && !isDate(new Date(mealEntryObj.created) ) ) {
         error = `'Created' value must be valid Date (got ${mealEntryObj.created})`;
         result.error = error;
         return result;
     }
     else { mealEntry.created = mealEntryObj.created; }
-    
-    
+
+
     if (!!mealEntryObj.lastModified && !isDate(new Date(mealEntryObj.lastModified) ) ) {
         error = `'lastModified ' value must be valid Date (got ${mealEntryObj.lastModified})`;
         result.error = error;
         return result;
     }
     else { mealEntry.lastModified  = mealEntryObj.lastModified; }
-    
+
     if (mealEntryObj.tzMinutes !== undefined && !Number.isInteger(mealEntryObj.tzMinutes)) {
         error = `Invalid timezone ${mealEntryObj.tzMinutes}`;
         result.error = error;
         return result;
     }
     else { mealEntry.tzMinutes = mealEntryObj.tzMinutes; }
-    
+
     if (!isNumber(mealEntryObj.consumable_id) || !Number.isInteger(Number(mealEntryObj.consumable_id ))) {
         error = `Consumable id must be an integer, got (${mealEntryObj.consumable_id})`;
         result.error = error;
         return result;
     }
     mealEntry.consumable_id = Number(mealEntryObj.consumable_id);
-    
+
     if (mealEntryObj.consumableName == null || mealEntryObj.consumableName  === "") {
         error = `Consumable Name  must not be null or empty string (got ${mealEntryObj.consumableName})`;
         result.error = error;
         return result;
     }
     mealEntry.consumableName = mealEntryObj.consumableName;
-    
+
     mealEntry.consumableBrand = mealEntryObj.consumableBrand;
     mealEntry.consumableType = mealEntryObj.consumableType || "";
-    
+
     if (!isNumber(mealEntryObj.weight) || Number(mealEntryObj.weight) <= 0) {
         error = `Weight is not a positive number (got ${mealEntryObj.weight})`;
         result.error = error;
         return result;
     }
     mealEntry.weight = mealEntryObj.weight;
-    
+
     if (mealEntryObj.weightUnits == null || mealEntryObj.weightUnits === "") {
         error = `Weight Units must not be null`;
         result.error = error;
         return result;
     }
     mealEntry.weightUnits = mealEntryObj.weightUnits;
-    
+
     if (mealEntryObj.nutritionalValue == null) {
         error = `Nutritional Value must not be empty`;
         result.error = error;
@@ -792,7 +792,7 @@ function FMTValidateMealEntry(mealEntryObj) {
     if ("entry_id" in mealEntryObj) {
         mealEntry.entry_id = mealEntryObj.entry_id;
     }
-    
+
     result.mealEntry = mealEntry;
     return result;
 }
@@ -810,7 +810,7 @@ function FMTValidateMealIdentifier(mealIdentifierObj) {
     mealIdentifier.meal_year = Number(mealIdentifierObj.meal_year);
 
     if (!isNumber(mealIdentifierObj.meal_month)
-        || !Number.isInteger(Number(mealIdentifierObj.meal_month)) 
+        || !Number.isInteger(Number(mealIdentifierObj.meal_month))
         || !(Number(mealIdentifierObj.meal_month) >= 0 && Number(mealIdentifierObj.meal_month) < 12) ) {
         error = `Meal Month must be a valid Month number. Got (${mealIdentifierObj.meal_month})`;
         result.error = error;
@@ -844,7 +844,43 @@ function FMTValidateMealIdentifier(mealIdentifierObj) {
     result.mealIdentifier = mealIdentifier;
     return result;
 }
+function FMTValidateUserGoals(userGoalsObj) {
+    const result = {};
+    const userGoals = {};
+    let error = null;
 
+    //Validate profile_id, year, month, day as a meal Identifier Object will null Meal Name
+    const mealIdentifierObj = {};
+    mealIdentifierObj.meal_year = userGoalsObj.year;
+    mealIdentifierObj.meal_month = userGoalsObj.month;
+    mealIdentifierObj.meal_day = userGoalsObj.day;
+    mealIdentifierObj.profile_id = userGoalsObj.profile_id;
+    const mealIdentifierValidate = FMTValidateMealIdentifier(mealIdentifierObj);
+    if (mealIdentifierValidate.mealIdentifier == null || mealIdentifierValidate.error != null) {
+        error = mealIdentifierValidate.error;
+        result.error = error;
+        return result;
+    }
+    userGoals.year = mealIdentifierValidate.mealIdentifier.meal_year;
+    userGoals.month = mealIdentifierValidate.mealIdentifier.meal_month;
+    userGoals.day = mealIdentifierValidate.mealIdentifier.meal_day;
+    userGoals.profile_id = mealIdentifierValidate.mealIdentifier.profile_id;
+
+    const macroSplitValidate = FMTValidateMacroSplit(userGoalsObj.macroSplit);
+    if (macroSplitValidate.macroSplit == null || macroSplitValidate.error != null) {
+        error = macroSplitValidate.error;
+        result.error = error;
+        return result;
+    }
+
+    userGoals.macroSplit = macroSplitValidate.macroSplit;
+
+    //TODO mealSplit and microSplit
+
+    result.userGoals = userGoals;
+    return result;
+
+}
 //Functions - DB - Meal Entries
 function FMTAddMealEntry(mealEntryObj, onsuccessFn, onerrorFn) {
     const res = FMTValidateMealEntry(mealEntryObj);
@@ -898,7 +934,7 @@ function FMTQueryMealEntriesByProfileAndDate(profile_id, year, month, day, onsuc
     options.yDay       = (options.yDay == undefined                                      ? day        : options.yDay);
     options.yProfileId = (options.yProfileId == undefined                                ? profile_id : options.yProfileId);
     options.direction  = (fmtAppGlobals.FMT_DB_CURSOR_DIRS.indexOf(options.direction)< 0 ? "next"     : options.direction);
-    
+
     //TODO validate year month day
     let keyRange = null;
     switch(options.queryType) {
@@ -912,7 +948,7 @@ function FMTQueryMealEntriesByProfileAndDate(profile_id, year, month, day, onsuc
             keyRange = IDBKeyRange.lowerBound([profile_id, year, month, day], options.lowerOpen);
             break;
         case "bound":
-            keyRange = IDBKeyRange.lowerBound([profile_id, year, month, day],
+            keyRange = IDBKeyRange.bound([profile_id, year, month, day],
                                               [options.yProfileId, options.yYear, options.yMonth, options.yDay],
                                               options.lowerOpen,
                                               options.upperOpen);
@@ -1163,6 +1199,82 @@ function FMTDeleteMassUnit(massUnitName, onsuccessFn, onerrorFn) {
     deleteRequest.onerror = onerrorFn || console.debug(`Failed deleting mass unit ${massUnitName}`);
 }
 
+//Functions - DB - User Goals
+function FMTAddUserGoalEntry(userGoalsObj, onsuccessFn, onerrorFn) {
+    const userGoalsValidate = FMTValidateUserGoals(userGoalsObj)
+    if (userGoalsValidate.userGoals == null || userGoalsValidate.error != null) {
+        onerrorFn = onerrorFn || function() { console.error(userGoalsValidate.error); }
+        return onerrorFn();
+    }
+    const userGoalsStore = getObjectStore(fmtAppGlobals.FMT_DB_USER_GOALS_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    const addRequest = userGoalsStore.add(userGoalsValidate.userGoals);
+    addRequest.onsuccess = onsuccessFn;
+    addRequest.onerror = onerrorFn || function(e) { console.error("failed adding user goal entry", e); };
+}
+function FMTUpdateUserGoalEntry(profile_id, year, month, day, userGoalsDataObj, onsuccessFn, onerrorFn) {
+    userGoalsDataObj
+    userGoalsDataObj.year = year;
+    userGoalsDataObj.month = month;
+    userGoalsDataObj.day = day;
+    userGoalsDataObj.profile_id = profile_id;
+    const userGoalsValidate = FMTValidateUserGoals(userGoalsDataObj)
+    if (userGoalsValidate.userGoals == null || userGoalsValidate.error != null) {
+        onerrorFn = onerrorFn || function() { console.error(userGoalsValidate.error); }
+        onerrorFn();
+    }
+    const userGoalsStore = getObjectStore(fmtAppGlobals.FMT_DB_USER_GOALS_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    const putRequest = userGoalsStore.put(userGoalsValidate.userGoals);
+    putRequest.onsuccess = onsuccessFn;
+    putRequest.onerror = onerrorFn;
+}
+function FMTReadUserGoalEntry(profile_id, year, month, day, onsuccessFn, onerrorFn) {
+    const userGoalsStore = getObjectStore(fmtAppGlobals.FMT_DB_USER_GOALS_STORE, fmtAppGlobals.FMT_DB_READONLY);
+    const getRequest = userGoalsStore.get([profile_id, year, month, day]);
+    getRequest.onsuccess = onsuccessFn;
+    getRequest.onerror = onerrorFn;
+}
+function FMTQueryUserGoalsByProfileAndDate(profile_id, year, month, day, onsuccessFn, onerrorFn, options) {
+    const _fnName = "FMTQueryUserGoalsByProfileAndDate";
+    if (!options) {
+        options = {"queryType": "only"};
+    }
+    options.lowerOpen  = (options.lowerOpen == undefined                                 ? false      : options.lowerOpen);
+    options.upperOpen  = (options.upperOpen == undefined                                 ? false      : options.upperOpen);
+    options.yYear      = (options.yYear == undefined                                     ? year       : options.yYear);
+    options.yMonth     = (options.yMonth == undefined                                    ? month      : options.yMonth);
+    options.yDay       = (options.yDay == undefined                                      ? day        : options.yDay);
+    options.yProfileId = (options.yProfileId == undefined                                ? profile_id : options.yProfileId);
+    options.direction  = (fmtAppGlobals.FMT_DB_CURSOR_DIRS.indexOf(options.direction)< 0 ? "next"     : options.direction);
+    options.queryType  = (options.queryType == undefined                                 ? "only"     : options.queryType);
+
+    //TODO validate year month day
+    let keyRange = null;
+    switch(options.queryType) {
+        case "upperBound":
+            keyRange = IDBKeyRange.upperBound([profile_id, year, month, day], options.upperOpen);
+            break;
+        case "lowerBound":
+            keyRange = IDBKeyRange.lowerBound([profile_id, year, month, day], options.lowerOpen);
+            break;
+        case "bound":
+            keyRange = IDBKeyRange.bound([profile_id, year, month, day],
+                                              [options.yProfileId, options.yYear, options.yMonth, options.yDay],
+                                              options.lowerOpen,
+                                              options.upperOpen);
+            break;
+        case "only":
+        default:
+            keyRange = IDBKeyRange.only([profile_id, year, month, day]);
+            break;
+    }
+    onsuccessFn = onsuccessFn || function(e) { console.debug(`[${_fnName}] onsuccess - `, keyRange, options) };
+    onerrorFn = onerrorFn || function(e) { console.debug(`[${_fnName}] onerror - `, keyRange, options) };
+    const userGoalsStore = getObjectStore(fmtAppGlobals.FMT_DB_USER_GOALS_STORE, fmtAppGlobals.FMT_DB_READONLY);
+    const cursorRequest = userGoalsStore.openCursor(keyRange, options.direction);
+    cursorRequest.onerror = onerrorFn;
+    cursorRequest.onsuccess = onsuccessFn;
+}
+
 //Functions - Nutritional
 function mifflinStJeorMen(weightKg, heightCm, ageYears) {
     let bmr = 10*weightKg + 6.25*heightCm - 5*ageYears + 5;
@@ -1185,7 +1297,7 @@ function mifflinStJeor(weightKg, heightCm, ageYears, sex) {
 function katchMcArdle(weightKg, bodyfatReal) {
     if (bodyfatReal > 0 && bodyfatReal < 1) {
         let bmr = 370 + 21.6*(1-bodyfatReal)*weightKg;
-        return bmr;        
+        return bmr;
     }
     else {return -1;}
 }
@@ -1196,9 +1308,9 @@ function FMTShowAlert(divId, alertLevel, msg, scrollOptions) {
     let alertElem = `<div class="alert alert-${alertLevel} col-11 col-lg-8 mb-1 alert-dismissible fade show" role="alert">${msg}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
     alertDiv.innerHTML = alertElem;
     if (scrollOptions) {
-        window.scroll(scrollOptions);    
+        window.scroll(scrollOptions);
     }
-    return;   
+    return;
 }
 function FMTDropdownToggleValue(targetDiv, text, attributes) {
     let elem = document.getElementById(targetDiv);
@@ -1257,7 +1369,7 @@ function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
     profile.activityLevel = document.getElementById('profile-active-level').getAttribute("level");
     profile.activityMultiplier = document.getElementById('profile-activity-mult').getAttribute("value");
     profile.formula = "Mifflin-St Jeor";
-    
+
     FMTReadProfile(profileId,
                 function(e) {
                     let res = e.target.result || {};
@@ -1269,7 +1381,7 @@ function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
                 },
                 onerrorFn
                );
-    
+
 }
 function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
     if (isNaN(profileId)) {
@@ -1340,7 +1452,7 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
                         if (!isNaN(gramC) && !isNaN(gramF) && !isNaN(gramP)) {
                             document.getElementById("profile-macro-protein-grams").innerHTML = `${gramP} gram`;
                             document.getElementById("profile-macro-carb-grams").innerHTML = `${gramC} gram`;
-                            document.getElementById("profile-macro-fat-grams").innerHTML = `${gramF} gram`;                            
+                            document.getElementById("profile-macro-fat-grams").innerHTML = `${gramF} gram`;
                         }
                     }
                     if (onsuccessFn) {onsuccessFn();}
@@ -1534,7 +1646,7 @@ function FMTDisplayFoodsTable(targetDivID, onsuccessFn, onerrorFn, eventListener
     foodTableBody.addEventListener("onFoodAdded", fmtAppInstance.eventFunctions[targetDivID].foodsTableOnFoodAdded);
     foodTableBody.addEventListener("onFoodDeleted", fmtAppInstance.eventFunctions[targetDivID].foodsTableOnFoodDeleted);
     foodTableBody.addEventListener("onFoodEdited", fmtAppInstance.eventFunctions[targetDivID].foodsTableOnFoodEdited);
-    
+
     FMTIterateFoods(function(e) {
         let cursor = e.target.result;
         if (cursor) {
@@ -1618,7 +1730,7 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, ob
     const mUnitsChart = fmtAppInstance.massUnitChart;
     const readonly = optionsObj.readonly || false;
     FMTCreateMassUnitDropdownMenu(weightBaseName, weightTargetDiv, mUnitsChart, false, "g", readonly);
-    
+
     const saveOrAddBtn = document.getElementById(`${baseScreenID}-save`);
     if (isNumber(optionsObj.consumableId)) {
         saveOrAddBtn.setAttribute(`${idProp}`, optionsObj.consumableId);
@@ -1932,19 +2044,19 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     const mealDiv = document.createElement("div");
     mealDiv.setAttribute("id", `overview-meal-${normalizedMealName}`);
     mealDiv.classList.add("fmt-meal", "container");
-    
-    
+
+
     const mealHeaderDiv = document.createElement("div");
     const mealEntriesDiv = document.createElement("div");
     const mealFooterDiv = document.createElement("div");
     mealHeaderDiv.setAttribute("id", `overview-meal-${normalizedMealName}-header`);
     mealEntriesDiv.setAttribute("id", `overview-meal-${normalizedMealName}-entries`);
     mealFooterDiv.setAttribute("id", `overview-meal-${normalizedMealName}-footer`);
-    
+
     mealHeaderDiv.classList.add("fmt-meal-header", "row", "justify-content-center");
     mealEntriesDiv.classList.add("fmt-meal-entries", "row", "justify-content-center");
     mealFooterDiv.classList.add("fmt-meal-footer", "row", "justify-content-between", "pb-1");
-    
+
     //Meal Header
     const mNameSpan = document.createElement("span");
     //background-color: rgb(40, 167, 69);
@@ -1955,7 +2067,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     const mNameDiv = document.createElement("div");
     mNameDiv.classList.add("col");
     mNameDiv.appendChild(mNameSpan);
-    
+
     const kCalSpan = document.createElement("span");
     kCalSpan.setAttribute("id", `overview-meal-${normalizedMealName}-calories-progress`);
     kCalSpan.classList.add("fmt-font-2", "float-right", "fmt-font-white-bold");
@@ -1976,11 +2088,11 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     const optsBtnDiv = document.createElement("div");
     optsBtnDiv.classList.add("col-2", "col-lg-1");
     optsBtnDiv.appendChild(optsBtn);
-    
+
     mealHeaderDiv.appendChild(mNameDiv);
     mealHeaderDiv.appendChild(kCalDiv);
     mealHeaderDiv.appendChild(optsBtnDiv);
-    
+
     //Meal Footer
     const mealFooterAddDiv = document.createElement("div");
     mealFooterAddDiv.classList.add("col-12", "fmt-meal-footer-add", "fmt-center-text", "d-flex", "pr-0", "pl-0");
@@ -2008,7 +2120,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     mCarbsDiv.classList.add("col-3", "fmt-center-text");
     mCarbsDiv.appendChild(carbSpanMd);
     mCarbsDiv.appendChild(carbSpanSm);
-    
+
     const proteinSpan = document.createElement("span");
     proteinSpan.classList.add("fmt-font-1", "fmt-meal-proteins");
     proteinSpan.innerHTML = "Proteins";
@@ -2022,10 +2134,10 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     const mFatsDiv = document.createElement("div");
     mFatsDiv.classList.add("col-3", "fmt-center-text");
     mFatsDiv.appendChild(fatsSpan);
-    
+
     const w100 = document.createElement("div");
     w100.classList.add("w-100");
-    
+
     const mCarbsProg = document.createElement("span");
     mCarbsProg.setAttribute("id", `overview-meal-${normalizedMealName}-carb-progress`);
     mCarbsProg.classList.add("fmt-font-1");
@@ -2034,7 +2146,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     const mCarbsProgDiv = document.createElement("div");
     mCarbsProgDiv.classList.add("fmt-center-text",  "col-3", "ml-1", "mr-1");
     mCarbsProgDiv.appendChild(mCarbsProg);
-    
+
     const mProtProg = document.createElement("span");
     mProtProg.setAttribute("id", `overview-meal-${normalizedMealName}-protein-progress`);
     mProtProg.classList.add("fmt-font-1");
@@ -2042,7 +2154,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     const mProtProgDiv = document.createElement("div");
     mProtProgDiv.classList.add("fmt-center-text",  "col-3");
     mProtProgDiv.appendChild(mProtProg);
-    
+
     const mFatsProg = document.createElement("span");
     mFatsProg.setAttribute("id", `overview-meal-${normalizedMealName}-fat-progress`);
     mFatsProg.classList.add("fmt-font-1");
@@ -2050,7 +2162,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     const mFatsProgDiv = document.createElement("div");
     mFatsProgDiv.classList.add("fmt-center-text",  "col-3", "ml-1", "mr-1");
     mFatsProgDiv.appendChild(mFatsProg);
-    
+
     mealFooterDiv.appendChild(mealFooterAddDiv);
     mealFooterDiv.appendChild(mCarbsDiv);
     mealFooterDiv.appendChild(mProtDiv);
@@ -2059,7 +2171,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     mealFooterDiv.appendChild(mCarbsProgDiv);
     mealFooterDiv.appendChild(mProtProgDiv);
     mealFooterDiv.appendChild(mFatsProgDiv);
-    
+
     //Final Meal
     mealDiv.appendChild(mealHeaderDiv);
     mealDiv.appendChild(mealEntriesDiv);
@@ -2077,7 +2189,7 @@ function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
         mealEntry = res.mealEntry;
     }
     const normalizedMealName = mealEntry.mealName.replace(" ", "_").replace("-", "_");
-    
+
     const mealEntryDiv = document.createElement("div");
     const mealEntryId = `overview-meal-${mealEntry.entry_id}`;
     mealEntryDiv.classList.add("fmt-meal-entry", "col", "row");
@@ -2093,35 +2205,35 @@ function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
         console.debug(`Meal Entry with ID ${entry_id} Clicked`);
         pageController.openEditMealEntryDynamicScreen(entry_id, 1, true, undefined, undefined);
     });
-    
+
     const consNameSpan = document.createElement("span");
     consNameSpan.classList.add("fmt-font-1", "float-left");
     consNameSpan.innerHTML = `${mealEntry.consumableName}`;
     const consNameDiv = document.createElement("div");
     consNameDiv.classList.add("col-6");
     consNameDiv.appendChild(consNameSpan);
-    
+
     const consKcalSpan = document.createElement("span");
     consKcalSpan.classList.add("fmt-font-1", "float-right");
     consKcalSpan.innerHTML = `${roundedToFixed(mealEntry.nutritionalValue.calories, 0)}kCal`;
     const consKcalDiv = document.createElement("div");
     consKcalDiv.classList.add("col-6");
     consKcalDiv.appendChild(consKcalSpan);
-    
+
     const consDetailsSpan = document.createElement("span");
     consDetailsSpan.classList.add("fmt-font-sm", "float-left");
     consDetailsSpan.innerHTML = `${!!mealEntry.consumableBrand ? `${mealEntry.consumableBrand}, `: ""}${mealEntry.weight}${mealEntry.weightUnits}`;
     const consDetailsDiv = document.createElement("div");
     consDetailsDiv.classList.add("col-6");
     consDetailsDiv.appendChild(consDetailsSpan);
-    
+
     const consNutriValueSpan = document.createElement("span");
     consNutriValueSpan.classList.add("fmt-font-sm", "float-right");
     consNutriValueSpan.innerHTML = `Carb:${roundedToFixed(mealEntry.nutritionalValue.carbohydrates)} Protein:${roundedToFixed(mealEntry.nutritionalValue.proteins)} Fat:${roundedToFixed(mealEntry.nutritionalValue.fats)}`;
     const consNutriValueDiv = document.createElement("div");
     consNutriValueDiv.classList.add("col-6");
     consNutriValueDiv.appendChild(consNutriValueSpan);
-    
+
     mealEntryDiv.appendChild(consNameDiv);
     mealEntryDiv.appendChild(consKcalDiv);
     mealEntryDiv.appendChild(consDetailsDiv);
@@ -2167,68 +2279,63 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
         totalNutriValue.proteins += prot;
         totalNutriValue.fats += fat;
     }
-    onProfileReadFn = function(e) {
-        let profile = e.target.result;
-        if (profile == null) {
-            //FMTShowAlert("overview-alerts", "danger", "Failed Reading Profile", fmtAppGlobals.defaultAlertScroll);
-            return;
-        }
-        const calProgBar = document.getElementById("calories-progress-bar");
-        const carbProgBar = document.getElementById("carb-progress-bar");
-        const proteinProgBar = document.getElementById("protein-progress-bar");
-        const fatProgBar = document.getElementById("fat-progress-bar");
-        
-        const calTotalSpan = document.getElementById("overview-total-calories");
-        const carbTotalSpan = document.getElementById("overview-total-carbs");
-        const proteinTotalSpan = document.getElementById("overview-total-proteins");
-        const fatTotalSpan = document.getElementById("overview-total-fats");
-        
-        calTotalSpan.innerHTML = `${roundedToFixed(totalNutriValue.calories, 0)}kCal`;
-        calPercent = roundedToFixed((totalNutriValue.calories / profile.macroSplit.Calories) * 100);
-        calProgBar.setAttribute("aria-valuenow", calPercent);
-        calProgBar.style.width = `${calPercent >= 100? 100 : calPercent}%`;
-        if (calPercent > 100) {
-            calProgBar.classList.add("bg-danger");
-        }
-        else {
-            calProgBar.classList.remove("bg-danger");
-        }
-        
-        carbTotalSpan.innerHTML = `${roundedToFixed(totalNutriValue.carbohydrates, 0)}g`;
-        carbPercent = roundedToFixed((totalNutriValue.carbohydrates / (profile.macroSplit.Carbohydrate/100 * profile.macroSplit.Calories / 4 )) * 100);
-        carbProgBar.setAttribute("aria-valuenow", carbPercent);
-        carbProgBar.style.width = `${carbPercent >= 100? 100 : carbPercent}%`;
-        if (carbPercent > 100) {
-            carbProgBar.classList.add("bg-danger");
-        }
-        else {
-            carbProgBar.classList.remove("bg-danger");
-        }
-        
-        proteinTotalSpan.innerHTML = `${roundedToFixed(totalNutriValue.proteins, 0)}g`;
-        proteinPercent = roundedToFixed((totalNutriValue.proteins / (profile.macroSplit.Protein/100 * profile.macroSplit.Calories / 4 )) * 100);
-        proteinProgBar.setAttribute("aria-valuenow", proteinPercent);
-        proteinProgBar.style.width = `${proteinPercent >= 100? 100 : proteinPercent}%`;
-        if (proteinPercent > 100) {
-            proteinProgBar.classList.add("bg-danger");
-        }
-        else {
-            proteinProgBar.classList.remove("bg-danger");
-        }
-        
-        fatTotalSpan.innerHTML = `${roundedToFixed(totalNutriValue.fats, 0)}g`;
-        fatPercent = roundedToFixed((totalNutriValue.fats / (profile.macroSplit.Fat/100 * profile.macroSplit.Calories / 9 )) * 100);
-        fatProgBar.setAttribute("aria-valuenow", fatPercent);
-        fatProgBar.style.width = `${fatPercent >= 100? 100 : fatPercent}%`;
-        if (fatPercent > 100) {
-            fatProgBar.classList.add("bg-danger");
-        }
-        else {
-            fatProgBar.classList.remove("bg-danger");
-        }
-        
-    };
-    FMTReadProfile(fmtAppInstance.currentProfileId, onProfileReadFn);
+    const calProgBar = document.getElementById("calories-progress-bar");
+    const carbProgBar = document.getElementById("carb-progress-bar");
+    const proteinProgBar = document.getElementById("protein-progress-bar");
+    const fatProgBar = document.getElementById("fat-progress-bar");
+
+    const calTotalSpan = document.getElementById("overview-total-calories");
+    const carbTotalSpan = document.getElementById("overview-total-carbs");
+    const proteinTotalSpan = document.getElementById("overview-total-proteins");
+    const fatTotalSpan = document.getElementById("overview-total-fats");
+
+    calTotalSpan.innerHTML = `${roundedToFixed(totalNutriValue.calories, 0)}kCal`;
+    carbTotalSpan.innerHTML = `${roundedToFixed(totalNutriValue.carbohydrates, 0)}g`;
+    proteinTotalSpan.innerHTML = `${roundedToFixed(totalNutriValue.proteins, 0)}g`;
+    fatTotalSpan.innerHTML = `${roundedToFixed(totalNutriValue.fats, 0)}g`;
+
+    if (fmtAppInstance.currentDayUserGoals) {
+      const profile = fmtAppInstance.currentDayUserGoals;
+      calPercent = roundedToFixed((totalNutriValue.calories / profile.macroSplit.Calories) * 100);
+      calProgBar.setAttribute("aria-valuenow", calPercent);
+      calProgBar.style.width = `${calPercent >= 100? 100 : calPercent}%`;
+      if (calPercent > 100) {
+          calProgBar.classList.add("bg-danger");
+      }
+      else {
+          calProgBar.classList.remove("bg-danger");
+      }
+
+      carbPercent = roundedToFixed((totalNutriValue.carbohydrates / (profile.macroSplit.Carbohydrate/100 * profile.macroSplit.Calories / 4 )) * 100);
+      carbProgBar.setAttribute("aria-valuenow", carbPercent);
+      carbProgBar.style.width = `${carbPercent >= 100? 100 : carbPercent}%`;
+      if (carbPercent > 100) {
+          carbProgBar.classList.add("bg-danger");
+      }
+      else {
+          carbProgBar.classList.remove("bg-danger");
+      }
+
+      proteinPercent = roundedToFixed((totalNutriValue.proteins / (profile.macroSplit.Protein/100 * profile.macroSplit.Calories / 4 )) * 100);
+      proteinProgBar.setAttribute("aria-valuenow", proteinPercent);
+      proteinProgBar.style.width = `${proteinPercent >= 100? 100 : proteinPercent}%`;
+      if (proteinPercent > 100) {
+          proteinProgBar.classList.add("bg-danger");
+      }
+      else {
+          proteinProgBar.classList.remove("bg-danger");
+      }
+
+      fatPercent = roundedToFixed((totalNutriValue.fats / (profile.macroSplit.Fat/100 * profile.macroSplit.Calories / 9 )) * 100);
+      fatProgBar.setAttribute("aria-valuenow", fatPercent);
+      fatProgBar.style.width = `${fatPercent >= 100? 100 : fatPercent}%`;
+      if (fatPercent > 100) {
+          fatProgBar.classList.add("bg-danger");
+      }
+      else {
+          fatProgBar.classList.remove("bg-danger");
+      }
+    }
 }
 function FMTOverviewAddMealEntry(mealEntryObj, validate) {
     let mealEntry = mealEntryObj;
@@ -2261,6 +2368,107 @@ function FMTOverviewSetDateStrings(dateStr) {
         document.getElementById(_id).innerHTML = dateStr;
     }
 }
+function FMTLoadCurrentDayUserGoals(onsuccessFn, onerrorFn) {
+  //Query for User Goals from currentDay onwards. Take either current day, or first day found after it
+  let userGoalsQueryOpts = {"queryType": "bound", "lowerOpen": false, "upperOpen": false,
+                            "yProfileId": fmtAppInstance.currentProfileId, "yYear": Infinity, "yMonth": Infinity, "yDay": Infinity
+                          };
+  let goalCount = 0;
+  let userGoalFound = false;
+
+  let onOpenUserGoalsCursorSuccessFn = function(ev) {
+    let cursor = ev.target.result;
+    if (cursor) {
+      goalCount++;
+      const validate = FMTValidateUserGoals(cursor.value);
+      if (validate.userGoals != null && validate.error == null) {
+        if (!userGoalFound) {
+          userGoalFound = true;
+          fmtAppInstance.currentDayUserGoals = validate.userGoals;
+          const goalDate = new Date(validate.userGoals.year, validate.userGoals.month, validate.userGoals.day);
+          let msg;
+          if (isSameDay(fmtAppInstance.currentDay, goalDate) ) { msg = "Found Current Day User Goals"; }
+          else {
+            //Update date
+            msg = `Found User Goals from ${goalDate}`;
+            fmtAppInstance.currentDayUserGoals.year = fmtAppInstance.currentDay.getFullYear();
+            fmtAppInstance.currentDayUserGoals.month = fmtAppInstance.currentDay.getMonth();
+            fmtAppInstance.currentDayUserGoals.day = fmtAppInstance.currentDay.getDate();
+            FMTAddUserGoalEntry(fmtAppInstance.currentDayUserGoals);
+          }
+          console.debug(msg , fmtAppInstance.currentDayUserGoals);
+        }
+      }
+      cursor.continue();
+    }
+    else {
+      //Sync tasks
+      if (!userGoalFound) {
+        if (fmtAppInstance.currentProfile) {
+            console.info("Couldn't find any matching user Goals. Creating one based on current Profile!");
+            const userGoals = {};
+            userGoals.macroSplit = fmtAppInstance.currentProfile.macroSplit;
+            userGoals.year = fmtAppInstance.currentDay.getFullYear();
+            userGoals.month  = fmtAppInstance.currentDay.getMonth();
+            userGoals.day = fmtAppInstance.currentDay.getDate();
+            userGoals.profile_id = fmtAppInstance.currentProfileId;
+            fmtAppInstance.currentDayUserGoals = userGoals;
+            //Async tasks
+            FMTAddUserGoalEntry(userGoals, undefined, onerrorFn);
+        }
+        else {
+          console.warn("Couldn't find any matching user Goals. and no Profile currently loaded!");
+          if (onerrorFn) { return onerrorFn(); }
+        }
+      }
+      if (onsuccessFn) { onsuccessFn(); }
+    }
+  };
+  let onOpenUserGoalsCursorErrorFn  = function() {
+    const msg = `Failed loading Current Day - ${fmtAppInstance.currentDay.getFullYear()}-${fmtAppInstance.currentDay.getMonth()}-${fmtAppInstance.currentDay.getDate()}`;
+    console.error(msg);
+    FMTShowAlert("overview-alerts", "danger", `${msg}\nPlease reload Free Macro Tracker!`, fmtAppGlobals.defaultAlertScroll);
+  };
+  FMTQueryUserGoalsByProfileAndDate(fmtAppInstance.currentProfileId,
+                                    fmtAppInstance.currentDay.getFullYear(),
+                                    fmtAppInstance.currentDay.getMonth(),
+                                    fmtAppInstance.currentDay.getDate(),
+                                    onOpenUserGoalsCursorSuccessFn,
+                                    onOpenUserGoalsCursorErrorFn,
+                                    userGoalsQueryOpts);
+  //End User Goals Query
+}
+function FMTOverviewLoadMealEntries(onsuccessFn, onerrorFn) {
+  //Query for Meals based on current Profile ID and currentDate
+  let queryOpts = {"queryType": "only"};
+  let entryCount = 0;
+  document.getElementById("overview-meals-container").innerHTML = "";
+  let lastMealEntry;
+  onOpenCursorSuccessFn = function(event) {
+      let cursor = event.target.result;
+      if (cursor) {
+          let mealEntryObj = cursor.value;
+          FMTOverviewAddMealEntry(mealEntryObj, true);
+          entryCount++;
+          lastMealEntry = mealEntryObj;
+          cursor.continue();
+      }
+      else {
+          //Sync tasks
+          onsuccessFn = onsuccessFn || function() { console.debug(`Loaded ${entryCount} meal entry records`); };
+          //Async tasks
+          FMTOverviewUpdateTotalProgress("overview-meals-container");
+          if (onsuccessFn) { onsuccessFn(); }
+      }
+  }
+
+  FMTQueryMealEntriesByProfileAndDate(fmtAppInstance.currentProfileId,
+                                      fmtAppInstance.currentDay.getFullYear(),
+                                      fmtAppInstance.currentDay.getMonth(),
+                                      fmtAppInstance.currentDay.getDate(),
+                                      onOpenCursorSuccessFn, onerrorFn, queryOpts);
+  //End Query for Meal Entries
+}
 function FMTOverviewLoadCurrentDay(onsuccessFn, onerrorFn) {
     //Handle dates
     FMTToday();
@@ -2277,67 +2485,39 @@ function FMTOverviewLoadCurrentDay(onsuccessFn, onerrorFn) {
     else {
         FMTOverviewSetDateStrings(getDateString(fmtAppInstance.currentDay));
     }
-    //Query for Meals based on current Profile ID and currentDate
-    let queryOpts = {"queryType": "only"};
-    let entryCount = 0;
-    document.getElementById("overview-meals-container").innerHTML = "";
-    let lastMealEntry;
-    onOpenCursorSuccessFn = function(event) {
-        let cursor = event.target.result;
-        if (cursor) {
-            let mealEntryObj = cursor.value;
-            FMTOverviewAddMealEntry(mealEntryObj, true);
-            entryCount++;
-            lastMealEntry = mealEntryObj;
-            cursor.continue();
-        }
-        else {
-            //Sync tasks
-            console.debug(`Loaded ${entryCount} meal entry records`);
-/*            const overviewAddToMealBtn = document.getElementById("overview-add-to-meal");
-            if (lastMealEntry) {
-                overviewAddToMealBtn.setAttribute("meal_year", lastMealEntry.year);
-                overviewAddToMealBtn.setAttribute("meal_month", lastMealEntry.month);
-                overviewAddToMealBtn.setAttribute("meal_day", lastMealEntry.day);
-                overviewAddToMealBtn.setAttribute("profile_id", lastMealEntry.profile_id);
-            }
-            else {
-                overviewAddToMealBtn.setAttribute("meal_year", fmtAppInstance.currentDay.getFullYear());
-                overviewAddToMealBtn.setAttribute("meal_month", fmtAppInstance.currentDay.getMonth());
-                overviewAddToMealBtn.setAttribute("meal_day", fmtAppInstance.currentDay.getDate());
-                overviewAddToMealBtn.setAttribute("profile_id", fmtAppInstance.currentProfileId);
-            }*/
-            //Async tasks
-            FMTOverviewUpdateTotalProgress("overview-meals-container");
-        }
+
+    if (fmtAppInstance.currentDayUserGoals == null ||
+      !isSameDay(fmtAppInstance.currentDay, new Date(fmtAppInstance.currentDayUserGoals.year, fmtAppInstance.currentDayUserGoals.month, fmtAppInstance.currentDayUserGoals.day) )
+        ) {
+          FMTLoadCurrentDayUserGoals(function() { FMTOverviewLoadMealEntries(onsuccessFn, onerrorFn); }, onerrorFn);
+      }
+    else {
+        FMTOverviewLoadMealEntries(onsuccessFn, onerrorFn);
     }
-    
-    FMTQueryMealEntriesByProfileAndDate(fmtAppInstance.currentProfileId,
-                                        fmtAppInstance.currentDay.getFullYear(),
-                                        fmtAppInstance.currentDay.getMonth(),
-                                        fmtAppInstance.currentDay.getDate(),
-                                        onOpenCursorSuccessFn, onerrorFn, queryOpts);
 }
 //Functions - State
 //Functions - State - Date
 function FMTToday() { fmtAppInstance.today = new Date(); }
 function FMTSetCurrentDate(currentDate, onsuccessFn, onerrorFn) {
-    onerrorFn = onerrorFn || function(e) { console.error(`currentDate (${currentDate}) is not a valid Date object`); };
-    if (!isDate(currentDate)) {return onerrorFn();}
+    onerrorFn = onerrorFn || function(e) { console.error(e); };
+    if (!isDate(currentDate)) {
+      console.error(`${currentDate} is not a valid date.`);
+      return onerrorFn();
+    }
     fmtAppInstance.currentDay = currentDate;
-    if (onsuccessFn) { onsuccessFn(); }
+    FMTLoadCurrentDayUserGoals(onsuccessFn, onerrorFn);
 }
 function FMTPreviousDay(onsuccessFn, onerrorFn) {
     onerrorFn = onerrorFn || function (e) { console.error(`currentDay (${fmtAppInstance.currentDay}) is not a valid Date object`); }
     if (!isDate(fmtAppInstance.currentDay)) { return onerrorFn(); }
     fmtAppInstance.currentDay.setDate(fmtAppInstance.currentDay.getDate() - 1);
-    if (onsuccessFn) { onsuccessFn(); }
+    FMTLoadCurrentDayUserGoals(onsuccessFn, onerrorFn);
 }
 function FMTNextDay(onsuccessFn, onerrorFn) {
     onerrorFn = onerrorFn || function (e) { console.error(`currentDay (${fmtAppInstance.currentDay}) is not a valid Date object`); }
     if (!isDate(fmtAppInstance.currentDay)) { return onerrorFn(); }
     fmtAppInstance.currentDay.setDate(fmtAppInstance.currentDay.getDate() + 1);
-    if (onsuccessFn) { onsuccessFn(); }
+    FMTLoadCurrentDayUserGoals(onsuccessFn, onerrorFn);
 }
 
 //Page
@@ -2372,9 +2552,10 @@ var pageController = {
         pageController.setTabActive("goto-overview");
         if (showToday === true) {
             FMTToday();
-            FMTSetCurrentDate(fmtAppInstance.today);
+            FMTSetCurrentDate(fmtAppInstance.today, FMTOverviewLoadCurrentDay);
         }
-        FMTOverviewLoadCurrentDay();
+        else { FMTOverviewLoadCurrentDay(); }
+
     },
     showFoods: function () {
         pageController.setTabActive("goto-foods");
@@ -2416,7 +2597,7 @@ var pageController = {
             fmtAppInstance.pageState.activeDynamicScreens[screenName] = zIndex;
         }
         if (reverse) {
-            return sortedScreenNames.reverse();    
+            return sortedScreenNames.reverse();
         }
         return sortedScreenNames;
     },
@@ -2682,7 +2863,7 @@ var pageController = {
             console.error(e);
             return;
         });
-        
+
     },
     closeEditMealEntryDynamicScreen: function() {
         const screenID = "edit-meal-entry-screen";
@@ -2745,7 +2926,7 @@ function FMTLoadMassUnits(onloadedFn) {
         console.debug(`Mass units loaded into Application instance ${JSON.stringify(fmtAppInstance.massUnitChart)}`);
         if (onloadedFn) { onloadedFn(); }
     },
-    function(e) {throw ReferenceError("Failed reading mass units");}); 
+    function(e) {throw ReferenceError("Failed reading mass units");});
 }
 function FMTLoadAdditionalNutrients(onloadedFn) {
     FMTReadAllNutrients(function(e) {
@@ -2796,8 +2977,8 @@ function onDbSuccess(event) {
                 FMTLoadProfile(1,
                                //onloaded
                                function() {
-                    pageController.showOverview(true);
                     pageController.closeLoadingScreen();
+                    pageController.showOverview(true);
                 },
                               //onNoProfile
                               function() {
@@ -2807,7 +2988,7 @@ function onDbSuccess(event) {
                     if (fmtAppInstance.firstTimeScreenAutomatic) {
                         setTimeout(() => {
                             document.getElementById("fmt-app-first-time-overlay").click();
-                            pageController.showProfile();    
+                            pageController.showProfile();
                         }, 3000);
                     }
                 });
@@ -2971,7 +3152,7 @@ function prepareEventHandlers() {
                               function(res) {
                                 if (res) {
                                     pageController.closeAddFoodDynamicScreen();
-                                    
+
                                 }
                                 else {
                                     return;
@@ -3045,7 +3226,7 @@ function prepareEventHandlers() {
                 }
             }
             const msg = `Successfully updated food: ${(document.getElementById("edit-food-screen-food-name").value)}`;
-            
+
             const mealIdentifierObj = {};
             mealIdentifierObj.meal_year = saveBtn.getAttribute("meal_year");
             mealIdentifierObj.meal_month = saveBtn.getAttribute("meal_month");
@@ -3057,7 +3238,7 @@ function prepareEventHandlers() {
                 console.error(validateMealIdentifierObjRes.error);
             }*/
             const mealIdentifier = validateMealIdentifierObjRes.mealIdentifier;
-            
+
             pageController.closeEditFoodDynamicScreen();
             pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, mealIdentifier);
             const alertDivID = pageController.getAlertDivId();
@@ -3199,7 +3380,7 @@ function prepareEventHandlers() {
         });
 
     });
-/*    $("#overview-add-to-meal").click( (e) => { 
+/*    $("#overview-add-to-meal").click( (e) => {
         const overviewAddToMealBtn = document.getElementById("overview-add-to-meal");
         const mealIdentifierObj = {};
         mealIdentifierObj.meal_year = overviewAddToMealBtn.getAttribute("meal_year");
@@ -3209,7 +3390,7 @@ function prepareEventHandlers() {
         mealIdentifierObj.profile_id = fmtAppInstance.currentProfileId;
         pageController.openAddToMealDynamicScreen(mealIdentifierObj);
     });*/
-    $("#add-to-meal-screen-cancel").click( (e) => { 
+    $("#add-to-meal-screen-cancel").click( (e) => {
         pageController.closeAddToMealDynamicScreen();
     });
     $("#add-to-meal-screen-add-food").click( (e) => {

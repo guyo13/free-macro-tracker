@@ -35,7 +35,7 @@
             tzMinutes - int <br/>
             <span class="minor">//TODO - microNutrientGoals</span>
         </p>
-        
+
 
         <h2>Mass Units Object Store</h2>
         <p>
@@ -66,7 +66,7 @@
             nutritionalValue - Object ({calories-Number,proteins-Number,carbohydrates-Number,fats-Number,additionalNutrients-Object}) <br/>
                                 additionalNutrients - { "NutrientCategory1": [{"name":String, "mass":Number, "unit":String}, ... , {...}], ... , "NutrientCategoryN": [{...}, ... ,{...}] } <br/>
         </p>
-        
+
         <h2>Recipes Object Store</h2>
         <p>
             KEY PATH = "recipe_id" autoIncrement = true <br/>
@@ -115,9 +115,9 @@
             year - int <br/>
             month - int (0-11) <br/>
             day - int <br/>
-            macroSplit - Object (see above) <br/>
-            <span class="minor">//TODO - microNutrientGoals</span>
-            
+            macroSplit <br/>
+            <span class="minor">//TODO - microSplit, mealSplit</span> <br/>
+
         </p>
     <h1>DB OPERATIONS (TODO):</h1>
         <h2>Profiles:</h2>
@@ -157,7 +157,7 @@
             <span class="med">Delete recipe</span> <br/>
             <span class="med">Read all recipes (openCursor)</span> <br/>
         </p>
-        
+
         <h2>Nutrients:</h2>
         <p>
             <del>Query nutrient by category and name - NEED TO ADD NUTRIENT CATEGORY AS KP</del> <br/>
