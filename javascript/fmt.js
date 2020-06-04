@@ -2451,7 +2451,7 @@ function FMTLoadCurrentDayUserGoals(onsuccessFn, onerrorFn) {
         }
         else {
           console.warn("Couldn't find any matching user Goals. and no Profile currently loaded!");
-          if (onerrorFn) { return onerrorFn(); }
+          //if (onerrorFn) { return onerrorFn(); }
         }
       }
       if (onsuccessFn) { onsuccessFn(); }
