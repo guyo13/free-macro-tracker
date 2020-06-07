@@ -12,6 +12,7 @@ fmtAppInstance.additionalNutrientsSettings = {};
 fmtAppInstance.additionalNutrientsSettings.allowNonDefaultUnits = true;
 fmtAppInstance.firstTimeScreenAutomatic = false;
 fmtAppInstance.roundingPrecision = 1;
+fmtAppInstance.allowForeignNutrients = true;
 //Instance - State - Page
 fmtAppInstance.pageState = {};
 fmtAppInstance.pageState.activeTab = null;
@@ -408,10 +409,15 @@ function FMTExportAllData(oncompleteFn) {
   });
 }
 //Functions - Validation
-function FMTValidateNutritionalValue(nutritionalValueObj, mUnitsChart) {
+function FMTValidateNutritionalValue(nutritionalValueObj, mUnitsChart, options) {
     if (mUnitsChart == null) {
         mUnitsChart = fmtAppInstance.massUnitChart;
     }
+    if (options == null) {
+        options = {};
+    }
+    options.compact = options.compact || false;
+
     const result = {};
     const nutritionalValue = {};
     let error = null;
@@ -465,7 +471,7 @@ function FMTValidateNutritionalValue(nutritionalValueObj, mUnitsChart) {
                         result.error = error;
                         return result;
                     }
-                    if (!(nutrient.unit in mUnitsChart)) {
+                    if (!fmtAppInstance.allowForeignNutrients && !(nutrient.unit in mUnitsChart)) {
                         error = `Nutrient "${nutrient.name}" (Category ${nutrientCategoryName}) has unknown or invalid mass unit "${nutrient.unit}"`;
                         result.error = error;
                         return result;
@@ -473,7 +479,9 @@ function FMTValidateNutritionalValue(nutritionalValueObj, mUnitsChart) {
                     validatedNutrient.name = nutrient.name;
                     validatedNutrient.mass = Number(nutrient.mass);
                     validatedNutrient.unit = nutrient.unit;
-                    validatedNutrientsInCat.push(validatedNutrient);
+                    if ( !(options.compact && validatedNutrient.mass == 0) ) {
+                      validatedNutrientsInCat.push(validatedNutrient);
+                    }
                 }
                 if (validatedNutrientsInCat.length > 0) {
                     nutritionalValue.additionalNutrients[nutrientCategoryName] = validatedNutrientsInCat;
@@ -516,64 +524,12 @@ function FMTValidateFoodObject(foodObj, mUnitsChart) {
         return {"food": null, "error": "Nutritional Value must not be empty"};
     }
     else {
-        let nutritionalValue = foodObj.nutritionalValue;
-        food.nutritionalValue = {};
-        if (!isNumber(nutritionalValue.calories)) {
-            console.debug(`[${_funcName}] - nutritionalValue.calories is NaN`);
-            return {"food": null, "error": "Calories value must be a valid number"};
+        const nutriValueValidateRes = FMTValidateNutritionalValue(foodObj.nutritionalValue);
+        if (nutriValueValidateRes.nutritionalValue == null || nutriValueValidateRes.error != null) {
+            result.error = nutriValueValidateRes.error;
+            return result;
         }
-        else { food.nutritionalValue.calories = Number(nutritionalValue.calories); }
-        if (!isNumber(nutritionalValue.proteins)) {
-            console.debug(`[${_funcName}] - nutritionalValue.proteins is NaN`);
-            return{"food": null, "error": "Proteins value must be a valid number"};
-        }
-        else { food.nutritionalValue.proteins = Number(nutritionalValue.proteins); }
-        if (!isNumber(nutritionalValue.carbohydrates)) {
-            console.debug(`[${_funcName}] - nutritionalValue.carbohydrates is NaN`);
-            return {"food": null, "error": "Carbohydrates value must be a valid number"};
-        }
-        else { food.nutritionalValue.carbohydrates = Number(nutritionalValue.carbohydrates); }
-        if (!isNumber(nutritionalValue.fats)) {
-            console.debug(`[${_funcName}] - nutritionalValue.fats is NaN`);
-            return {"food": null, "error": "Fats value must be a valid number"};
-        }
-        else { food.nutritionalValue.fats = Number(nutritionalValue.fats); }
-        let additionalNutrients = nutritionalValue.additionalNutrients;
-        food.nutritionalValue.additionalNutrients = {};
-        if (additionalNutrients != null ) {
-            for (const nutrientCategoryName in additionalNutrients) {
-                const nutrientsInCat = additionalNutrients[nutrientCategoryName];
-                if (Array.isArray(nutrientsInCat) && nutrientsInCat.length > 0) {
-                    const validatedNutrientsInCat = [];
-                    for (const j in nutrientsInCat) {
-                        const validatedNutrient = {};
-                        const nutrient = nutrientsInCat[j];
-                        if (nutrient.name == null || nutrient.name === "") {
-                            console.debug(`[${_funcName}] - nutrient.name is null ${JSON.stringify(nutrient)}`);
-                            const errMsg = `Nutrient in Category "${nutrientCategoryName}" has empty name`;
-                            return {"food": null, "error": errMsg};
-                        }
-                        if (!isNumber(nutrient.mass)) {
-                            console.debug(`[${_funcName}] - nutrient.mass is not a number ${JSON.stringify(nutrient)}`);
-                            const errMsg = `Nutrient "${nutrient.name}" (Category ${nutrientCategoryName}) has invalid value "${nutrient.mass}"`;
-                            return {"food": null, "error": errMsg};
-                        }
-                        if (!(nutrient.unit in mUnitsChart)) {
-                            console.debug(`[${_funcName}] - nutrient.unit is not in Mass Unit chart ${JSON.stringify(nutrient)}\n${JSON.stringify(mUnitsChart)}`);
-                            const errMsg = `Nutrient "${nutrient.name}" (Category ${nutrientCategoryName}) has unknown or invalid mass unit "${nutrient.unit}"`;
-                            return {"food": null, "error": errMsg};
-                        }
-                        validatedNutrient.name = nutrient.name;
-                        validatedNutrient.mass = Number(nutrient.mass);
-                        validatedNutrient.unit = nutrient.unit;
-                        validatedNutrientsInCat.push(validatedNutrient);
-                    }
-                    if (validatedNutrientsInCat.length > 0) {
-                        food.nutritionalValue.additionalNutrients[nutrientCategoryName] = validatedNutrientsInCat;
-                    }
-                }
-            }
-        }
+        food.nutritionalValue = nutriValueValidateRes.nutritionalValue;
     }
     return {"food": food, "error": null};
 }

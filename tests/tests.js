@@ -30,11 +30,11 @@ function mealEntryAddTest(mepd, pidstart, pidstop, dstart, dstop, direction) {
     dstart = dstart || 1;
     dstop = dstop || 31;
     direction = direction || 1;
-    
+
     for (let pid=pidstart; pid<pidstop; pid++) {
-        
+
         mealObj.profile_id = pid;
-        
+
         for (let d=dstart; d<dstop; d++) {
             let date = new Date();
             date.setDate(date.getDate() + d*direction);
@@ -69,10 +69,20 @@ function mealEntryAddTest(mepd, pidstart, pidstop, dstart, dstop, direction) {
         console.log(`Meal Entry count - ${count} == ${(pidstop-pidstart)*(dstop-dstart)*mepd} ? ${count == (pidstop-pidstart)*(dstop-dstart)*mepd}. Run time - ${(endTime - startTime)/1000} Seconds.`);
         navigator.storage.estimate().then((e) => {console.log(`Quota: ${e.quota/1000000} MB, Usage: ${e.usage/1000000} MB`)});
       }
-    };    
+    };
 }
 //mealEntryAddTest(50, 1, 2, -3, 31, 1);
 
 console.log(fmtAppInstance.pageState.activeDynamicScreens)
 console.log(pageController.updateZIndexes(true))
 console.log(pageController.updateZIndexes())
+
+
+FMTExportAllData(function() {
+		var link = document.createElement('a');
+    link.setAttribute('download', 'fmtexport.json');
+    link.href = fmtAppExport;
+    //document.body.appendChild(link);
+		link.click();
+	}
+);
