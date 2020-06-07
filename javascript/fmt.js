@@ -3574,7 +3574,14 @@ function startIndexedDB() {
 }
 function askPersistentStorage() {
   navigator.storage.persist().then( (isConfirmed) => {
-    if (isConfirmed) { startIndexedDB(); }
+    if (isConfirmed) {
+      fmtAppInstance.isStoragePersistent = true;
+      startIndexedDB();
+    }
+    else {
+      fmtAppInstance.isStoragePersistent = false;
+      startIndexedDB();
+    }
   });
 }
 //Main
@@ -3586,16 +3593,22 @@ $(document).ready(function() {
         return Object.prototype.toString.call(obj) === '[object Array]';
       }
     };
-    navigator.storage.persisted().then( (isPersisted) => {
-      if (isPersisted) { startIndexedDB(); }
-      else {
-        document.getElementById("fmt-app-load-overlay-spinner").classList.add("d-none");
-        document.getElementById("fmt-app-load-overlay-alerts").classList.remove("d-none");
-        FMTShowAlert("fmt-app-load-overlay-alerts", "warning", "Persistent Storage is required to keep your data safe. Please enable it :)");
-        askPersistentStorage();
-        // document.getElementById("fmt-app-load-overlay-content").addEventListener("click", (e) => {
-        //   location.reload();
-        // });
-      }
-    });
+    try {
+      navigator.storage.persisted().then( (isPersisted) => {
+        if (isPersisted) {
+          fmtAppInstance.isStoragePersistent = true;
+          startIndexedDB();
+        }
+        else {
+          fmtAppInstance.isStoragePersistent = false;
+          askPersistentStorage();
+        }
+      });
+    }
+    catch (error) {
+      console.error(error);
+      fmtAppInstance.isStoragePersistent = false;
+      startIndexedDB();
+    }
+
 });
