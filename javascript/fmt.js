@@ -1517,7 +1517,7 @@ function FMTCreateMassUnitDropdownMenu(baseName, targetDivId, mUnitsChart, isSta
                 for (let j=0; j<mUnits.length; j++) {
                     let massUnitName = mUnits[j];
                     let massUnit = mUnitsChart[massUnitName];
-                    let normMassUnitName = massUnitName.replace(" ", "_");
+                    let normMassUnitName = massUnitName.replace(/ /g, "_");
                     let mUnitId = `${baseName}-unit-${normMassUnitName}`;
                     let ddItem = document.createElement("a");
                     ddItem.classList.add("dropdown-item");
@@ -1559,8 +1559,8 @@ function FMTCreateNutrientCategoryHeading(category, targetDivID) {
 }
 function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj, category, isStatic, mUnitsChart, readonly) {
     const elements = [];
-    const normalizedCategory = category.replace(" ", "_");
-    const normalizedNutriName = nutriObj.name.replace(" ", "_");
+    const normalizedCategory = category.replace(/ /g, "_");
+    const normalizedNutriName = nutriObj.name.replace(/ /g, "_");
     const nutriBaseId = `${baseID}-${normalizedCategory}-${normalizedNutriName}`;
     const nutriId = `${nutriBaseId}-input`;
     const targetDiv = document.getElementById(targetDivID);
@@ -1808,7 +1808,7 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
             for (const i in nutrientsList) {
                 const nutrient = nutrientsList[i];
                 if (nutrient.mass == 0) { continue; }
-                const baseElementId = `${baseScreenID}-${qualifier}-addi-${nutriCatName.replace(" ", "_")}-${nutrient.name.replace(" ", "_")}`;
+                const baseElementId = `${baseScreenID}-${qualifier}-addi-${nutriCatName.replace(/ /g, "_")}-${nutrient.name.replace(/ /g, "_")}`;
                 const inputElementId = `${baseElementId}-input`;
                 const mUnitDropdownItemId = `${baseElementId}-unit-${nutrient.unit}`;
                 const inputElement = document.getElementById(inputElementId);
@@ -1947,13 +1947,13 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
     consumableObj.nutritionalValue.additionalNutrients = {};
     const baseID = `${baseScreenID}-${qualifier}-addi`;
     for (const category in fmtAppInstance.additionalNutrients) {
-        const baseCatID = `${baseID}-${category.replace(" ", "_")}`;
+        const baseCatID = `${baseID}-${category.replace(/ /g, "_")}`;
         const nutrientsInCat = fmtAppInstance.additionalNutrients[category];
         if (Array.isArray(nutrientsInCat) && nutrientsInCat.length > 0) {
             let addNutri = [];
             for (const i in nutrientsInCat) {
                 const nutriObj = nutrientsInCat[i];
-                const baseNutriId = `${baseCatID}-${nutriObj.name.replace(" ", "_")}`;
+                const baseNutriId = `${baseCatID}-${nutriObj.name.replace(/ /g, "_")}`;
                 const inputElemId = `${baseNutriId}-input`;
                 const unitElemId = `${baseNutriId}-units`;
                 const nutriUserInput = document.getElementById(inputElemId).value;
@@ -2053,7 +2053,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
         }
         mealEntry = res.mealEntry;
     }
-    const normalizedMealName = mealEntry.mealName.replace(" ", "_").replace("-", "_");
+    const normalizedMealName = mealEntry.mealName.replace(/ /g, "_").replace(/-/g, "_");
     const mealDiv = document.createElement("div");
     mealDiv.setAttribute("id", `overview-meal-${normalizedMealName}`);
     mealDiv.classList.add("fmt-meal", "container");
@@ -2201,7 +2201,7 @@ function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
         }
         mealEntry = res.mealEntry;
     }
-    const normalizedMealName = mealEntry.mealName.replace(" ", "_").replace("-", "_");
+    const normalizedMealName = mealEntry.mealName.replace(/ /g, "_").replace(/-/g, "_");
 
     const mealEntryDiv = document.createElement("div");
     const mealEntryId = `overview-meal-${mealEntry.entry_id}`;
@@ -2380,7 +2380,7 @@ function FMTOverviewAddMealEntry(mealEntryObj, validate) {
         }
         mealEntry = res.mealEntry;
     }
-    const normalizedMealName = mealEntry.mealName.replace(" ", "_").replace("-", "_");
+    const normalizedMealName = mealEntry.mealName.replace(/ /g, "_").replace(/-/g, "_");
     let mealDiv = document.getElementById(`overview-meal-${normalizedMealName}`);
     if (!mealDiv) {
         mealDiv = FMTOverviewCreateMealNode(mealEntry, false);
