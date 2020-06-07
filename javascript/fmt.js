@@ -3557,6 +3557,26 @@ function prepareEventHandlers() {
     $(".fmt-prev-day-btn").click( (e) => { FMTPreviousDay(FMTOverviewLoadCurrentDay); } );
     $(".fmt-next-day-btn").click( (e) => { FMTNextDay(FMTOverviewLoadCurrentDay); } );
 }
+function startIndexedDB() {
+  //Check if IndexedDB supported
+  window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+  if (!window.indexedDB) {
+      document.getElementById("page-title").innerHTML += '<div class="alert alert-danger col-12" role="alert">IndexedDB is not supported on this browser. Can\'t use app!</div>';
+      return;
+  }
+  window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || {READ_WRITE: "readwrite"};
+  window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+
+  //Start IndexedDB
+  var dbOpenReq = indexedDB.open(fmtAppGlobals.FMT_DB_NAME, fmtAppGlobals.FMT_DB_VER);
+  dbOpenReq.onupgradeneeded = onUpgradeNeeded;
+  dbOpenReq.onsuccess = onDbSuccess;
+}
+function askPersistentStorage() {
+  navigator.storage.persist().then( (isConfirmed) => {
+    if (isConfirmed) { startIndexedDB(); }
+  });
+}
 //Main
 $(document).ready(function() {
     pageController.hideAllTabs();
@@ -3566,17 +3586,16 @@ $(document).ready(function() {
         return Object.prototype.toString.call(obj) === '[object Array]';
       }
     };
-    //Check if IndexedDB supported
-    window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-    if (!window.indexedDB) {
-        document.getElementById("page-title").innerHTML += '<div class="alert alert-danger col-12" role="alert">IndexedDB is not supported on this browser. Can\'t use app!</div>';
-        return;
-    }
-    window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || {READ_WRITE: "readwrite"};
-    window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
-
-    //Start IndexedDB
-    var dbOpenReq = indexedDB.open(fmtAppGlobals.FMT_DB_NAME, fmtAppGlobals.FMT_DB_VER);
-    dbOpenReq.onupgradeneeded = onUpgradeNeeded;
-    dbOpenReq.onsuccess = onDbSuccess;
+    navigator.storage.persisted().then( (isPersisted) => {
+      if (isPersisted) { startIndexedDB(); }
+      else {
+        document.getElementById("fmt-app-load-overlay-spinner").classList.add("d-none");
+        document.getElementById("fmt-app-load-overlay-alerts").classList.remove("d-none");
+        FMTShowAlert("fmt-app-load-overlay-alerts", "warning", "Persistent Storage is required to keep your data safe. Please enable it :)");
+        askPersistentStorage();
+        // document.getElementById("fmt-app-load-overlay-content").addEventListener("click", (e) => {
+        //   location.reload();
+        // });
+      }
+    });
 });

@@ -791,7 +791,7 @@
         </div>
         <!--Overlays-->
         <div id="fmt-app-load-overlay" class="fmt-overlay fmt-bg-dark-green container-fluid">
-            <div class="row justify-content-center fmt-center-text fmt-loading-screen-position">
+            <div id="fmt-app-load-overlay-content" class="row justify-content-center fmt-center-text fmt-loading-screen-position">
                 <div class="col-12">
                     <span class="fmt-font-white-bold fmt-loading-screen-font">Free</span>
                 </div>
@@ -801,11 +801,12 @@
                 <div class="col-12 mb-3">
                     <span class="fmt-loading-screen-logo">Logo</span>
                 </div>
-                <div class="col-12">
+                <div id="fmt-app-load-overlay-spinner" class="col-12">
                     <div class="spinner-border text-light" role="status">
                         <span class="sr-only">Loading...</span>
                     </div>
                 </div>
+                <div id="fmt-app-load-overlay-alerts" class="row justify-content-center d-none"></div>
             </div>
         </div>
         <div id="fmt-app-first-time-overlay" class="d-none fmt-overlay fmt-bg-dark-green container-fluid">
