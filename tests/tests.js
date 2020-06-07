@@ -77,12 +77,16 @@ console.log(fmtAppInstance.pageState.activeDynamicScreens)
 console.log(pageController.updateZIndexes(true))
 console.log(pageController.updateZIndexes())
 
-
-FMTExportAllData(function() {
+function downloadData(fileName) {
 		var link = document.createElement('a');
-    link.setAttribute('download', 'fmtexport.json');
+    link.setAttribute('download', fileName);
     link.href = fmtAppExport;
     //document.body.appendChild(link);
 		link.click();
 	}
-);
+FMTDataToJSONArray(function(records) {
+  FMTExportToJSONBlob(records, function() { downloadData("FmtExport_array.json"); });
+});
+FMTDataToStructuredJSON(function(records) {
+  FMTExportToJSONBlob(records, function() { downloadData("FmtExport_Structured.json"); });
+});

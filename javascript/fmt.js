@@ -301,29 +301,28 @@ function getIndex(store_name, indexName) {
     return index;
 }
 //Functions - DB - Export
-function FMTExportAllData(oncompleteFn) {
-  let records = [];
-  let errors = [];
+function FMTStringifyRemoveNewlines(k, v) {
+  if (typeof v === 'string') {
+    return v.replace(/\n/g, "");
+  }
+  else return v;
+}
+function FMTExportToJSONBlob(data, onsuccessFn, stringifyReplacerFn) {
   if (fmtAppExport != null) {
      window.URL.revokeObjectURL(fmtAppExport);
   }
-  const finalize = function() {
-    const stringified = JSON.stringify(records, function(k,v) {
-      if (typeof v === 'string') {
-        return v.replace(/\n/g, "");
-      }
-      else return v;
-    });
-    let data = new Blob([stringified], {"type": "application/json"});
-    fmtAppExport = window.URL.createObjectURL(data);
-    if (errors.length > 0) {
-      for (let k=0; k<errors.length; k++)
-      console.error(errors[k]);
-    }
-    if (oncompleteFn) {
-      oncompleteFn();
-    }
+  const stringified = JSON.stringify(data, stringifyReplacerFn);
+  let blob = new Blob([stringified], {"type": "application/json"});
+  fmtAppExport = window.URL.createObjectURL(blob);
+  if (typeof onsuccessFn == 'function') {
+    onsuccessFn();
   }
+}
+function FMTDataToJSONArray(exportFn) {
+  let records = [];
+  let errors = [];
+  if (! (typeof exportFn === 'function') ) { return; }
+
   const onReadMUnitsSuccFn = function(e) {
     const munits = e.target.result;
     if (munits && Array.isArray(munits)) {
@@ -334,7 +333,11 @@ function FMTExportAllData(oncompleteFn) {
       }
     }
     //Finalize Export (TODO Export Recipes and User Settings after implementation)
-    finalize();
+    if (errors.length > 0) {
+      for (let k=0; k<errors.length; k++)
+      console.error(errors[k]);
+    }
+    exportFn(records);
   }
   const onReadNutriSuccFn = function(e) {
     const nutri = e.target.result;
@@ -396,6 +399,105 @@ function FMTExportAllData(oncompleteFn) {
         const record = profileEntries[i];
         record["__db_table_name__"] = fmtAppGlobals.FMT_DB_PROFILES_STORE;
         records.push(record);
+      }
+    }
+    //Export User Goals
+    const userGoalsQueryOpts = {"queryType": "lowerBound", "lowerOpen": false};
+    FMTQueryUserGoalsByProfileAndDate(-Infinity, -Infinity, -Infinity, -Infinity, onQueryUserGoalsSuccFn, function(err) {errors.push(err);}, userGoalsQueryOpts);
+  }
+  FMTReadAllProfiles(onAllProfileReadFn,
+    function(err) {
+    errors.push(err);
+    for (const e in errors) { console.error(errors[e]); }
+  });
+}
+function FMTDataToStructuredJSON(exportFn) {
+  let records = {};
+  records[fmtAppGlobals.FMT_DB_MASS_UNITS_STORE] = [];
+  records[fmtAppGlobals.FMT_DB_NUTRIENTS_STORE] = [];
+  records[fmtAppGlobals.FMT_DB_FOODS_STORE] = [];
+  records[fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE] = {};
+  records[fmtAppGlobals.FMT_DB_USER_GOALS_STORE] = {};
+  records[fmtAppGlobals.FMT_DB_PROFILES_STORE] = [];
+  let errors = [];
+  if (! (typeof exportFn === 'function') ) { return; }
+
+  const onReadMUnitsSuccFn = function(e) {
+    const munits = e.target.result;
+    if (munits && Array.isArray(munits)) {
+      for (let k=0; k<munits.length; k++) {
+        const record = munits[k];
+        records[fmtAppGlobals.FMT_DB_MASS_UNITS_STORE].push(record);
+      }
+    }
+    //Finalize Export (TODO Export Recipes and User Settings after implementation)
+    if (errors.length > 0) {
+      for (let k=0; k<errors.length; k++)
+      console.error(errors[k]);
+    }
+    exportFn(records);
+  }
+  const onReadNutriSuccFn = function(e) {
+    const nutri = e.target.result;
+    if (nutri && Array.isArray(nutri)) {
+      for (let k=0; k<nutri.length; k++) {
+        const record = nutri[k];
+        records[fmtAppGlobals.FMT_DB_NUTRIENTS_STORE].push(record);
+      }
+    }
+    //Export Mass Units
+    FMTReadAllMassUnits(onReadMUnitsSuccFn, function(err) {errors.push(err);});
+  }
+  const onIterFoodsSuccFn = function(ev) {
+    let cursor = ev.target.result;
+    if (cursor) {
+      const record = cursor.value;
+      records[fmtAppGlobals.FMT_DB_FOODS_STORE].push(record);
+      cursor.continue();
+    }
+    else {
+      //Export Nutrients
+      FMTReadAllNutrients(onReadNutriSuccFn, function(err) {errors.push(err);});
+    }
+  }
+  const onQueryMealEntriesSuccFn = function(ev) {
+    let cursor = ev.target.result;
+    if (cursor) {
+      const record = cursor.value;
+      if (!records[fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE][record.profile_id]) {
+        records[fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE][record.profile_id] = [];
+      }
+      records[fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE][record.profile_id].push(record);
+      cursor.continue();
+    }
+    else {
+      //Export Foods
+      FMTIterateFoods(onIterFoodsSuccFn, function(err) {errors.push(err);});
+    }
+  }
+  const onQueryUserGoalsSuccFn = function(ev) {
+    let cursor = ev.target.result;
+    if (cursor) {
+      const record = cursor.value;
+      if (!records[fmtAppGlobals.FMT_DB_USER_GOALS_STORE][record.profile_id]) {
+        records[fmtAppGlobals.FMT_DB_USER_GOALS_STORE][record.profile_id] = [];
+      }
+      records[fmtAppGlobals.FMT_DB_USER_GOALS_STORE][record.profile_id].push(record);
+      cursor.continue();
+    }
+    else {
+      //Export Meal Entries
+      const mealEntriesQueryOpts = {"queryType": "lowerBound", "lowerOpen": false};
+      FMTQueryMealEntriesByProfileAndDate(-Infinity, -Infinity, -Infinity, -Infinity, onQueryMealEntriesSuccFn, function(err) {errors.push(err);}, mealEntriesQueryOpts);
+    }
+  }
+  const onAllProfileReadFn = function(e) {
+    //Export profiles
+    const profileEntries = e.target.result;
+    if (profileEntries && profileEntries.length > 0) {
+      for (let i=0; i<profileEntries.length; i++) {
+        const record = profileEntries[i];
+        records[fmtAppGlobals.FMT_DB_PROFILES_STORE].push(record);
       }
     }
     //Export User Goals
