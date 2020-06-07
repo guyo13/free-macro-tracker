@@ -3016,6 +3016,8 @@ function onDbSuccess(event) {
                               //onNoProfile
                               function() {
                     console.warn("No user Profile could be loaded");
+                    FMTToday();
+                    fmtAppInstance.currentDay = fmtAppInstance.today;
                     pageController.showFirstTimeScreen();
                     pageController.closeLoadingScreen();
                     if (fmtAppInstance.firstTimeScreenAutomatic) {
