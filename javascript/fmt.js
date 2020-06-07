@@ -92,7 +92,7 @@ fmtAppGlobals.supportedActivityLevels = ["Sedentary", "Light", "Moderate", "High
 
 fmtAppGlobals.dateConstants = {};
 fmtAppGlobals.dateConstants.monthNames = {0: "Jan", 1: "Feb", 2: "Mar", 3: "Apr", 4: "May", 5: "Jun", 6: "Jul", 7: "Aug",
-                                          9: "Sep", 9: "Oct", 10: "Nov", 11: "Dec"};
+                                          8: "Sep", 9: "Oct", 10: "Nov", 11: "Dec"};
 fmtAppGlobals.dateConstants.daySuffixes = {0: "th", 1: "st", 2: "nd", 3: "rd", 4: "th",
                                            5: "th", 6: "th", 7: "th", 8: "th", 9: "th"};
 //Globals - UI - Default

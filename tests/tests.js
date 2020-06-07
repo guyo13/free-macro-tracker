@@ -84,9 +84,10 @@ function downloadData(fileName) {
     //document.body.appendChild(link);
 		link.click();
 	}
-FMTDataToJSONArray(function(records) {
-  FMTExportToJSONBlob(records, function() { downloadData("FmtExport_array.json"); });
-});
 FMTDataToStructuredJSON(function(records) {
   FMTExportToJSONBlob(records, function() { downloadData("FmtExport_Structured.json"); });
 });
+FMTDataToJSONArray(function(records) {
+  FMTExportToJSONBlob(records, function() { downloadData("FmtExport_array.json"); });
+});
+setInterval(() => {document.getElementById("overview-date-next-day-lg").click()}, 50)
