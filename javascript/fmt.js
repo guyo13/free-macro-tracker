@@ -1022,7 +1022,10 @@ function FMTUpdateProfile(profileId, profileObj, onsuccessFn, onerrorFn) {
     let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
     let updateRequest = profileStore.put(profile);
     updateRequest.onerror = onerrorFn || function() { console.error(`Failed updating Profile id ${profileId}`) };
-    updateRequest.onsuccess = onsuccessFn || function() { console.debug(`Success updating Profile id ${profileId}`) };
+    updateRequest.onsuccess = function(event) {
+      onsuccessFn = onsuccessFn || function() { console.debug(`Success updating Profile id ${profileId}`) };
+      onsuccessFn(event, profile);
+    }
 }
 function FMTDeleteProfile(profileId, onsuccessFn, onerrorFn) {
     let profileStore = getObjectStore(fmtAppGlobals.FMT_DB_PROFILES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
@@ -1377,7 +1380,12 @@ function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
                     profile.macroSplit = macroSplit;
                     console.debug(res);
                     console.debug(profile);
-                    FMTUpdateProfile(profileId, profile, onsuccessFn, onerrorFn);
+                    const onProfileUpdatedFn = function(event, updatedProfile) {
+                      fmtAppInstance.currentProfile = updatedProfile;
+                      console.debug(fmtAppInstance.currentProfile);
+                      if (onsuccessFn) { onsuccessFn(event, updatedProfile); }
+                    }
+                    FMTUpdateProfile(profileId, profile, onProfileUpdatedFn, onerrorFn);
                 },
                 onerrorFn
                );
@@ -1404,14 +1412,15 @@ function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
                         return onerrorFn(msg);
                     }
                     profile.macroSplit = macroSplit;
-                    const onProfileUpdatedFn = function(event) {
+                    const onProfileUpdatedFn = function(event, updatedProfile) {
+                      fmtAppInstance.currentProfile = updatedProfile;
                       FMTReadUserGoalEntry(fmtAppInstance.currentProfileId, fmtAppInstance.today.getFullYear(), fmtAppInstance.today.getMonth(), fmtAppInstance.today.getDate(),
                                            function(res) {
                                              let userGoals = res.target.result;
                                              if (!!userGoals) {
                                                userGoals.macroSplit = profile.macroSplit;
                                                FMTUpdateUserGoalEntry(userGoals.profile_id, userGoals.year, userGoals.month, userGoals.day, userGoals, onsuccessFn);
-                                             } else { if (onsuccessFn) onsuccessFn(); }
+                                             } else { if (onsuccessFn) onsuccessFn(event, updatedProfile); }
                                            },
                                            function(err) {
                                              console.error(`Failed reading User Goals for ${fmtAppInstance.today}`);
@@ -2312,8 +2321,8 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
     proteinTotalSpan.innerHTML = `${roundedToFixed(totalNutriValue.proteins, 0)}g`;
     fatTotalSpan.innerHTML = `${roundedToFixed(totalNutriValue.fats, 0)}g`;
 
-    if (fmtAppInstance.currentDayUserGoals) {
-      const profile = fmtAppInstance.currentDayUserGoals;
+    const profile = fmtAppInstance.currentDayUserGoals;
+    if (profile && profile.macroSplit.Protein && profile.macroSplit.Carbohydrate && profile.macroSplit.Fat && profile.macroSplit.Calories) {
 
       const dailyProtein = (profile.macroSplit.Protein/100 * profile.macroSplit.Calories / 4 );
       const dailyCarbs = (profile.macroSplit.Carbohydrate/100 * profile.macroSplit.Calories / 4 );
