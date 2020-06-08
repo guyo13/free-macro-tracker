@@ -641,6 +641,7 @@ function FMTImportFromStructuredJSON(jsonString, jsonParseReviverFn, onEnd, excl
                              //onloaded
                              function() {
                   pageController.showOverview(true);
+                  FMTShowAlert("overview-alerts", "success", "Data Imported Successfully!");
               },
                             //onNoProfile
                             function() {
@@ -3864,6 +3865,44 @@ function prepareEventHandlers() {
         pageController.closeFirstTimeScreen();
         pageController.showProfile();
     });
+    $("#settings-data-control-export").click( (e) => {
+      const d = new Date();
+      const fileName = `FMT_Data_export_${d.getFullYear()}_${d.getMonth()}_${d.getDate()}`;
+      FMTDataToStructuredJSON(function(records) {
+        FMTExportToJSONBlob(records, function() {
+          const link = document.createElement('a');
+          link.setAttribute('download', fileName);
+          link.href = fmtAppExport;
+      		link.click();
+        });
+      });
+    });
+    $("#settings-data-control-import").click( (e) => {
+      document.getElementById("settings-data-control-import-indiv").classList.remove("d-none");
+    } );
+    $("#settings-data-control-import-file").change( (e) => {
+      const fileList = document.getElementById("settings-data-control-import-file").files;
+      if (fileList.length < 1) {
+        document.getElementById("settings-data-control-import-indiv").classList.add("d-none");
+        return;
+      }
+      const file = fileList[0];
+      document.getElementById("settings-data-control-import-file-label").innerHTML = file.name;
+      FMTShowPrompt("settings-alerts", "warning", "Importing might cause loss of current application data. Are you sure?", undefined, function(res) {
+        if (res) {
+          const fileReader = new FileReader();
+          fileReader.onloadend = function() {
+            FMTImportFromStructuredJSON(fileReader.result);
+          };
+          fileReader.readAsText(file);
+        }
+        else {
+          FMTShowAlert("settings-alerts", "primary", "Import from file aborted!");
+          document.getElementById("settings-data-control-import-indiv").classList.add("d-none");
+          document.getElementById("settings-data-control-import-file-label").innerHTML = "Choose file to Import";
+        }
+      });
+    } );
     //Search functions
     $("#foods-food-search").keyup( (e) => {
         let query = e.currentTarget.value;
