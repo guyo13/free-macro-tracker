@@ -78,9 +78,9 @@ fmtAppGlobals.FMT_DB_USER_GOALS_STORE = "fmt_user_goals";
 fmtAppGlobals.FMT_DB_USER_GOALS_KP = ["profile_id", "year", "month", "day"];
 
 //Globals - Page
-fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-recipes", "goto-profile", "goto-advanced", "goto-settings"];
+fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-recipes", "goto-profile", "goto-settings"];
 fmtAppGlobals.dynamicScreenIds = ["add-food-screen", "edit-food-screen", "view-food-screen", "add-to-meal-screen", "edit-meal-entry-screen"];
-fmtAppGlobals.overlaysIds = ["fmt-app-load-overlay"];
+fmtAppGlobals.overlaysIds = ["fmt-app-load-overlay", "fmt-app-first-time-overlay", "fmt-app-nav-overlay"];
 fmtAppGlobals.consumableItemScreenStaticViewInputFields = ["name", "brand", "calories", "proteins", "carbohydrates", "fats"];
 fmtAppGlobals.dateDivIDs = ["overview-date-day-large", "overview-date-day-small"];
 fmtAppGlobals.maxDynamicScreens = 1000;
@@ -2934,7 +2934,6 @@ var pageController = {
     },
     showRecipes: function () {pageController.setTabActive("goto-recipes");},
     showSettings: function () {pageController.setTabActive("goto-settings");},
-    showAdvanced: function () {pageController.setTabActive("goto-advanced");},
     showProfile: function () {
         pageController.setTabActive("goto-profile");
         document.getElementById("profile-alerts").innerHTML = "";
@@ -3234,12 +3233,12 @@ var pageController = {
     showLoadingScreen: function() {
         const loadingScreen = document.getElementById("fmt-app-load-overlay");
         loadingScreen.classList.remove("d-none");
-        loadingScreen.style.zIndex = fmtAppGlobals.maxDynamicScreens + 1;
+        loadingScreen.style.zIndex = fmtAppGlobals.maxDynamicScreens + 3;
     },
     closeLoadingScreen: function() {
         const loadingScreen = document.getElementById("fmt-app-load-overlay");
         loadingScreen.classList.add("d-none");
-        loadingScreen.style.zIndex = -1;
+        loadingScreen.style.zIndex = -3;
     },
     showFirstTimeScreen: function() {
         const overlay = document.getElementById("fmt-app-first-time-overlay");
@@ -3264,6 +3263,16 @@ var pageController = {
         msg.classList.remove("fmt-fadein");
         welcome.classList.remove("fmt-faded");
         msg.classList.remove("fmt-faded");
+    },
+    showNavOverlay: function() {
+        const navOverlay = document.getElementById("fmt-app-nav-overlay");
+        navOverlay.classList.remove("d-none");
+        navOverlay.style.zIndex = fmtAppGlobals.maxDynamicScreens + 1;
+    },
+    closeNavOverlay: function() {
+        const navOverlay = document.getElementById("fmt-app-nav-overlay");
+        navOverlay.classList.add("d-none");
+        navOverlay.style.zIndex = -1;
     },
 };
 
@@ -3333,6 +3342,7 @@ function onDbSuccess(event) {
                                function() {
                     pageController.closeLoadingScreen();
                     pageController.showOverview(true);
+                    pageController.showNavOverlay();
                 },
                               //onNoProfile
                               function() {
@@ -3377,9 +3387,6 @@ function prepareEventHandlers() {
     });
     $("#goto-profile").click( (e) => {
         pageController.showProfile();
-    });
-    $("#goto-advanced").click( (e) => {
-        pageController.showAdvanced();
     });
     $("#goto-settings").click( (e) => {
         pageController.showSettings();
@@ -3914,6 +3921,26 @@ function prepareEventHandlers() {
     });
     $(".fmt-prev-day-btn").click( (e) => { FMTPreviousDay(FMTOverviewLoadCurrentDay); } );
     $(".fmt-next-day-btn").click( (e) => { FMTNextDay(FMTOverviewLoadCurrentDay); } );
+    //Page interaction
+    let prevScrollpos = window.pageYOffset;
+    const navOverlay = document.getElementById("fmt-app-nav-overlay");
+    let resetNav;
+    window.onscroll = function() {
+      var currentScrollPos = window.pageYOffset;
+      if (prevScrollpos > currentScrollPos) {
+        navOverlay.style.bottom = "0";
+      } else {
+        navOverlay.style.bottom = "-50px";
+      }
+      prevScrollpos = currentScrollPos;
+      if (resetNav != null) {
+        clearTimeout(resetNav);
+      }
+      resetNav = setTimeout(function() {
+        navOverlay.style.bottom = "0";
+      }, 300);
+    };
+
 }
 function startIndexedDB() {
   //Check if IndexedDB supported

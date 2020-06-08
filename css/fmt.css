@@ -59,7 +59,46 @@ button {
 .fmt-bg-light {
     background-color: var(--fmt-light-gray);/*rgb(233, 236, 239);*/
 }
-
+.fmt-bg-transparent {
+  opacity: 0;
+}
+.fmt-navbar-position {
+  bottom: 0;
+  position: fixed;
+  height: 15vh;
+  width: 100vw;
+  transition: bottom 0.3s;
+}
+ @media screen and (min-height: 360px) {
+    .fmt-navbar-position {
+      height: 13vh;
+    }
+}
+@media screen and (min-height: 400px) {
+   .fmt-navbar-position {
+     height: 11vh;
+   }
+}
+@media screen and (min-height: 500px) {
+    .fmt-navbar-position {
+      height: 9vh;
+    }
+}
+@media screen and (min-height: 650px) {
+    .fmt-navbar-position {
+      height: 8vh;
+    }
+}
+@media screen and (min-height: 750px) {
+    .fmt-navbar-position {
+      height: 7vh;
+    }
+}
+@media screen and (min-height: 850px) {
+    .fmt-navbar-position {
+      height: 6vh;
+    }
+}
 .fmt-mass-unit-btn {
     background-color: var(--fmt-light-gray)!important;
 }
@@ -86,7 +125,7 @@ button {
     text-align: left;
 }
 .fmt-meals-container {
-    max-height: 65vh;
+     /* max-height: 70vh; */
     overflow-y: auto;
 }
 .fmt-meal {
@@ -268,6 +307,11 @@ button {
 .fmt-bg-dark-green {
     background-color: var(--fmt-dark-green);
 }
+.fmt-border-dark-green {
+  border-top-style: solid;
+  border-top-width: thin;
+  border-top-color: var(--fmt-dark-green);
+}
 .fmt-btn-success {
     color: white;
     background-color: var(--fmt-light-green);
@@ -310,7 +354,7 @@ button {
 }
 #fmt-app-first-time-overlay-msg {
     font-style: oblique;
-    text-decoration: underline white; 
+    text-decoration: underline white;
 }
 .fmt-loading-screen-logo {
     width: 5rem;
@@ -366,11 +410,11 @@ button {
     opacity: 0;
 }
 /*Table Colors*/
-/*.table-striped>tbody>tr:nth-child(odd)>td, 
+/*.table-striped>tbody>tr:nth-child(odd)>td,
 .table-striped>tbody>tr:nth-child(odd)>th {
    background-color: rgb(54, 157, 77);
  }
-.table-striped>tbody>tr:nth-child(even)>td, 
+.table-striped>tbody>tr:nth-child(even)>td,
 .table-striped>tbody>tr:nth-child(even)>th {
    background-color: rgb(36, 157, 63);
  }*/
