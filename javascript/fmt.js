@@ -78,7 +78,7 @@ fmtAppGlobals.FMT_DB_USER_GOALS_STORE = "fmt_user_goals";
 fmtAppGlobals.FMT_DB_USER_GOALS_KP = ["profile_id", "year", "month", "day"];
 
 //Globals - Page
-fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-recipes", "goto-profile", "goto-advanced", "goto-export", "goto-import"];
+fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-recipes", "goto-profile", "goto-advanced", "goto-settings"];
 fmtAppGlobals.dynamicScreenIds = ["add-food-screen", "edit-food-screen", "view-food-screen", "add-to-meal-screen", "edit-meal-entry-screen"];
 fmtAppGlobals.overlaysIds = ["fmt-app-load-overlay"];
 fmtAppGlobals.consumableItemScreenStaticViewInputFields = ["name", "brand", "calories", "proteins", "carbohydrates", "fats"];
@@ -625,16 +625,32 @@ function FMTImportTables(dbTables, jsonData, verbose) {
       return setTimeout(() => { FMTImportTables(dbTables, jsonData); }, 50);
   }
 }
-function FMTImportFromStructuredJSON(jsonString, jsonParseReviverFn, excludeTables) {
+function FMTImportFromStructuredJSON(jsonString, jsonParseReviverFn, onEnd, excludeTables) {
   if (Array.isArray(excludeTables)) {
       dbTables = dbTables.filter(table => excludeTables.indexOf(table) < 0);
   }
   let jsonData = JSON.parse(jsonString, jsonParseReviverFn);
   let dbTables = Object.keys(jsonData);
   const endCondition = function() { return dbTables.length < 1; };
-  const onEnd = function() {
-    console.log("Finished Import!");
+  if (!isFunction(onEnd)) {
+    onEnd = function() {
+      console.log("Finished Import!");
+      FMTLoadMassUnits(function() {
+          FMTLoadAdditionalNutrients(function() {
+              FMTLoadProfile(1,
+                             //onloaded
+                             function() {
+                  pageController.showOverview(true);
+              },
+                            //onNoProfile
+                            function() {
+                  console.warn("No user Profile could be loaded after Import");
+              });
+          });
+      });
+    }
   }
+
   taskWaitUntil(onEnd, endCondition, 500);
   FMTImportTables(dbTables, jsonData);
 }
@@ -2916,8 +2932,7 @@ var pageController = {
         FMTDisplayFoodsTable("foods", onsuccessFn, onerrorFn, events);
     },
     showRecipes: function () {pageController.setTabActive("goto-recipes");},
-    showExport: function () {pageController.setTabActive("goto-export");},
-    showImport: function () {pageController.setTabActive("goto-import");},
+    showSettings: function () {pageController.setTabActive("goto-settings");},
     showAdvanced: function () {pageController.setTabActive("goto-advanced");},
     showProfile: function () {
         pageController.setTabActive("goto-profile");
@@ -3365,11 +3380,8 @@ function prepareEventHandlers() {
     $("#goto-advanced").click( (e) => {
         pageController.showAdvanced();
     });
-    $("#goto-export").click( (e) => {
-        pageController.showExport();
-    });
-    $("#goto-import").click( (e) => {
-        pageController.showImport();
+    $("#goto-settings").click( (e) => {
+        pageController.showSettings();
     });
     $("#profile-weight-units-kg").click( (e) => {
         let DOMWeightUnits = document.getElementById("profile-weight-units");
