@@ -90,4 +90,25 @@ FMTDataToStructuredJSON(function(records) {
 FMTDataToJSONArray(function(records) {
   FMTExportToJSONBlob(records, function() { downloadData("FmtExport_array.json"); });
 });
-setInterval(() => {document.getElementById("overview-date-next-day-lg").click()}, 50)
+setInterval(() => {document.getElementById("overview-date-next-day-lg").click()}, 50);
+
+function testImport() {
+  const input = document.createElement("input");
+  input.setAttribute("type", "file");
+  input.setAttribute("accept", "application/json");
+  input.onchange = function(e) {
+    const fileList = input.files;
+    console.log(input);
+    if (fileList.length < 1) {
+      console.log("empty file list");
+      return
+    }
+    const file = fileList[0];
+    const fileReader = new FileReader();
+    fileReader.onloadend = function() {
+      FMTImportFromStructuredJSON(fileReader.result);
+    };
+    fileReader.readAsText(file);
+ };
+  document.getElementById("overview").appendChild(input);
+}

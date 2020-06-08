@@ -152,7 +152,7 @@ function taskWaitUntil(onendFn, endconditionFn, intervalMs) {
   let intervalObj;
   intervalObj = setInterval(function() {
     if (endconditionFn()) {
-      cancelInterval(intervalObj);
+      clearInterval(intervalObj);
       if (typeof onendFn === 'function') {
         onendFn();
       }
@@ -562,15 +562,15 @@ function FMTImportRecordsSeq(recordsObj, indexes, objectStoreName, successIterFn
   let importReq;
   switch(importMethod) {
     case "add":
-      importReq = objectStore.add(record, onsucc, onerr);
+      importReq = objectStore.add(record);
       break;
     case "put":
     default:
-      importReq = objectStore.put(record, onsucc, onerr);
+      importReq = objectStore.put(record);
       break;
   }
-  importReq.onsuccess = onsucc;
-  importReq.onerror = onerr;
+  importReq.onsuccess = successIterFn;
+  importReq.onerror = errIterFn;
 }
 function FMTImportTables(dbTables, jsonData, verbose) {
   if (dbTables.length < 1) return;
@@ -578,7 +578,7 @@ function FMTImportTables(dbTables, jsonData, verbose) {
 
   let keys, endCond, recordsObj, onEnd, iterSuccess, iterError;
   onEnd = getOnEndRemoveFirstFromArrayAndExec(dbTables, dbTableName, function() {
-    dbTables.shift();
+    //dbTables.shift();
     FMTImportTables(dbTables, jsonData);
   });
   switch (dbTableName) {
@@ -597,8 +597,8 @@ function FMTImportTables(dbTables, jsonData, verbose) {
     case fmtAppGlobals.FMT_DB_USER_GOALS_STORE:
     //profileEntriesContainer are objects with profile_ids as keys and arrays of records as values
       const profileEntriesContainer = jsonData[dbTableName]
-      const keys = Object.keys(profileEntriesContainer);
-      const endCond = getEmptyArrayEndCondition(keys);
+      keys = Object.keys(profileEntriesContainer);
+      endCond = getEmptyArrayEndCondition(keys);
 
       const onNextProfile = function() {
         if (!Array.isArray(keys) || keys.length < 1) return;
@@ -626,11 +626,11 @@ function FMTImportTables(dbTables, jsonData, verbose) {
   }
 }
 function FMTImportFromStructuredJSON(jsonString, jsonParseReviverFn, excludeTables) {
-  let dbTables = Object.keys(jsonData);
   if (Array.isArray(excludeTables)) {
       dbTables = dbTables.filter(table => excludeTables.indexOf(table) < 0);
   }
   let jsonData = JSON.parse(jsonString, jsonParseReviverFn);
+  let dbTables = Object.keys(jsonData);
   const endCondition = function() { return dbTables.length < 1; };
   const onEnd = function() {
     console.log("Finished Import!");
