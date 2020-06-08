@@ -28,7 +28,7 @@ fmtAppInstance.additionalNutrients = null;
 //Globals
 var fmtAppGlobals = {};
 //Globals - Links
-fmtAppGlobals.projectURL = "https://github.com/guyo13/free-macro-tracker/issues";
+fmtAppGlobals.projectURL = "https://github.com/guyo13/free-macro-tracker";
 //Globals - DB
 fmtAppGlobals.fmtDb = undefined;
 fmtAppGlobals.FMT_DB_NAME = "fmt";
