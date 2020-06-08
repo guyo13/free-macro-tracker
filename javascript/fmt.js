@@ -102,6 +102,9 @@ var fmtAppExport;
 
 //Functions
 //Functions - Generic
+function isFunction(fn) {
+  return (typeof fn === 'function');
+}
 function isPercent(num) {
     if (!isNaN(num)) {
         if (num >= 0 && num <= 100) {return true;}
@@ -142,6 +145,33 @@ function roundedToFixed(_float, _digits){
     if (_digits == null) { _digits = fmtAppInstance.roundingPrecision; }
     let rounded = Math.pow(10, _digits);
     return (Math.round(_float * rounded) / rounded).toFixed(_digits);
+}
+function taskWaitUntil(onendFn, endconditionFn, intervalMs) {
+  intervalMs = intervalMs || 50;
+  if (!(typeof endconditionFn === 'function')) return;
+  let intervalObj;
+  intervalObj = setInterval(function() {
+    if (endconditionFn()) {
+      cancelInterval(intervalObj);
+      if (typeof onendFn === 'function') {
+        onendFn();
+      }
+    }
+  }, intervalMs);
+}
+function getEmptyArrayEndCondition(array) {
+  return function() {
+    return (array.length < 1);
+  };
+}
+function getOnEndRemoveFirstFromArrayAndExec(globalArray, elem, fn) {
+  return function() {
+    const idx = globalArray.indexOf(elem);
+    if (idx >= 0) {
+      globalArray.splice(idx, 1);
+    }
+    if (typeof fn === 'function') { fn(); }
+  };
 }
 //Functions - DB
 function prepareDBv1() {
@@ -509,6 +539,104 @@ function FMTDataToStructuredJSON(exportFn) {
     errors.push(err);
     for (const e in errors) { console.error(errors[e]); }
   });
+}
+//Functions - DB - Import
+function FMTImportRecordsSeq(recordsObj, indexes, objectStoreName, successIterFn, errIterFn, importMethod, isVerbose) {
+  //Success and Error iter functions get as arguments - (event, recordsObj, indexes, objectStoreName, successIterFn, errIterFn, importMethod, isVerbose)
+  importMethod = importMethod || "put";
+  if (!Array.isArray(indexes) || indexes.length < 1) return;
+  const objectStore = getObjectStore(objectStoreName, fmtAppGlobals.FMT_DB_READWRITE);
+  if (!objectStore) return;
+  const idx = indexes[0];
+  const record = recordsObj[idx];
+  errIterFn = isFunction(errIterFn) ? errIterFn : function(e) {
+    indexes.shift();
+    if (isVerbose === true) { console.error(`Failed Adding Record to ${objectStoreName}, ${e}`);}
+    FMTImportRecordsSeq(recordsObj, indexes, objectStoreName, successIterFn, errIterFn, importMethod, isVerbose);
+  };
+  successIterFn = isFunction(successIterFn) ? successIterFn : function(e) {
+    indexes.shift();
+    if (isVerbose === true) { console.debug(`Added Record to ${objectStoreName}, ${e.target.result}`);}
+    FMTImportRecordsSeq(recordsObj, indexes, objectStoreName, successIterFn, errIterFn, importMethod, isVerbose);
+  };
+  let importReq;
+  switch(importMethod) {
+    case "add":
+      importReq = objectStore.add(record, onsucc, onerr);
+      break;
+    case "put":
+    default:
+      importReq = objectStore.put(record, onsucc, onerr);
+      break;
+  }
+  importReq.onsuccess = onsucc;
+  importReq.onerror = onerr;
+}
+function FMTImportTables(dbTables, jsonData, verbose) {
+  if (dbTables.length < 1) return;
+  const dbTableName = dbTables[0];//.shift();
+
+  let keys, endCond, recordsObj, onEnd, iterSuccess, iterError;
+  onEnd = getOnEndRemoveFirstFromArrayAndExec(dbTables, dbTableName, function() {
+    dbTables.shift();
+    FMTImportTables(dbTables, jsonData);
+  });
+  switch (dbTableName) {
+    case fmtAppGlobals.FMT_DB_MASS_UNITS_STORE:
+    case fmtAppGlobals.FMT_DB_NUTRIENTS_STORE:
+    case fmtAppGlobals.FMT_DB_FOODS_STORE:
+    case fmtAppGlobals.FMT_DB_PROFILES_STORE:
+    //These are arrays of records
+      recordsObj = jsonData[dbTableName];
+      keys = Object.keys(recordsObj);
+      endCond = getEmptyArrayEndCondition(keys);
+    FMTImportRecordsSeq(recordsObj, keys, dbTableName, iterSuccess, iterError, "put", verbose);
+    taskWaitUntil(onEnd, endCond, 100);
+    break;
+    case fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE:
+    case fmtAppGlobals.FMT_DB_USER_GOALS_STORE:
+    //profileEntriesContainer are objects with profile_ids as keys and arrays of records as values
+      const profileEntriesContainer = jsonData[dbTableName]
+      const keys = Object.keys(profileEntriesContainer);
+      const endCond = getEmptyArrayEndCondition(keys);
+
+      const onNextProfile = function() {
+        if (!Array.isArray(keys) || keys.length < 1) return;
+        currentProfile_id = keys[0];
+        recordsObj = profileEntriesContainer[currentProfile_id];
+        recordKeys = Object.keys(recordsObj);
+        const iterProfilesEndCond = getEmptyArrayEndCondition(recordKeys);
+        FMTImportRecordsSeq(recordsObj, recordKeys, dbTableName, iterSuccess, iterError, "put", verbose);
+        //Wait for current profile entries
+        taskWaitUntil(function() {
+          keys.shift();
+          onNextProfile();
+        }, iterProfilesEndCond, 100);
+      };
+      //Wait for all profiles
+      taskWaitUntil(onEnd, endCond, 110*keys.length);
+      onNextProfile();
+    break;
+    default:
+      if (verbose === true) {
+        console.warning(`Unrecognized DB Table name ${dbTableName} in import data. ignoring`);
+      }
+      dbTables.shift();
+      return setTimeout(() => { FMTImportTables(dbTables, jsonData); }, 50);
+  }
+}
+function FMTImportFromStructuredJSON(jsonString, jsonParseReviverFn, excludeTables) {
+  let dbTables = Object.keys(jsonData);
+  if (Array.isArray(excludeTables)) {
+      dbTables = dbTables.filter(table => excludeTables.indexOf(table) < 0);
+  }
+  let jsonData = JSON.parse(jsonString, jsonParseReviverFn);
+  const endCondition = function() { return dbTables.length < 1; };
+  const onEnd = function() {
+    console.log("Finished Import!");
+  }
+  taskWaitUntil(onEnd, endCondition, 500);
+  FMTImportTables(dbTables, jsonData);
 }
 //Functions - Validation
 function FMTValidateNutritionalValue(nutritionalValueObj, mUnitsChart, options) {
