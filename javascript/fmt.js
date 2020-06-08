@@ -3923,14 +3923,14 @@ function prepareEventHandlers() {
     $(".fmt-next-day-btn").click( (e) => { FMTNextDay(FMTOverviewLoadCurrentDay); } );
     //Page interaction
     let prevScrollpos = window.pageYOffset;
-    const navOverlay = document.getElementById("fmt-app-nav-overlay");
+    const navOverlay = document.getElementById("fmt-app-nav-overlay-content");
     let resetNav;
     window.onscroll = function() {
       var currentScrollPos = window.pageYOffset;
       if (prevScrollpos > currentScrollPos) {
         navOverlay.style.bottom = "0";
       } else {
-        navOverlay.style.bottom = "-50px";
+        navOverlay.style.bottom = "-150px";
       }
       prevScrollpos = currentScrollPos;
       if (resetNav != null) {

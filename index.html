@@ -6,8 +6,8 @@
     <title>Free Macro Tracker</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/fmt.css" rel="stylesheet">
-<!--    <link href="css/fontawesome.min.css" rel="stylesheet">
-    <link href="css/light.min.css" rel="stylesheet">-->
+    <link href="css/fontawesome.min.css" rel="stylesheet">
+    <link href="css/light.min.css" rel="stylesheet">
 </head>
 <body>
     <div id="odin" class="fmt-allfather">
@@ -19,23 +19,7 @@
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="collapsibleNavbar">
-                <ul id="main-screens" class="navbar-nav">
-                  <li class="nav-item">
-                    <a class="nav-link active fmt-font-1" id="goto-overview" href="#">Overview</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link fmt-font-1" id="goto-foods" href="#">Foods</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link fmt-font-1" id="goto-recipes" href="#">Recipes</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link fmt-font-1" id="goto-profile" href="#">Profile</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link fmt-font-1" id="goto-settings" href="#">Settings</a>
-                  </li>
-                </ul>
+
           </div>
         </nav>
         </div>
@@ -822,12 +806,39 @@
                 </div>
             </div>
         </div>
-        <div id="fmt-app-nav-overlay" class="d-none fmt-navbar-position container-fluid">
+        <div id="fmt-app-nav-overlay" class=" container-fluid">
           <div id="fmt-app-nav-overlay-alerts" class="row justify-content-center d-none"></div>
-            <div id="fmt-app-nav-overlay-content" class="row justify-content-center fmt-center-text">
-                <div class="col-12 fmt-bg-light fmt-border-dark-green">
-                    <span class="fmt-loading-screen-font">Free</span>
+            <div id="fmt-app-nav-overlay-content" class="row row-cols-15 justify-content-center fmt-center-text fmt-border-dark-green fmt-bg-light fmt-navbar-position">
+              <div class="col-3 flex-grow-1 debug">
+              </div>
+              <div class="col-3 flex-grow-1 debug">
+              </div>
+              <div class="col-3 flex-grow-1 debug">
+              </div>
+              <div class="col-3 flex-grow-1 debug">
+              </div>
+              <div class="col-3 flex-grow-1 debug">
+              </div>
+                <div class="col-12 flex-grow-1 d-none">
+                  <ul id="main-screens" class="d-none">
+                    <li class="">
+                      <a class=" fmt-font-1" id="goto-overview" href="#">Overview</a>
+                    </li>
+                    <li class="">
+                      <a class=" fmt-font-1" id="goto-foods" href="#">Foods</a>
+                    </li>
+                    <li class="">
+                      <a class=" fmt-font-1" id="goto-recipes" href="#">Recipes</a>
+                    </li>
+                    <li class="">
+                      <a class="" id="goto-profile" href="#"><i class="fal fa-user"></i></a>
+                    </li>
+                    <li class="">
+                      <a class=" fmt-font-1" id="goto-settings" href="#"></a>
+                    </li>
+                  </ul>
                 </div>
+
             </div>
         </div>
     </div><!--Ragnarok-->
