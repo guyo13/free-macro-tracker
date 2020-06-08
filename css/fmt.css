@@ -57,7 +57,10 @@ button {
 .fmt-add-nutri {}
 .fmt-mass-unit-igroup {}
 .fmt-bg-light {
-    background-color: var(--fmt-light-gray);/*rgb(233, 236, 239);*/
+    background-color: var(--fmt-light-gray);
+}
+.fmt-bg-light-green {
+    background-color: var(--fmt-light-green);
 }
 .fmt-bg-transparent {
   opacity: 0;
@@ -73,6 +76,11 @@ button {
 #fmt-app-nav-overlay-content a {
     color: black;
     text-decoration: none;
+}
+#fmt-app-nav-overlay-content .active {}
+#fmt-app-nav-overlay-content .fmt-menu-font {
+  font-size: 2rem;
+  color: var(--fmt-dark-green);
 }
 .fmt-navbar-position {
   bottom: 0;
@@ -289,6 +297,21 @@ button {
     color: white;
     font-weight: bold;
 }
+.fmt-bold {
+    font-weight: bold;
+}
+.fmt-font-color-violet {
+    color: var(--fmt-purple);
+}
+.fmt-font-color-warn {
+    color: var(--warning);
+}
+.fmt-font-color-orange {
+    color: var(--orange);
+}
+.fmt-font-color-info {
+    color: var(--info);
+}
 .fmt-btn-outline-success {
     color: var(--fmt-lighter-green);
     border-color: var(--fmt-lighter-green);
@@ -315,6 +338,9 @@ button {
 }
 .fmt-bg-violet {
     background-color: var(--fmt-purple);
+}
+.fmt-bg-orange {
+    background-color: var(--orange);
 }
 .fmt-bg-dark-green {
     background-color: var(--fmt-dark-green);

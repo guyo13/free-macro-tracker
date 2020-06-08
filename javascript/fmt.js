@@ -2447,8 +2447,8 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
 
     const carbSpanMd = document.createElement("span");
     const carbSpanSm = document.createElement("span");
-    carbSpanMd.classList.add("fmt-font-1", "d-none", "d-sm-block", "fmt-meal-carbs");
-    carbSpanSm.classList.add("fmt-font-1", "d-sm-none", "fmt-meal-carbs");
+    carbSpanMd.classList.add("fmt-font-1", "d-none", "d-sm-block", "fmt-meal-carbs", "fmt-font-color-violet");
+    carbSpanSm.classList.add("fmt-font-1", "d-sm-none", "fmt-meal-carbs", "fmt-font-color-violet");
     carbSpanMd.innerHTML = "Carbohydrates";
     carbSpanSm.innerHTML = "Carbs";
     const mCarbsDiv = document.createElement("div");
@@ -2457,14 +2457,14 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     mCarbsDiv.appendChild(carbSpanSm);
 
     const proteinSpan = document.createElement("span");
-    proteinSpan.classList.add("fmt-font-1", "fmt-meal-proteins");
+    proteinSpan.classList.add("fmt-font-1", "fmt-meal-proteins", "fmt-font-color-info");
     proteinSpan.innerHTML = "Proteins";
     const mProtDiv = document.createElement("div");
     mProtDiv.classList.add("col-3", "fmt-center-text");
     mProtDiv.appendChild(proteinSpan);
 
     const fatsSpan = document.createElement("span");
-    fatsSpan.classList.add("fmt-font-1", "fmt-meal-fats");
+    fatsSpan.classList.add("fmt-font-1", "fmt-meal-fats", "fmt-font-color-orange");
     fatsSpan.innerHTML = "Fats";
     const mFatsDiv = document.createElement("div");
     mFatsDiv.classList.add("col-3", "fmt-center-text");
@@ -2475,7 +2475,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
 
     const mCarbsProg = document.createElement("span");
     mCarbsProg.setAttribute("id", `overview-meal-${normalizedMealName}-carb-progress`);
-    mCarbsProg.classList.add("fmt-font-1");
+    mCarbsProg.classList.add("fmt-font-1", "fmt-font-color-violet");
     //Inner HTML is 0 at creation and updated later with each meal
     mCarbsProg.innerHTML = "0";
     const mCarbsProgDiv = document.createElement("div");
@@ -2484,7 +2484,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
 
     const mProtProg = document.createElement("span");
     mProtProg.setAttribute("id", `overview-meal-${normalizedMealName}-protein-progress`);
-    mProtProg.classList.add("fmt-font-1");
+    mProtProg.classList.add("fmt-font-1", "fmt-font-color-info");
     mProtProg.innerHTML = "0";
     const mProtProgDiv = document.createElement("div");
     mProtProgDiv.classList.add("fmt-center-text",  "col-3");
@@ -2492,7 +2492,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
 
     const mFatsProg = document.createElement("span");
     mFatsProg.setAttribute("id", `overview-meal-${normalizedMealName}-fat-progress`);
-    mFatsProg.classList.add("fmt-font-1");
+    mFatsProg.classList.add("fmt-font-1", "fmt-font-color-orange");
     mFatsProg.innerHTML = "0";
     const mFatsProgDiv = document.createElement("div");
     mFatsProgDiv.classList.add("fmt-center-text",  "col-3", "ml-1", "mr-1");
