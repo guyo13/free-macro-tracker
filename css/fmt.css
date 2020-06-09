@@ -39,10 +39,7 @@ button {
 .fmt-prog-sm {
   height: 0.5rem;
 }
-.fmt-table-height {
-    /*height: 50vh;
-    overflow-y: auto;*/
-}
+.fmt-table-height {}
 .fmt-max-height60 {
     max-height: 60%;
     overflow-y: auto;
