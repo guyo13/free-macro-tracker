@@ -86,27 +86,27 @@ button {
   background-color: var(--fmt-dark-green);
   color: white;
 }
+.fmt-navbar-position {
+  bottom: 0;
+  position: fixed;
+  height: 4rem;
+  width: 100vw;
+  transition: bottom 0.3s;
+}
 .fmt-tab {
     position: absolute;
     width: 100%;
     z-index: 0;
     background-color: white;
-    height: 95vh;
+    height: calc( 100vh - 4rem - 1.55 * 1.8rem );
     overflow-y: auto;
 }
 .fmt-dynamic-screen {
     position: absolute;
     width: 100%;
     background-color: white;
-    height: 95vh;
+    height: calc( 100vh - 4rem - 1.55 * 1.8rem );
     overflow-y: auto;
-}
-.fmt-navbar-position {
-  bottom: 0;
-  position: fixed;
-  height: calc( 5vh - 1.8rem );
-  width: 100vw;
-  transition: bottom 0.3s;
 }
 .fmt-mass-unit-btn {
     background-color: var(--fmt-light-gray)!important;
