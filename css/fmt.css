@@ -6,7 +6,8 @@
     --fmt-dark-green: rgb(42, 118, 59);
 }
 body {
-  overflow-x: hidden;
+  overflow: hidden;
+  overscroll-behavior-y: none;
 }
 button {
     touch-action: manipulation;
