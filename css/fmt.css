@@ -4,6 +4,9 @@
     --fmt-lighter-green: rgb(40, 167, 69); /*#28a745*/
     --fmt-light-green: rgb(54, 157, 77);
     --fmt-dark-green: rgb(42, 118, 59);
+    --fmt-header-size-sm: 36px;
+    --fmt-header-size-md: 38px;
+    --fmt-header-size-lg: 43px;
 }
 body {}
 button {
@@ -39,12 +42,6 @@ button {
 .fmt-food-name-cell {}
 .fmt-food-brand-cell {}
 .fmt-food-table-row {}
-.fmt-dynamic-screen {
-    position: absolute;
-    height: 100vh;
-    width: 100%;
-    background-color: white;
-}
 .fmt-overlay {
     position: fixed;
     left: 0;
@@ -85,51 +82,56 @@ button {
 .fmt-navbar-position {
   bottom: 0;
   position: fixed;
-  height: 15vh;
+  height: 8vh;
   width: 100vw;
   transition: bottom 0.3s;
 }
-@media screen and (min-height: 360px) {
-    .fmt-navbar-position {
-      height: 13vh;
-    }
+.fmt-tab {
+    position: absolute;
+    width: 100%;
+    z-index: 0;
+    background-color: white;
+    height: calc(100vh - 8vh - var(--fmt-header-size-sm) );
+    overflow-y: auto;
 }
-@media screen and (min-height: 400px) {
-   .fmt-navbar-position {
-     height: 11vh;
-   }
+.fmt-dynamic-screen {
+    position: absolute;
+    width: 100%;
+    background-color: white;
+    height: calc(100vh - 8vh - var(--fmt-header-size-sm) );
+    overflow-y: auto;
 }
-@media screen and (min-height: 500px) {
-    .fmt-navbar-position {
-      height: 9vh;
-    }
-}
-@media screen and (min-height: 650px) {
-    .fmt-navbar-position {
-      height: 8vh;
-    }
-}
-@media screen and (min-height: 750px) {
+@media screen and (min-width: 768px) {
     .fmt-navbar-position {
       height: 7vh;
     }
+    .fmt-tab {
+      height: calc(100vh - 7vh - var(--fmt-header-size-md));
+      overflow-y: auto;
+    }
+    .fmt-dynamic-screen {
+      height: calc(100vh - 7vh - var(--fmt-header-size-md));
+      overflow-y: auto;
+    }
 }
-@media screen and (min-height: 850px) {
+@media screen and (min-width: 992px) {
     .fmt-navbar-position {
       height: 6vh;
+    }
+    .fmt-tab {
+      height: calc(100vh - 6vh - var(--fmt-header-size-lg));
+      overflow-y: auto;
+    }
+    .fmt-dynamic-screen {
+      height: calc(100vh - 6vh - var(--fmt-header-size-lg));
+      overflow-y: auto;
     }
 }
 .fmt-mass-unit-btn {
     background-color: var(--fmt-light-gray)!important;
 }
 .fmt-allfather {}
-.fmt-tab {
-    position: absolute;
-    height: 100vh;
-    width: 100%;
-    z-index: 0;
-    background-color: white;
-}
+
 .fmt-text-lg {
     font-size: 1.2rem;
     font-weight: 300;

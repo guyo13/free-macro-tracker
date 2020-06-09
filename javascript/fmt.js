@@ -3922,24 +3922,24 @@ function prepareEventHandlers() {
     $(".fmt-prev-day-btn").click( (e) => { FMTPreviousDay(FMTOverviewLoadCurrentDay); } );
     $(".fmt-next-day-btn").click( (e) => { FMTNextDay(FMTOverviewLoadCurrentDay); } );
     //Page interaction
-    let prevScrollpos = window.pageYOffset;
-    const navOverlay = document.getElementById("fmt-app-nav-overlay-content");
-    let resetNav;
-    window.onscroll = function() {
-      var currentScrollPos = window.pageYOffset;
-      if (prevScrollpos > currentScrollPos) {
-        navOverlay.style.bottom = "0";
-      } else {
-        navOverlay.style.bottom = "-150px";
-      }
-      prevScrollpos = currentScrollPos;
-      if (resetNav != null) {
-        clearTimeout(resetNav);
-      }
-      resetNav = setTimeout(function() {
-        navOverlay.style.bottom = "0";
-      }, 300);
-    };
+    // let prevScrollpos = window.pageYOffset;
+    // const navOverlay = document.getElementById("fmt-app-nav-overlay-content");
+    // let resetNav;
+    // window.onscroll = function() {
+    //   var currentScrollPos = window.pageYOffset;
+    //   if (prevScrollpos > currentScrollPos) {
+    //     navOverlay.style.bottom = "0";
+    //   } else {
+    //     navOverlay.style.bottom = "-150px";
+    //   }
+    //   prevScrollpos = currentScrollPos;
+    //   if (resetNav != null) {
+    //     clearTimeout(resetNav);
+    //   }
+    //   resetNav = setTimeout(function() {
+    //     navOverlay.style.bottom = "0";
+    //   }, 300);
+    // };
 
 }
 function startIndexedDB() {
