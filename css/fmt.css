@@ -34,7 +34,7 @@ button {
     overflow-y: auto;*/
 }
 .fmt-max-height60 {
-    max-height: 60vh;
+    max-height: 60%;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -131,7 +131,6 @@ button {
     text-align: left;
 }
 .fmt-meals-container {
-     /* max-height: 70vh; */
     overflow-y: auto;
 }
 .fmt-meal {
