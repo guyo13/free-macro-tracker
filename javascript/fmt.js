@@ -2806,6 +2806,21 @@ function FMTOverviewLoadMealEntries(onsuccessFn, onerrorFn) {
   let entryCount = 0;
   document.getElementById("overview-meals-container").innerHTML = "";
   let lastMealEntry;
+  //TODO - review logic for default meals
+  if (Array.isArray(fmtAppInstance.defaultMeals) && fmtAppInstance.defaultMeals.length > 0) {
+    const mealContainer = document.getElementById("overview-meals-container");
+    fmtAppInstance.defaultMeals.forEach((item, i) => {
+      const _mealobj = {};
+      _mealobj.year = fmtAppInstance.currentDay.getFullYear();
+      _mealobj.month = fmtAppInstance.currentDay.getMonth();
+      _mealobj.day = fmtAppInstance.currentDay.getDate();
+      _mealobj.mealName = item;
+      _mealobj.profile_id = fmtAppInstance.currentProfileId;
+      const defaultMealNode = FMTOverviewCreateMealNode(_mealobj, false);
+      mealContainer.appendChild(defaultMealNode);
+    });
+  }
+
   onOpenCursorSuccessFn = function(event) {
       let cursor = event.target.result;
       if (cursor) {
@@ -3322,6 +3337,8 @@ function FMTLoadProfile(profile_id, onloadedFn, onNoProfileFn) {
     FMTReadProfile(fmtAppInstance.currentProfileId,
                    function(e) {
         let profile = e.target.result;
+        //TODO - Default meals
+        fmtAppInstance.defaultMeals = ["Breakfast", "Early Snack", "Lunch", "Late Snack", "Dinner"];
         if (!!profile) {
             fmtAppInstance.currentProfile = profile;
             if (onloadedFn) { onloadedFn(); }
