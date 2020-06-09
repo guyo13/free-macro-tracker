@@ -863,7 +863,13 @@ function FMTValidateMacroSplit(macroSplitObj) {
             return result;
         }
         else {
-            error = `The sum of Protein, Carbohydrate and Fat Percentages must equal 100, current sum is ${sum}`;
+            const percentDiff = 100 - sum;
+            const calorieDiff = percentDiff/100 * macroSplitObj.Calories;
+            const moreOrLess = calorieDiff > 0 ? "more": "less";
+            const gProtOrCarb = roundedToFixed(calorieDiff/4, 2);
+            const gFat = roundedToFixed(calorieDiff/9, 2);
+            error = `The sum of Protein, Carbohydrate and Fat Percentages must equal 100, current sum : ${sum}.
+            (Thats ${gProtOrCarb} grams ${moreOrLess} of Carbs or Proteins or ${gFat} grams ${moreOrLess} of Fat)`;
             result.error = error;
             return result;
         }
