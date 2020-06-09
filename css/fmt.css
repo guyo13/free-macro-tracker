@@ -41,7 +41,7 @@ button {
 }
 .fmt-table-height {}
 .fmt-max-height60 {
-    max-height: 70%;
+    max-height: 65%;
     overflow-y: auto;
     overflow-x: hidden;
 }
