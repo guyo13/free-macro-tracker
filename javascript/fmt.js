@@ -2432,7 +2432,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     const mealFooterAddDiv = document.createElement("div");
     mealFooterAddDiv.classList.add("col-12", "fmt-meal-footer-add", "fmt-center-text", "d-flex", "pr-0", "pl-0");
     const mealFooterAddBtn = document.createElement("button");
-    mealFooterAddBtn.classList.add("fmt-font-1", "btn", "fmt-btn-success", "flex-fill");
+    mealFooterAddBtn.classList.add("fmt-font-1", "btn", "fmt-btn-outline-gray", "flex-fill");
     mealFooterAddBtn.innerHTML = `Add to ${mealEntry.mealName}`//"+";
     mealFooterAddBtn.addEventListener("click", function() {
         mealIdentifierObj = {};
