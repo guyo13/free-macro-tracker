@@ -29,6 +29,9 @@ button {
 .fmt-text-btn2 {
     font-size: 1.5rem;
 }
+.fmt-prog-sm {
+  height: 0.5rem;
+}
 .fmt-table-height {
     /*height: 50vh;
     overflow-y: auto;*/
