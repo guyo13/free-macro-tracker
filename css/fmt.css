@@ -8,6 +8,13 @@
 body {
   overflow: hidden;
   overscroll-behavior-y: none;
+  min-height: 100vh;
+  /* mobile viewport bug fix */
+  min-height: -webkit-fill-available;
+}
+
+html {
+  height: -webkit-fill-available;
 }
 button {
     touch-action: manipulation;
