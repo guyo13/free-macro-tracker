@@ -118,8 +118,8 @@
             </div>
             <div id="food-menu-container" class="row justify-content-center">
                 <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                    <div class="input-group-prepend">
+                <div class="input-group col-12 col-lg-8 mb-1 mt-1">
+                    <div class="input-group-prepend" style="width: inherit;">
                         <span class="input-group-text">Search</span>
                         <input id="foods-food-search" type="text" class="form-control" placeholder="Type to Search..." aria-label="Search" aria-describedby="basic-addon2">
                     </div>
@@ -127,6 +127,13 @@
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-8 mb-1 fmt-table-height">
                     <table id="foods-food-table" class="table table-striped table-hover">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Description</th>
+                          <th scope="col">Brand</th>
+                        </tr>
+                      </thead>
                       <tbody id="foods-food-table-body">
                       </tbody>
                     </table>
@@ -267,7 +274,7 @@
                 <div class="input-group col-12 col-lg-8 mb-1">
                   <div class="input-group-prepend row flex-grow-1 fmt-profile-input-field">
                     <span class="input-group-text col-9 col-lg-5 fmt-outline-success">Activity Level Multiplier</span>
-                    <span id="profile-activity-mult" class="col-3 col-lg-1 input-group-text fmt-outline-success" value=""></span>
+                    <span id="profile-activity-mult" class="col-3 col-lg-1 input-group-text fmt-outline-success d-none" value=""></span>
                   </div>
                 </div>
                 <div class="w-100"></div>

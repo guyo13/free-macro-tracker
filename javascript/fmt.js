@@ -1767,6 +1767,7 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
                     document.getElementById("profile-active-level").setAttribute("level", profile.activityLevel);
                     document.getElementById("profile-activity-mult").setAttribute("value", profile.activityMultiplier);
                     document.getElementById("profile-activity-mult").innerHTML = profile.activityMultiplier;
+                    document.getElementById("profile-activity-mult").classList.remove("d-none");
                     let bmr = Math.round(profile.bmr);
                     let tdee = Math.round(profile.tdee);
                     document.getElementById("profile-bmr").setAttribute("value", bmr);
@@ -3428,6 +3429,7 @@ function prepareEventHandlers() {
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
         DOMActiveLevelMult.setAttribute("value", 1.2);
         DOMActiveLevelMult.innerHTML = 1.2;
+        DOMActiveLevelMult.classList.remove("d-none");
         });
     $("#profile-active-level-light").click( (e) => {
         let DOMActiveLevel = document.getElementById("profile-active-level");
@@ -3436,6 +3438,7 @@ function prepareEventHandlers() {
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
         DOMActiveLevelMult.setAttribute("value", 1.375);
         DOMActiveLevelMult.innerHTML = 1.375;
+        DOMActiveLevelMult.classList.remove("d-none");
         });
     $("#profile-active-level-mod").click( (e) => {
         let DOMActiveLevel = document.getElementById("profile-active-level");
@@ -3444,6 +3447,7 @@ function prepareEventHandlers() {
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
         DOMActiveLevelMult.setAttribute("value", 1.55);
         DOMActiveLevelMult.innerHTML = 1.55;
+        DOMActiveLevelMult.classList.remove("d-none");
         });
     $("#profile-active-level-high").click( (e) => {
         let DOMActiveLevel = document.getElementById("profile-active-level");
@@ -3452,6 +3456,7 @@ function prepareEventHandlers() {
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
         DOMActiveLevelMult.setAttribute("value", 1.725);
         DOMActiveLevelMult.innerHTML = 1.725;
+        DOMActiveLevelMult.classList.remove("d-none");
         });
     $("#profile-active-level-vhigh").click( (e) => {
         let DOMActiveLevel = document.getElementById("profile-active-level");
@@ -3460,6 +3465,7 @@ function prepareEventHandlers() {
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
         DOMActiveLevelMult.setAttribute("value", 1.9);
         DOMActiveLevelMult.innerHTML = 1.9;
+        DOMActiveLevelMult.classList.remove("d-none");
         });
     $("#profile-active-level-custom").click( (e) => {
         let mult = prompt("Enter Custom Multiplier:");
@@ -3471,6 +3477,7 @@ function prepareEventHandlers() {
             let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
             DOMActiveLevelMult.setAttribute("value", mult);
             DOMActiveLevelMult.innerHTML = mult;
+            DOMActiveLevelMult.classList.remove("d-none");
         }
         });
     $("#save-profile-details").click( (e) => {
