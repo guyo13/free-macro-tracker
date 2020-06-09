@@ -106,16 +106,20 @@ button {
     width: 100%;
     z-index: 0;
     background-color: white;
-    height: calc( 100vh - 4rem - 1.55 * 1.8rem );
-    height: -webkit-calc( 100vh - 4rem - 1.55 * 1.8rem );
+    /* height: calc( 100vh - 4rem - 1.55 * 1.8rem );
+    height: -webkit-calc( 100vh - 4rem - 1.55 * 1.8rem ); */
+    height: calc( 100% - 4rem - 1.55 * 1.8rem );
+    height: -webkit-calc( 100% - 4rem - 1.55 * 1.8rem );
     overflow-y: auto;
 }
 .fmt-dynamic-screen {
     position: absolute;
     width: 100%;
     background-color: white;
-    height: calc( 100vh - 4rem - 1.55 * 1.8rem );
-    height: -webkit-calc( 100vh - 4rem - 1.55 * 1.8rem );
+    /* height: calc( 100vh - 4rem - 1.55 * 1.8rem );
+    height: -webkit-calc( 100vh - 4rem - 1.55 * 1.8rem ); */
+    height: calc( 100% - 4rem - 1.55 * 1.8rem );
+    height: -webkit-calc( 100% - 4rem - 1.55 * 1.8rem );
     overflow-y: auto;
 }
 .fmt-mass-unit-btn {
