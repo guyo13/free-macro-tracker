@@ -2204,6 +2204,7 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
 
 //Functions - UI - Units
 function FMTCreateUnitDropdownMenu(baseName, targetDivId, unitsChart, isStatic, defaultUnitName, readonly) {
+    const _fnName = "FMTCreateUnitDropdownMenu";
     let tDiv = document.getElementById(targetDivId);
     if (!!tDiv) {
         let inputGroupId = `${baseName}-fmtigroup`;
@@ -2266,7 +2267,7 @@ function FMTCreateUnitDropdownMenu(baseName, targetDivId, unitsChart, isStatic, 
         }
     }
     else {
-        console.warn(`[FMTCreateUnitDropdownMenu] - Requested dropdown menu creation with base name ${baseName} in inexisting target Div ID ${targetDivId}`);
+        console.warn(`[${_fnName}] - Requested dropdown menu creation with base name ${baseName} in inexisting target Div ID ${targetDivId}`);
     }
 }
 
@@ -2277,7 +2278,7 @@ function FMTCreateNutrientCategoryHeading(category, targetDivID) {
     spacer.classList.add("w-100");
     headingElements.push(spacer);
     const headingCont = document.createElement("div");
-    headingCont.classList.add("input-group", "mb-1");//, "col-12", "col-lg-8", "mb-1");
+    headingCont.classList.add("input-group", "mb-1");
     const h5 = document.createElement("h5");
     h5.innerHTML = category;
     headingCont.appendChild(h5);
@@ -2297,7 +2298,7 @@ function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj
         spacer.classList.add("w-100");
         elements.push(spacer);
         const inGroupCont = document.createElement("div");
-        inGroupCont.classList.add("input-group", "mb-1");//, "col-12", "col-lg-8", "mb-1");
+        inGroupCont.classList.add("input-group", "mb-1");
         const addNutriInGroup = document.createElement("div");
         addNutriInGroup.classList.add("input-group-prepend", "row", "flex-grow-1", "fmt-food-input-field");
         addNutriInGroup.setAttribute("id", nutriBaseId);
@@ -2539,16 +2540,16 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
                 if (nutrient.amount == 0) { continue; }
                 const baseElementId = `${baseScreenID}-${qualifier}-addi-${nutriCatName.replace(/ /g, "_")}-${nutrient.name.replace(/ /g, "_")}`;
                 const inputElementId = `${baseElementId}-input`;
-                const mUnitDropdownItemId = `${baseElementId}-unit-${nutrient.unit}`;
+                const unitDropdownItemId = `${baseElementId}-unit-${nutrient.unit}`;
                 const inputElement = document.getElementById(inputElementId);
-                const mUnitDropdownItem = document.getElementById(mUnitDropdownItemId);
-                if (inputElement && mUnitDropdownItem) {
+                const unitDropdownItem = document.getElementById(unitDropdownItemId);
+                if (inputElement && unitDropdownItem) {
                     inputElement.value = nutrient.amount * multiplier;
-                    mUnitDropdownItem.dispatchEvent(new Event("click"));
+                    unitDropdownItem.dispatchEvent(new Event("click"));
                 }
                 else {
                     //TODO - Lazy Load inexisting nutrients/categories based on APP settings
-                    console.warn(`[${_funcName}] - Consumable Id (${consumableId}), could not find DOM elements "${inputElementId}", "${mUnitDropdownItemId}"`);
+                    console.warn(`[${_funcName}] - Consumable Id (${consumableId}), could not find DOM elements "${inputElementId}", "${unitDropdownItemId}"`);
                 }
             }
         }
