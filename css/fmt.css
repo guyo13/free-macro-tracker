@@ -58,7 +58,7 @@ button {
     overflow: hidden;
 }
 .fmt-add-nutri {}
-.fmt-mass-unit-igroup {}
+.fmt-unit-igroup {}
 .fmt-bg-light {
     background-color: var(--fmt-light-gray);
 }

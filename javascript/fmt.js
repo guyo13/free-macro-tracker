@@ -2023,7 +2023,7 @@ function FMTCreateUnitDropdownMenu(baseName, targetDivId, unitsChart, isStatic, 
             inputGroup.parentElement.removeChild(inputGroup);
         }
         inputGroup = document.createElement("div");
-        inputGroup.classList.add("col-3", "col-lg-1", "pl-0", "input-group-append", "fmt-mass-unit-igroup");
+        inputGroup.classList.add("col-3", "col-lg-1", "pl-0", "input-group-append", "fmt-unit-igroup");
         inputGroup.setAttribute("id", inputGroupId);
         let selectedBtn = document.createElement("button");
         let selectedBtnId = `${baseName}-units`;
