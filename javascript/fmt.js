@@ -64,7 +64,7 @@ fmtAppGlobals.FMT_DB_RECIPES_INDEXES = {"recipe_name_index": {"kp": "recipeName"
 //Globals - DB - Profile Store constants
 fmtAppGlobals.FMT_DB_PROFILES_STORE = "fmt_profiles";
 fmtAppGlobals.FMT_DB_PROFILES_KP = "profile_id";
-//Globals - DB - Mass Units Store constants
+//Globals - DB - Units Store constants
 fmtAppGlobals.FMT_DB_UNITS_STORE = "fmt_units";
 fmtAppGlobals.FMT_DB_UNITS_KP = "name";
 //Globals - DB - Nutrients Store constants
@@ -239,6 +239,7 @@ function prepareDBv1() {
                            {"name": "fl_oz", "value_in_grams": 0, "description": "Fluid Ounce", "type": "volume", "value_in_ml": 28.41306},
                            {"name": "cup", "value_in_grams": 0, "description": "Metric Cup", "type": "volume", "value_in_ml": 250},
                            {"name": "us_cup", "value_in_grams": 0, "description": "US Cup", "type": "volume", "value_in_ml": 240},
+                           {"name": "serving", "value_in_grams": 0, "description": "Serving", "type": "arbitrary", "value_in_ml": 0},
                           ];
     const baseAdditionalNutrients = [{"name" : "Sugars", "category": "Carbohydrates", "default_unit": "g", "help": "Total Sugars"},
                                          {"name" : "Fiber", "category": "Carbohydrates", "default_unit": "g"},
@@ -332,12 +333,12 @@ function prepareDBv1() {
     let fmtProfilesStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_PROFILES_STORE,
                                                                 {keyPath: fmtAppGlobals.FMT_DB_PROFILES_KP, autoIncrement: false});
 
-    //Create Mass Units objectStore and populate default entries
-    let fmtMassUnitsStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_UNITS_STORE,
+    //Create Units objectStore and populate default entries
+    let fmtUnitsStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_UNITS_STORE,
                                                                 {keyPath: fmtAppGlobals.FMT_DB_UNITS_KP, autoIncrement: false});
     for (let i in baseUnitChart) {
-        console.debug(`Adding Mass unit entry: ${JSON.stringify(baseUnitChart[i])}`);
-        fmtMassUnitsStore.add(baseUnitChart[i]);
+        console.debug(`Adding Unit entry: ${JSON.stringify(baseUnitChart[i])}`);
+        fmtUnitsStore.add(baseUnitChart[i]);
     }
 
     //Create Nutrients objectStore and populate default entries
@@ -430,8 +431,8 @@ function FMTDataToJSONArray(exportFn) {
         records.push(record);
       }
     }
-    //Export Mass Units
-    FMTReadAllMassUnits(onReadUnitsSuccFn, function(err) {errors.push(err);});
+    //Export Units
+    FMTReadAllUnits(onReadUnitsSuccFn, function(err) {errors.push(err);});
   }
   const onIterFoodsSuccFn = function(ev) {
     let cursor = ev.target.result;
@@ -527,8 +528,8 @@ function FMTDataToStructuredJSON(exportFn) {
         records[fmtAppGlobals.FMT_DB_NUTRIENTS_STORE].push(record);
       }
     }
-    //Export Mass Units
-    FMTReadAllMassUnits(onReadUnitsSuccFn, function(err) {errors.push(err);});
+    //Export Units
+    FMTReadAllUnits(onReadUnitsSuccFn, function(err) {errors.push(err);});
   }
   const onIterFoodsSuccFn = function(ev) {
     let cursor = ev.target.result;
@@ -687,7 +688,7 @@ function FMTImportFromStructuredJSON(jsonString, jsonParseReviverFn, onEnd, excl
   if (!isFunction(onEnd)) {
     onEnd = function() {
       console.log("Finished Import!");
-      FMTLoadMassUnits(function() {
+      FMTLoadUnits(function() {
           FMTLoadAdditionalNutrients(function() {
               FMTLoadProfile(1,
                              //onloaded
@@ -771,7 +772,7 @@ function FMTValidateNutritionalValue(nutritionalValueObj, unitsChart, options) {
                         return result;
                     }
                     if (!fmtAppInstance.allowForeignNutrients && !(nutrient.unit in unitsChart)) {
-                        error = `Nutrient "${nutrient.name}" (Category ${nutrientCategoryName}) has unknown or invalid mass unit "${nutrient.unit}"`;
+                        error = `Nutrient "${nutrient.name}" (Category ${nutrientCategoryName}) has unknown or invalid unit "${nutrient.unit}"`;
                         result.error = error;
                         return result;
                     }
@@ -844,35 +845,37 @@ function FMTValidateFoodObject(foodObj, unitsChart) {
     }
     return {"food": food, "error": null};
 }
-/*massUnitObj {name, value_in_grams, description}*/
-function FMTValidateMassUnitObject(massUnitObj) {
-    let massUnit = {};
-    if (massUnitObj.name == null || massUnitObj.name === "") {
-        console.debug(`[FMTValidateMassUnitObject] - massUnitObj.name is null or empty string`);
+/*unitObj {name, value_in_grams, description}*/
+function FMTValidateUnitObject(unitObj) {
+  const _fnName = "FMTValidateUnitObject";
+    let unit = {};
+    if (unitObj.name == null || unitObj.name === "") {
+        console.debug(`[${_fnName}] - unitObj.name is null or empty string`);
         return;
     }
-     if (!isNumber(massUnitObj.value_in_grams)) {
-        console.debug(`[FMTValidateMassUnitObject] - massUnitObj.value_in_grams is NaN`);
+     if (!isNumber(unitObj.value_in_grams)) {
+        console.debug(`[${_fnName}] - unitObj.value_in_grams is NaN`);
         return;
     }
-    massUnit.name = massUnitObj.name;
-    massUnit.value_in_grams = massUnitObj.value_in_grams;
-    massUnit.description = massUnitObj.description;
-    return massUnit;
+    unit.name = unitObj.name;
+    unit.value_in_grams = unitObj.value_in_grams;
+    unit.description = unitObj.description;
+    return unit;
 }
 /*nutrientObj {name,category,default_unit,help}*/
 function FMTValidateNutrientObject(nutrientObj) {
+    const _fnName = "FMTValidateNutrientObject";
     let nutrient = {};
-    if (nutrientObj.name == null || massUnitObj.name === "") {
-        console.debug(`[FMTValidateNutrientObject] - nutrientObj.name is null or empty string`);
+    if (nutrientObj.name == null || nutrientObj.name === "") {
+        console.debug(`[${_fnName}] - nutrientObj.name is null or empty string`);
         return;
     }
-    if (nutrientObj.category == null || massUnitObj.category === "") {
-        console.debug(`[FMTValidateNutrientObject] - nutrientObj.category is null or empty string`);
+    if (nutrientObj.category == null || nutrientObj.category === "") {
+        console.debug(`[${_fnName}] - nutrientObj.category is null or empty string`);
         return;
     }
-        if (nutrientObj.default_unit == null || massUnitObj.default_unit === "") {
-        console.debug(`[FMTValidateNutrientObject] - nutrientObj.default_unit is null or empty string`);
+        if (nutrientObj.default_unit == null || nutrientObj.default_unit === "") {
+        console.debug(`[${_fnName}] - nutrientObj.default_unit is null or empty string`);
         return;
     }
     nutrient.name = nutrientObj.name;
@@ -1677,55 +1680,55 @@ function FMTDeleteNutrient(nutrientCat, nutrientName, onsuccessFn, onerrorFn) {
     deleteRequest.onerror = onerrorFn || function(e) { console.debug(`[FMTDeleteNutrient.onerror] - ${JSON.stringify(e)}`) };
 }
 
-//Functions - DB - Mass Units
-function FMTAddMassUnit(massUnitObj, onsuccessFn, onerrorFn) {
-    let massUnit = FMTValidateMassUnitObject(massUnitObj);
-    if (massUnit == null) {
-        onerrorFn = onerrorFn || console.error(`Failed validating mass unit object ${massUnitObj}`);
+//Functions - DB - Units
+function FMTAddUnit(unitObj, onsuccessFn, onerrorFn) {
+    let unit = FMTValidateUnitObject(unitObj);
+    if (unit == null) {
+        onerrorFn = onerrorFn || console.error(`Failed validating unit object ${unitObj}`);
         onerrorFn();
         return;
     }
-    let munitStore = getObjectStore(fmtAppGlobals.FMT_DB_UNITS_STORE, fmtAppGlobals.FMT_DB_READWRITE);
-    let addRequest = munitStore.add(massUnit);
-    addRequest.onsuccess = onsuccessFn || console.debug(`Successfully added mass unit object ${massUnit}`);
-    addRequest.onerror = onerrorFn || console.debug(`Error adding mass unit object ${massUnit}`);
+    let unitStore = getObjectStore(fmtAppGlobals.FMT_DB_UNITS_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let addRequest = unitStore.add(unit);
+    addRequest.onsuccess = onsuccessFn || console.debug(`Successfully added unit object ${unit}`);
+    addRequest.onerror = onerrorFn || console.debug(`Error adding unit object ${unit}`);
 }
-function FMTUpdateMassUnit(massUnitObj, onsuccessFn, onerrorFn) {
-    let massUnit = FMTValidateMassUnitObject(massUnitObj);
-    if (massUnit == null) {
-        onerrorFn = onerrorFn || console.error(`Failed validating mass unit object ${massUnitObj}`);
+function FMTUpdateUnit(unitObj, onsuccessFn, onerrorFn) {
+    let unit = FMTValidateUnitObject(unitObj);
+    if (unit == null) {
+        onerrorFn = onerrorFn || console.error(`Failed validating unit object ${unitObj}`);
         onerrorFn();
         return;
     }
-    let munitStore = getObjectStore(fmtAppGlobals.FMT_DB_UNITS_STORE, fmtAppGlobals.FMT_DB_READWRITE);
-    let addRequest = munitStore.put(massUnit);
-    addRequest.onsuccess = onsuccessFn || console.debug(`Successfully added mass unit object ${massUnit}`);
-    addRequest.onerror = onerrorFn || console.debug(`Error adding mass unit object ${massUnit}`);
+    let unitStore = getObjectStore(fmtAppGlobals.FMT_DB_UNITS_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let addRequest = unitStore.put(unit);
+    addRequest.onsuccess = onsuccessFn || console.debug(`Successfully added unit object ${unit}`);
+    addRequest.onerror = onerrorFn || console.debug(`Error adding unit object ${unit}`);
 }
-function FMTReadMassUnit(massUnitName, onsuccessFn, onerrorFn) {
-    let munitStore = getObjectStore(fmtAppGlobals.FMT_DB_UNITS_STORE, fmtAppGlobals.FMT_DB_READONLY);
-    let readRequest = munitStore.get(massUnitName);
-    readRequest.onsuccess = onsuccessFn || console.debug(`Successfully read mass unit ${massUnitName}`);
-    readRequest.onerror = onerrorFn || console.debug(`Failed reading mass unit ${massUnitName}`);
+function FMTReadUnit(unitName, onsuccessFn, onerrorFn) {
+    let unitStore = getObjectStore(fmtAppGlobals.FMT_DB_UNITS_STORE, fmtAppGlobals.FMT_DB_READONLY);
+    let readRequest = unitStore.get(unitName);
+    readRequest.onsuccess = onsuccessFn || console.debug(`Successfully read unit ${unitName}`);
+    readRequest.onerror = onerrorFn || console.debug(`Failed reading unit ${unitName}`);
 }
-function FMTReadAllMassUnits(onsuccessFn, onerrorFn) {
-    let munitStore = getObjectStore(fmtAppGlobals.FMT_DB_UNITS_STORE, fmtAppGlobals.FMT_DB_READONLY);
-    let readRequest = munitStore.getAll();
-    readRequest.onsuccess = onsuccessFn || console.debug(`Successfully read all mass units`);
-    readRequest.onerror = onerrorFn || console.debug(`Failed reading all mass units`);
+function FMTReadAllUnits(onsuccessFn, onerrorFn) {
+    let unitStore = getObjectStore(fmtAppGlobals.FMT_DB_UNITS_STORE, fmtAppGlobals.FMT_DB_READONLY);
+    let readRequest = unitStore.getAll();
+    readRequest.onsuccess = onsuccessFn || console.debug(`Successfully read all units`);
+    readRequest.onerror = onerrorFn || console.debug(`Failed reading all units`);
 }
 /*onsuccessFn must implement success function accessing the cursor*/
-function FMTIterateMassUnits(onsuccessFn, onerrorFn) {
-    let munitStore = getObjectStore(fmtAppGlobals.FMT_DB_UNITS_STORE, fmtAppGlobals.FMT_DB_READONLY);
-    let readRequest = munitStore.openCursor();
-    readRequest.onsuccess = onsuccessFn || console.debug(`Successfully iterate mass unit`);
-    readRequest.onerror = onerrorFn || console.debug(`Failed mass units iteration`);
+function FMTIterateUnits(onsuccessFn, onerrorFn) {
+    let unitStore = getObjectStore(fmtAppGlobals.FMT_DB_UNITS_STORE, fmtAppGlobals.FMT_DB_READONLY);
+    let readRequest = unitStore.openCursor();
+    readRequest.onsuccess = onsuccessFn || console.debug(`Successfully iterate unit`);
+    readRequest.onerror = onerrorFn || console.debug(`Failed units iteration`);
 }
-function FMTDeleteMassUnit(massUnitName, onsuccessFn, onerrorFn) {
-    let munitStore = getObjectStore(fmtAppGlobals.FMT_DB_UNITS_STORE, fmtAppGlobals.FMT_DB_READWRITE);
-    let deleteRequest = munitStore.delete(massUnitName);
-    deleteRequest.onsuccess = onsuccessFn || console.debug(`Successfully delete mass unit ${massUnitName}`);
-    deleteRequest.onerror = onerrorFn || console.debug(`Failed deleting mass unit ${massUnitName}`);
+function FMTDeleteUnit(unitName, onsuccessFn, onerrorFn) {
+    let unitStore = getObjectStore(fmtAppGlobals.FMT_DB_UNITS_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let deleteRequest = unitStore.delete(unitName);
+    deleteRequest.onsuccess = onsuccessFn || console.debug(`Successfully delete unit ${unitName}`);
+    deleteRequest.onerror = onerrorFn || console.debug(`Failed deleting unit ${unitName}`);
 }
 
 //Functions - DB - User Goals
@@ -2010,8 +2013,8 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
                );
 }
 
-//Functions - UI - Mass Units
-function FMTCreateMassUnitDropdownMenu(baseName, targetDivId, unitsChart, isStatic, defaultUnitName, readonly) {
+//Functions - UI - Units
+function FMTCreateUnitDropdownMenu(baseName, targetDivId, unitsChart, isStatic, defaultUnitName, readonly) {
     let tDiv = document.getElementById(targetDivId);
     if (!!tDiv) {
         let inputGroupId = `${baseName}-fmtigroup`;
@@ -2024,7 +2027,7 @@ function FMTCreateMassUnitDropdownMenu(baseName, targetDivId, unitsChart, isStat
         inputGroup.setAttribute("id", inputGroupId);
         let selectedBtn = document.createElement("button");
         let selectedBtnId = `${baseName}-units`;
-        selectedBtn.classList.add("btn", "btn-outline-dark", "fmt-outline-success");//, "fmt-mass-unit-btn");
+        selectedBtn.classList.add("btn", "btn-outline-dark", "fmt-outline-success");
         selectedBtn.setAttribute("type", "button");
         selectedBtn.setAttribute("id", selectedBtnId);
         inputGroup.appendChild(selectedBtn);
@@ -2051,17 +2054,17 @@ function FMTCreateMassUnitDropdownMenu(baseName, targetDivId, unitsChart, isStat
 
                 let mUnits = Object.keys(unitsChart);
                 for (let j=0; j<mUnits.length; j++) {
-                    let massUnitName = mUnits[j];
-                    let massUnit = unitsChart[massUnitName];
-                    let normMassUnitName = massUnitName.replace(/ /g, "_");
-                    let mUnitId = `${baseName}-unit-${normMassUnitName}`;
+                    let unitName = mUnits[j];
+                    let unit = unitsChart[unitName];
+                    let normUnitName = unitName.replace(/ /g, "_");
+                    let mUnitId = `${baseName}-unit-${normUnitName}`;
                     let ddItem = document.createElement("a");
                     ddItem.classList.add("dropdown-item");
                     ddItem.setAttribute("href", `#${ddMenuId}`);
                     ddItem.setAttribute("id", mUnitId);
-                    ddItem.innerHTML = massUnit.description;
+                    ddItem.innerHTML = unit.description;
                     ddItem.addEventListener("click", function(e) {
-                        FMTDropdownToggleValue(selectedBtnId, massUnitName, {"unit": massUnitName});
+                        FMTDropdownToggleValue(selectedBtnId, unitName, {"unit": unitName});
                     });
                     ddMenu.appendChild(ddItem);
                 }
@@ -2074,7 +2077,7 @@ function FMTCreateMassUnitDropdownMenu(baseName, targetDivId, unitsChart, isStat
         }
     }
     else {
-        console.warn(`[FMTCreateMassUnitDropdownMenu] - Requested dropdown menu creation with base name ${baseName} in inexisting target Div ID ${targetDivId}`);
+        console.warn(`[FMTCreateUnitDropdownMenu] - Requested dropdown menu creation with base name ${baseName} in inexisting target Div ID ${targetDivId}`);
     }
 }
 
@@ -2125,7 +2128,7 @@ function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj
         inGroupCont.appendChild(addNutriInGroup);
         elements.push(inGroupCont);
         appendChildren(targetDiv, elements);
-        FMTCreateMassUnitDropdownMenu(nutriBaseId, nutriBaseId, unitsChart, isStatic, nutriObj.default_unit, readonly);
+        FMTCreateUnitDropdownMenu(nutriBaseId, nutriBaseId, unitsChart, isStatic, nutriObj.default_unit, readonly);
     }
 }
 function FMTCreateFoodsTableRowElement(foodObj, eventListeners) {
@@ -2278,7 +2281,7 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, ob
     const servingTargetDiv = servingBaseName;
     const unitsChart = fmtAppInstance.unitChart;
     const readonly = optionsObj.readonly || false;
-    FMTCreateMassUnitDropdownMenu(servingBaseName, servingTargetDiv, unitsChart, false, "g", readonly);
+    FMTCreateUnitDropdownMenu(servingBaseName, servingTargetDiv, unitsChart, false, "g", readonly);
 
     const saveOrAddBtn = document.getElementById(`${baseScreenID}-save`);
     if (isNumber(optionsObj.consumableId)) {
@@ -3507,19 +3510,21 @@ var pageController = {
 };
 
 //Functions - DB - Init
-function FMTLoadMassUnits(onloadedFn) {
-    FMTReadAllMassUnits(function(e) {
-        let massUnits = e.target.result;
+function FMTLoadUnits(onloadedFn) {
+    FMTReadAllUnits(function(e) {
+        let units = e.target.result;
         fmtAppInstance.unitChart = {};
-        for (let j in massUnits) {
-            let unit = massUnits[j];
+        for (let j in units) {
+            let unit = units[j];
             fmtAppInstance.unitChart[unit.name] = {"value_in_grams": unit.value_in_grams,
-                                                       "description": unit.description};
+                                                   "value_in_ml": unit.value_in_ml,
+                                                   "type": unit.type,
+                                                   "description": unit.description};
         }
-        console.debug(`Mass units loaded into Application instance ${JSON.stringify(fmtAppInstance.unitChart)}`);
+        console.debug(`Units loaded into Application instance ${JSON.stringify(fmtAppInstance.unitChart)}`);
         if (onloadedFn) { onloadedFn(); }
     },
-    function(e) {throw ReferenceError("Failed reading mass units");});
+    function(e) {throw ReferenceError("Failed reading units");});
 }
 function FMTLoadAdditionalNutrients(onloadedFn) {
     FMTReadAllNutrients(function(e) {
@@ -3567,7 +3572,7 @@ function onDbSuccess(event) {
     fmtAppInstance.fmtDb = event.target.result;
     setTimeout(function() {
         prepareEventHandlers();
-        FMTLoadMassUnits(function() {
+        FMTLoadUnits(function() {
             FMTLoadAdditionalNutrients(function() {
                 FMTLoadProfile(1,
                                //onloaded
