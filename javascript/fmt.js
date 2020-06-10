@@ -853,12 +853,54 @@ function FMTValidateUnitObject(unitObj) {
         console.debug(`[${_fnName}] - unitObj.name is null or empty string`);
         return;
     }
-     if (!isNumber(unitObj.value_in_grams)) {
-        console.debug(`[${_fnName}] - unitObj.value_in_grams is NaN`);
+    unit.name = unitObj.name;
+
+    if (fmtAppGlobals.supportedUnitTypes.indexOf(unitObj.type) < 0) {
+        console.debug(`[${_fnName}] - Invalid unitObj.type (${unitObj.type})`);
         return;
     }
-    unit.name = unitObj.name;
-    unit.value_in_grams = unitObj.value_in_grams;
+    unit.type = unitObj.type;
+
+    switch(unitObj.type) {
+      case "mass":
+         if (!isNumber(unitObj.value_in_grams)) {
+            console.debug(`[${_fnName}] - unitObj.value_in_grams is not a valid number`);
+            return;
+         }
+        unit.value_in_grams = unitObj.value_in_grams;
+        unit.value_in_ml = 0;
+      break;
+      case "volume":
+        if (!isNumber(unitObj.value_in_ml)) {
+           console.debug(`[${_fnName}] - unitObj.value_in_ml is not a valid number`);
+           return;
+        }
+       unit.value_in_ml = unitObj.value_in_ml;
+       unit.value_in_grams = 0;
+      break;
+      case "arbitrary":
+        if (isNumber(unitObj.value_in_ml) && isNumber(unitObj.value_in_gram)) {
+           console.debug(`[${_fnName}] - Arbitrary Unit can't represent both volume and mass!`);
+           return;
+        }
+        else if (isNumber(unitObj.value_in_ml)) {
+           unit.value_in_ml = unitObj.value_in_ml;
+           unit.value_in_grams = 0;
+        }
+        else if (isNumber(unitObj.value_in_grams)) {
+           unit.value_in_grams = unitObj.value_in_grams;
+           unit.value_in_ml = 0;
+        }
+        else {
+          unit.value_in_ml = 0;
+          unit.value_in_grams = 0;
+        }
+      break;
+      default:
+        console.error(`[${_fnName}] - Unsupported Unit type "${unitObj.type}"`);
+        return;
+    }
+
     unit.description = unitObj.description;
     return unit;
 }
@@ -1143,7 +1185,7 @@ function FMTValidateMealEntry(mealEntryObj) {
     mealEntry.consumableType = mealEntryObj.consumableType || "";
 
     if (!isNumber(mealEntryObj.serving) || Number(mealEntryObj.serving) <= 0) {
-        error = `Serving is not a positive number (got ${mealEntryObj.serving})`;
+        error = `Serving must be a positive number (got ${mealEntryObj.serving})`;
         result.error = error;
         return result;
     }
