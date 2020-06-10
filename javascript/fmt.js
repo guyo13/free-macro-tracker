@@ -112,6 +112,7 @@ function isPercent(num) {
     }
     else {return false;}
 }
+function isString(s) { return typeof s === 'string'; }
 function getDateString(d) {
     if (!d) {return "";}
     try {
@@ -172,6 +173,49 @@ function getOnEndRemoveFirstFromArrayAndExec(globalArray, elem, fn) {
     }
     if (typeof fn === 'function') { fn(); }
   };
+}
+function indexOfObject(array, key, value) {
+  array.forEach((item, i) => {
+    if(item[key] === value) {
+      return i;
+    }
+  });
+  return -1;
+}
+function FMTSumNutritionalValues(nutritionalValuesArray) {
+  const nutritionalValue = {};
+  nutritionalValue.calories = 0;
+  nutritionalValue.proteins = 0;
+  nutritionalValue.carbohydrates = 0;
+  nutritionalValue.fats = 0;
+  nutritionalValue.additionalNutrients = {};
+  nutritionalValuesArray.forEach((nutriValueObj, i) => {
+    nutritionalValue.calories += nutriValueObj.calories;
+    nutritionalValue.proteins += nutriValueObj.proteins;
+    nutritionalValue.carbohydrates += nutriValueObj.carbohydrates;
+    nutritionalValue.fats += nutriValueObj.fats;
+    if ("additionalNutrients" in nutriValueObj) {
+      const categories = Object.keys(nutriValueObj.additionalNutrients);
+      categories.forEach((category, j) => {
+        if (!Array.isArray(nutritionalValue.additionalNutrients[category])) {
+          nutritionalValue.additionalNutrients[category] = [];
+        }
+        nutriValueObj.additionalNutrients[category].forEach((addiNutriObj, i) => {
+          const idx = indexOfObject(nutritionalValue.additionalNutrients[category], "name", addiNutriObj.name);
+          if (idx >= 0) {
+            nutritionalValue.additionalNutrients[category][idx].mass += addiNutriObj.mass;
+          }
+          else {
+            nutritionalValue.additionalNutrients[category][idx].mass = addiNutriObj.mass;
+          }
+        });
+
+      });
+
+    }
+  });
+
+  return nutritionalValue;
 }
 //Functions - DB
 function prepareDBv1() {
@@ -755,17 +799,29 @@ function FMTValidateFoodObject(foodObj, mUnitsChart) {
         return {"food": null, "error": "Food Description must not be empty"};
     }
     else { food.foodName = foodObj.foodName; }
+
     food.foodBrand = foodObj.foodBrand;
+
     if (!isNumber(foodObj.referenceWeight) || Number(foodObj.referenceWeight) <= 0) {
         console.debug(`[${_funcName}] - referenceWeight is not a positive number`);
         return {"food": null, "error": "Weight must be positive number"};
     }
     else { food.referenceWeight = Number(foodObj.referenceWeight); }
+
     if (foodObj.weightUnits == null) {
         console.debug(`[${_funcName}] - null weightUnits`);
         return {"food": null, "error": "Invalid Weight units"};
     }
     else { food.weightUnits = foodObj.weightUnits; }
+
+    if ( foodObj.lastModified != null && isDate(new Date(foodObj.lastModified)) ) {
+      food.lastModified = foodObj.lastModified;
+    }
+
+    if ( foodObj.tzMinutes != null && isNumber(foodObj.tzMinutes) ) {
+      food.tzMinutes = foodObj.tzMinutes;
+    }
+
     if (foodObj.nutritionalValue == null) {
         console.debug(`[${_funcName}] - null nutritionalValue`);
         return {"food": null, "error": "Nutritional Value must not be empty"};
@@ -1044,14 +1100,6 @@ function FMTValidateMealEntry(mealEntryObj) {
     }
     mealEntry.mealName = mealEntryObj.mealName;
 
-    if (!!mealEntryObj.created && !isDate(new Date(mealEntryObj.created) ) ) {
-        error = `'Created' value must be valid Date (got ${mealEntryObj.created})`;
-        result.error = error;
-        return result;
-    }
-    else { mealEntry.created = mealEntryObj.created; }
-
-
     if (!!mealEntryObj.lastModified && !isDate(new Date(mealEntryObj.lastModified) ) ) {
         error = `'lastModified ' value must be valid Date (got ${mealEntryObj.lastModified})`;
         result.error = error;
@@ -1200,6 +1248,77 @@ function FMTValidateUserGoals(userGoalsObj) {
     return result;
 
 }
+function FMTValidateRecipeObject(recipeObj, mUnitsChart) {
+  const _funcName = "FMTValidateRecipeObject";
+  mUnitsChart = mUnitsChart || fmtAppInstance.massUnitChart;
+  const result = {};
+  const recipe = {};
+  let error = null;
+
+  if (recipeObj.recipeName == null || recipeObj.recipeName === "") {
+      console.debug(`[${_funcName}] - empty recipeName`);
+      error = "Recipe Name must not be empty";
+      result.error = error;
+      return result;
+  }
+  else { recipe.recipeName = recipeObj.recipeName; }
+
+  if (isString(recipeObj.recipeCreator) )
+    { recipe.recipeCreator = recipeObj.recipeCreator; }
+  if (isString(recipeObj.recipeDescription) )
+    { recipe.recipeDescription = recipeObj.recipeDescription; }
+
+  if (!isNumber(recipeObj.referenceWeight) || Number(recipeObj.referenceWeight) <= 0) {
+      console.debug(`[${_funcName}] - referenceWeight is not a positive number`);
+      error = "Weight must be positive number";
+      result.error = error;
+      return result;
+  }
+  else { recipe.referenceWeight = Number(recipeObj.referenceWeight); }
+
+  if (recipeObj.weightUnits == null) {
+      console.debug(`[${_funcName}] - null weightUnits`);
+      error = "Invalid Weight units";
+      result.error = error;
+      return result;
+  }
+  else { recipe.weightUnits = recipeObj.weightUnits; }
+
+  if ( recipeObj.lastModified != null && isDate(new Date(recipeObj.lastModified)) ) {
+    recipe.lastModified = recipeObj.lastModified;
+  }
+
+  if ( recipeObj.tzMinutes != null && isNumber(recipeObj.tzMinutes) ) {
+    recipe.tzMinutes = recipeObj.tzMinutes;
+  }
+
+  if (Array.isArray(recipeObj.ingredients) && recipeObj.ingredients.length > 0) {
+    recipe.ingredients = [];
+    const nutriValuesArr = [];
+    recipeObj.ingredients.forEach((item, i) => {
+      const validateIngredient = FMTValidateFoodObject(item);
+      if (validateIngredient.error != null || validateIngredient.food == null) {
+        error = `Ingredient number ${i+1} is invalid or corrupted. Please remove it`;
+        result.error = error;
+        return error;
+      }
+      //TODO - revise if better to push item
+      recipe.ingredients.push(validateIngredient.food);
+      nutriValuesArr.push(validateIngredient.food.nutritionalValue);
+    });
+  }
+  else {
+    error = "You must have at least one ingredient!";
+    result.error = error;
+    return result;
+  }
+
+  //TODO - Sum up nutritional Value!
+  recipe.nutritionalValue = FMTSumNutritionalValues(nutriValuesArr);
+
+  result.recipe = recipe;
+  return result;
+}
 //Functions - DB - Meal Entries
 function FMTAddMealEntry(mealEntryObj, onsuccessFn, onerrorFn) {
     const res = FMTValidateMealEntry(mealEntryObj);
@@ -1209,7 +1328,6 @@ function FMTAddMealEntry(mealEntryObj, onsuccessFn, onerrorFn) {
     }
     let mealEntry = res.mealEntry;
     const date = new Date();
-    mealEntry.created = date.toISOString();
     mealEntry.lastModified = date.toISOString();
     mealEntry.tzMinutes = date.getTimezoneOffset();
     let mealEntriesStore = getObjectStore(fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
@@ -1375,6 +1493,7 @@ function FMTIterateFoods( onsuccessFn, onerrorFn) {
     getRequest.onsuccess = onsuccessFn;
 }
 function FMTAddFood(foodObj, mUnitsChart, onsuccessFn, onerrorFn) {
+    const _fnName = "FMTAddFood";
     mUnitsChart = mUnitsChart || fmtAppInstance.massUnitChart;
     const result = FMTValidateFoodObject(foodObj, mUnitsChart);
     const food = result.food;
@@ -1382,18 +1501,18 @@ function FMTAddFood(foodObj, mUnitsChart, onsuccessFn, onerrorFn) {
         let date = new Date();
         food.lastModified = date.toISOString();
         food.tzMinutes = date.getTimezoneOffset();
-        food.created = food.lastModified;
         let foodStore = getObjectStore(fmtAppGlobals.FMT_DB_FOODS_STORE, fmtAppGlobals.FMT_DB_READWRITE);
         let addRequest = foodStore.add(food);
-        addRequest.onerror = onerrorFn || function(e) {console.debug(`[FMTAddFood] - failed adding food object - ${JSON.stringify(food)}`);};
-        addRequest.onsuccess = function(e) {onsuccessFn(e, food);} || function(e) {console.debug(`[FMTAddFood] - food object added successfully ${JSON.stringify(food)}`)};
+        addRequest.onerror = onerrorFn || function(e) {console.debug(`[${_fnName}] - failed adding food object - ${JSON.stringify(food)}`);};
+        addRequest.onsuccess = function(e) {onsuccessFn(e, food);} || function(e) {console.debug(`[${_fnName}] - food object added successfully ${JSON.stringify(food)}`)};
     }
     else {
-        onerrorFn = onerrorFn || function() {console.debug(`[FMTAddFood] - food object validation failed - ${JSON.stringify(foodObj)}`);}
+        onerrorFn = onerrorFn || function() {console.debug(`[${_fnName}] - food object validation failed - ${JSON.stringify(foodObj)}`);}
         onerrorFn(result.error);
     }
 }
 function FMTUpdateFood(foodId, foodObj, mUnitsChart, onsuccessFn, onerrorFn) {
+    const _fnName = "FMTUpdateFood";
     mUnitsChart = mUnitsChart || fmtAppInstance.massUnitChart;
     const result = FMTValidateFoodObject(foodObj, mUnitsChart);
     const food = result.food;
@@ -1404,22 +1523,99 @@ function FMTUpdateFood(foodId, foodObj, mUnitsChart, onsuccessFn, onerrorFn) {
         food.food_id = foodId;
         let foodStore = getObjectStore(fmtAppGlobals.FMT_DB_FOODS_STORE, fmtAppGlobals.FMT_DB_READWRITE);
         let addRequest = foodStore.put(food);
-        addRequest.onerror = onerrorFn || function(e) {console.debug(`[FMTUpdateFood] - failed updating food object - ${JSON.stringify(food)}`);};
-        addRequest.onsuccess = function(e) { onsuccessFn(e, food); } || function(e) {console.debug(`[FMTUpdateFood] - food object updated successfully ${JSON.stringify(food)}`)};
+        addRequest.onerror = onerrorFn || function(e) {console.debug(`[${_fnName}] - failed updating food object - ${JSON.stringify(food)}`);};
+        addRequest.onsuccess = function(e) { onsuccessFn(e, food); } || function(e) {console.debug(`[${_fnName}] - food object updated successfully ${JSON.stringify(food)}`)};
     }
     else {
-        onerrorFn = onerrorFn || function() {console.debug(`[FMTUpdateFood] - food object validation failed - ${JSON.stringify(foodObj)}`);}
+        onerrorFn = onerrorFn || function() {console.debug(`[${_fnName}] - food object validation failed - ${JSON.stringify(foodObj)}`);}
         onerrorFn(result.error);
     }
 }
 function FMTDeleteFood(foodId, onsuccessFn, onerrorFn) {
+    const _fnName = "FMTDeleteFood";
     let foodStore = getObjectStore(fmtAppGlobals.FMT_DB_FOODS_STORE, fmtAppGlobals.FMT_DB_READWRITE);
     let delRequest = foodStore.delete(foodId);
-    delRequest.onerror = onerrorFn || function(e) {console.debug(`[FMTDeleteFood] - failed deleting food object ${JSON.stringify(e.target.result)}`)};
-    delRequest.onsuccess = onsuccessFn || function(e) {console.debug(`[FMTDeleteFood] - food object deleted successfully ${JSON.stringify(e.target.result)}`)};
+    delRequest.onerror = onerrorFn || function(e) {console.debug(`[${_fnName}] - failed deleting food object ${JSON.stringify(e.target.result)}`)};
+    delRequest.onsuccess = onsuccessFn || function(e) {console.debug(`[${_fnName}] - food object deleted successfully ${JSON.stringify(e.target.result)}`)};
 }
 
 //Functions - DB - Recipes
+function FMTReadRecipe(recipeId, onsuccessFn, onerrorFn) {
+  let recipeStore = getObjectStore(fmtAppGlobals.FMT_DB_RECIPES_STORE, fmtAppGlobals.FMT_DB_READONLY);
+  let getRequest = recipeStore.get(recipeId);
+  getRequest.onerror = onerrorFn;
+  getRequest.onsuccess = onsuccessFn;
+}
+function FMTReadAllRecipes(onsuccessFn, onerrorFn) {
+  let recipeStore = getObjectStore(fmtAppGlobals.FMT_DB_RECIPES_STORE, fmtAppGlobals.FMT_DB_READONLY);
+  let getRequest = recipeStore.getAll();
+  getRequest.onerror = onerrorFn;
+  getRequest.onsuccess = onsuccessFn;
+}
+function FMTIterateRecipes(onsuccessFn, onerrorFn) {
+  let recipeStore = getObjectStore(fmtAppGlobals.FMT_DB_RECIPES_STORE, fmtAppGlobals.FMT_DB_READONLY);
+  let cursorRequest = recipeStore.openCursor();
+  cursorRequest.onerror = onerrorFn;
+  cursorRequest.onsuccess = onsuccessFn;
+}
+function FMTAddRecipe(recipeObj, mUnitsChart, onsuccessFn, onerrorFn) {
+    const _fnName = "FMTAddRecipe";
+    mUnitsChart = mUnitsChart || fmtAppInstance.massUnitChart;
+    const result = FMTValidateRecipeObject(recipeObj, mUnitsChart);
+    const recipe = result.recipe;
+    if (recipe != null && result.error == null) {
+        let date = new Date();
+        recipe.lastModified = date.toISOString();
+        recipe.tzMinutes = date.getTimezoneOffset();
+        if (isFunction(onerrorFn)) {
+          onerrorFn = function(e) { onerrorFn(e, recipe); };
+        }
+        if (isFunction(onsuccessFn)) {
+          onsuccessFn = function(e) { onsuccessFn(e, recipe); };
+        }
+        let recipeStore = getObjectStore(fmtAppGlobals.FMT_DB_RECIPES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+        let addRequest = recipeStore.add(recipe);
+        addRequest.onerror = onerrorFn || function(e) { console.debug(`[${_fnName}] - failed adding recipe object - ${JSON.stringify(recipe)}`); };
+        addRequest.onsuccess = onsuccessFn || function(e) {console.debug(`[${_fnName}] - recipe object added successfully ${JSON.stringify(recipe)}`)};
+    }
+    else {
+        onerrorFn = onerrorFn || function() {console.debug(`[${_fnName}] - recipe object validation failed - ${JSON.stringify(recipeObj)}`);}
+        onerrorFn(result.error, recipeObj);
+    }
+}
+function FMTUpdateRecipe(recipeId, recipeObj, mUnitsChart, onsuccessFn, onerrorFn) {
+    const _fnName = "FMTUpdateRecipe";
+    mUnitsChart = mUnitsChart || fmtAppInstance.massUnitChart;
+    const result = FMTValidateRecipeObject(recipeObj, mUnitsChart);
+    const recipe = result.recipe;
+    if (recipe != null && result.error == null) {
+        let date = new Date();
+        recipe.lastModified = date.toISOString();
+        recipe.tzMinutes = date.getTimezoneOffset();
+        recipe.recipe_id = recipeId;
+        if (isFunction(onerrorFn)) {
+          onerrorFn = function(e) { onerrorFn(e, recipe); };
+        }
+        if (isFunction(onsuccessFn)) {
+          onsuccessFn = function(e) { onsuccessFn(e, recipe); };
+        }
+        let recipeStore = getObjectStore(fmtAppGlobals.FMT_DB_RECIPES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+        let putRequest = recipeStore.put(recipe);
+        addRequest.onerror = onerrorFn || function(e) { console.debug(`[${_fnName}] - failed updating recipe object - ${JSON.stringify(recipe)}`); };
+        addRequest.onsuccess = onsuccessFn || function(e) {console.debug(`[${_fnName}] - recipe object updated successfully ${JSON.stringify(recipe)}`)};
+    }
+    else {
+        onerrorFn = onerrorFn || function() {console.debug(`[${_fnName}] - recipe object validation failed - ${JSON.stringify(recipeObj)}`);}
+        onerrorFn(result.error, recipeObj);
+    }
+}
+function FMTDeleteRecipe(recipeId, onsuccessFn, onerrorFn) {
+    const _fnName = "FMTDeleteRecipe";
+    let recipeStore = getObjectStore(fmtAppGlobals.FMT_DB_RECIPES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
+    let delRequest = recipeStore.delete(recipeId);
+    delRequest.onerror = onerrorFn || function(e) {console.debug(`[${_fnName}] - failed deleting recipe object ${JSON.stringify(e.target.result)}`)};
+    delRequest.onsuccess = onsuccessFn || function(e) {console.debug(`[${_fnName}] - recipe object deleted successfully ${JSON.stringify(e.target.result)}`)};
+}
 
 //Functions - DB - Nutrients
 function FMTAddNutrient(nutrientObj, onsuccessFn, onerrorFn) {

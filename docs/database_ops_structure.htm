@@ -58,7 +58,6 @@
             food_id - int <br/>
             foodName - String <br/>
             foodBrand - String <br/>
-            created - Date <br/>
             lastModified - Date <br/>
             tzMinutes - int <br/>
             referenceWeight - Number <br/>
@@ -72,14 +71,17 @@
             KEY PATH = "recipe_id" autoIncrement = true <br/>
             recipe_id - int <br/>
             recipeName - String <br/>
-            created - Date <br/>
+            recipeDescription - String <br/>
+            recipeCreator - String <br/>
             lastModified - Date <br/>
             tzMinutes - int <br/>
             referenceWeight - Number <br/>
             weightUnits - String (logically references a Mass Unit "name") <br/>
-            foodMakeup - Array of Objects** <br/>
+            ingredients - Array of Food Items <br/>
             nutritionalValue - Object (see above) <br/>
-            **foodMakeup - [{food_id,foodName,foodBrand,weight,weightUnits}, ... , {}] <br/>
+            preparationSteps - Array of Strings <br/>
+            videoUrl - String <br/>
+            website - String <br/>
         </p>
         <h2>Meal Entries Object Store</h2>
         <p>
@@ -90,7 +92,6 @@
             month - int (0-11) <br/>
             day - int <br/>
             mealName - String <br/>
-            created - Date <br/>
             lastModified - Date <br/>
             tzMinutes - int <br/>
             consumable_id - int <br/>
