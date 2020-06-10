@@ -2298,34 +2298,34 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, ob
     }
 }
 function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableItem, qualifier, objectType, multiplier,
-                                                      readonly, focusDivId, currentWeightValue, currentWeightUnits) {
+                                                      readonly, focusDivId, currentServingValue, currentServingUnits) {
     if (multiplier !== 0) {
         multiplier = multiplier || 1;
     }
     qualifier = qualifier || "food";
     objectType = objectType || "Food Item";
     const _funcName = "FMTPopulateSavedValuesInConsumableItemScreen";
-    let nameProp, brandProp, weightProp;
+    let nameProp, brandProp, servingProp;
     switch (objectType) {
         case "Food Item":
             nameProp = "foodName";
             brandProp = "foodBrand";
-            weightProp = "referenceServing";
+            servingProp = "referenceServing";
             break;
         case "Meal Entry":
             nameProp = "consumableName";
             brandProp = "consumableBrand";
-            weightProp = "weight";
+            servingProp = "serving";
             document.getElementById(`${baseScreenID}-${qualifier}-type`).value = consumableItem.consumableType || "";
             break;
     }
     document.getElementById(`${baseScreenID}-${qualifier}-name`).value = consumableItem[nameProp];
     document.getElementById(`${baseScreenID}-${qualifier}-brand`).value = consumableItem[brandProp] || "";
-    if (!isNumber(currentWeightValue) || !(currentWeightUnits in fmtAppInstance.unitChart)) {
-        document.getElementById(`${baseScreenID}-${qualifier}-weight-input`).value = consumableItem[weightProp];
-        document.getElementById(`${baseScreenID}-${qualifier}-weight-input`).setAttribute("reference_weight", consumableItem[weightProp]);
-        document.getElementById(`${baseScreenID}-${qualifier}-weight-input`).setAttribute("reference_weight_units", consumableItem.weightUnits);
-        document.getElementById(`${baseScreenID}-${qualifier}-weight-unit-${consumableItem.weightUnits}`).dispatchEvent(new Event("click"));
+    if (!isNumber(currentServingValue) || !(currentServingUnits in fmtAppInstance.unitChart)) {
+        document.getElementById(`${baseScreenID}-${qualifier}-weight-input`).value = consumableItem[servingProp];
+        document.getElementById(`${baseScreenID}-${qualifier}-weight-input`).setAttribute("reference_serving", consumableItem[servingProp]);
+        document.getElementById(`${baseScreenID}-${qualifier}-weight-input`).setAttribute("reference_serving_units", consumableItem.units);
+        document.getElementById(`${baseScreenID}-${qualifier}-weight-unit-${consumableItem.units}`).dispatchEvent(new Event("click"));
     }//Else dont touch these fields
     document.getElementById(`${baseScreenID}-${qualifier}-calories`).value = consumableItem.nutritionalValue.calories * multiplier;
     document.getElementById(`${baseScreenID}-${qualifier}-proteins`).value = consumableItem.nutritionalValue.proteins * multiplier;
@@ -2444,18 +2444,18 @@ function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
 }
 function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier, objectType, onsuccessFn, onerrorFn) {
     const _funcName = "FMTSaveConsumableItemScreen"
-    let nameProp, brandProp, weightProp;
+    let nameProp, brandProp, servingProp;
     let consumableObj = {};
     switch (objectType) {
         case "Food Item":
             nameProp = "foodName";
             brandProp = "foodBrand";
-            weightProp = "referenceServing";
+            servingProp = "referenceServing";
             break;
         case "Meal Entry":
             nameProp = "consumableName";
             brandProp = "consumableBrand";
-            weightProp = "weight";
+            servingProp = "serving";
             consumableObj.consumableType = document.getElementById(`${baseScreenID}-${qualifier}-type`).value;
             const updateBtn = document.getElementById(`${baseScreenID}-save`);
             consumableObj.year = updateBtn.getAttribute("meal_year");
@@ -2473,8 +2473,8 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
     const unitsChart = fmtAppInstance.unitChart;
     consumableObj[nameProp] = document.getElementById(`${baseScreenID}-${qualifier}-name`).value;
     consumableObj[brandProp] = document.getElementById(`${baseScreenID}-${qualifier}-brand`).value;
-    consumableObj[weightProp] = document.getElementById(`${baseScreenID}-${qualifier}-weight-input`).value;
-    consumableObj.weightUnits = document.getElementById(`${baseScreenID}-${qualifier}-weight-units`).getAttribute("unit");
+    consumableObj[servingProp] = document.getElementById(`${baseScreenID}-${qualifier}-weight-input`).value;
+    consumableObj.units = document.getElementById(`${baseScreenID}-${qualifier}-weight-units`).getAttribute("unit");
     consumableObj.nutritionalValue = {};
     consumableObj.nutritionalValue.calories = document.getElementById(`${baseScreenID}-${qualifier}-calories`).value;
     consumableObj.nutritionalValue.proteins = document.getElementById(`${baseScreenID}-${qualifier}-proteins`).value;
@@ -2537,7 +2537,7 @@ function FMTUpdateConsumableValuesOnWeightChange(event, baseScreenID, qualifier,
     const alertsDivID = `${baseScreenID}-alerts`;
     document.getElementById(alertsDivID).innerHTML = "";
     const weightInputBtn = document.getElementById(`${baseScreenID}-${qualifier}-weight-input`);
-    let weightValue = weightInputBtn.value;
+    let servingValue = weightInputBtn.value;
     let units = document.getElementById(`${baseScreenID}-${qualifier}-weight-units`).getAttribute("unit");
     let multiplier = 1;
     if (!(units in fmtAppInstance.unitChart) ) {
@@ -2546,11 +2546,11 @@ function FMTUpdateConsumableValuesOnWeightChange(event, baseScreenID, qualifier,
         FMTShowAlert(alertsDivID, "danger", msg, fmtAppGlobals.defaultAlertScroll);
         return;
     }
-    if (weightValue === "") { weightValue = 0; }
-    if (isNumber(weightValue)) {
-        weightValue = Number(weightValue);
-        let referenceServing = weightInputBtn.getAttribute("reference_weight");
-        let referenceServingUnits = weightInputBtn.getAttribute("reference_weight_units");
+    if (servingValue === "") { servingValue = 0; }
+    if (isNumber(servingValue)) {
+        servingValue = Number(servingValue);
+        let referenceServing = weightInputBtn.getAttribute("reference_serving");
+        let referenceServingUnits = weightInputBtn.getAttribute("reference_serving_units");
         if (!(referenceServingUnits in fmtAppInstance.unitChart) ) {
             const msg = `Invalid or unknown reference weight units "${referenceServingUnits}"`;
             console.error(msg);
@@ -2559,12 +2559,12 @@ function FMTUpdateConsumableValuesOnWeightChange(event, baseScreenID, qualifier,
         }
         if (isNumber(referenceServing) && Number(referenceServing) > 0) {
             referenceServing = Number(referenceServing);
-            if (units === referenceServingUnits) { multiplier = weightValue/referenceServing; }
+            if (units === referenceServingUnits) { multiplier = servingValue/referenceServing; }
             else {
                 // (currentUnit.value_in_grams/targetUnit.value_in_grams)
                 const unitMultiplier = (fmtAppInstance.unitChart[units].value_in_grams) / (fmtAppInstance.unitChart[referenceServingUnits].value_in_grams);
-                const weightValueConverted = weightValue * unitMultiplier;
-                multiplier = weightValueConverted/referenceServing;
+                const servingValueConverted = servingValue * unitMultiplier;
+                multiplier = servingValueConverted/referenceServing;
             }
         }
     }
@@ -2574,7 +2574,7 @@ function FMTUpdateConsumableValuesOnWeightChange(event, baseScreenID, qualifier,
         FMTShowAlert(alertsDivID, "danger", "Error while calculating nutritional value. Please reload page", fmtAppGlobals.defaultAlertScroll);
     }
     else {
-        pageFunction(objectId, multiplier, false, weightValue, units);
+        pageFunction(objectId, multiplier, false, servingValue, units);
     }
 }
 
@@ -3289,7 +3289,7 @@ var pageController = {
         saveBtn.removeAttribute("profile_id");
         delBtn.removeAttribute("foods-table-body-id");
     },
-    openViewFoodDynamicScreen: function(foodId, multiplier, clear, currentWeightValue, currentWeightUnits, mealIdentifierObj, foodsTableBodyID) {
+    openViewFoodDynamicScreen: function(foodId, multiplier, clear, currentServingValue, currentServingUnits, mealIdentifierObj, foodsTableBodyID) {
         //Sync Tasks
         //Argument Validation
         if (!foodId || !isNumber(foodId) || !Number.isInteger(Number(foodId)) ) { console.error(`Invalid Food ID: ${foodId}`); return; }
@@ -3358,7 +3358,7 @@ var pageController = {
                 document.getElementById("view-food-screen-meal-month").value = mealIdentifier.meal_month+1;
                 document.getElementById("view-food-screen-meal-day").value = mealIdentifier.meal_day;
             }
-            FMTPopulateSavedValuesInConsumableItemScreen("view-food-screen", food, "food", "Food Item", multiplier, true, "view-food-screen-food-weight-input", currentWeightValue, currentWeightUnits);
+            FMTPopulateSavedValuesInConsumableItemScreen("view-food-screen", food, "food", "Food Item", multiplier, true, "view-food-screen-food-weight-input", currentServingValue, currentServingUnits);
         },
                     //OnError
                     function(e) {
@@ -3396,7 +3396,7 @@ var pageController = {
     closeAddToMealDynamicScreen: function() {
         pageController.closeDynamicScreen("add-to-meal-screen");
     },
-    openEditMealEntryDynamicScreen: function(entry_id, multiplier, clear, currentWeightValue, currentWeightUnits) {
+    openEditMealEntryDynamicScreen: function(entry_id, multiplier, clear, currentServingValue, currentServingUnits) {
         if (!entry_id || !isNumber(entry_id) || !Number.isInteger(Number(entry_id)) ) { return; }
         if (!isNumber(multiplier)) { console.error(`Invalid Multiplier: ${multiplier}`); return; }
         entry_id = Number(entry_id);
@@ -3437,7 +3437,7 @@ var pageController = {
                 updateBtn.setAttribute("profile_id", validateResult.mealEntry.profile_id);
                 updateBtn.setAttribute("consumable_id", validateResult.mealEntry.consumable_id);
             }
-            FMTPopulateSavedValuesInConsumableItemScreen(screenID, validateResult.mealEntry, qualifier, objectType, multiplier, true, focusDivID, currentWeightValue, currentWeightUnits);
+            FMTPopulateSavedValuesInConsumableItemScreen(screenID, validateResult.mealEntry, qualifier, objectType, multiplier, true, focusDivID, currentServingValue, currentServingUnits);
         },
                          //OnError
                         function(e) {
