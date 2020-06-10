@@ -783,6 +783,7 @@ function FMTImportTables(dbTables, jsonData, verbose) {
     case fmtAppGlobals.FMT_DB_UNITS_STORE:
     case fmtAppGlobals.FMT_DB_NUTRIENTS_STORE:
     case fmtAppGlobals.FMT_DB_FOODS_STORE:
+    case fmtAppGlobals.FMT_DB_RECIPES_STORE:
     case fmtAppGlobals.FMT_DB_PROFILES_STORE:
     //These are arrays of records
       recordsObj = jsonData[dbTableName];
