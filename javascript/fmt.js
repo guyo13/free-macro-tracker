@@ -298,7 +298,6 @@ function FMTCalculateMultiplier(referenceValue, referenceUnits, valueToconvert, 
   if (!(valueUnits in unitChart) ) {
       result.error = `Invalid or unknown units "${units}"`;
       console.error(result.error);
-      //FMTShowAlert(alertsDivID, "danger", msg, fmtAppGlobals.defaultAlertScroll);
       return result;
   }
   if (!(referenceServingUnits in unitChart) ) {
@@ -325,7 +324,6 @@ function FMTCalculateMultiplier(referenceValue, referenceUnits, valueToconvert, 
     result.error = null;
   }
   else {
-      // (currentUnit.value_in_grams/targetUnit.value_in_grams)
       const unitConvertRes = FMTConvertUnits(referenceUnits, valueUnits);
       if (unitConvertRes.error != null || unitConvertRes.unitMultiplier == null) {
         result.error = unitConvertRes.error;
@@ -2716,35 +2714,13 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
     let units = document.getElementById(`${baseScreenID}-${qualifier}-serving-units`).getAttribute("unit");
     let referenceServing = servingInputField.getAttribute("reference_serving");
     let referenceServingUnits = servingInputField.getAttribute("reference_serving_units");
-    //TODO translate and get multiplier
     const conversionRes = FMTCalculateMultiplier(referenceServing, referenceServingUnits, servingValue, units, fmtAppInstance.unitsChart);
     let multiplier = 1;
-    if (!(units in fmtAppInstance.unitChart) ) {
-        const msg = `Invalid or unknown units "${units}"`;
-        console.error(msg);
-        FMTShowAlert(alertsDivID, "danger", msg, fmtAppGlobals.defaultAlertScroll);
-        return;
+    if (conversionRes.error != null conversionRes.multiplier == null) {
+      FMTShowAlert(alertsDivID, "danger", conversionRes.error, fmtAppGlobals.defaultAlertScroll);
     }
-
-    if (!(referenceServingUnits in fmtAppInstance.unitChart) ) {
-        const msg = `Invalid or unknown reference units "${referenceServingUnits}"`;
-        console.error(msg);
-        FMTShowAlert(alertsDivID, "danger", msg, fmtAppGlobals.defaultAlertScroll);
-        return;
-    }
-
-    if (isNumber(servingValue)) {
-        servingValue = Number(servingValue);
-        if (isNumber(referenceServing) && Number(referenceServing) > 0) {
-            referenceServing = Number(referenceServing);
-            if (units === referenceServingUnits) { multiplier = servingValue/referenceServing; }
-            else {
-                // (currentUnit.value_in_grams/targetUnit.value_in_grams)
-                const unitMultiplier = (fmtAppInstance.unitChart[units].value_in_grams) / (fmtAppInstance.unitChart[referenceServingUnits].value_in_grams);
-                const servingValueConverted = servingValue * unitMultiplier;
-                multiplier = servingValueConverted/referenceServing;
-            }
-        }
+    else {
+      multiplier = conversionRes.multiplier;
     }
     let objectId = document.getElementById(`${baseScreenID}-save`).getAttribute(idProp);
     if (!isNumber(objectId)) {
