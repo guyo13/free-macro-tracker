@@ -792,7 +792,7 @@ function FMTValidateNutritionalValue(nutritionalValueObj, unitsChart, options) {
     result.nutritionalValue = nutritionalValue;
     return result;
 }
-/*foodObj - {foodName, foodBrand(optional), referenceWeight, units, nutritionalValue}
+/*foodObj - {foodName, foodBrand(optional), referenceServing, units, nutritionalValue}
  *nutritionalValue - {calories, proteins, carbohydrates, fats, additionalNutrients}
  *additionalNutrients - {Category1:[nutrient11, ... , nutrient1N],..CategoryM:[nutrientM1, ... , nutrientMN],}
  *nutrient - {name,unit,mass}
@@ -810,11 +810,11 @@ function FMTValidateFoodObject(foodObj, unitsChart) {
 
     food.foodBrand = foodObj.foodBrand;
 
-    if (!isNumber(foodObj.referenceWeight) || Number(foodObj.referenceWeight) <= 0) {
-        console.debug(`[${_funcName}] - referenceWeight is not a positive number`);
+    if (!isNumber(foodObj.referenceServing) || Number(foodObj.referenceServing) <= 0) {
+        console.debug(`[${_funcName}] - referenceServing is not a positive number`);
         return {"food": null, "error": "Weight must be positive number"};
     }
-    else { food.referenceWeight = Number(foodObj.referenceWeight); }
+    else { food.referenceServing = Number(foodObj.referenceServing); }
 
     if (foodObj.units == null) {
         console.debug(`[${_funcName}] - null units`);
@@ -1280,13 +1280,13 @@ function FMTValidateRecipeObject(recipeObj, unitsChart) {
   if (isString(recipeObj.videoUrl) )
     { recipe.videoUrl = recipeObj.videoUrl; }
 
-  if (!isNumber(recipeObj.referenceWeight) || Number(recipeObj.referenceWeight) <= 0) {
-      console.debug(`[${_funcName}] - referenceWeight is not a positive number`);
+  if (!isNumber(recipeObj.referenceServing) || Number(recipeObj.referenceServing) <= 0) {
+      console.debug(`[${_funcName}] - referenceServing is not a positive number`);
       error = "Weight must be positive number";
       result.error = error;
       return result;
   }
-  else { recipe.referenceWeight = Number(recipeObj.referenceWeight); }
+  else { recipe.referenceServing = Number(recipeObj.referenceServing); }
 
   if (recipeObj.units == null) {
       console.debug(`[${_funcName}] - null units`);
@@ -2310,7 +2310,7 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
         case "Food Item":
             nameProp = "foodName";
             brandProp = "foodBrand";
-            weightProp = "referenceWeight";
+            weightProp = "referenceServing";
             break;
         case "Meal Entry":
             nameProp = "consumableName";
@@ -2450,7 +2450,7 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
         case "Food Item":
             nameProp = "foodName";
             brandProp = "foodBrand";
-            weightProp = "referenceWeight";
+            weightProp = "referenceServing";
             break;
         case "Meal Entry":
             nameProp = "consumableName";
@@ -2549,22 +2549,22 @@ function FMTUpdateConsumableValuesOnWeightChange(event, baseScreenID, qualifier,
     if (weightValue === "") { weightValue = 0; }
     if (isNumber(weightValue)) {
         weightValue = Number(weightValue);
-        let referenceWeight = weightInputBtn.getAttribute("reference_weight");
-        let referenceWeightUnits = weightInputBtn.getAttribute("reference_weight_units");
-        if (!(referenceWeightUnits in fmtAppInstance.unitChart) ) {
-            const msg = `Invalid or unknown reference weight units "${referenceWeightUnits}"`;
+        let referenceServing = weightInputBtn.getAttribute("reference_weight");
+        let referenceServingUnits = weightInputBtn.getAttribute("reference_weight_units");
+        if (!(referenceServingUnits in fmtAppInstance.unitChart) ) {
+            const msg = `Invalid or unknown reference weight units "${referenceServingUnits}"`;
             console.error(msg);
             FMTShowAlert(alertsDivID, "danger", msg, fmtAppGlobals.defaultAlertScroll);
             return;
         }
-        if (isNumber(referenceWeight) && Number(referenceWeight) > 0) {
-            referenceWeight = Number(referenceWeight);
-            if (units === referenceWeightUnits) { multiplier = weightValue/referenceWeight; }
+        if (isNumber(referenceServing) && Number(referenceServing) > 0) {
+            referenceServing = Number(referenceServing);
+            if (units === referenceServingUnits) { multiplier = weightValue/referenceServing; }
             else {
                 // (currentUnit.value_in_grams/targetUnit.value_in_grams)
-                const unitMultiplier = (fmtAppInstance.unitChart[units].value_in_grams) / (fmtAppInstance.unitChart[referenceWeightUnits].value_in_grams);
+                const unitMultiplier = (fmtAppInstance.unitChart[units].value_in_grams) / (fmtAppInstance.unitChart[referenceServingUnits].value_in_grams);
                 const weightValueConverted = weightValue * unitMultiplier;
-                multiplier = weightValueConverted/referenceWeight;
+                multiplier = weightValueConverted/referenceServing;
             }
         }
     }
@@ -3959,7 +3959,7 @@ function prepareEventHandlers() {
         mealEntryObj.consumableName = consumableValues.foodName;
         mealEntryObj.consumableBrand = consumableValues.foodBrand;
         mealEntryObj.consumableType = "Food Item";
-        mealEntryObj.weight = consumableValues.referenceWeight;
+        mealEntryObj.weight = consumableValues.referenceServing;
         mealEntryObj.units = consumableValues.units;
         mealEntryObj.nutritionalValue = consumableValues.nutritionalValue;
         FMTAddMealEntry(mealEntryObj,
