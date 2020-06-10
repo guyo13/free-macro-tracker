@@ -112,3 +112,24 @@ function testImport() {
  };
   document.getElementById("overview").appendChild(input);
 }
+function testSumNutiValAndRecipe() {
+  foods = null;
+  FMTReadAllFoods(function(e) {
+    foods = e.target.result;
+    let nutri = [];
+    foods.forEach( (f) => {
+      nutri.push(f.nutritionalValue);
+    });
+    console.log(FMTSumNutritionalValues(nutri));
+    const recipeObj = {};
+    recipeObj.recipeName = "Test Recipe";
+    recipeObj.recipeDescription = "A test recipe to check its working";
+    recipeObj.recipeCreator = "Guy Or"
+    recipeObj.referenceWeight = 1;
+    recipeObj.weightUnits = "kg";
+    recipeObj.ingredients = foods;
+    recipeObj.preparationSteps = ["Design flows", "write backend", "fix bugs", "make UI", "refine UI", "fix bugs"];
+    recipeObj.website = "https://www.guyor.net";
+    FMTAddRecipe(recipeObj, function(e) {console.log(e.target.result);});
+  });
+}

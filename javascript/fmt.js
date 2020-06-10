@@ -175,12 +175,13 @@ function getOnEndRemoveFirstFromArrayAndExec(globalArray, elem, fn) {
   };
 }
 function indexOfObject(array, key, value) {
+  let idx = -1;
   array.forEach((item, i) => {
     if(item[key] === value) {
-      return i;
+      idx = i;
     }
   });
-  return -1;
+  return idx;
 }
 function FMTSumNutritionalValues(nutritionalValuesArray) {
   const nutritionalValue = {};
@@ -200,13 +201,13 @@ function FMTSumNutritionalValues(nutritionalValuesArray) {
         if (!Array.isArray(nutritionalValue.additionalNutrients[category])) {
           nutritionalValue.additionalNutrients[category] = [];
         }
-        nutriValueObj.additionalNutrients[category].forEach((addiNutriObj, i) => {
+        nutriValueObj.additionalNutrients[category].forEach((addiNutriObj, k) => {
           const idx = indexOfObject(nutritionalValue.additionalNutrients[category], "name", addiNutriObj.name);
           if (idx >= 0) {
             nutritionalValue.additionalNutrients[category][idx].mass += addiNutriObj.mass;
           }
           else {
-            nutritionalValue.additionalNutrients[category][idx].mass = addiNutriObj.mass;
+            nutritionalValue.additionalNutrients[category].push(addiNutriObj);
           }
         });
 
@@ -1267,6 +1268,10 @@ function FMTValidateRecipeObject(recipeObj, mUnitsChart) {
     { recipe.recipeCreator = recipeObj.recipeCreator; }
   if (isString(recipeObj.recipeDescription) )
     { recipe.recipeDescription = recipeObj.recipeDescription; }
+  if (isString(recipeObj.website) )
+    { recipe.website = recipeObj.website; }
+  if (isString(recipeObj.videoUrl) )
+    { recipe.videoUrl = recipeObj.videoUrl; }
 
   if (!isNumber(recipeObj.referenceWeight) || Number(recipeObj.referenceWeight) <= 0) {
       console.debug(`[${_funcName}] - referenceWeight is not a positive number`);
@@ -1292,9 +1297,9 @@ function FMTValidateRecipeObject(recipeObj, mUnitsChart) {
     recipe.tzMinutes = recipeObj.tzMinutes;
   }
 
+  const nutriValuesArr = [];
   if (Array.isArray(recipeObj.ingredients) && recipeObj.ingredients.length > 0) {
     recipe.ingredients = [];
-    const nutriValuesArr = [];
     recipeObj.ingredients.forEach((item, i) => {
       const validateIngredient = FMTValidateFoodObject(item);
       if (validateIngredient.error != null || validateIngredient.food == null) {
@@ -1313,7 +1318,6 @@ function FMTValidateRecipeObject(recipeObj, mUnitsChart) {
     return result;
   }
 
-  //TODO - Sum up nutritional Value!
   recipe.nutritionalValue = FMTSumNutritionalValues(nutriValuesArr);
 
   result.recipe = recipe;
