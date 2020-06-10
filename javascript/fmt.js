@@ -240,78 +240,78 @@ function prepareDBv1() {
                            {"name": "cup", "value_in_grams": 0, "description": "Metric Cup", "type": "volume", "value_in_ml": 250},
                            {"name": "us_cup", "value_in_grams": 0, "description": "US Cup", "type": "volume", "value_in_ml": 240},
                           ];
-    const baseAdditionalNutrients = [{"name" : "Sugars", "category": "Carbohydrates", "default_mass_unit": "g", "help": "Total Sugars"},
-                                         {"name" : "Fiber", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         {"name" : "Starch", "category": "Carbohydrates", "default_mass_unit": "g", "help": "Total Starch"},
-                                         {"name" : "Glucose", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         {"name" : "Sucrose", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         {"name" : "Ribose", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         {"name" : "Amylose", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         {"name" : "Amylopectin", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         {"name" : "Maltose", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         {"name" : "Galactose", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         {"name" : "Fructose", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         {"name" : "Lactose", "category": "Carbohydrates", "default_mass_unit": "g"},
-                                         {"name": "Saturated Fats", "category": "Fats", "default_mass_unit": "g", "help": "Total"},
-                                         {"name": "Monounsaturated Fats", "category": "Fats", "default_mass_unit": "g", "help": "Total"},
-                                         {"name": "Polyunsaturated Fats", "category": "Fats", "default_mass_unit": "g", "help": "Total"},
-                                         {"name": "Omega-3", "category": "Fats", "default_mass_unit": "g"},
-                                         {"name": "Omega-6", "category": "Fats", "default_mass_unit": "g"},
-                                         {"name": "Trans Fats", "category": "Fats", "default_mass_unit": "g"},
-                                         {"name": "Cholesterol", "category": "Sterols", "default_mass_unit": "mg"},
-                                         {"name": "Calcium", "category": "Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Sodium", "category": "Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Potassium", "category": "Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Phosphorus", "category": "Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Magnesium", "category": "Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Chloride", "category": "Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Sulfur", "category": "Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Vitamin A", "category": "Vitamins", "default_mass_unit": "mcg"},
-                                         {"name": "Vitamin C", "category": "Vitamins", "default_mass_unit": "mg"},
-                                         {"name": "Vitamin E", "category": "Vitamins", "default_mass_unit": "mcg"},
-                                         {"name": "Vitamin K", "category": "Vitamins", "default_mass_unit": "mcg"},
-                                         {"name": "Vitamin D", "category": "Vitamins", "default_mass_unit": "mcg"},
-                                         {"name": "Vitamin B1", "category": "Vitamins", "default_mass_unit": "mcg"},
-                                         {"name": "Vitamin B2", "category": "Vitamins", "default_mass_unit": "mcg"},
-                                         {"name": "Vitamin B3", "category": "Vitamins", "default_mass_unit": "mcg"},
-                                         {"name": "Vitamin B5", "category": "Vitamins", "default_mass_unit": "mcg"},
-                                         {"name": "Vitamin B6", "category": "Vitamins", "default_mass_unit": "mcg"},
-                                         {"name": "Vitamin B7", "category": "Vitamins", "default_mass_unit": "mcg"},
-                                         {"name": "Vitamin B9", "category": "Vitamins", "default_mass_unit": "mcg"},
-                                         {"name": "Vitamin B12", "category": "Vitamins", "default_mass_unit": "mcg"},
-                                         {"name": "Choline", "category": "Vitamins", "default_mass_unit": "mcg"},
-                                         {"name": "Iron", "category": "Trace Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Zinc", "category": "Trace Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Selenium", "category": "Trace Minerals", "default_mass_unit": "mcg"},
-                                         {"name": "Iodine", "category": "Trace Minerals", "default_mass_unit": "mcg"},
-                                         {"name": "Copper", "category": "Trace Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Manganese", "category": "Trace Minerals", "default_mass_unit": "mg"},
-                                         {"name": "Fluoride", "category": "Trace Minerals", "default_mass_unit": "mcg"},
-                                         {"name": "Cobalt", "category": "Trace Minerals", "default_mass_unit": "mcg"},
-                                         {"name": "Molybdenum", "category": "Trace Minerals", "default_mass_unit": "mcg"},
-                                     {"name": "Alanine", "category": "Amino Acids", "default_mass_unit": "mg"},
-                                     {"name": "Arginine", "category": "Amino Acids", "default_mass_unit": "mg"},
-                                     {"name": "Aspartic acid", "category": "Amino Acids", "default_mass_unit": "mg", "help": "Aspartate"},
-                                     {"name": "Asparagine", "category": "Amino Acids", "default_mass_unit": "mg"},
-                                     {"name": "Cysteine", "category": "Amino Acids", "default_mass_unit": "mg"},
-                                     {"name": "Glutamic acid", "category": "Amino Acids", "default_mass_unit": "mg", "help": "Glutamate"},
-                                     {"name": "Glutamine", "category": "Amino Acids", "default_mass_unit": "mg"},
-                                     {"name": "Glycine", "category": "Amino Acids", "default_mass_unit": "mg"},
-                                     {"name": "Histidine", "category": "Amino Acids", "default_mass_unit": "mg"},
-                                     {"name": "Isoleucine", "category": "Amino Acids", "default_mass_unit": "mg"},
-                                     {"name": "Leucine", "category": "Amino Acids", "default_mass_unit": "mg"},
-                                     {"name": "Lysine", "category": "Amino Acids", "default_mass_unit": "mg"},
-                                     {"name": "Methionine", "category": "Amino Acids", "default_mass_unit": "mg"},
-                                     {"name": "Phenylalanine", "category": "Amino Acids", "default_mass_unit": "mg"},
-                                     {"name": "Proline", "category": "Amino Acids", "default_mass_unit": "mg"},
-                                     {"name": "Serine", "category": "Amino Acids", "default_mass_unit": "mg"},
-                                     {"name": "Threonine", "category": "Amino Acids", "default_mass_unit": "mg"},
-                                     {"name": "Tryptophan", "category": "Amino Acids", "default_mass_unit": "mg"},
-                                     {"name": "Tyrosine", "category": "Amino Acids", "default_mass_unit": "mg"},
-                                     {"name": "Valine", "category": "Amino Acids", "default_mass_unit": "mg"},
-                                     {"name": "Water", "category": "Other", "default_mass_unit": "g"},
-                                     {"name": "Ash", "category": "Other", "default_mass_unit": "g"},
-                                     {"name": "Alcohol", "category": "Other", "default_mass_unit": "g"},
+    const baseAdditionalNutrients = [{"name" : "Sugars", "category": "Carbohydrates", "default_unit": "g", "help": "Total Sugars"},
+                                         {"name" : "Fiber", "category": "Carbohydrates", "default_unit": "g"},
+                                         {"name" : "Starch", "category": "Carbohydrates", "default_unit": "g", "help": "Total Starch"},
+                                         {"name" : "Glucose", "category": "Carbohydrates", "default_unit": "g"},
+                                         {"name" : "Sucrose", "category": "Carbohydrates", "default_unit": "g"},
+                                         {"name" : "Ribose", "category": "Carbohydrates", "default_unit": "g"},
+                                         {"name" : "Amylose", "category": "Carbohydrates", "default_unit": "g"},
+                                         {"name" : "Amylopectin", "category": "Carbohydrates", "default_unit": "g"},
+                                         {"name" : "Maltose", "category": "Carbohydrates", "default_unit": "g"},
+                                         {"name" : "Galactose", "category": "Carbohydrates", "default_unit": "g"},
+                                         {"name" : "Fructose", "category": "Carbohydrates", "default_unit": "g"},
+                                         {"name" : "Lactose", "category": "Carbohydrates", "default_unit": "g"},
+                                         {"name": "Saturated Fats", "category": "Fats", "default_unit": "g", "help": "Total"},
+                                         {"name": "Monounsaturated Fats", "category": "Fats", "default_unit": "g", "help": "Total"},
+                                         {"name": "Polyunsaturated Fats", "category": "Fats", "default_unit": "g", "help": "Total"},
+                                         {"name": "Omega-3", "category": "Fats", "default_unit": "g"},
+                                         {"name": "Omega-6", "category": "Fats", "default_unit": "g"},
+                                         {"name": "Trans Fats", "category": "Fats", "default_unit": "g"},
+                                         {"name": "Cholesterol", "category": "Sterols", "default_unit": "mg"},
+                                         {"name": "Calcium", "category": "Minerals", "default_unit": "mg"},
+                                         {"name": "Sodium", "category": "Minerals", "default_unit": "mg"},
+                                         {"name": "Potassium", "category": "Minerals", "default_unit": "mg"},
+                                         {"name": "Phosphorus", "category": "Minerals", "default_unit": "mg"},
+                                         {"name": "Magnesium", "category": "Minerals", "default_unit": "mg"},
+                                         {"name": "Chloride", "category": "Minerals", "default_unit": "mg"},
+                                         {"name": "Sulfur", "category": "Minerals", "default_unit": "mg"},
+                                         {"name": "Vitamin A", "category": "Vitamins", "default_unit": "mcg"},
+                                         {"name": "Vitamin C", "category": "Vitamins", "default_unit": "mg"},
+                                         {"name": "Vitamin E", "category": "Vitamins", "default_unit": "mcg"},
+                                         {"name": "Vitamin K", "category": "Vitamins", "default_unit": "mcg"},
+                                         {"name": "Vitamin D", "category": "Vitamins", "default_unit": "mcg"},
+                                         {"name": "Vitamin B1", "category": "Vitamins", "default_unit": "mcg"},
+                                         {"name": "Vitamin B2", "category": "Vitamins", "default_unit": "mcg"},
+                                         {"name": "Vitamin B3", "category": "Vitamins", "default_unit": "mcg"},
+                                         {"name": "Vitamin B5", "category": "Vitamins", "default_unit": "mcg"},
+                                         {"name": "Vitamin B6", "category": "Vitamins", "default_unit": "mcg"},
+                                         {"name": "Vitamin B7", "category": "Vitamins", "default_unit": "mcg"},
+                                         {"name": "Vitamin B9", "category": "Vitamins", "default_unit": "mcg"},
+                                         {"name": "Vitamin B12", "category": "Vitamins", "default_unit": "mcg"},
+                                         {"name": "Choline", "category": "Vitamins", "default_unit": "mcg"},
+                                         {"name": "Iron", "category": "Trace Minerals", "default_unit": "mg"},
+                                         {"name": "Zinc", "category": "Trace Minerals", "default_unit": "mg"},
+                                         {"name": "Selenium", "category": "Trace Minerals", "default_unit": "mcg"},
+                                         {"name": "Iodine", "category": "Trace Minerals", "default_unit": "mcg"},
+                                         {"name": "Copper", "category": "Trace Minerals", "default_unit": "mg"},
+                                         {"name": "Manganese", "category": "Trace Minerals", "default_unit": "mg"},
+                                         {"name": "Fluoride", "category": "Trace Minerals", "default_unit": "mcg"},
+                                         {"name": "Cobalt", "category": "Trace Minerals", "default_unit": "mcg"},
+                                         {"name": "Molybdenum", "category": "Trace Minerals", "default_unit": "mcg"},
+                                     {"name": "Alanine", "category": "Amino Acids", "default_unit": "mg"},
+                                     {"name": "Arginine", "category": "Amino Acids", "default_unit": "mg"},
+                                     {"name": "Aspartic acid", "category": "Amino Acids", "default_unit": "mg", "help": "Aspartate"},
+                                     {"name": "Asparagine", "category": "Amino Acids", "default_unit": "mg"},
+                                     {"name": "Cysteine", "category": "Amino Acids", "default_unit": "mg"},
+                                     {"name": "Glutamic acid", "category": "Amino Acids", "default_unit": "mg", "help": "Glutamate"},
+                                     {"name": "Glutamine", "category": "Amino Acids", "default_unit": "mg"},
+                                     {"name": "Glycine", "category": "Amino Acids", "default_unit": "mg"},
+                                     {"name": "Histidine", "category": "Amino Acids", "default_unit": "mg"},
+                                     {"name": "Isoleucine", "category": "Amino Acids", "default_unit": "mg"},
+                                     {"name": "Leucine", "category": "Amino Acids", "default_unit": "mg"},
+                                     {"name": "Lysine", "category": "Amino Acids", "default_unit": "mg"},
+                                     {"name": "Methionine", "category": "Amino Acids", "default_unit": "mg"},
+                                     {"name": "Phenylalanine", "category": "Amino Acids", "default_unit": "mg"},
+                                     {"name": "Proline", "category": "Amino Acids", "default_unit": "mg"},
+                                     {"name": "Serine", "category": "Amino Acids", "default_unit": "mg"},
+                                     {"name": "Threonine", "category": "Amino Acids", "default_unit": "mg"},
+                                     {"name": "Tryptophan", "category": "Amino Acids", "default_unit": "mg"},
+                                     {"name": "Tyrosine", "category": "Amino Acids", "default_unit": "mg"},
+                                     {"name": "Valine", "category": "Amino Acids", "default_unit": "mg"},
+                                     {"name": "Water", "category": "Other", "default_unit": "g"},
+                                     {"name": "Ash", "category": "Other", "default_unit": "g"},
+                                     {"name": "Alcohol", "category": "Other", "default_unit": "g"},
                                         ];
     //Create Meal Entries objectStore
     let fmtMealEntriesStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE,
@@ -860,7 +860,7 @@ function FMTValidateMassUnitObject(massUnitObj) {
     massUnit.description = massUnitObj.description;
     return massUnit;
 }
-/*nutrientObj {name,category,default_mass_unit,help}*/
+/*nutrientObj {name,category,default_unit,help}*/
 function FMTValidateNutrientObject(nutrientObj) {
     let nutrient = {};
     if (nutrientObj.name == null || massUnitObj.name === "") {
@@ -871,13 +871,13 @@ function FMTValidateNutrientObject(nutrientObj) {
         console.debug(`[FMTValidateNutrientObject] - nutrientObj.category is null or empty string`);
         return;
     }
-        if (nutrientObj.default_mass_unit == null || massUnitObj.default_mass_unit === "") {
-        console.debug(`[FMTValidateNutrientObject] - nutrientObj.default_mass_unit is null or empty string`);
+        if (nutrientObj.default_unit == null || massUnitObj.default_unit === "") {
+        console.debug(`[FMTValidateNutrientObject] - nutrientObj.default_unit is null or empty string`);
         return;
     }
     nutrient.name = nutrientObj.name;
     nutrient.category = nutrientObj.category;
-    nutrient.default_mass_unit = nutrientObj.default_mass_unit;
+    nutrient.default_unit = nutrientObj.default_unit;
     nutrient.help = nutrientObj.help;
     return nutrient;
 }
@@ -2125,7 +2125,7 @@ function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj
         inGroupCont.appendChild(addNutriInGroup);
         elements.push(inGroupCont);
         appendChildren(targetDiv, elements);
-        FMTCreateMassUnitDropdownMenu(nutriBaseId, nutriBaseId, unitsChart, isStatic, nutriObj.default_mass_unit, readonly);
+        FMTCreateMassUnitDropdownMenu(nutriBaseId, nutriBaseId, unitsChart, isStatic, nutriObj.default_unit, readonly);
     }
 }
 function FMTCreateFoodsTableRowElement(foodObj, eventListeners) {
@@ -3530,7 +3530,7 @@ function FMTLoadAdditionalNutrients(onloadedFn) {
                 fmtAppInstance.additionalNutrients[nutri.category] = [];
             }
             let _nutri = {"name": nutri.name,
-                          "default_mass_unit": nutri.default_mass_unit||null,
+                          "default_unit": nutri.default_unit,
                           "help": nutri.help || null};
             fmtAppInstance.additionalNutrients[nutri.category].push(_nutri);
         }
