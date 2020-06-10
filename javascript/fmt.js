@@ -1460,8 +1460,9 @@ function FMTQueryMealEntriesByProfileAndDate(profile_id, year, month, day, onsuc
     cursorRequest.onsuccess = onsuccessFn;
 }
 function FMTReadMealEntry(entry_id, onsuccessFn, onerrorFn) {
-    onsuccessFn = onsuccessFn || function(e) { console.debug("[FMTReadMealEntry] onsuccess - ", entry_id, e) };
-    onerrorFn = onerrorFn || function(e) { console.debug("[FMTReadMealEntry] onerror - ", entry_id, e) };
+    const _fnName = "FMTReadMealEntry";
+    onsuccessFn = onsuccessFn || function(e) { console.debug(`[${_fnName}] onsuccess - `, entry_id, e) };
+    onerrorFn = onerrorFn || function(e) { console.debug(`[${_fnName}] onerror - `, entry_id, e) };
     const mealEntriesStore = getObjectStore(fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE, fmtAppGlobals.FMT_DB_READONLY);
     const getRequest = mealEntriesStore.get(entry_id);
     getRequest.onerror = onerrorFn;
