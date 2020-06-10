@@ -218,6 +218,127 @@ function FMTSumNutritionalValues(nutritionalValuesArray) {
 
   return nutritionalValue;
 }
+function FMTConvertUnits(referenceUnits, valueUnits, unitsChart) {
+  unitsChart = unitChart || fmtAppInstance.unitChart;
+  const result = {};
+  const errMsg = `Unit ${valueUnits.name} is incompatible with ${referenceUnits.name}`;
+  if (!unitChart) {
+    result.error = "Error - No Units loaded";
+    return result;
+  }
+
+  if (referenceUnits.type === "mass" && valueUnits.type === "mass") {
+    result.unitMultiplier = referenceUnits.value_in_grams / valueUnits.value_in_grams;
+  }
+
+  else if (referenceUnits.type === "volume" && valueUnits.type === "volume") {
+    result.unitMultiplier = referenceUnits.value_in_ml / valueUnits.value_in_ml;
+  }
+
+  else if ( (referenceUnits.type === "arbitrary" && valueUnits.type === "mass") ) {
+    if (referenceUnits.value_in_grams > 0) {
+      result.unitMultiplier = referenceUnits.value_in_grams / valueUnits.value_in_grams;
+    }
+    else {
+      result.error = errMsg;
+    }
+  }
+
+  else if ( (referenceUnits.type === "mass" && valueUnits.type === "arbitrary") ) {
+    if (valueUnits.value_in_grams > 0) {
+      result.unitMultiplier = referenceUnits.value_in_grams / valueUnits.value_in_grams;
+    }
+    else {
+      result.error = errMsg;
+    }
+  }
+
+  else if ( (referenceUnits.type === "arbitrary" && valueUnits.type === "volume") ) {
+    if (referenceUnits.value_in_ml > 0) {
+      result.unitMultiplier = referenceUnits.value_in_ml / valueUnits.value_in_ml;
+    }
+    else {
+      result.error = errMsg;
+    }
+  }
+
+  else if ( (referenceUnits.type === "volume" && valueUnits.type === "arbitrary") ) {
+    if (valueUnits.value_in_ml > 0) {
+      result.unitMultiplier = referenceUnits.value_in_ml / valueUnits.value_in_ml;
+    }
+    else {
+      result.error = errMsg;
+    }
+  }
+
+  else if ( (referenceUnits.type === "arbitrary" && valueUnits.type === "arbitrary") ) {
+    if ( referenceUnits.value_in_ml > 0 && valueUnits.value_in_ml > 0 ) {
+      result.unitMultiplier = referenceUnits.value_in_ml / valueUnits.value_in_ml;
+    }
+    else if ( referenceUnits.value_in_grams > 0 && valueUnits.value_in_grams > 0 ) {
+      result.unitMultiplier = referenceUnits.value_in_grams / valueUnits.value_in_grams;
+    }
+    else {
+      result.error = errMsg;
+    }
+  }
+  else {
+    result.error = errMsg;
+  }
+  return result;
+}
+function FMTCalculateMultiplier(referenceValue, referenceUnits, valueToconvert, valueUnits, unitsChart) {
+  unitsChart = unitChart || fmtAppInstance.unitChart;
+  const result = {};
+  if (!unitChart) {
+    result.error = "Error - No Units loaded";
+    return result;
+  }
+
+  if (!(valueUnits in unitChart) ) {
+      result.error = `Invalid or unknown units "${units}"`;
+      console.error(result.error);
+      //FMTShowAlert(alertsDivID, "danger", msg, fmtAppGlobals.defaultAlertScroll);
+      return result;
+  }
+  if (!(referenceServingUnits in unitChart) ) {
+      result.error = `Invalid or unknown reference units "${referenceServingUnits}"`;
+      console.error(result.error);
+      return result;
+  }
+  if (!isNumber(valueToconvert)) {
+    result.error = `Invalid value to convert "${valueToconvert}"`;
+    console.error(result.error);
+    return result;
+  }
+  if (!isNumber(referenceValue)) {
+    result.error = `Invalid reference value "${referenceValue}"`;
+    console.error(result.error);
+    return result;
+  }
+
+  valueToconvert = Number(valueToconvert);
+  referenceValue = Number(referenceValue);
+  if (valueUnits === referenceUnits) {
+    result.multiplier = valueToconvert/referenceValue;
+    result.convertedValue = valueToconvert;
+    result.error = null;
+  }
+  else {
+      // (currentUnit.value_in_grams/targetUnit.value_in_grams)
+      const unitConvertRes = FMTConvertUnits(referenceUnits, valueUnits);
+      if (unitConvertRes.error != null || unitConvertRes.unitMultiplier == null) {
+        result.error = unitConvertRes.error;
+      }
+      else {
+        const valueConverted = valueToconvert * unitConvertRes.unitMultiplier;
+        result.convertedValue = valueConverted;
+        result.multiplier = valueConverted/referenceServing;
+        result.error = null;
+      }
+  }
+  return result;
+}
 //Functions - DB
 function prepareDBv1() {
     console.debug("Preparing DB...");
@@ -2512,6 +2633,9 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
             consumableObj.profile_id = updateBtn.getAttribute("profile_id");
             consumableObj.consumable_id = updateBtn.getAttribute("consumable_id");
             break;
+        case "Recipe Item":
+        //TODO
+        break;
     }
     onerrorFn = onerrorFn || function(err) { console.error(`[${_funcName}] - Failed ${err}`); }
     if (baseScreenID == null) { console.error(`[${_funcName}] - Invalid baseScreenID "${baseScreenID}"`); return onerrorFn(); }
@@ -2580,12 +2704,20 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
             idProp = "entry_id";
             pageFunction = pageController.openEditMealEntryDynamicScreen;
             break;
+        case "Recipe Item":
+        //TODO
+        break;
     }
     const alertsDivID = `${baseScreenID}-alerts`;
     document.getElementById(alertsDivID).innerHTML = "";
-    const servingInputBtn = document.getElementById(`${baseScreenID}-${qualifier}-serving-input`);
-    let servingValue = servingInputBtn.value;
+    const servingInputField = document.getElementById(`${baseScreenID}-${qualifier}-serving-input`);
+    let servingValue = servingInputField.value;
+    if (servingValue === "") { servingValue = 0; }
     let units = document.getElementById(`${baseScreenID}-${qualifier}-serving-units`).getAttribute("unit");
+    let referenceServing = servingInputField.getAttribute("reference_serving");
+    let referenceServingUnits = servingInputField.getAttribute("reference_serving_units");
+    //TODO translate and get multiplier
+    const conversionRes = FMTCalculateMultiplier(referenceServing, referenceServingUnits, servingValue, units, fmtAppInstance.unitsChart);
     let multiplier = 1;
     if (!(units in fmtAppInstance.unitChart) ) {
         const msg = `Invalid or unknown units "${units}"`;
@@ -2593,17 +2725,16 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
         FMTShowAlert(alertsDivID, "danger", msg, fmtAppGlobals.defaultAlertScroll);
         return;
     }
-    if (servingValue === "") { servingValue = 0; }
+
+    if (!(referenceServingUnits in fmtAppInstance.unitChart) ) {
+        const msg = `Invalid or unknown reference units "${referenceServingUnits}"`;
+        console.error(msg);
+        FMTShowAlert(alertsDivID, "danger", msg, fmtAppGlobals.defaultAlertScroll);
+        return;
+    }
+
     if (isNumber(servingValue)) {
         servingValue = Number(servingValue);
-        let referenceServing = servingInputBtn.getAttribute("reference_serving");
-        let referenceServingUnits = servingInputBtn.getAttribute("reference_serving_units");
-        if (!(referenceServingUnits in fmtAppInstance.unitChart) ) {
-            const msg = `Invalid or unknown reference units "${referenceServingUnits}"`;
-            console.error(msg);
-            FMTShowAlert(alertsDivID, "danger", msg, fmtAppGlobals.defaultAlertScroll);
-            return;
-        }
         if (isNumber(referenceServing) && Number(referenceServing) > 0) {
             referenceServing = Number(referenceServing);
             if (units === referenceServingUnits) { multiplier = servingValue/referenceServing; }
