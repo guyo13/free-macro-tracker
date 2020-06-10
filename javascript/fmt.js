@@ -792,7 +792,7 @@ function FMTValidateNutritionalValue(nutritionalValueObj, unitsChart, options) {
     result.nutritionalValue = nutritionalValue;
     return result;
 }
-/*foodObj - {foodName, foodBrand(optional), referenceWeight, weightUnits, nutritionalValue}
+/*foodObj - {foodName, foodBrand(optional), referenceWeight, units, nutritionalValue}
  *nutritionalValue - {calories, proteins, carbohydrates, fats, additionalNutrients}
  *additionalNutrients - {Category1:[nutrient11, ... , nutrient1N],..CategoryM:[nutrientM1, ... , nutrientMN],}
  *nutrient - {name,unit,mass}
@@ -816,11 +816,11 @@ function FMTValidateFoodObject(foodObj, unitsChart) {
     }
     else { food.referenceWeight = Number(foodObj.referenceWeight); }
 
-    if (foodObj.weightUnits == null) {
-        console.debug(`[${_funcName}] - null weightUnits`);
+    if (foodObj.units == null) {
+        console.debug(`[${_funcName}] - null units`);
         return {"food": null, "error": "Invalid Weight units"};
     }
-    else { food.weightUnits = foodObj.weightUnits; }
+    else { food.units = foodObj.units; }
 
     if ( foodObj.lastModified != null && isDate(new Date(foodObj.lastModified)) ) {
       food.lastModified = foodObj.lastModified;
@@ -1146,12 +1146,12 @@ function FMTValidateMealEntry(mealEntryObj) {
     }
     mealEntry.weight = mealEntryObj.weight;
 
-    if (mealEntryObj.weightUnits == null || mealEntryObj.weightUnits === "") {
+    if (mealEntryObj.units == null || mealEntryObj.units === "") {
         error = `Weight Units must not be null`;
         result.error = error;
         return result;
     }
-    mealEntry.weightUnits = mealEntryObj.weightUnits;
+    mealEntry.units = mealEntryObj.units;
 
     if (mealEntryObj.nutritionalValue == null) {
         error = `Nutritional Value must not be empty`;
@@ -1288,13 +1288,13 @@ function FMTValidateRecipeObject(recipeObj, unitsChart) {
   }
   else { recipe.referenceWeight = Number(recipeObj.referenceWeight); }
 
-  if (recipeObj.weightUnits == null) {
-      console.debug(`[${_funcName}] - null weightUnits`);
+  if (recipeObj.units == null) {
+      console.debug(`[${_funcName}] - null units`);
       error = "Invalid Weight units";
       result.error = error;
       return result;
   }
-  else { recipe.weightUnits = recipeObj.weightUnits; }
+  else { recipe.units = recipeObj.units; }
 
   if ( recipeObj.lastModified != null && isDate(new Date(recipeObj.lastModified)) ) {
     recipe.lastModified = recipeObj.lastModified;
@@ -2538,10 +2538,10 @@ function FMTUpdateConsumableValuesOnWeightChange(event, baseScreenID, qualifier,
     document.getElementById(alertsDivID).innerHTML = "";
     const weightInputBtn = document.getElementById(`${baseScreenID}-${qualifier}-weight-input`);
     let weightValue = weightInputBtn.value;
-    let weightUnits = document.getElementById(`${baseScreenID}-${qualifier}-weight-units`).getAttribute("unit");
+    let units = document.getElementById(`${baseScreenID}-${qualifier}-weight-units`).getAttribute("unit");
     let multiplier = 1;
-    if (!(weightUnits in fmtAppInstance.unitChart) ) {
-        const msg = `Invalid or unknown weight units "${weightUnits}"`;
+    if (!(units in fmtAppInstance.unitChart) ) {
+        const msg = `Invalid or unknown weight units "${units}"`;
         console.error(msg);
         FMTShowAlert(alertsDivID, "danger", msg, fmtAppGlobals.defaultAlertScroll);
         return;
@@ -2559,10 +2559,10 @@ function FMTUpdateConsumableValuesOnWeightChange(event, baseScreenID, qualifier,
         }
         if (isNumber(referenceWeight) && Number(referenceWeight) > 0) {
             referenceWeight = Number(referenceWeight);
-            if (weightUnits === referenceWeightUnits) { multiplier = weightValue/referenceWeight; }
+            if (units === referenceWeightUnits) { multiplier = weightValue/referenceWeight; }
             else {
                 // (currentUnit.value_in_grams/targetUnit.value_in_grams)
-                const unitMultiplier = (fmtAppInstance.unitChart[weightUnits].value_in_grams) / (fmtAppInstance.unitChart[referenceWeightUnits].value_in_grams);
+                const unitMultiplier = (fmtAppInstance.unitChart[units].value_in_grams) / (fmtAppInstance.unitChart[referenceWeightUnits].value_in_grams);
                 const weightValueConverted = weightValue * unitMultiplier;
                 multiplier = weightValueConverted/referenceWeight;
             }
@@ -2574,7 +2574,7 @@ function FMTUpdateConsumableValuesOnWeightChange(event, baseScreenID, qualifier,
         FMTShowAlert(alertsDivID, "danger", "Error while calculating nutritional value. Please reload page", fmtAppGlobals.defaultAlertScroll);
     }
     else {
-        pageFunction(objectId, multiplier, false, weightValue, weightUnits);
+        pageFunction(objectId, multiplier, false, weightValue, units);
     }
 }
 
@@ -2771,7 +2771,7 @@ function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
 
     const consDetailsSpan = document.createElement("span");
     consDetailsSpan.classList.add("fmt-font-sm", "float-left");
-    consDetailsSpan.innerHTML = `${!!mealEntry.consumableBrand ? `${mealEntry.consumableBrand}, `: ""}${mealEntry.weight}${mealEntry.weightUnits}`;
+    consDetailsSpan.innerHTML = `${!!mealEntry.consumableBrand ? `${mealEntry.consumableBrand}, `: ""}${mealEntry.weight}${mealEntry.units}`;
     const consDetailsDiv = document.createElement("div");
     consDetailsDiv.classList.add("col-6");
     consDetailsDiv.appendChild(consDetailsSpan);
@@ -3960,7 +3960,7 @@ function prepareEventHandlers() {
         mealEntryObj.consumableBrand = consumableValues.foodBrand;
         mealEntryObj.consumableType = "Food Item";
         mealEntryObj.weight = consumableValues.referenceWeight;
-        mealEntryObj.weightUnits = consumableValues.weightUnits;
+        mealEntryObj.units = consumableValues.units;
         mealEntryObj.nutritionalValue = consumableValues.nutritionalValue;
         FMTAddMealEntry(mealEntryObj,
                        function(e) {
