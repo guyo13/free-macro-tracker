@@ -812,13 +812,13 @@ function FMTValidateFoodObject(foodObj, unitsChart) {
 
     if (!isNumber(foodObj.referenceServing) || Number(foodObj.referenceServing) <= 0) {
         console.debug(`[${_funcName}] - referenceServing is not a positive number`);
-        return {"food": null, "error": "Weight must be positive number"};
+        return {"food": null, "error": "Serving must be positive number"};
     }
     else { food.referenceServing = Number(foodObj.referenceServing); }
 
     if (foodObj.units == null) {
         console.debug(`[${_funcName}] - null units`);
-        return {"food": null, "error": "Invalid Weight units"};
+        return {"food": null, "error": "Invalid units"};
     }
     else { food.units = foodObj.units; }
 
@@ -1139,15 +1139,15 @@ function FMTValidateMealEntry(mealEntryObj) {
     mealEntry.consumableBrand = mealEntryObj.consumableBrand;
     mealEntry.consumableType = mealEntryObj.consumableType || "";
 
-    if (!isNumber(mealEntryObj.weight) || Number(mealEntryObj.weight) <= 0) {
-        error = `Weight is not a positive number (got ${mealEntryObj.weight})`;
+    if (!isNumber(mealEntryObj.serving) || Number(mealEntryObj.serving) <= 0) {
+        error = `Serving is not a positive number (got ${mealEntryObj.serving})`;
         result.error = error;
         return result;
     }
-    mealEntry.weight = mealEntryObj.weight;
+    mealEntry.serving = mealEntryObj.serving;
 
     if (mealEntryObj.units == null || mealEntryObj.units === "") {
-        error = `Weight Units must not be null`;
+        error = `Units must not be null`;
         result.error = error;
         return result;
     }
@@ -1282,7 +1282,7 @@ function FMTValidateRecipeObject(recipeObj, unitsChart) {
 
   if (!isNumber(recipeObj.referenceServing) || Number(recipeObj.referenceServing) <= 0) {
       console.debug(`[${_funcName}] - referenceServing is not a positive number`);
-      error = "Weight must be positive number";
+      error = "Serving must be positive number";
       result.error = error;
       return result;
   }
@@ -1290,7 +1290,7 @@ function FMTValidateRecipeObject(recipeObj, unitsChart) {
 
   if (recipeObj.units == null) {
       console.debug(`[${_funcName}] - null units`);
-      error = "Invalid Weight units";
+      error = "Invalid units";
       result.error = error;
       return result;
   }
@@ -2541,7 +2541,7 @@ function FMTUpdateConsumableValuesOnWeightChange(event, baseScreenID, qualifier,
     let units = document.getElementById(`${baseScreenID}-${qualifier}-weight-units`).getAttribute("unit");
     let multiplier = 1;
     if (!(units in fmtAppInstance.unitChart) ) {
-        const msg = `Invalid or unknown weight units "${units}"`;
+        const msg = `Invalid or unknown units "${units}"`;
         console.error(msg);
         FMTShowAlert(alertsDivID, "danger", msg, fmtAppGlobals.defaultAlertScroll);
         return;
@@ -2552,7 +2552,7 @@ function FMTUpdateConsumableValuesOnWeightChange(event, baseScreenID, qualifier,
         let referenceServing = weightInputBtn.getAttribute("reference_serving");
         let referenceServingUnits = weightInputBtn.getAttribute("reference_serving_units");
         if (!(referenceServingUnits in fmtAppInstance.unitChart) ) {
-            const msg = `Invalid or unknown reference weight units "${referenceServingUnits}"`;
+            const msg = `Invalid or unknown reference units "${referenceServingUnits}"`;
             console.error(msg);
             FMTShowAlert(alertsDivID, "danger", msg, fmtAppGlobals.defaultAlertScroll);
             return;
@@ -2771,7 +2771,7 @@ function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
 
     const consDetailsSpan = document.createElement("span");
     consDetailsSpan.classList.add("fmt-font-sm", "float-left");
-    consDetailsSpan.innerHTML = `${!!mealEntry.consumableBrand ? `${mealEntry.consumableBrand}, `: ""}${mealEntry.weight}${mealEntry.units}`;
+    consDetailsSpan.innerHTML = `${!!mealEntry.consumableBrand ? `${mealEntry.consumableBrand}, `: ""}${mealEntry.serving}${mealEntry.units}`;
     const consDetailsDiv = document.createElement("div");
     consDetailsDiv.classList.add("col-6");
     consDetailsDiv.appendChild(consDetailsSpan);
@@ -3959,7 +3959,7 @@ function prepareEventHandlers() {
         mealEntryObj.consumableName = consumableValues.foodName;
         mealEntryObj.consumableBrand = consumableValues.foodBrand;
         mealEntryObj.consumableType = "Food Item";
-        mealEntryObj.weight = consumableValues.referenceServing;
+        mealEntryObj.serving = consumableValues.referenceServing;
         mealEntryObj.units = consumableValues.units;
         mealEntryObj.nutritionalValue = consumableValues.nutritionalValue;
         FMTAddMealEntry(mealEntryObj,
