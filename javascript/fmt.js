@@ -525,6 +525,24 @@ function FMTDataToJSONArray(exportFn) {
   let errors = [];
   if (! (typeof exportFn === 'function') ) { return; }
 
+  const onIterRecipesSuccFn = function(ev) {
+    let cursor = ev.target.result;
+    if (cursor) {
+      const record = cursor.value;
+      record["__db_table_name__"] = fmtAppGlobals.FMT_DB_RECIPES_STORE;
+      records.push(record);
+      cursor.continue();
+    }
+    else {
+      //Finalize Export (TODO Export User Settings after implementation)
+      if (errors.length > 0) {
+        for (let k=0; k<errors.length; k++)
+        console.error(errors[k]);
+      }
+      exportFn(records);
+    }
+  };
+
   const onReadUnitsSuccFn = function(e) {
     const units = e.target.result;
     if (units && Array.isArray(units)) {
@@ -534,13 +552,8 @@ function FMTDataToJSONArray(exportFn) {
         records.push(record);
       }
     }
-    //Finalize Export (TODO Export Recipes and User Settings after implementation)
-    if (errors.length > 0) {
-      for (let k=0; k<errors.length; k++)
-      console.error(errors[k]);
-    }
-    exportFn(records);
-  }
+    FMTIterateRecipes(onIterRecipesSuccFn, function(err) {errors.push(err);});
+  };
   const onReadNutriSuccFn = function(e) {
     const nutri = e.target.result;
     if (nutri && Array.isArray(nutri)) {
@@ -552,7 +565,7 @@ function FMTDataToJSONArray(exportFn) {
     }
     //Export Units
     FMTReadAllUnits(onReadUnitsSuccFn, function(err) {errors.push(err);});
-  }
+  };
   const onIterFoodsSuccFn = function(ev) {
     let cursor = ev.target.result;
     if (cursor) {
@@ -565,7 +578,7 @@ function FMTDataToJSONArray(exportFn) {
       //Export Nutrients
       FMTReadAllNutrients(onReadNutriSuccFn, function(err) {errors.push(err);});
     }
-  }
+  };
   const onQueryMealEntriesSuccFn = function(ev) {
     let cursor = ev.target.result;
     if (cursor) {
@@ -578,7 +591,7 @@ function FMTDataToJSONArray(exportFn) {
       //Export Foods
       FMTIterateFoods(onIterFoodsSuccFn, function(err) {errors.push(err);});
     }
-  }
+  };
   const onQueryUserGoalsSuccFn = function(ev) {
     let cursor = ev.target.result;
     if (cursor) {
@@ -592,7 +605,7 @@ function FMTDataToJSONArray(exportFn) {
       const mealEntriesQueryOpts = {"queryType": "lowerBound", "lowerOpen": false};
       FMTQueryMealEntriesByProfileAndDate(-Infinity, -Infinity, -Infinity, -Infinity, onQueryMealEntriesSuccFn, function(err) {errors.push(err);}, mealEntriesQueryOpts);
     }
-  }
+  };
   const onAllProfileReadFn = function(e) {
     //Export profiles
     const profileEntries = e.target.result;
@@ -606,7 +619,7 @@ function FMTDataToJSONArray(exportFn) {
     //Export User Goals
     const userGoalsQueryOpts = {"queryType": "lowerBound", "lowerOpen": false};
     FMTQueryUserGoalsByProfileAndDate(-Infinity, -Infinity, -Infinity, -Infinity, onQueryUserGoalsSuccFn, function(err) {errors.push(err);}, userGoalsQueryOpts);
-  }
+  };
   FMTReadAllProfiles(onAllProfileReadFn,
     function(err) {
     errors.push(err);
@@ -618,11 +631,29 @@ function FMTDataToStructuredJSON(exportFn) {
   records[fmtAppGlobals.FMT_DB_UNITS_STORE] = [];
   records[fmtAppGlobals.FMT_DB_NUTRIENTS_STORE] = [];
   records[fmtAppGlobals.FMT_DB_FOODS_STORE] = [];
+  records[fmtAppGlobals.FMT_DB_RECIPES_STORE] = [];
   records[fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE] = {};
   records[fmtAppGlobals.FMT_DB_USER_GOALS_STORE] = {};
   records[fmtAppGlobals.FMT_DB_PROFILES_STORE] = [];
   let errors = [];
   if (! (typeof exportFn === 'function') ) { return; }
+
+  const onIterRecipesSuccFn = function(ev) {
+    let cursor = ev.target.result;
+    if (cursor) {
+      const record = cursor.value;
+      records[fmtAppGlobals.FMT_DB_RECIPES_STORE].push(record);
+      cursor.continue();
+    }
+    else {
+      //Finalize Export (TODO Export User Settings after implementation)
+      if (errors.length > 0) {
+        for (let k=0; k<errors.length; k++)
+        console.error(errors[k]);
+      }
+      exportFn(records);
+    }
+  };
 
   const onReadUnitsSuccFn = function(e) {
     const units = e.target.result;
@@ -632,13 +663,8 @@ function FMTDataToStructuredJSON(exportFn) {
         records[fmtAppGlobals.FMT_DB_UNITS_STORE].push(record);
       }
     }
-    //Finalize Export (TODO Export Recipes and User Settings after implementation)
-    if (errors.length > 0) {
-      for (let k=0; k<errors.length; k++)
-      console.error(errors[k]);
-    }
-    exportFn(records);
-  }
+    FMTIterateRecipes(onIterRecipesSuccFn, function(err) {errors.push(err);});
+  };
   const onReadNutriSuccFn = function(e) {
     const nutri = e.target.result;
     if (nutri && Array.isArray(nutri)) {
@@ -649,7 +675,7 @@ function FMTDataToStructuredJSON(exportFn) {
     }
     //Export Units
     FMTReadAllUnits(onReadUnitsSuccFn, function(err) {errors.push(err);});
-  }
+  };
   const onIterFoodsSuccFn = function(ev) {
     let cursor = ev.target.result;
     if (cursor) {
@@ -661,7 +687,7 @@ function FMTDataToStructuredJSON(exportFn) {
       //Export Nutrients
       FMTReadAllNutrients(onReadNutriSuccFn, function(err) {errors.push(err);});
     }
-  }
+  };
   const onQueryMealEntriesSuccFn = function(ev) {
     let cursor = ev.target.result;
     if (cursor) {
@@ -676,7 +702,7 @@ function FMTDataToStructuredJSON(exportFn) {
       //Export Foods
       FMTIterateFoods(onIterFoodsSuccFn, function(err) {errors.push(err);});
     }
-  }
+  };
   const onQueryUserGoalsSuccFn = function(ev) {
     let cursor = ev.target.result;
     if (cursor) {
@@ -692,7 +718,7 @@ function FMTDataToStructuredJSON(exportFn) {
       const mealEntriesQueryOpts = {"queryType": "lowerBound", "lowerOpen": false};
       FMTQueryMealEntriesByProfileAndDate(-Infinity, -Infinity, -Infinity, -Infinity, onQueryMealEntriesSuccFn, function(err) {errors.push(err);}, mealEntriesQueryOpts);
     }
-  }
+  };
   const onAllProfileReadFn = function(e) {
     //Export profiles
     const profileEntries = e.target.result;
@@ -705,7 +731,7 @@ function FMTDataToStructuredJSON(exportFn) {
     //Export User Goals
     const userGoalsQueryOpts = {"queryType": "lowerBound", "lowerOpen": false};
     FMTQueryUserGoalsByProfileAndDate(-Infinity, -Infinity, -Infinity, -Infinity, onQueryUserGoalsSuccFn, function(err) {errors.push(err);}, userGoalsQueryOpts);
-  }
+  };
   FMTReadAllProfiles(onAllProfileReadFn,
     function(err) {
     errors.push(err);
