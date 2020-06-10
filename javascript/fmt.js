@@ -766,8 +766,8 @@ function FMTValidateNutritionalValue(nutritionalValueObj, unitsChart, options) {
                         result.error = error;
                         return result;
                     }
-                    if (!isNumber(nutrient.mass)) {
-                        error = `Nutrient "${nutrient.name}" (Category ${nutrientCategoryName}) has invalid value "${nutrient.mass}"`;
+                    if (!isNumber(nutrient.amount)) {
+                        error = `Nutrient "${nutrient.name}" (Category ${nutrientCategoryName}) has invalid value "${nutrient.amount}"`;
                         result.error = error;
                         return result;
                     }
@@ -777,9 +777,9 @@ function FMTValidateNutritionalValue(nutritionalValueObj, unitsChart, options) {
                         return result;
                     }
                     validatedNutrient.name = nutrient.name;
-                    validatedNutrient.mass = Number(nutrient.mass);
+                    validatedNutrient.amount = Number(nutrient.amount);
                     validatedNutrient.unit = nutrient.unit;
-                    if ( !(options.compact && validatedNutrient.mass == 0) ) {
+                    if ( !(options.compact && validatedNutrient.amount == 0) ) {
                       validatedNutrientsInCat.push(validatedNutrient);
                     }
                 }
@@ -796,7 +796,7 @@ function FMTValidateNutritionalValue(nutritionalValueObj, unitsChart, options) {
 /*foodObj - {foodName, foodBrand(optional), referenceServing, units, nutritionalValue}
  *nutritionalValue - {calories, proteins, carbohydrates, fats, additionalNutrients}
  *additionalNutrients - {Category1:[nutrient11, ... , nutrient1N],..CategoryM:[nutrientM1, ... , nutrientMN],}
- *nutrient - {name,unit,mass}
+ *nutrient - {name,unit,amount}
 */
 function FMTValidateFoodObject(foodObj, unitsChart) {
     const _funcName = "FMTValidateFoodObject";
@@ -2389,14 +2389,14 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
             const nutrientsList = consumableItem.nutritionalValue.additionalNutrients[nutriCatName];
             for (const i in nutrientsList) {
                 const nutrient = nutrientsList[i];
-                if (nutrient.mass == 0) { continue; }
+                if (nutrient.amount == 0) { continue; }
                 const baseElementId = `${baseScreenID}-${qualifier}-addi-${nutriCatName.replace(/ /g, "_")}-${nutrient.name.replace(/ /g, "_")}`;
                 const inputElementId = `${baseElementId}-input`;
                 const mUnitDropdownItemId = `${baseElementId}-unit-${nutrient.unit}`;
                 const inputElement = document.getElementById(inputElementId);
                 const mUnitDropdownItem = document.getElementById(mUnitDropdownItemId);
                 if (inputElement && mUnitDropdownItem) {
-                    inputElement.value = nutrient.mass * multiplier;
+                    inputElement.value = nutrient.amount * multiplier;
                     mUnitDropdownItem.dispatchEvent(new Event("click"));
                 }
                 else {
@@ -2541,7 +2541,7 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
                 const nutriUserInput = document.getElementById(inputElemId).value;
                 if (nutriUserInput == null || nutriUserInput === "") { continue; }
                 const nutriUserUnit = document.getElementById(unitElemId).getAttribute("unit");
-                addNutri.push({"name": nutriObj.name, "mass": nutriUserInput, "unit": nutriUserUnit});
+                addNutri.push({"name": nutriObj.name, "amount": nutriUserInput, "unit": nutriUserUnit});
             }
             if (addNutri.length > 0) { consumableObj.nutritionalValue.additionalNutrients[category] = addNutri; }
         }
