@@ -3478,14 +3478,17 @@ var pageController = {
         }
     },
     openEditFoodDynamicScreen: function(foodId, foodsTableBodyID, mealIdentifier) {
-        //Sync Tasks - Argument Validation and handling
+        //Sync Tasks - Argument Validation, handling, const definition
         if (!foodId || !isNumber(foodId) || !Number.isInteger(Number(foodId)) ) { console.error(`Invalid Food ID (${foodId})`); return; }
         foodId = Number(foodId);
         const alertDivId = pageController.getAlertDivId();
-        const saveBtn = document.getElementById("edit-food-screen-save");
+        const screenID = "edit-food-screen";
+        const qualifier = "food";
+        const objectType = "Food Item";
+        const saveBtn = document.getElementById(`${screenID}-save`);
+        const delBtn = document.getElementById(`${screenID}-delete`);
         //Register the food table element from which we eventually got to this screen
         if (!!foodsTableBodyID) {
-            const delBtn = document.getElementById("edit-food-screen-delete");
             saveBtn.setAttribute("foods-table-body-id", foodsTableBodyID);
             delBtn.setAttribute("foods-table-body-id", foodsTableBodyID);
         }
@@ -3504,6 +3507,7 @@ var pageController = {
                     //OnSuccess
                     function(e) {
             const foodObj = e.target.result;
+            //Validate Object from Database
             if (!foodObj) {
                 FMTShowAlert(alertDivId, "warning", `Couldn't find Food item with ID (${foodId})`);
                 return;
@@ -3513,12 +3517,13 @@ var pageController = {
                 FMTShowAlert(alertDivId, "Danger", `Error - Food item with ID (${foodId}) failed validation - ${validateResult.error}`);
                 return;
             }
-            pageController.openDynamicScreen("edit-food-screen");
-            FMTClearConsumableItemScreen("edit-food-screen", "food");
-            FMTPopulateConsumableItemScreen("edit-food-screen", {"consumableId": foodId}, "food", "Food Item");
-            document.getElementById("edit-food-screen-delete").setAttribute("food_id", foodId);
+            //Render screen
             const food = validateResult.food;
-            FMTPopulateSavedValuesInConsumableItemScreen("edit-food-screen", food, "food", "Food Item", 1, false, null);
+            pageController.openDynamicScreen(screenID);
+            FMTClearConsumableItemScreen(screenID, qualifier);
+            FMTPopulateConsumableItemScreen(screenID, {"consumableId": foodId}, qualifier, objectType);
+            delBtn.setAttribute("food_id", foodId);
+            FMTPopulateSavedValuesInConsumableItemScreen(screenID, food, qualifier, objectType, 1, false, null);
         },
                     //OnError
                     function(e) {
@@ -3526,7 +3531,7 @@ var pageController = {
             console.error(e);
             return;
         },
-                   );
+      );//End Read Food
     },
     closeEditFoodDynamicScreen: function() {
         pageController.closeDynamicScreen("edit-food-screen");
