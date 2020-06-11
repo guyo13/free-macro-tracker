@@ -2203,7 +2203,7 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
 }
 
 //Functions - UI - Units
-function FMTCreateUnitDropdownMenu(baseName, targetDivId, unitsChart, isStatic, defaultUnitName, readonly) {
+function FMTCreateUnitDropdownMenu(baseName, targetDivId, unitsChart, defaultUnitName, readonly) {
     const _fnName = "FMTCreateUnitDropdownMenu";
     let tDiv = document.getElementById(targetDivId);
     if (!!tDiv) {
@@ -2212,9 +2212,11 @@ function FMTCreateUnitDropdownMenu(baseName, targetDivId, unitsChart, isStatic, 
         if (!!inputGroup) {
             inputGroup.parentElement.removeChild(inputGroup);
         }
+        //Input group container Div for Units
         inputGroup = document.createElement("div");
         inputGroup.classList.add("col-3", "col-lg-1", "pl-0", "input-group-append", "fmt-unit-igroup");
         inputGroup.setAttribute("id", inputGroupId);
+        //Button element that holds the 'unit' attribute and the unit text
         let selectedBtn = document.createElement("button");
         let selectedBtnId = `${baseName}-units`;
         selectedBtn.classList.add("btn", "btn-outline-dark", "fmt-outline-success");
@@ -2222,7 +2224,9 @@ function FMTCreateUnitDropdownMenu(baseName, targetDivId, unitsChart, isStatic, 
         selectedBtn.setAttribute("id", selectedBtnId);
         inputGroup.appendChild(selectedBtn);
 
-        if (!isStatic) {
+        //
+        if (!readonly) {
+            //Dropdown caret button
             let ddBtn = document.createElement("div");
             ddBtn.classList.add("btn", "btn-outline-dark", "dropdown-toggle", "dropdown-toggle-split", "fmt-outline-success");
             ddBtn.setAttribute("type", "button");
@@ -2234,32 +2238,30 @@ function FMTCreateUnitDropdownMenu(baseName, targetDivId, unitsChart, isStatic, 
             span.innerHTML = "Toggle Dropdown";
             ddBtn.appendChild(span);
             inputGroup.appendChild(ddBtn);
+            //Dropdown Menu
+            let ddMenu = document.createElement("div");
+            let ddMenuId = `${baseName}-units-dropdown`;
+            ddMenu.classList.add("dropdown-menu");
+            ddMenu.setAttribute("id", ddMenuId);
 
-            if (!readonly) {
-                //Then also include dropdown menu. readonly is for view screen
-                let ddMenu = document.createElement("div");
-                let ddMenuId = `${baseName}-units-dropdown`;
-                ddMenu.classList.add("dropdown-menu");
-                ddMenu.setAttribute("id", ddMenuId);
-
-                let mUnits = Object.keys(unitsChart);
-                for (let j=0; j<mUnits.length; j++) {
-                    let unitName = mUnits[j];
-                    let unit = unitsChart[unitName];
-                    let normUnitName = unitName.replace(/ /g, "_");
-                    let mUnitId = `${baseName}-unit-${normUnitName}`;
-                    let ddItem = document.createElement("a");
-                    ddItem.classList.add("dropdown-item");
-                    ddItem.setAttribute("href", `#${ddMenuId}`);
-                    ddItem.setAttribute("id", mUnitId);
-                    ddItem.innerHTML = unit.description;
-                    ddItem.addEventListener("click", function(e) {
-                        FMTDropdownToggleValue(selectedBtnId, unitName, {"unit": unitName});
-                    });
-                    ddMenu.appendChild(ddItem);
-                }
-                inputGroup.appendChild(ddMenu);
+            //Populate dropdown menu. TODO - Add function...
+            let mUnits = Object.keys(unitsChart);
+            for (let j=0; j<mUnits.length; j++) {
+                let unitName = mUnits[j];
+                let unit = unitsChart[unitName];
+                let normUnitName = unitName.replace(/ /g, "_");
+                let mUnitId = `${baseName}-unit-${normUnitName}`;
+                let ddItem = document.createElement("a");
+                ddItem.classList.add("dropdown-item");
+                ddItem.setAttribute("href", `#${ddMenuId}`);
+                ddItem.setAttribute("id", mUnitId);
+                ddItem.innerHTML = unit.description;
+                ddItem.addEventListener("click", function(e) {
+                    FMTDropdownToggleValue(selectedBtnId, unitName, {"unit": unitName});
+                });
+                ddMenu.appendChild(ddItem);
             }
+            inputGroup.appendChild(ddMenu);
         }
         tDiv.appendChild(inputGroup);
         if (!!defaultUnitName && (defaultUnitName) in unitsChart) {
@@ -2286,7 +2288,7 @@ function FMTCreateNutrientCategoryHeading(category, targetDivID) {
     const targetDiv = document.getElementById(targetDivID);
     appendChildren(targetDiv, headingElements);
 }
-function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj, category, isStatic, unitsChart, readonly) {
+function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj, category, unitsChart, readonly) {
     const elements = [];
     const normalizedCategory = category.replace(/ /g, "_");
     const normalizedNutriName = nutriObj.name.replace(/ /g, "_");
@@ -2318,7 +2320,7 @@ function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj
         inGroupCont.appendChild(addNutriInGroup);
         elements.push(inGroupCont);
         appendChildren(targetDiv, elements);
-        FMTCreateUnitDropdownMenu(nutriBaseId, nutriBaseId, unitsChart, isStatic, nutriObj.default_unit, readonly);
+        FMTCreateUnitDropdownMenu(nutriBaseId, nutriBaseId, unitsChart, nutriObj.default_unit, readonly);
     }
 }
 function FMTCreateFoodsTableRowElement(foodObj, eventListeners) {
@@ -2434,7 +2436,6 @@ function FMTPopulateAdditionalNutrientsInConsumableItemScreen(baseScreenID, read
     const additionalNutriDivId = `${baseScreenID}-${qualifier}-additional`;
     const additionalNutriDiv = document.getElementById(additionalNutriDivId);
     const categories = Object.keys(fmtAppInstance.additionalNutrients);
-    const isStatic = !fmtAppInstance.additionalNutrientsSettings.allowNonDefaultUnits;
     const baseID = `${baseScreenID}-${qualifier}-addi`;
     for (let j=0; j<categories.length; j++) {
         let category = categories[j];
@@ -2446,7 +2447,6 @@ function FMTPopulateAdditionalNutrientsInConsumableItemScreen(baseScreenID, read
                                                                        additionalNutriDivId,
                                                                        nutri,
                                                                        category,
-                                                                       isStatic,
                                                                        unitsChart,
                                                                        readonly);
         }
@@ -2471,7 +2471,7 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, ob
     const servingTargetDiv = servingBaseName;
     const unitsChart = fmtAppInstance.unitChart;
     const readonly = optionsObj.readonly || false;
-    FMTCreateUnitDropdownMenu(servingBaseName, servingTargetDiv, unitsChart, false, "g", readonly);
+    FMTCreateUnitDropdownMenu(servingBaseName, servingTargetDiv, unitsChart, "g", readonly);
 
     const saveOrAddBtn = document.getElementById(`${baseScreenID}-save`);
     if (isNumber(optionsObj.consumableId)) {
