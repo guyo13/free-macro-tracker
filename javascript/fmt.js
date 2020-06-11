@@ -225,7 +225,9 @@ function FMTSumNutritionalValues(nutritionalValuesArray, unitsChart) {
   return nutritionalValue;
 }
 function FMTIsConvertible(referenceUnits, valueUnits) {
+  //Takes two Unit Objects
   const result = {};
+
   if (referenceUnits.type === "mass" && valueUnits.type === "mass") {
     result.isConvertible = true;
     result.type = "mass";
@@ -297,24 +299,33 @@ function FMTIsConvertible(referenceUnits, valueUnits) {
 function FMTConvertUnits(referenceUnits, valueUnits, unitsChart) {
   unitsChart = unitsChart || fmtAppInstance.unitsChart;
   const result = {};
-  const errMsg = `Unit ${valueUnits.name} is incompatible with ${referenceUnits.name}`;
   if (!unitsChart) {
     result.error = "Error - No Units loaded";
     return result;
+  }
+  _referenceUnits = unitsChart[referenceUnits];
+  _valueUnits = unitsChart[valueUnits];
+  if ( !referenceUnits || ! valueUnits) {
+    result.error = `Error - Units ${_valueUnits} and ${_referenceUnits} could not be found`;
+    return result;
+  }
+  else {
+    referenceUnits = _referenceUnits;
+    valueUnits = _valueUnits;
   }
   const isConvertible = FMTIsConvertible(referenceUnits, valueUnits);
   if (isConvertible.isConvertible) {
     switch (isConvertible.type) {
       case "mass":
-        result.unitMultiplier = referenceUnits.value_in_grams / valueUnits.value_in_grams;
+        result.unitMultiplier = valueUnits.value_in_grams / referenceUnits.value_in_grams;
         break;
       case "volume":
-        result.unitMultiplier = referenceUnits.value_in_ml / valueUnits.value_in_ml;
+        result.unitMultiplier = valueUnits.value_in_ml / referenceUnits.value_in_ml;
         break;
     }
   }
   else {
-    result.error = errMsg;
+    result.error = `Unit ${valueUnits.description} is incompatible with ${referenceUnits.description}`;
   }
   result.isConvertible = isConvertible.isConvertible;
   result.type = isConvertible.type;
@@ -333,8 +344,8 @@ function FMTCalculateMultiplier(referenceValue, referenceUnits, valueToconvert, 
       console.error(result.error);
       return result;
   }
-  if (!(referenceServingUnits in unitsChart) ) {
-      result.error = `Invalid or unknown reference units "${referenceServingUnits}"`;
+  if (!(referenceUnits in unitsChart) ) {
+      result.error = `Invalid or unknown reference units "${referenceUnits}"`;
       console.error(result.error);
       return result;
   }
@@ -364,7 +375,7 @@ function FMTCalculateMultiplier(referenceValue, referenceUnits, valueToconvert, 
       else {
         const valueConverted = valueToconvert * unitConvertRes.unitMultiplier;
         result.convertedValue = valueConverted;
-        result.multiplier = valueConverted/referenceServing;
+        result.multiplier = valueConverted/referenceValue;
         result.error = null;
       }
   }
@@ -2873,7 +2884,8 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
         break;
     }
     const alertsDivID = `${baseScreenID}-alerts`;
-    document.getElementById(alertsDivID).innerHTML = "";
+    //TODO - review why do/don't I need this function to remove my alerts
+    //document.getElementById(alertsDivID).innerHTML = "";
     const servingInputField = document.getElementById(`${baseScreenID}-${qualifier}-serving-input`);
     let servingValue = servingInputField.value;
     if (servingValue === "") { servingValue = 0; }
@@ -2884,6 +2896,8 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
     let multiplier = 1;
     if (conversionRes.error != null || conversionRes.multiplier == null) {
       FMTShowAlert(alertsDivID, "danger", conversionRes.error, fmtAppGlobals.defaultAlertScroll);
+      units = undefined;
+      servingValue = undefined;
     }
     else {
       multiplier = conversionRes.multiplier;
