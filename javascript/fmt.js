@@ -2717,7 +2717,7 @@ function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
       console.error(`Invalid Object Type ${objectType}`);
       return;
     }
-    
+
     document.getElementById(`${baseScreenID}-alerts`).innerHTML = "";
     document.getElementById(`${baseScreenID}-${qualifier}-name`).value = "";
     document.getElementById(`${baseScreenID}-${qualifier}-brand`).value = "";
@@ -3581,7 +3581,7 @@ var pageController = {
             }
             //Load values and open screen
             const food = validateResult.food;
-            FMTPopulateSavedValuesInConsumableItemScreen(screenID, food, qualifier, objectType, 1, false, null);
+            FMTPopulateSavedValuesInConsumableItemScreen(screenID, food, qualifier, objectType, 1, false, null, undefined, undefined);
             pageController.openDynamicScreen(screenID);
         },
                     //OnError
@@ -3660,7 +3660,7 @@ var pageController = {
             }
             const food = validateResult.food;
             //Update and open Screen
-            FMTPopulateSavedValuesInConsumableItemScreen(screenID, food, qualifier, objectType, multiplier, true, `${screenID}-food-serving-input`, currentServingValue, currentServingUnits);
+            FMTPopulateSavedValuesInConsumableItemScreen(screenID, food, qualifier, objectType, multiplier, true, `${screenID}-${qualifier}-serving-input`, currentServingValue, currentServingUnits);
             pageController.openDynamicScreen(screenID);
         },
                     //OnError
@@ -3669,7 +3669,7 @@ var pageController = {
             console.error(e);
             return;
         },
-                   );
+      );//End ReadFood
     },
     closeViewFoodDynamicScreen: function() {
         const screenID = "view-food-screen";
@@ -3683,35 +3683,43 @@ var pageController = {
         }
     },
     openAddToMealDynamicScreen: function(mealIdentifierObj) {
-        pageController.openDynamicScreen("add-to-meal-screen");
+        const screenID = "add-to-meal-screen";
+        pageController.openDynamicScreen(screenID);
         let onsuccessFn = function() {
             console.debug("[openAddToMealDynamicScreen] - Foods loaded successfully");
         };
         let onerrorFn = function(e) {
-            FMTShowAlert("add-to-meal-screen-alerts", "danger", "Failed loading food", fmtAppGlobals.defaultAlertScroll);
+            FMTShowAlert(`${screenID}-alerts`, "danger", "Failed loading food", fmtAppGlobals.defaultAlertScroll);
             console.error(e);
         };
-        const foodsTableBodyID = "add-to-meal-screen-food-table-body";
+        const foodsTableBodyID = `${screenID}-food-table-body`;
         const events = {"click": function(e) {
                     const foodId = Number(e.currentTarget.getAttribute("food_id"));
                     pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, mealIdentifierObj, foodsTableBodyID);
                     }
                };
-        FMTDisplayFoodsTable("add-to-meal-screen", onsuccessFn, onerrorFn, events);
+        FMTDisplayFoodsTable(screenID, onsuccessFn, onerrorFn, events);
     },
     closeAddToMealDynamicScreen: function() {
         pageController.closeDynamicScreen("add-to-meal-screen");
     },
     openEditMealEntryDynamicScreen: function(entry_id, multiplier, clear, currentServingValue, currentServingUnits) {
+        //Sync Tasks - Argument validation and constants definition
         if (!entry_id || !isNumber(entry_id) || !Number.isInteger(Number(entry_id)) ) { return; }
         if (!isNumber(multiplier)) { console.error(`Invalid Multiplier: ${multiplier}`); return; }
         entry_id = Number(entry_id);
         multiplier = Number(multiplier);
         if (clear !== false) { clear = clear || true; }
         const alertDivId = pageController.getAlertDivId();
+        const screenID = "edit-meal-entry-screen";
+        const qualifier = "consumable";
+        const objectType = "Meal Entry";
+        const focusDivID = `${screenID}-${qualifier}-serving-input`;
+        //Async Tasks
         FMTReadMealEntry(entry_id,
                          //OnSuccess
                          function(e) {
+            //Load Meal Entry from DB and validate it
             const mealEntryObj = e.target.result;
             if (!mealEntryObj) {
                 FMTShowAlert(alertDivId, "warning", `Couldn't find meal entry with ID (${entry_id})`);
@@ -3722,13 +3730,9 @@ var pageController = {
                 FMTShowAlert(alertDivId, "Danger", `Error - Meal entry with ID (${entry_id}) failed validation - ${validateResult.error}`);
                 return;
             }
-            const screenID = "edit-meal-entry-screen";
-            const qualifier = "consumable";
-            const objectType = "Meal Entry";
-            const focusDivID = `${screenID}-consumable-serving-input`;
-            pageController.openDynamicScreen(screenID);
+            //Clear if requested (if arrived from overview. if on serving value change no.)
             if (clear) {
-                const eventListenersObj = {"edit-meal-entry-screen-consumable-serving-units":
+                const eventListenersObj = {[`${screenID}-${qualifier}-serving-units`]:
                                           {"unitChanged": function(event) { FMTUpdateConsumableValuesOnServingChange(event, screenID, qualifier, objectType); },}
                                          };
                 FMTClearConsumableItemScreen(screenID, qualifier, objectType);
@@ -3744,21 +3748,21 @@ var pageController = {
                 updateBtn.setAttribute("consumable_id", validateResult.mealEntry.consumable_id);
             }
             FMTPopulateSavedValuesInConsumableItemScreen(screenID, validateResult.mealEntry, qualifier, objectType, multiplier, true, focusDivID, currentServingValue, currentServingUnits);
+            pageController.openDynamicScreen(screenID);
         },
                          //OnError
                         function(e) {
             FMTShowAlert(alertDivId, "Danger", `Error reading Meal entry with ID (${entry_id})`);
             console.error(e);
             return;
-        });
-
+        });//End ReadMealEntry
     },
     closeEditMealEntryDynamicScreen: function() {
         const screenID = "edit-meal-entry-screen";
         const qualifier = "consumable";
         const objectType = "Meal Entry";
-        FMTClearConsumableItemScreen(screenID, qualifier, objectType);
         pageController.closeDynamicScreen(screenID);
+        FMTClearConsumableItemScreen(screenID, qualifier, objectType);
     },
     openedDynamicScreensCount: function() { return Object.keys(fmtAppInstance.pageState.activeDynamicScreens).length;},
     getAlertDivId: function() {
