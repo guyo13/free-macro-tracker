@@ -3458,11 +3458,15 @@ var pageController = {
         pageController.updateZIndexes();
     },
     openAddFoodDynamicScreen: function(foodsTableBodyID) {
-        pageController.openDynamicScreen("add-food-screen");
-        FMTClearConsumableItemScreen("add-food-screen", "food");
-        FMTPopulateConsumableItemScreen("add-food-screen", undefined, "food", "Food Item");
+        const screenID = "add-food-screen";
+        const qualifier = "food";
+        const objectType = "Food Item";
+        const optionsObj = undefined;
+        pageController.openDynamicScreen(screenID);
+        FMTClearConsumableItemScreen(screenID, qualifier);
+        FMTPopulateConsumableItemScreen(screenID, optionsObj, qualifier, objectType);
         if (!!foodsTableBodyID) {
-            const saveBtn = document.getElementById("add-food-screen-save");
+            const saveBtn = document.getElementById(`${screenID}-save`);
             if (!!saveBtn) {
                 saveBtn.setAttribute("foods-table-body-id", foodsTableBodyID);
             }
