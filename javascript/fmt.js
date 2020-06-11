@@ -2734,11 +2734,12 @@ function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
     FMTConsumableItemScreenShowLess(baseScreenID, qualifier);
     //Type sepecific actions
     if (objectType) {
+        let delBtn, saveBtn, updateBtn, editBtn;
         switch(objectType) {
             case "Meal Entry":
                 document.getElementById(`${baseScreenID}-${qualifier}-type`).value = "";
-                const updateBtn = document.getElementById(`${baseScreenID}-save`);
-                const delBtn = document.getElementById(`${baseScreenID}-delete`);
+                updateBtn = document.getElementById(`${baseScreenID}-save`);
+                delBtn = document.getElementById(`${baseScreenID}-delete`);
                 delBtn.removeAttribute(`entry_id`);
                 updateBtn.removeAttribute(`entry_id`);
                 updateBtn.removeAttribute("meal_name");
@@ -2749,9 +2750,9 @@ function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
                 updateBtn.removeAttribute("consumable_id");
                 break;
             case "Food Item":
-                const saveBtn = document.getElementById(`${baseScreenID}-save`);
-                const delBtn = document.getElementById(`${baseScreenID}-delete`);
-                const editBtn = document.getElementById("view-food-screen-edit");
+                saveBtn = document.getElementById(`${baseScreenID}-save`);
+                delBtn = document.getElementById(`${baseScreenID}-delete`);
+                editBtn = document.getElementById(`${baseScreenID}-edit`);
                 saveBtn.removeAttribute("foods-table-body-id");
                 saveBtn.removeAttribute("meal_name");
                 saveBtn.removeAttribute("meal_year");
