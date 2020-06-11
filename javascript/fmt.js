@@ -2540,11 +2540,18 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, ob
 }
 function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableItem, qualifier, objectType, multiplier,
                                                       readonly, focusDivId, currentServingValue, currentServingUnits) {
+    //TODO in this call flow need to merge instance unit chart and consumable additional nutrients that can repeat themselves up to 3 times
     if (multiplier !== 0) {
         multiplier = multiplier || 1;
     }
-    qualifier = qualifier || "food";
-    objectType = objectType || "Food Item";
+    if (fmtAppGlobals.inputScreensQualifiers.indexOf(qualifier) < 0 ) {
+      console.error(`Invalid qualifier ${qualifier}`);
+      return;
+    }
+    if (fmtAppGlobals.consumableTypes.indexOf(objectType) < 0 ) {
+      console.error(`Invalid Object Type ${objectType}`);
+      return;
+    }
     const _funcName = "FMTPopulateSavedValuesInConsumableItemScreen";
     let nameProp, brandProp, servingProp;
     switch (objectType) {
@@ -2557,7 +2564,12 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
             nameProp = "consumableName";
             brandProp = "consumableBrand";
             servingProp = "serving";
-            document.getElementById(`${baseScreenID}-${qualifier}-type`).value = consumableItem.consumableType || "";
+            document.getElementById(`${baseScreenID}-${qualifier}-type`).value = consumableItem.consumableType;
+            break;
+        case "Recipe Item":
+            nameProp = "recipeName";
+            brandProp = "recipeCreator";
+            servingProp = "referenceServing";
             break;
     }
     document.getElementById(`${baseScreenID}-${qualifier}-name`).value = consumableItem[nameProp];
@@ -3466,16 +3478,18 @@ var pageController = {
         }
     },
     openEditFoodDynamicScreen: function(foodId, foodsTableBodyID, mealIdentifier) {
-        //Sync Tasks
+        //Sync Tasks - Argument Validation and handling
         if (!foodId || !isNumber(foodId) || !Number.isInteger(Number(foodId)) ) { console.error(`Invalid Food ID (${foodId})`); return; }
         foodId = Number(foodId);
         const alertDivId = pageController.getAlertDivId();
         const saveBtn = document.getElementById("edit-food-screen-save");
+        //Register the food table element from which we eventually got to this screen
         if (!!foodsTableBodyID) {
             const delBtn = document.getElementById("edit-food-screen-delete");
             saveBtn.setAttribute("foods-table-body-id", foodsTableBodyID);
             delBtn.setAttribute("foods-table-body-id", foodsTableBodyID);
         }
+        //Carry over meal identifier from calling screen (currently only View Food screen)
         if (!!mealIdentifier) {
             if (!!mealIdentifier.meal_name) {
                 saveBtn.setAttribute("meal_name", mealIdentifier.meal_name);
@@ -3485,7 +3499,7 @@ var pageController = {
             saveBtn.setAttribute("meal_day", mealIdentifier.meal_day);
             saveBtn.setAttribute("profile_id", mealIdentifier.profile_id);
         }
-        //Async Tasks
+        //Async Tasks - Read food item and update screen
         FMTReadFood(foodId,
                     //OnSuccess
                     function(e) {
