@@ -2489,7 +2489,7 @@ function FMTPopulateAdditionalNutrientsInConsumableItemScreen(baseScreenID, read
 //TODO review if needed date and mealName -
 //optionsObj {consumableId(int),readonly(bool),eventListenersObj}
 //evenListenerObj{"DOM ID1": {"event": fn},...,"DOM IDN": {"event": fn}}
-function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, objectType) {
+function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, objectType, mealIdentifierObj) {
     if (fmtAppGlobals.inputScreensQualifiers.indexOf(qualifier) < 0 ) {
       console.error(`Invalid qualifier ${qualifier}`);
       return;
@@ -2499,6 +2499,7 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, ob
       return;
     }
     optionsObj = optionsObj || {"readonly": false};
+    const result = {};
     let idProp;
     switch (objectType) {
         case "Food Item":
@@ -2521,9 +2522,39 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, ob
 
     //Validate and Add ID of consumable/entry (food_id, recipe_id, entry_id).
     const saveOrAddBtn = document.getElementById(`${baseScreenID}-save`);
+    const delBtn = document.getElementById(`${baseScreenID}-delete`);
+    const editBtn = document.getElementById(`${baseScreenID}-edit`);
+    //TODO - write a function to validate the different IDs
     if (isNumber(optionsObj.consumableId)) {
         saveOrAddBtn.setAttribute(`${idProp}`, optionsObj.consumableId);
+        if (delBtn) {
+          delBtn.setAttribute(`${idProp}`, optionsObj.consumableId);
+        }
+        if (editBtn) {
+          editBtn.setAttribute(`${idProp}`, optionsObj.consumableId);
+        }
     }
+
+    //Vaidate and handle Meal Identifier if present
+    if (!!mealIdentifierObj) {
+      const validateMealIdentifier = FMTValidateMealIdentifier(mealIdentifierObj);
+      if (validateMealIdentifier.error != null || validateMealIdentifier.mealIdentifier == null) {
+        //TODO handle error
+        result.error = validateMealIdentifier.error;
+      }
+      const mealIdentifier = validateMealIdentifier.mealIdentifier;
+      //Add to buttons
+      if (saveOrAddBtn) {
+        if (!!mealIdentifier.meal_name) {
+            saveOrAddBtn.setAttribute("meal_name", mealIdentifier.meal_name);
+        }
+        saveOrAddBtn.setAttribute("meal_year", mealIdentifier.meal_year);
+        saveOrAddBtn.setAttribute("meal_month", mealIdentifier.meal_month);
+        saveOrAddBtn.setAttribute("meal_day", mealIdentifier.meal_day);
+        saveOrAddBtn.setAttribute("profile_id", mealIdentifier.profile_id);
+      }
+    }
+
     //Create Input fields for Additional Nutrients and attach event listeners to elements passed in optionsObj
     const res = FMTPopulateAdditionalNutrientsInConsumableItemScreen(baseScreenID, readonly, qualifier);
     if (!res) { console.warn(`Failed adding additional nutrients fields to ${baseScreenID}`); }
@@ -2651,7 +2682,10 @@ function FMTConsumableItemScreenShowLess(baseScreenID, qualifier) {
     }
 }
 function FMTClearViewConsumableItemScreen(baseScreenID, qualifier) {
-    qualifier = qualifier || "food";
+    if (fmtAppGlobals.inputScreensQualifiers.indexOf(qualifier) < 0 ) {
+      console.error(`Invalid qualifier ${qualifier}`);
+      return;
+    }
     //Clear screen
     FMTClearConsumableItemScreen(baseScreenID, qualifier);
     //Clear Add to Meal/Update (save btn) properties present in this screen
@@ -2670,7 +2704,10 @@ function FMTClearViewConsumableItemScreen(baseScreenID, qualifier) {
     document.getElementById(`${baseScreenID}-add-to-meal`).classList.add("d-none");
 }
 function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
-    qualifier = qualifier || "food";
+    if (fmtAppGlobals.inputScreensQualifiers.indexOf(qualifier) < 0 ) {
+      console.error(`Invalid qualifier ${qualifier}`);
+      return;
+    }
     document.getElementById(`${baseScreenID}-alerts`).innerHTML = "";
     document.getElementById(`${baseScreenID}-${qualifier}-name`).value = "";
     document.getElementById(`${baseScreenID}-${qualifier}-brand`).value = "";
@@ -2697,10 +2734,21 @@ function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
                 updateBtn.removeAttribute("profile_id");
                 updateBtn.removeAttribute("consumable_id");
                 break;
-              case "Food Item":
-              break;
-              case "Recipe Item":
-              break;
+            case "Food Item":
+                const saveBtn = document.getElementById(`${baseScreenID}-save`);
+                const delBtn = document.getElementById(`${baseScreenID}-delete`);
+                saveBtn.removeAttribute("foods-table-body-id");
+                saveBtn.removeAttribute("meal_name");
+                saveBtn.removeAttribute("meal_year");
+                saveBtn.removeAttribute("meal_month");
+                saveBtn.removeAttribute("meal_day");
+                saveBtn.removeAttribute("profile_id");
+                if (delBtn) {
+                    delBtn.removeAttribute("foods-table-body-id");
+                }
+                break;
+            case "Recipe Item":
+                break;
         }
     }
 }
@@ -3473,10 +3521,13 @@ var pageController = {
         }
     },
     closeAddFoodDynamicScreen: function() {
-        pageController.closeDynamicScreen("add-food-screen");
-        FMTClearConsumableItemScreen("add-food-screen", "food");
+        const screenID = "add-food-screen";
+        const qualifier = "food";
+        pageController.closeDynamicScreen(screenID);
+        FMTClearConsumableItemScreen(screenID, qualifier);
+        //TODO - review this
         document.getElementById("foods-alerts").innerHTML = "";
-        const saveBtn = document.getElementById("add-food-screen-save");
+        const saveBtn = document.getElementById(`${screenID}-save`);
         if (!!saveBtn) {
             saveBtn.removeAttribute("foods-table-body-id");
         }
@@ -3496,16 +3547,9 @@ var pageController = {
             saveBtn.setAttribute("foods-table-body-id", foodsTableBodyID);
             delBtn.setAttribute("foods-table-body-id", foodsTableBodyID);
         }
-        //Carry over meal identifier from calling screen (currently only View Food screen)
-        if (!!mealIdentifier) {
-            if (!!mealIdentifier.meal_name) {
-                saveBtn.setAttribute("meal_name", mealIdentifier.meal_name);
-            }
-            saveBtn.setAttribute("meal_year", mealIdentifier.meal_year);
-            saveBtn.setAttribute("meal_month", mealIdentifier.meal_month);
-            saveBtn.setAttribute("meal_day", mealIdentifier.meal_day);
-            saveBtn.setAttribute("profile_id", mealIdentifier.profile_id);
-        }
+        //Render screen
+        FMTClearConsumableItemScreen(screenID, qualifier);
+        FMTPopulateConsumableItemScreen(screenID, {"consumableId": foodId}, qualifier, objectType, mealIdentifier);
         //Async Tasks - Read food item and update screen
         FMTReadFood(foodId,
                     //OnSuccess
@@ -3521,13 +3565,10 @@ var pageController = {
                 FMTShowAlert(alertDivId, "Danger", `Error - Food item with ID (${foodId}) failed validation - ${validateResult.error}`);
                 return;
             }
-            //Render screen
+            //Load values and open screen
             const food = validateResult.food;
-            pageController.openDynamicScreen(screenID);
-            FMTClearConsumableItemScreen(screenID, qualifier);
-            FMTPopulateConsumableItemScreen(screenID, {"consumableId": foodId}, qualifier, objectType);
-            delBtn.setAttribute("food_id", foodId);
             FMTPopulateSavedValuesInConsumableItemScreen(screenID, food, qualifier, objectType, 1, false, null);
+            pageController.openDynamicScreen(screenID);
         },
                     //OnError
                     function(e) {
@@ -3538,27 +3579,38 @@ var pageController = {
       );//End Read Food
     },
     closeEditFoodDynamicScreen: function() {
-        pageController.closeDynamicScreen("edit-food-screen");
-        FMTClearConsumableItemScreen("edit-food-screen", "food");
-        const saveBtn = document.getElementById("edit-food-screen-save");
-        const delBtn = document.getElementById("edit-food-screen-delete");
-        saveBtn.removeAttribute("foods-table-body-id");
-        saveBtn.removeAttribute("meal_name");
-        saveBtn.removeAttribute("meal_year");
-        saveBtn.removeAttribute("meal_month");
-        saveBtn.removeAttribute("meal_day");
-        saveBtn.removeAttribute("profile_id");
-        delBtn.removeAttribute("foods-table-body-id");
+        const screenID = "edit-food-screen";
+        const qualifier = "food";
+        const objectType = "Food Item";
+        pageController.closeDynamicScreen(screenID);
+        FMTClearConsumableItemScreen(screenID, qualifier, objectType);
+
     },
     openViewFoodDynamicScreen: function(foodId, multiplier, clear, currentServingValue, currentServingUnits, mealIdentifierObj, foodsTableBodyID) {
-        //Sync Tasks
-        //Argument Validation
+        //Sync Tasks - Argument Validation, constants definition
         if (!foodId || !isNumber(foodId) || !Number.isInteger(Number(foodId)) ) { console.error(`Invalid Food ID: ${foodId}`); return; }
         if (!isNumber(multiplier)) { console.error(`Invalid Multiplier: ${multiplier}`); return; }
         foodId = Number(foodId);
         multiplier = Number(multiplier);
         if (clear !== false) { clear = clear || true; }
         const alertDivId = pageController.getAlertDivId();
+        const screenID = "view-food-screen";
+        const qualifier = "food";
+        const objectType = "Food Item";
+        const addToMealBtn = document.getElementById(`${screenID}-save`);
+        const editFoodBtn = document.getElementById(`${screenID}-edit`);
+        //Clear Screen if needed
+        if (clear) {
+            FMTClearViewConsumableItemScreen(screenID, qualifier);
+            const eventListenersObj = {`${screenID}-${qualifier}-serving-units`:
+                                      {"unitChanged": function(event) { FMTUpdateConsumableValuesOnServingChange(event, screenID, qualifier, objectType); },}
+                                     };
+            const optionsObj = {"consumableId": foodId, "eventListenersObj": eventListenersObj };
+            FMTPopulateConsumableItemScreen(screenID, optionsObj, qualifier, objectType, mealIdentifierObj);
+            if (!!foodsTableBodyID) {
+                editFoodBtn.setAttribute("foods-table-body-id", foodsTableBodyID);
+            }
+        }
         //Async Tasks
         FMTReadFood(foodId,
                     //OnSuccess
@@ -3574,26 +3626,9 @@ var pageController = {
                 return;
             }
             //Open Screen
-            const screenID = "view-food-screen";
-            const qualifier = "food";
-            const objectType = "Food Item";
             pageController.openDynamicScreen(screenID);
             const food = validateResult.food;
-            const addToMealBtn = document.getElementById("view-food-screen-save");
-            const editFoodBtn = document.getElementById("view-food-screen-edit");
-            //Clear Screen if needed
-            if (clear) {
-                FMTClearViewConsumableItemScreen(screenID);
-                const eventListenersObj = {"view-food-screen-food-serving-units":
-                                          {"unitChanged": function(event) { FMTUpdateConsumableValuesOnServingChange(event, screenID, qualifier, objectType); },}
-                                         };
-                FMTPopulateConsumableItemScreen("view-food-screen", {"consumableId": foodId, "eventListenersObj": eventListenersObj }, qualifier, objectType);
-                const foodsTableBodyNode = document.getElementById(foodsTableBodyID);
-                if (!!foodsTableBodyNode) {
-                    editFoodBtn.setAttribute("foods-table-body-id", foodsTableBodyID);
-                }
-            }
-            editFoodBtn.setAttribute("food_id", foodId);
+
             if (!!mealIdentifierObj) {
                 const validateMealIdentifierObjRes = FMTValidateMealIdentifier(mealIdentifierObj);
                 if (validateMealIdentifierObjRes.mealIdentifier == null || validateMealIdentifierObjRes.error != null) {
