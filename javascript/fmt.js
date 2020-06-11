@@ -21,7 +21,7 @@ fmtAppInstance.currentDay = null;
 //Instance - State - function pointers
 fmtAppInstance.eventFunctions = {};
 //Instance - User defined metrics
-fmtAppInstance.unitChart = null;
+fmtAppInstance.unitsChart = null;
 fmtAppInstance.additionalNutrients = null;
 //Globals
 var fmtAppGlobals = {};
@@ -184,7 +184,7 @@ function indexesOfObject(array, key, value) {
   return idx;
 }
 function FMTSumNutritionalValues(nutritionalValuesArray, unitsChart) {
-  unitsChart = unitsChart || fmtAppInstance.unitChart;
+  unitsChart = unitsChart || fmtAppInstance.unitsChart;
   const nutritionalValue = {};
   nutritionalValue.calories = 0;
   nutritionalValue.proteins = 0;
@@ -208,7 +208,7 @@ function FMTSumNutritionalValues(nutritionalValuesArray, unitsChart) {
           let l = 0;
           while (l < idx.length && !isConvertible ) {
             const existingNutri = nutritionalValue.additionalNutrients[category][idx[l]];
-            const convRes = FMTConvertUnits(existingNutri.unit, addiNutriObj.unit, unitChart);
+            const convRes = FMTConvertUnits(existingNutri.unit, addiNutriObj.unit, unitsChart);
             isConvertible = convRes.isConvertible;
             if (isConvertible) {
               //Convert in direction of "target" to "reference", divide by multiplier
@@ -295,10 +295,10 @@ function FMTIsConvertible(referenceUnits, valueUnits) {
   return result;
 }
 function FMTConvertUnits(referenceUnits, valueUnits, unitsChart) {
-  unitsChart = unitChart || fmtAppInstance.unitChart;
+  unitsChart = unitsChart || fmtAppInstance.unitsChart;
   const result = {};
   const errMsg = `Unit ${valueUnits.name} is incompatible with ${referenceUnits.name}`;
-  if (!unitChart) {
+  if (!unitsChart) {
     result.error = "Error - No Units loaded";
     return result;
   }
@@ -321,19 +321,19 @@ function FMTConvertUnits(referenceUnits, valueUnits, unitsChart) {
   return result;
 }
 function FMTCalculateMultiplier(referenceValue, referenceUnits, valueToconvert, valueUnits, unitsChart) {
-  unitsChart = unitChart || fmtAppInstance.unitChart;
+  unitsChart = unitsChart || fmtAppInstance.unitsChart;
   const result = {};
-  if (!unitChart) {
+  if (!unitsChart) {
     result.error = "Error - No Units loaded";
     return result;
   }
 
-  if (!(valueUnits in unitChart) ) {
+  if (!(valueUnits in unitsChart) ) {
       result.error = `Invalid or unknown units "${units}"`;
       console.error(result.error);
       return result;
   }
-  if (!(referenceServingUnits in unitChart) ) {
+  if (!(referenceServingUnits in unitsChart) ) {
       result.error = `Invalid or unknown reference units "${referenceServingUnits}"`;
       console.error(result.error);
       return result;
@@ -378,7 +378,7 @@ function prepareDBv1() {
         console.error("fmt DB null reference");
         return;
     }
-    const baseUnitChart = [{"name": "oz", "value_in_grams": 28.34952, "description": "Ounce", "type": "mass", "value_in_ml": 0},
+    const baseUnitsChart = [{"name": "oz", "value_in_grams": 28.34952, "description": "Ounce", "type": "mass", "value_in_ml": 0},
                            {"name": "lb", "value_in_grams": 453.5924, "description": "Pound", "type": "mass", "value_in_ml": 0},
                            {"name": "st", "value_in_grams": 6350.293, "description": "Stone", "type": "mass", "value_in_ml": 0},
                            {"name": "mcg", "value_in_grams": 0.000001, "description": "Microgram", "type": "mass", "value_in_ml": 0},
@@ -489,9 +489,9 @@ function prepareDBv1() {
     //Create Units objectStore and populate default entries
     let fmtUnitsStore = fmtAppInstance.fmtDb.createObjectStore(fmtAppGlobals.FMT_DB_UNITS_STORE,
                                                                 {keyPath: fmtAppGlobals.FMT_DB_UNITS_KP, autoIncrement: false});
-    for (let i in baseUnitChart) {
-        console.debug(`Adding Unit entry: ${JSON.stringify(baseUnitChart[i])}`);
-        fmtUnitsStore.add(baseUnitChart[i]);
+    for (let i in baseUnitsChart) {
+        console.debug(`Adding Unit entry: ${JSON.stringify(baseUnitsChart[i])}`);
+        fmtUnitsStore.add(baseUnitsChart[i]);
     }
 
     //Create Nutrients objectStore and populate default entries
@@ -894,7 +894,7 @@ function FMTImportFromStructuredJSON(jsonString, jsonParseReviverFn, onEnd, excl
 //Functions - Validation
 function FMTValidateNutritionalValue(nutritionalValueObj, unitsChart, options) {
     if (unitsChart == null) {
-        unitsChart = fmtAppInstance.unitChart;
+        unitsChart = fmtAppInstance.unitsChart;
     }
     if (options == null) {
         options = {};
@@ -983,7 +983,7 @@ function FMTValidateFoodObject(foodObj, unitsChart) {
    *nutrient - {name,unit,amount}
   */
     const _funcName = "FMTValidateFoodObject";
-    unitsChart = unitsChart || fmtAppInstance.unitChart;
+    unitsChart = unitsChart || fmtAppInstance.unitsChart;
     const result = {};
     let food = {};
     if (foodObj.foodName == null || foodObj.foodName === "") {
@@ -1486,7 +1486,7 @@ function FMTValidateUserGoals(userGoalsObj) {
 }
 function FMTValidateRecipeObject(recipeObj, unitsChart) {
   const _funcName = "FMTValidateRecipeObject";
-  unitsChart = unitsChart || fmtAppInstance.unitChart;
+  unitsChart = unitsChart || fmtAppInstance.unitsChart;
   const result = {};
   const recipe = {};
   let error = null;
@@ -1553,7 +1553,7 @@ function FMTValidateRecipeObject(recipeObj, unitsChart) {
     return result;
   }
 
-  recipe.nutritionalValue = FMTSumNutritionalValues(nutriValuesArr, unitChart);
+  recipe.nutritionalValue = FMTSumNutritionalValues(nutriValuesArr, unitsChart);
 
   result.recipe = recipe;
   return result;
@@ -1735,7 +1735,7 @@ function FMTIterateFoods( onsuccessFn, onerrorFn) {
 }
 function FMTAddFood(foodObj, unitsChart, onsuccessFn, onerrorFn) {
     const _fnName = "FMTAddFood";
-    unitsChart = unitsChart || fmtAppInstance.unitChart;
+    unitsChart = unitsChart || fmtAppInstance.unitsChart;
     const result = FMTValidateFoodObject(foodObj, unitsChart);
     const food = result.food;
     if (food != null && result.error == null) {
@@ -1754,7 +1754,7 @@ function FMTAddFood(foodObj, unitsChart, onsuccessFn, onerrorFn) {
 }
 function FMTUpdateFood(foodId, foodObj, unitsChart, onsuccessFn, onerrorFn) {
     const _fnName = "FMTUpdateFood";
-    unitsChart = unitsChart || fmtAppInstance.unitChart;
+    unitsChart = unitsChart || fmtAppInstance.unitsChart;
     const result = FMTValidateFoodObject(foodObj, unitsChart);
     const food = result.food;
     if (food != null  && result.error == null) {
@@ -1801,7 +1801,7 @@ function FMTIterateRecipes(onsuccessFn, onerrorFn) {
 }
 function FMTAddRecipe(recipeObj, unitsChart, onsuccessFn, onerrorFn) {
     const _fnName = "FMTAddRecipe";
-    unitsChart = unitsChart || fmtAppInstance.unitChart;
+    unitsChart = unitsChart || fmtAppInstance.unitsChart;
     const result = FMTValidateRecipeObject(recipeObj, unitsChart);
     const recipe = result.recipe;
     if (recipe != null && result.error == null) {
@@ -1826,7 +1826,7 @@ function FMTAddRecipe(recipeObj, unitsChart, onsuccessFn, onerrorFn) {
 }
 function FMTUpdateRecipe(recipeId, recipeObj, unitsChart, onsuccessFn, onerrorFn) {
     const _fnName = "FMTUpdateRecipe";
-    unitsChart = unitsChart || fmtAppInstance.unitChart;
+    unitsChart = unitsChart || fmtAppInstance.unitsChart;
     const result = FMTValidateRecipeObject(recipeObj, unitsChart);
     const recipe = result.recipe;
     if (recipe != null && result.error == null) {
@@ -2469,7 +2469,7 @@ function FMTQueryFoodsTable(query, baseID) {
 function FMTPopulateAdditionalNutrientsInConsumableItemScreen(baseScreenID, readonly, qualifier) {
     if (!fmtAppInstance.additionalNutrients) { return false; }
     qualifier = qualifier || "food";
-    const unitsChart = fmtAppInstance.unitChart;
+    const unitsChart = fmtAppInstance.unitsChart;
     const additionalNutriDivId = `${baseScreenID}-${qualifier}-additional`;
     const additionalNutriDiv = document.getElementById(additionalNutriDivId);
     const categories = Object.keys(fmtAppInstance.additionalNutrients);
@@ -2494,16 +2494,18 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, ob
   //TODO review if needed date and mealName -
   //optionsObj {consumableId(int),readonly(bool),eventListenersObj}
   //evenListenerObj{"DOM ID1": {"event": fn},...,"DOM IDN": {"event": fn}}
+    const result = {};
     if (fmtAppGlobals.inputScreensQualifiers.indexOf(qualifier) < 0 ) {
-      console.error(`Invalid qualifier ${qualifier}`);
-      return;
+      result.error = `Invalid qualifier ${qualifier}`;
+      console.error(result.error);
+      return result;
     }
     if (fmtAppGlobals.consumableTypes.indexOf(objectType) < 0 ) {
-      console.error(`Invalid Object Type ${objectType}`);
-      return;
+      result.error = `Invalid Object Type ${objectType}`;
+      console.error(result.error);
+      return result;
     }
     optionsObj = optionsObj || {"readonly": false};
-    const result = {};
     let idProp;
     switch (objectType) {
         case "Food Item":
@@ -2520,7 +2522,7 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, ob
     //Prepare Serving field - where user selects units and inputs amount
     const servingBaseName = `${baseScreenID}-${qualifier}-serving`;
     const servingTargetDiv = servingBaseName;
-    const unitsChart = fmtAppInstance.unitChart;
+    const unitsChart = fmtAppInstance.unitsChart;
     const readonly = optionsObj.readonly || false;
     FMTCreateUnitDropdownMenu(servingBaseName, servingTargetDiv, unitsChart, "g", readonly);
 
@@ -2572,6 +2574,7 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, ob
             }
         }
     }
+    return result;
 }
 function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableItem, qualifier, objectType, multiplier,
                                                       readonly, focusDivId, currentServingValue, currentServingUnits) {
@@ -2609,7 +2612,7 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
     }
     document.getElementById(`${baseScreenID}-${qualifier}-name`).value = consumableItem[nameProp];
     document.getElementById(`${baseScreenID}-${qualifier}-brand`).value = consumableItem[brandProp] || "";
-    if (!isNumber(currentServingValue) || !(currentServingUnits in fmtAppInstance.unitChart)) {
+    if (!isNumber(currentServingValue) || !(currentServingUnits in fmtAppInstance.unitsChart)) {
         const servInElem = document.getElementById(`${baseScreenID}-${qualifier}-serving-input`);
         servInElem.value = consumableItem[servingProp];
         servInElem.setAttribute("reference_serving", consumableItem[servingProp]);
@@ -2802,7 +2805,7 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
     if (baseScreenID == null) { console.error(`[${_funcName}] - Invalid baseScreenID "${baseScreenID}"`); return onerrorFn(); }
     if (!(action == "add" || action == "edit" || action == "get-object")) { console.error(`[${_funcName}] - Invalid action "${action}"`); return onerrorFn(); }
     if (action == "edit" && (!optionsObj || !isNumber(optionsObj.consumableId)) ) { console.error(`[${_funcName}] - Missing consumableId for edit action`); return onerrorFn(); }
-    const unitsChart = fmtAppInstance.unitChart;
+    const unitsChart = fmtAppInstance.unitsChart;
     consumableObj[nameProp] = document.getElementById(`${baseScreenID}-${qualifier}-name`).value;
     consumableObj[brandProp] = document.getElementById(`${baseScreenID}-${qualifier}-brand`).value;
     consumableObj[servingProp] = document.getElementById(`${baseScreenID}-${qualifier}-serving-input`).value;
@@ -2879,7 +2882,7 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
     let referenceServingUnits = servingInputField.getAttribute("reference_serving_units");
     const conversionRes = FMTCalculateMultiplier(referenceServing, referenceServingUnits, servingValue, units, fmtAppInstance.unitsChart);
     let multiplier = 1;
-    if (conversionRes.error != null conversionRes.multiplier == null) {
+    if (conversionRes.error != null || conversionRes.multiplier == null) {
       FMTShowAlert(alertsDivID, "danger", conversionRes.error, fmtAppGlobals.defaultAlertScroll);
     }
     else {
@@ -3580,7 +3583,7 @@ var pageController = {
                 FMTShowAlert(alertDivId, "warning", `Couldn't find Food item with ID (${foodId})`);
                 return;
             }
-            const validateResult = FMTValidateFoodObject(foodObj, fmtAppInstance.unitChart);
+            const validateResult = FMTValidateFoodObject(foodObj, fmtAppInstance.unitsChart);
             if (validateResult.food == null || validateResult.error != null) {
                 FMTShowAlert(alertDivId, "Danger", `Error - Food item with ID (${foodId}) failed validation - ${validateResult.error}`);
                 return;
@@ -3632,7 +3635,7 @@ var pageController = {
                 editFoodBtn.setAttribute("foods-table-body-id", foodsTableBodyID);
             }
             if (result.error) {
-              FMTShowAlert(alertDivId, "error", result.error;);
+              FMTShowAlert(alertDivId, "error", result.error);
             }
             //Handle meal Identifier if it's valid
             if (mealIdentifier) {
@@ -3659,7 +3662,7 @@ var pageController = {
                 FMTShowAlert(alertDivId, "warning", `Couldn't find Food item with ID (${foodId})`);
                 return;
             }
-            const validateResult = FMTValidateFoodObject(foodObj, fmtAppInstance.unitChart);
+            const validateResult = FMTValidateFoodObject(foodObj, fmtAppInstance.unitsChart);
             if (validateResult.food == null || validateResult.error != null) {
                 FMTShowAlert(alertDivId, "Danger", `Error - Food item with ID (${foodId}) failed validation - ${validateResult.error}`);
                 return;
@@ -3825,15 +3828,15 @@ var pageController = {
 function FMTLoadUnits(onloadedFn) {
     FMTReadAllUnits(function(e) {
         let units = e.target.result;
-        fmtAppInstance.unitChart = {};
+        fmtAppInstance.unitsChart = {};
         for (let j in units) {
             let unit = units[j];
-            fmtAppInstance.unitChart[unit.name] = {"value_in_grams": unit.value_in_grams,
+            fmtAppInstance.unitsChart[unit.name] = {"value_in_grams": unit.value_in_grams,
                                                    "value_in_ml": unit.value_in_ml,
                                                    "type": unit.type,
                                                    "description": unit.description};
         }
-        console.debug(`Units loaded into Application instance ${JSON.stringify(fmtAppInstance.unitChart)}`);
+        console.debug(`Units loaded into Application instance ${JSON.stringify(fmtAppInstance.unitsChart)}`);
         if (onloadedFn) { onloadedFn(); }
     },
     function(e) {throw ReferenceError("Failed reading units");});
