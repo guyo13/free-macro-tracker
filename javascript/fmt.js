@@ -174,16 +174,17 @@ function getOnEndRemoveFirstFromArrayAndExec(globalArray, elem, fn) {
     if (typeof fn === 'function') { fn(); }
   };
 }
-function indexOfObject(array, key, value) {
-  let idx = -1;
+function indexesOfObject(array, key, value) {
+  let idx = [];
   array.forEach((item, i) => {
     if(item[key] === value) {
-      idx = i;
+      idx.push(i);
     }
   });
   return idx;
 }
-function FMTSumNutritionalValues(nutritionalValuesArray) {
+function FMTSumNutritionalValues(nutritionalValuesArray, unitsChart) {
+  unitsChart = unitsChart || fmtAppInstance.unitChart;
   const nutritionalValue = {};
   nutritionalValue.calories = 0;
   nutritionalValue.proteins = 0;
@@ -202,21 +203,96 @@ function FMTSumNutritionalValues(nutritionalValuesArray) {
           nutritionalValue.additionalNutrients[category] = [];
         }
         nutriValueObj.additionalNutrients[category].forEach((addiNutriObj, k) => {
-          const idx = indexOfObject(nutritionalValue.additionalNutrients[category], "name", addiNutriObj.name);
-          if (idx >= 0) {
-            nutritionalValue.additionalNutrients[category][idx].mass += addiNutriObj.mass;
+          const idx = indexesOfObject(nutritionalValue.additionalNutrients[category], "name", addiNutriObj.name);
+          let isConvertible = false;
+          let l = 0;
+          while (l < idx.length && !isConvertible ) {
+            const existingNutri = nutritionalValue.additionalNutrients[category][idx[l]];
+            const convRes = FMTConvertUnits(existingNutri.unit, addiNutriObj.unit, unitChart);
+            isConvertible = convRes.isConvertible;
+            if (isConvertible) {
+              //Convert in direction of "target" to "reference", divide by multiplier
+              existingNutri.mass += (addiNutriObj.mass / convRes.unitMultiplier);
+            }
           }
-          else {
+          if (!isConvertible) {
             nutritionalValue.additionalNutrients[category].push(addiNutriObj);
           }
         });
-
       });
-
     }
   });
-
   return nutritionalValue;
+}
+function FMTIsConvertible(referenceUnits, valueUnits) {
+  const result = {};
+  if (referenceUnits.type === "mass" && valueUnits.type === "mass") {
+    result.isConvertible = true;
+    result.type = "mass";
+  }
+
+  else if (referenceUnits.type === "volume" && valueUnits.type === "volume") {
+    result.isConvertible = true;
+    result.type = "volume";
+  }
+
+  else if ( (referenceUnits.type === "arbitrary" && valueUnits.type === "mass") ) {
+    if (referenceUnits.value_in_grams > 0) {
+      result.isConvertible = true;
+      result.type = "mass";
+    }
+    else {
+      result.isConvertible = false;
+    }
+  }
+
+  else if ( (referenceUnits.type === "mass" && valueUnits.type === "arbitrary") ) {
+    if (valueUnits.value_in_grams > 0) {
+      result.isConvertible = true;
+      result.type = "mass";
+    }
+    else {
+      result.isConvertible = false;
+    }
+  }
+
+  else if ( (referenceUnits.type === "arbitrary" && valueUnits.type === "volume") ) {
+    if (referenceUnits.value_in_ml > 0) {
+      result.isConvertible = true;
+      result.type = "volume";
+    }
+    else {
+      result.isConvertible = false;
+    }
+  }
+
+  else if ( (referenceUnits.type === "volume" && valueUnits.type === "arbitrary") ) {
+    if (valueUnits.value_in_ml > 0) {
+      result.isConvertible = true;
+      result.type = "volume";
+    }
+    else {
+      result.isConvertible = false;
+    }
+  }
+
+  else if ( (referenceUnits.type === "arbitrary" && valueUnits.type === "arbitrary") ) {
+    if ( referenceUnits.value_in_ml > 0 && valueUnits.value_in_ml > 0 ) {
+      result.isConvertible = true;
+      result.type = "volume";
+    }
+    else if ( referenceUnits.value_in_grams > 0 && valueUnits.value_in_grams > 0 ) {
+      result.isConvertible = true;
+      result.type = "mass";
+    }
+    else {
+      result.isConvertible = false;
+    }
+  }
+  else {
+    result.isConvertible = false;
+  }
+  return result;
 }
 function FMTConvertUnits(referenceUnits, valueUnits, unitsChart) {
   unitsChart = unitChart || fmtAppInstance.unitChart;
@@ -226,65 +302,22 @@ function FMTConvertUnits(referenceUnits, valueUnits, unitsChart) {
     result.error = "Error - No Units loaded";
     return result;
   }
-
-  if (referenceUnits.type === "mass" && valueUnits.type === "mass") {
-    result.unitMultiplier = referenceUnits.value_in_grams / valueUnits.value_in_grams;
-  }
-
-  else if (referenceUnits.type === "volume" && valueUnits.type === "volume") {
-    result.unitMultiplier = referenceUnits.value_in_ml / valueUnits.value_in_ml;
-  }
-
-  else if ( (referenceUnits.type === "arbitrary" && valueUnits.type === "mass") ) {
-    if (referenceUnits.value_in_grams > 0) {
-      result.unitMultiplier = referenceUnits.value_in_grams / valueUnits.value_in_grams;
-    }
-    else {
-      result.error = errMsg;
-    }
-  }
-
-  else if ( (referenceUnits.type === "mass" && valueUnits.type === "arbitrary") ) {
-    if (valueUnits.value_in_grams > 0) {
-      result.unitMultiplier = referenceUnits.value_in_grams / valueUnits.value_in_grams;
-    }
-    else {
-      result.error = errMsg;
-    }
-  }
-
-  else if ( (referenceUnits.type === "arbitrary" && valueUnits.type === "volume") ) {
-    if (referenceUnits.value_in_ml > 0) {
-      result.unitMultiplier = referenceUnits.value_in_ml / valueUnits.value_in_ml;
-    }
-    else {
-      result.error = errMsg;
-    }
-  }
-
-  else if ( (referenceUnits.type === "volume" && valueUnits.type === "arbitrary") ) {
-    if (valueUnits.value_in_ml > 0) {
-      result.unitMultiplier = referenceUnits.value_in_ml / valueUnits.value_in_ml;
-    }
-    else {
-      result.error = errMsg;
-    }
-  }
-
-  else if ( (referenceUnits.type === "arbitrary" && valueUnits.type === "arbitrary") ) {
-    if ( referenceUnits.value_in_ml > 0 && valueUnits.value_in_ml > 0 ) {
-      result.unitMultiplier = referenceUnits.value_in_ml / valueUnits.value_in_ml;
-    }
-    else if ( referenceUnits.value_in_grams > 0 && valueUnits.value_in_grams > 0 ) {
-      result.unitMultiplier = referenceUnits.value_in_grams / valueUnits.value_in_grams;
-    }
-    else {
-      result.error = errMsg;
+  const isConvertible = FMTIsConvertible(referenceUnits, valueUnits);
+  if (isConvertible.isConvertible) {
+    switch (isConvertible.type) {
+      case "mass":
+        result.unitMultiplier = referenceUnits.value_in_grams / valueUnits.value_in_grams;
+        break;
+      case "volume":
+        result.unitMultiplier = referenceUnits.value_in_ml / valueUnits.value_in_ml;
+        break;
     }
   }
   else {
     result.error = errMsg;
   }
+  result.isConvertible = isConvertible.isConvertible;
+  result.type = isConvertible.type;
   return result;
 }
 function FMTCalculateMultiplier(referenceValue, referenceUnits, valueToconvert, valueUnits, unitsChart) {
@@ -324,7 +357,7 @@ function FMTCalculateMultiplier(referenceValue, referenceUnits, valueToconvert, 
     result.error = null;
   }
   else {
-      const unitConvertRes = FMTConvertUnits(referenceUnits, valueUnits);
+      const unitConvertRes = FMTConvertUnits(referenceUnits, valueUnits, unitsChart);
       if (unitConvertRes.error != null || unitConvertRes.unitMultiplier == null) {
         result.error = unitConvertRes.error;
       }
@@ -1516,7 +1549,7 @@ function FMTValidateRecipeObject(recipeObj, unitsChart) {
     return result;
   }
 
-  recipe.nutritionalValue = FMTSumNutritionalValues(nutriValuesArr);
+  recipe.nutritionalValue = FMTSumNutritionalValues(nutriValuesArr, unitChart);
 
   result.recipe = recipe;
   return result;
@@ -2453,7 +2486,8 @@ function FMTPopulateAdditionalNutrientsInConsumableItemScreen(baseScreenID, read
     }
     return true;
 }
-//TODO - optionsObj {consumableId(int),readonly(bool),date(str YYYY-MM-DD),mealName(str),eventListenersObj}
+//TODO review if needed date and mealName -
+//optionsObj {consumableId(int),readonly(bool),eventListenersObj}
 //evenListenerObj{"DOM ID1": {"event": fn},...,"DOM IDN": {"event": fn}}
 function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, objectType) {
     if (fmtAppGlobals.inputScreensQualifiers.indexOf(qualifier) < 0 ) {
