@@ -8,8 +8,6 @@ fmtAppInstance.displaySettings.showFoodIdColumn = true;
 fmtAppInstance.promptSettings = {};
 fmtAppInstance.promptSettings.promptOnUnsavedFood = true;
 fmtAppInstance.promptSettings.promptOnNoProfileCreated = true;
-fmtAppInstance.additionalNutrientsSettings = {};
-fmtAppInstance.additionalNutrientsSettings.allowNonDefaultUnits = true;
 fmtAppInstance.firstTimeScreenAutomatic = false;
 fmtAppInstance.roundingPrecision = 1;
 fmtAppInstance.allowForeignNutrients = true;
@@ -97,6 +95,8 @@ fmtAppGlobals.dateConstants.daySuffixes = {0: "th", 1: "st", 2: "nd", 3: "rd", 4
                                            5: "th", 6: "th", 7: "th", 8: "th", 9: "th"};
 //Globals - UI - Default
 fmtAppGlobals.defaultAlertScroll = {top: 0, left: 0, behavior: 'smooth'};
+fmtAppGlobals.inputScreensQualifiers = ["food", "consumable", "recipe"];
+fmtAppGlobals.consumableTypes = ["Food Item", "Meal Entry", "Recipe Item"];
 //Globals - Export
 var fmtAppExport;
 
@@ -2456,7 +2456,14 @@ function FMTPopulateAdditionalNutrientsInConsumableItemScreen(baseScreenID, read
 //TODO - optionsObj {consumableId(int),readonly(bool),date(str YYYY-MM-DD),mealName(str),eventListenersObj}
 //evenListenerObj{"DOM ID1": {"event": fn},...,"DOM IDN": {"event": fn}}
 function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, objectType) {
-    qualifier = qualifier || "food";
+    if (fmtAppGlobals.inputScreensQualifiers.indexOf(qualifier) < 0 ) {
+      console.error(`Invalid qualifier ${qualifier}`);
+      return;
+    }
+    if (fmtAppGlobals.consumableTypes.indexOf(objectType) < 0 ) {
+      console.error(`Invalid Object Type ${objectType}`);
+      return;
+    }
     optionsObj = optionsObj || {"readonly": false};
     let idProp;
     switch (objectType) {
@@ -2466,19 +2473,26 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, ob
         case "Meal Entry":
             idProp = "entry_id";
             break;
+        case "Recipe Item":
+        //TODO
+            idProp = "recipe_id";
+            break;
     }
+    //Prepare Serving field - where user selects units and inputs amount
     const servingBaseName = `${baseScreenID}-${qualifier}-serving`;
     const servingTargetDiv = servingBaseName;
     const unitsChart = fmtAppInstance.unitChart;
     const readonly = optionsObj.readonly || false;
     FMTCreateUnitDropdownMenu(servingBaseName, servingTargetDiv, unitsChart, "g", readonly);
 
+    //Validate and Add ID of consumable/entry (food_id, recipe_id, entry_id).
     const saveOrAddBtn = document.getElementById(`${baseScreenID}-save`);
     if (isNumber(optionsObj.consumableId)) {
         saveOrAddBtn.setAttribute(`${idProp}`, optionsObj.consumableId);
     }
+    //Create Input fields for Additional Nutrients and attach event listeners to elements passed in optionsObj
     const res = FMTPopulateAdditionalNutrientsInConsumableItemScreen(baseScreenID, readonly, qualifier);
-    if (!res) { console.warn("Failed populating user defined values in add food screen"); }
+    if (!res) { console.warn(`Failed adding additional nutrients fields to ${baseScreenID}`); }
     if (optionsObj.eventListenersObj) {
         for (const elemName in optionsObj.eventListenersObj) {
             const element = document.getElementById(elemName);
@@ -2592,7 +2606,9 @@ function FMTConsumableItemScreenShowLess(baseScreenID, qualifier) {
 }
 function FMTClearViewConsumableItemScreen(baseScreenID, qualifier) {
     qualifier = qualifier || "food";
+    //Clear screen
     FMTClearConsumableItemScreen(baseScreenID, qualifier);
+    //Clear Add to Meal/Update (save btn) properties present in this screen
     const saveBtn = document.getElementById(`${baseScreenID}-save`);
     saveBtn.removeAttribute(`${qualifier}_id`);
     saveBtn.removeAttribute("meal_name");
@@ -2604,6 +2620,7 @@ function FMTClearViewConsumableItemScreen(baseScreenID, qualifier) {
     document.getElementById(`${baseScreenID}-meal-month`).value = "";
     document.getElementById(`${baseScreenID}-meal-day`).value = "";
     document.getElementById(`${baseScreenID}-meal-name`).value = "";
+    //Hide container of the above input fields
     document.getElementById(`${baseScreenID}-add-to-meal`).classList.add("d-none");
 }
 function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
@@ -2618,6 +2635,7 @@ function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
     document.getElementById(`${baseScreenID}-${qualifier}-serving-input`).value = "";
     document.getElementById(`${baseScreenID}-${qualifier}-additional`).innerHTML = "";
     FMTConsumableItemScreenShowLess(baseScreenID, qualifier);
+    //Type sepecific actions
     if (objectType) {
         switch(objectType) {
             case "Meal Entry":
@@ -2633,6 +2651,10 @@ function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
                 updateBtn.removeAttribute("profile_id");
                 updateBtn.removeAttribute("consumable_id");
                 break;
+              case "Food Item":
+              break;
+              case "Recipe Item":
+              break;
         }
     }
 }
