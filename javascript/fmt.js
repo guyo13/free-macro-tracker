@@ -370,6 +370,7 @@ function FMTCalculateMultiplier(referenceValue, referenceUnits, valueToconvert, 
   }
   return result;
 }
+
 //Functions - DB
 function prepareDBv1() {
     console.debug("Preparing DB...");
@@ -535,6 +536,7 @@ function getIndex(store_name, indexName) {
     const index = objectStore.index(indexName);
     return index;
 }
+
 //Functions - DB - Export
 function FMTStringifyRemoveNewlines(k, v) {
   if (typeof v === 'string') {
@@ -771,6 +773,7 @@ function FMTDataToStructuredJSON(exportFn) {
     for (const e in errors) { console.error(errors[e]); }
   });
 }
+
 //Functions - DB - Import
 function FMTImportRecordsSeq(recordsObj, indexes, objectStoreName, successIterFn, errIterFn, importMethod, isVerbose) {
   //Success and Error iter functions get as arguments - (event, recordsObj, indexes, objectStoreName, successIterFn, errIterFn, importMethod, isVerbose)
@@ -887,6 +890,7 @@ function FMTImportFromStructuredJSON(jsonString, jsonParseReviverFn, onEnd, excl
   taskWaitUntil(onEnd, endCondition, 500);
   FMTImportTables(dbTables, jsonData);
 }
+
 //Functions - Validation
 function FMTValidateNutritionalValue(nutritionalValueObj, unitsChart, options) {
     if (unitsChart == null) {
@@ -972,12 +976,12 @@ function FMTValidateNutritionalValue(nutritionalValueObj, unitsChart, options) {
     result.nutritionalValue = nutritionalValue;
     return result;
 }
-/*foodObj - {foodName, foodBrand(optional), referenceServing, units, nutritionalValue}
- *nutritionalValue - {calories, proteins, carbohydrates, fats, additionalNutrients}
- *additionalNutrients - {Category1:[nutrient11, ... , nutrient1N],..CategoryM:[nutrientM1, ... , nutrientMN],}
- *nutrient - {name,unit,amount}
-*/
 function FMTValidateFoodObject(foodObj, unitsChart) {
+  /*foodObj - {foodName, foodBrand(optional), referenceServing, units, nutritionalValue}
+   *nutritionalValue - {calories, proteins, carbohydrates, fats, additionalNutrients}
+   *additionalNutrients - {Category1:[nutrient11, ... , nutrient1N],..CategoryM:[nutrientM1, ... , nutrientMN],}
+   *nutrient - {name,unit,amount}
+  */
     const _funcName = "FMTValidateFoodObject";
     unitsChart = unitsChart || fmtAppInstance.unitChart;
     const result = {};
@@ -1024,8 +1028,8 @@ function FMTValidateFoodObject(foodObj, unitsChart) {
     }
     return {"food": food, "error": null};
 }
-/*unitObj {name, value_in_grams, description}*/
 function FMTValidateUnitObject(unitObj) {
+  /*unitObj {name, value_in_grams, description}*/
   const _fnName = "FMTValidateUnitObject";
     let unit = {};
     if (unitObj.name == null || unitObj.name === "") {
@@ -1083,8 +1087,8 @@ function FMTValidateUnitObject(unitObj) {
     unit.description = unitObj.description;
     return unit;
 }
-/*nutrientObj {name,category,default_unit,help}*/
 function FMTValidateNutrientObject(nutrientObj) {
+  /*nutrientObj {name,category,default_unit,help}*/
     const _fnName = "FMTValidateNutrientObject";
     let nutrient = {};
     if (nutrientObj.name == null || nutrientObj.name === "") {
@@ -1554,6 +1558,7 @@ function FMTValidateRecipeObject(recipeObj, unitsChart) {
   result.recipe = recipe;
   return result;
 }
+
 //Functions - DB - Meal Entries
 function FMTAddMealEntry(mealEntryObj, onsuccessFn, onerrorFn) {
     const res = FMTValidateMealEntry(mealEntryObj);
@@ -1592,10 +1597,10 @@ function FMTRemoveMealEntry(entry_id, onsuccessFn, onerrorFn) {
     deleteRequest.onerror = onerrorFn;
     deleteRequest.onsuccess = onsuccessFn;
 }
-/*options{"queryType": "only"|"bound"|"lowerBound"|"upperBound",
-"lowerOpen":false|true, "upperOpen":false|true, "yYear":int, "yMonth":int, "yDay":int,
-"yProfileId": int", "direction": "next"|"nextunique"|"prev"|"prevunique"}*/
 function FMTQueryMealEntriesByProfileAndDate(profile_id, year, month, day, onsuccessFn, onerrorFn, options) {
+  /*options{"queryType": "only"|"bound"|"lowerBound"|"upperBound",
+  "lowerOpen":false|true, "upperOpen":false|true, "yYear":int, "yMonth":int, "yDay":int,
+  "yProfileId": int", "direction": "next"|"nextunique"|"prev"|"prevunique"}*/
     if (!options) {
         options = {"queryType": "only"};
     }
@@ -1888,8 +1893,8 @@ function FMTReadAllNutrients(onsuccessFn, onerrorFn) {
     readRequest.onsuccess = onsuccessFn || function(e) { console.debug(`[FMTReadAllNutrients.onsuccess] - ${JSON.stringify(e)}`) };
     readRequest.onerror = onerrorFn || function(e) { console.debug(`[FMTReadAllNutrients.onerror] - ${JSON.stringify(e)}`) };
 }
-/*onsuccessFn must implement success function accessing the cursor*/
 function FMTIterateNutrients(onsuccessFn, onerrorFn) {
+  /*onsuccessFn must implement success function accessing the cursor*/
     let nutrientStore = getObjectStore(fmtAppGlobals.FMT_DB_NUTRIENTS_STORE, fmtAppGlobals.FMT_DB_READONLY);
     let readRequest = nutrientStore.openCursor();
     readRequest.onsuccess = onsuccessFn || function(e) { console.debug(`[FMTIterateNutrients.onsuccess] - ${JSON.stringify(e)}`) };
@@ -1939,7 +1944,6 @@ function FMTReadAllUnits(onsuccessFn, onerrorFn) {
     readRequest.onsuccess = onsuccessFn || console.debug(`Successfully read all units`);
     readRequest.onerror = onerrorFn || console.debug(`Failed reading all units`);
 }
-/*onsuccessFn must implement success function accessing the cursor*/
 function FMTIterateUnits(onsuccessFn, onerrorFn) {
     let unitStore = getObjectStore(fmtAppGlobals.FMT_DB_UNITS_STORE, fmtAppGlobals.FMT_DB_READONLY);
     let readRequest = unitStore.openCursor();
@@ -2079,10 +2083,10 @@ function FMTDropdownToggleValue(targetDiv, text, attributes) {
         elem.dispatchEvent(new Event("unitChanged"));
     }
 }
-/*oncompleteFn - User defined functions that takes a boolean based on if user
-* clicked "Yes" or "No"
-*/
 function FMTShowPrompt(divId, alertLevel, msg, scrollOptions, oncompleteFn) {
+  /*oncompleteFn - User defined functions that takes a boolean based on if user
+  * clicked "Yes" or "No"
+  */
     let alertDiv = document.getElementById(divId);
     let alertElem = `<div class="alert alert-${alertLevel} alert-dismissible fade show row col-11 col-lg-8" role="alert">
     <div class="col">
@@ -2486,10 +2490,10 @@ function FMTPopulateAdditionalNutrientsInConsumableItemScreen(baseScreenID, read
     }
     return true;
 }
-//TODO review if needed date and mealName -
-//optionsObj {consumableId(int),readonly(bool),eventListenersObj}
-//evenListenerObj{"DOM ID1": {"event": fn},...,"DOM IDN": {"event": fn}}
 function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, objectType, mealIdentifierObj) {
+  //TODO review if needed date and mealName -
+  //optionsObj {consumableId(int),readonly(bool),eventListenersObj}
+  //evenListenerObj{"DOM ID1": {"event": fn},...,"DOM IDN": {"event": fn}}
     if (fmtAppGlobals.inputScreensQualifiers.indexOf(qualifier) < 0 ) {
       console.error(`Invalid qualifier ${qualifier}`);
       return;
@@ -3391,6 +3395,7 @@ function FMTOverviewLoadCurrentDay(onsuccessFn, onerrorFn) {
         FMTOverviewLoadMealEntries(onsuccessFn, onerrorFn);
     }
 }
+
 //Functions - State
 //Functions - State - Date
 function FMTToday() { fmtAppInstance.today = new Date(); }
@@ -3905,7 +3910,6 @@ function onDbSuccess(event) {
         });
     }, 500);
 }
-
 function onUpgradeNeeded(event) {
     fmtAppInstance.fmtDb = event.target.result;
     switch(fmtAppInstance.fmtDb.version) {
