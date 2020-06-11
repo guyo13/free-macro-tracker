@@ -906,6 +906,12 @@ function FMTImportFromStructuredJSON(jsonString, jsonParseReviverFn, onEnd, excl
 function FMTIsValidFoodId(foodId) {
   return ( isNumber(foodId) && Number.isInteger(Number(foodId)) );
 }
+function FMTIsValidRecipeId(recipeId) {
+  return ( isNumber(recipeId) && Number.isInteger(Number(recipeId)) );
+}
+function FMTIsValidEntryId(entryId) {
+  return ( isNumber(entryId) && Number.isInteger(Number(entryId)) );
+}
 function FMTValidateNutritionalValue(nutritionalValueObj, unitsChart, options) {
     if (unitsChart == null) {
         unitsChart = fmtAppInstance.unitsChart;
@@ -3731,7 +3737,7 @@ var pageController = {
     },
     openEditMealEntryDynamicScreen: function(entry_id, multiplier, clear, currentServingValue, currentServingUnits) {
         //Sync Tasks - Argument validation and constants definition
-        if (!entry_id || !isNumber(entry_id) || !Number.isInteger(Number(entry_id)) ) { return; }
+        if (!FMTIsValidEntryId(entry_id) ) { return; }
         if (!isNumber(multiplier)) { console.error(`Invalid Multiplier: ${multiplier}`); return; }
         entry_id = Number(entry_id);
         multiplier = Number(multiplier);
@@ -4335,7 +4341,7 @@ function prepareEventHandlers() {
         const alertsDivId = "edit-meal-entry-screen-alerts";
         const delBtn = document.getElementById("edit-meal-entry-screen-delete");
         let entry_id = delBtn.getAttribute("entry_id");
-        if (!isNumber(entry_id) || !Number.isInteger(Number(entry_id)) ) {
+        if (!FMTIsValidEntryId(entry_id) ) {
             const msg = `Invalid Entry ID (${entry_id}). Please reload`;
             FMTShowAlert(alertsDivId, "danger", msg, fmtAppGlobals.defaultAlertScroll);
             return;
@@ -4377,7 +4383,7 @@ function prepareEventHandlers() {
         const alertsDivId = `${baseScreenID}-alerts`;
         const updateBtn = document.getElementById(`${baseScreenID}-save`);
         let entry_id = updateBtn.getAttribute("entry_id");
-        if (!isNumber(entry_id) || !Number.isInteger(Number(entry_id)) ) {
+        if (!FMTIsValidEntryId(entry_id) ) {
             const msg = `Invalid Entry ID (${entry_id}). Please reload`;
             FMTShowAlert(alertsDivId, "danger", msg, fmtAppGlobals.defaultAlertScroll);
             return;
