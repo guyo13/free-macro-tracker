@@ -903,6 +903,9 @@ function FMTImportFromStructuredJSON(jsonString, jsonParseReviverFn, onEnd, excl
 }
 
 //Functions - Validation
+function FMTIsValidFoodId(foodId) {
+  return ( isNumber(foodId) && Number.isInteger(Number(foodId)) );
+}
 function FMTValidateNutritionalValue(nutritionalValueObj, unitsChart, options) {
     if (unitsChart == null) {
         unitsChart = fmtAppInstance.unitsChart;
@@ -3571,7 +3574,7 @@ var pageController = {
     },
     openEditFoodDynamicScreen: function(foodId, foodsTableBodyID, mealIdentifier) {
         //Sync Tasks - Argument Validation, handling, const definition
-        if (!foodId || !isNumber(foodId) || !Number.isInteger(Number(foodId)) ) { console.error(`Invalid Food ID (${foodId})`); return; }
+        if (!FMTIsValidFoodId(foodId)) { console.error(`Invalid Food ID (${foodId})`); return; }
         foodId = Number(foodId);
         const alertDivId = pageController.getAlertDivId();
         const screenID = "edit-food-screen";
@@ -3625,7 +3628,7 @@ var pageController = {
     },
     openViewFoodDynamicScreen: function(foodId, multiplier, clear, currentServingValue, currentServingUnits, mealIdentifierObj, foodsTableBodyID) {
         //Sync Tasks - Argument Validation, constants definition
-        if (!foodId || !isNumber(foodId) || !Number.isInteger(Number(foodId)) ) { console.error(`Invalid Food ID: ${foodId}`); return; }
+        if (!FMTIsValidFoodId(foodId) ) { console.error(`Invalid Food ID: ${foodId}`); return; }
         if (!isNumber(multiplier)) { console.error(`Invalid Multiplier: ${multiplier}`); return; }
         foodId = Number(foodId);
         multiplier = Number(multiplier);
@@ -4135,7 +4138,7 @@ function prepareEventHandlers() {
     $("#edit-food-screen-less").click( (e) => { FMTConsumableItemScreenShowLess("edit-food-screen", "food"); } );
     $("#edit-food-screen-save").click( (e) => {
         let foodId = e.currentTarget.getAttribute("food_id");
-        if ( !isNumber(foodId) || !Number.isInteger(Number(foodId)) ) { console.error(`Invalid Food ID (${foodId})`); return; }
+        if ( !FMTIsValidFoodId(foodId)) { console.error(`Invalid Food ID (${foodId})`); return; }
         foodId = Number(foodId);
 
         onerrorFn = function(err) {
@@ -4180,7 +4183,7 @@ function prepareEventHandlers() {
     });
     $("#edit-food-screen-delete").click( (e) => {
         let foodId = e.currentTarget.getAttribute("food_id");
-        if ( !isNumber(foodId) || !Number.isInteger(Number(foodId)) ) {
+        if ( !FMTIsValidFoodId(foodId) ) {
             const msg = `Invalid Food ID (${foodId}). Please reload`;
             FMTShowAlert("edit-food-screen-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
             return;
@@ -4231,7 +4234,7 @@ function prepareEventHandlers() {
     $("#view-food-screen-cancel").click( (e) => { pageController.closeViewFoodDynamicScreen(); } );
     $("#view-food-screen-edit").click( (e) => {
         let foodId = e.currentTarget.getAttribute("food_id");
-        if ( !isNumber(foodId) || !Number.isInteger(Number(foodId)) ) {
+        if ( !FMTIsValidFoodId(foodId) ) {
             const msg = `Invalid Food ID (${foodId}). Please reload`;
             console.error(msg);
             FMTShowAlert("view-food-screen-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
