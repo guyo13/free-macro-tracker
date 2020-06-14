@@ -2651,6 +2651,7 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
     }
 
     if (!!consumableItem.nutritionalValue.additionalNutrients) {
+      //Populate Additional Nutrients values
         for (const nutriCatName in consumableItem.nutritionalValue.additionalNutrients) {
             const nutrientsList = consumableItem.nutritionalValue.additionalNutrients[nutriCatName];
             for (const i in nutrientsList) {
@@ -2671,6 +2672,7 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
                 }
             }
         }
+        //Hide dropdowns and apply readonly property
         if (readonly) {
             const addiNutriDiv = document.getElementById(`${baseScreenID}-${qualifier}-additional`);
             const addiNutrients = addiNutriDiv.getElementsByClassName("fmt-add-nutri");
@@ -2683,6 +2685,7 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
             }
         }
     }
+    //Focus on an element - on keyup values updating function uses this
     if (focusDivId) {
         const fDiv = document.getElementById(focusDivId)
         if (fDiv) { fDiv.focus(); }
