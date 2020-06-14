@@ -2720,7 +2720,6 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
                       const _conv = FMTConvertUnits(currentInputUnits, nutrient.unit, unitsChart);
                       if (_conv.isConvertible) {
                         inputElement.value = nutrient.amount / _conv.unitMultiplier;
-                        //unitDropdownItem.dispatchEvent(new Event("click"));
                         FMTDropdownToggleValue(currentUnitsBtnId, nutrient.unit, {"unit": nutrient.unit}, true);
                       }
                       else {
@@ -2744,7 +2743,6 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
                     }
                     else {
                       inputElement.value = nutrient.amount * multiplier;
-                      //unitDropdownItem.dispatchEvent(new Event("click"));
                       FMTDropdownToggleValue(currentUnitsBtnId, nutrient.unit, {"unit": nutrient.unit}, true);
                     }
                 }
