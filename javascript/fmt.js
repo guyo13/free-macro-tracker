@@ -3015,8 +3015,8 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
 }
 
 //Functions - UI - Overview
-function FMTCreateMacroProgressBar(c, p, f, inPercent, height) {
-  height = height || "0.5rem";
+function FMTCreateMacroProgressBar(c, p, f, inPercent, className) {
+  className = className || "fmt-macros-dist-progress-bar";
   const carbCalories = c * 4;
   const proteinCalories = p * 4;
   const fatCalories = f * 9;
@@ -3025,8 +3025,7 @@ function FMTCreateMacroProgressBar(c, p, f, inPercent, height) {
   const proteinPercent = proteinCalories / totalCalories * 100;
   const fatPercent = fatCalories / totalCalories * 100;
   const progress = document.createElement("div");
-  progress.classList.add("progress", "fmt-font-sm");
-  progress.style.height = height;
+  progress.classList.add("progress", "fmt-font-sm", className);
 
   const carbProgress = document.createElement("div");
   carbProgress.classList.add("progress-bar", "fmt-bg-violet");
@@ -3275,7 +3274,7 @@ function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
     // consNutriValueSpan.innerHTML = `Carb:${roundedToFixed(mealEntry.nutritionalValue.carbohydrates)} Protein:${roundedToFixed(mealEntry.nutritionalValue.proteins)} Fat:${roundedToFixed(mealEntry.nutritionalValue.fats)}`;
     // consNutriValueDiv.appendChild(consNutriValueSpan);
 
-    const _progress = FMTCreateMacroProgressBar(mealEntry.nutritionalValue.carbohydrates, mealEntry.nutritionalValue.proteins, mealEntry.nutritionalValue.fats, fmtAppInstance.mealEntryMacroBarInPercent, "0.7rem");
+    const _progress = FMTCreateMacroProgressBar(mealEntry.nutritionalValue.carbohydrates, mealEntry.nutritionalValue.proteins, mealEntry.nutritionalValue.fats, fmtAppInstance.mealEntryMacroBarInPercent);
     consNutriValueDiv.appendChild(_progress);
 
     mealEntryDiv.appendChild(consNameDiv);

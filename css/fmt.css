@@ -202,20 +202,29 @@ button {
     padding-left: 1rem;
     padding-right: 1rem;
 }
+.fmt-macros-dist-progress-bar {
+    height: 1rem;
+}
 .fmt-font-sm {
     font-size: 1rem;
     font-weight: 300;
 }
 @media screen and (max-width: 768px) {
     .fmt-font-sm {
-            font-size: 0.8rem;
+        font-size: 0.8rem;
         font-weight: 400;
+    }
+    .fmt-macros-dist-progress-bar {
+        height: 0.8rem;
     }
 }
 @media screen and (max-width: 576px) {
     .fmt-font-sm {
-            font-size: 0.7rem;
+        font-size: 0.7rem;
         font-weight: 400;
+    }
+    .fmt-macros-dist-progress-bar {
+        height: 0.7rem;
     }
 }
 .fmt-font-1 {
