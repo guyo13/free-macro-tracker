@@ -83,7 +83,7 @@ button {
 #fmt-app-nav-overlay-content .active {}
 #fmt-app-nav-overlay-content .fmt-menu-font {
   font-size: 1.5rem;
-  color: var(--fmt-dark-green);
+  color: dimgray;
 }
 #fmt-heading {
   font-size: 1.8rem;
@@ -164,11 +164,14 @@ button {
 }
 .fmt-meal-footer {
     background-color: var(--fmt-light-gray);
+    height: auto;
 }
 .fmt-meal-footer-add {}
-.fmt-meal-entries {}
+.fmt-meal-entries {
+  height: auto;
+}
 .fmt-meal-header {
-    background-color: var(--fmt-dark-green);
+    background-color: darkgray;
 }
 .fmt-progress-bar-container{}
 .footer {
@@ -297,6 +300,9 @@ button {
 }
 .fmt-font-color-info {
     color: var(--info);
+}
+.fmt-font-color-primary {
+    color: var(--primary);
 }
 .fmt-btn-outline-success {
     color: var(--fmt-lighter-green);
@@ -442,6 +448,10 @@ button {
 }
 .fmt-faded {
     opacity: 0;
+}
+.fmt-btn-no-focus {}
+.fmt-btn-no-focus:focus {
+  box-shadow: none;
 }
 /*Table Colors*/
 /*.table-striped>tbody>tr:nth-child(odd)>td,

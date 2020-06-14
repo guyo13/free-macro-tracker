@@ -12,6 +12,7 @@ fmtAppInstance.firstTimeScreenAutomatic = false;
 fmtAppInstance.defaultRoundingPrecision = 1;
 fmtAppInstance.nutrientRoundingPrecision = 4;
 fmtAppInstance.allowForeignNutrients = true;
+fmtAppInstance.mealEntryMacroBarInPercent = false;
 //Instance - State - Page
 fmtAppInstance.pageState = {};
 fmtAppInstance.pageState.activeTab = null;
@@ -3014,6 +3015,45 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
 }
 
 //Functions - UI - Overview
+function FMTCreateMacroProgressBar(c, p, f, inPercent, height) {
+  height = height || "0.5rem";
+  const carbCalories = c * 4;
+  const proteinCalories = p * 4;
+  const fatCalories = f * 9;
+  const totalCalories = carbCalories + proteinCalories + fatCalories;
+  const carbPercent = carbCalories / totalCalories * 100;
+  const proteinPercent = proteinCalories / totalCalories * 100;
+  const fatPercent = fatCalories / totalCalories * 100;
+  const progress = document.createElement("div");
+  progress.classList.add("progress", "fmt-font-sm");
+  progress.style.height = height;
+
+  const carbProgress = document.createElement("div");
+  carbProgress.classList.add("progress-bar", "fmt-bg-violet");
+  carbProgress.setAttribute("aria-valuemin", 0);
+  carbProgress.setAttribute("aria-valuemax", 100);
+  carbProgress.style.width = `${carbPercent}%`;
+  carbProgress.innerHTML = `<span>${inPercent ? `${roundedToFixed(carbPercent, 0)}%`: c }</span>`;
+
+  const proteinProgress = document.createElement("div");
+  proteinProgress.classList.add("progress-bar", "bg-info");
+  proteinProgress.setAttribute("aria-valuemin", 0);
+  proteinProgress.setAttribute("aria-valuemax", 100);
+  proteinProgress.style.width = `${proteinPercent}%`;
+  proteinProgress.innerHTML = `<span>${inPercent ? `${roundedToFixed(proteinPercent, 0)}%`: p }</span>`;
+
+  const fatProgress = document.createElement("div");
+  fatProgress.classList.add("progress-bar", "fmt-bg-orange");
+  fatProgress.setAttribute("aria-valuemin", 0);
+  fatProgress.setAttribute("aria-valuemax", 100);
+  fatProgress.style.width = `${fatPercent}%`;
+  fatProgress.innerHTML = `<span>${inPercent ? `${roundedToFixed(fatPercent, 0)}%`: f }</span>`;
+
+  progress.appendChild(carbProgress);
+  progress.appendChild(proteinProgress);
+  progress.appendChild(fatProgress);
+  return progress;
+}
 function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     let mealEntry = mealEntryObj;
     if (validate) {
@@ -3033,9 +3073,12 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     const mealHeaderDiv = document.createElement("div");
     const mealEntriesDiv = document.createElement("div");
     const mealFooterDiv = document.createElement("div");
-    mealHeaderDiv.setAttribute("id", `overview-meal-${normalizedMealName}-header`);
-    mealEntriesDiv.setAttribute("id", `overview-meal-${normalizedMealName}-entries`);
-    mealFooterDiv.setAttribute("id", `overview-meal-${normalizedMealName}-footer`);
+    const mealHeaderDivId = `overview-meal-${normalizedMealName}-header`;
+    const mealEntriesDivId = `overview-meal-${normalizedMealName}-entries`;
+    const mealFooterDivId = `overview-meal-${normalizedMealName}-footer`;
+    mealHeaderDiv.setAttribute("id", mealHeaderDivId);
+    mealEntriesDiv.setAttribute("id", mealEntriesDivId);
+    mealFooterDiv.setAttribute("id", mealFooterDivId);
 
     mealHeaderDiv.classList.add("fmt-meal-header", "row", "justify-content-center");
     mealEntriesDiv.classList.add("fmt-meal-entries", "row", "justify-content-center");
@@ -3043,10 +3086,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
 
     //Meal Header
     const mNameSpan = document.createElement("span");
-    //background-color: rgb(40, 167, 69);
-    //background-color: rgb(36, 139, 59);
-    //background-color: rgb(42, 118, 59);
-    mNameSpan.classList.add("fmt-font-2", "float-left", "fmt-font-white-bold");
+    mNameSpan.classList.add("fmt-font-1", "float-left", "fmt-bold");
     mNameSpan.innerHTML = mealEntry.mealName;
     const mNameDiv = document.createElement("div");
     mNameDiv.classList.add("col");
@@ -3054,28 +3094,45 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
 
     const kCalSpan = document.createElement("span");
     kCalSpan.setAttribute("id", `overview-meal-${normalizedMealName}-calories-progress`);
-    kCalSpan.classList.add("fmt-font-2", "float-right", "fmt-font-white-bold");
+    kCalSpan.classList.add("fmt-font-1", "float-right", "fmt-bold");
     //First Set to 0 later update
     kCalSpan.innerHTML = "0";
     const kCalDiv = document.createElement("div");
     kCalDiv.classList.add("col");
     kCalDiv.appendChild(kCalSpan);
 
-    const optsBtn = document.createElement("button");
-    optsBtn.classList.add("fmt-font-1", "float-right", "ml-3", "btn", "fmt-btn-outline-light");
-    optsBtn.innerHTML = "&#9776";
-    optsBtn.setAttribute("type", "button");
-    optsBtn.setAttribute("meal_name", mealEntry.mealName);
-    optsBtn.setAttribute("meal_year", mealEntry.year);
-    optsBtn.setAttribute("meal_month", mealEntry.month);
-    optsBtn.setAttribute("meal_day", mealEntry.day);
-    const optsBtnDiv = document.createElement("div");
-    optsBtnDiv.classList.add("col-2", "col-lg-1");
-    optsBtnDiv.appendChild(optsBtn);
+    // const optsBtn = document.createElement("button");
+    // optsBtn.classList.add("fmt-font-1", "float-right", "ml-3", "fal", "fa-chevron-down", "btn", "fmt-btn-no-focus");
+    // optsBtn.setAttribute("meal_name", mealEntry.mealName);
+    // optsBtn.setAttribute("meal_year", mealEntry.year);
+    // optsBtn.setAttribute("meal_month", mealEntry.month);
+    // optsBtn.setAttribute("meal_day", mealEntry.day);
+    // optsBtn.setAttribute("expanded", "true");
+    // optsBtn.addEventListener("click", function(e) {
+    //   switch(e.currentTarget.getAttribute("expanded")) {
+    //     case "true":
+    //       e.currentTarget.classList.remove("fa-chevron-down");
+    //       e.currentTarget.classList.add("fa-chevron-left");
+    //       e.currentTarget.setAttribute("expanded", "false");
+    //       document.getElementById(mealEntriesDivId).classList.add("d-none");
+    //       document.getElementById(mealFooterDivId).classList.add("d-none");
+    //       break;
+    //     case "false":
+    //       e.currentTarget.classList.remove("fa-chevron-left");
+    //       e.currentTarget.classList.add("fa-chevron-down");
+    //       e.currentTarget.setAttribute("expanded", "true");
+    //       document.getElementById(mealEntriesDivId).classList.remove("d-none");
+    //       document.getElementById(mealFooterDivId).classList.remove("d-none");
+    //       break;
+    //   }
+    // });
+    // const optsBtnDiv = document.createElement("div");
+    // optsBtnDiv.classList.add("col-2", "col-lg-1");
+    // optsBtnDiv.appendChild(optsBtn);
 
     mealHeaderDiv.appendChild(mNameDiv);
     mealHeaderDiv.appendChild(kCalDiv);
-    mealHeaderDiv.appendChild(optsBtnDiv);
+    //mealHeaderDiv.appendChild(optsBtnDiv);
 
     //Meal Footer
     const mealFooterAddDiv = document.createElement("div");
@@ -3211,12 +3268,15 @@ function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
     consDetailsDiv.classList.add("col-6");
     consDetailsDiv.appendChild(consDetailsSpan);
 
-    const consNutriValueSpan = document.createElement("span");
-    consNutriValueSpan.classList.add("fmt-font-sm", "float-right");
-    consNutriValueSpan.innerHTML = `Carb:${roundedToFixed(mealEntry.nutritionalValue.carbohydrates)} Protein:${roundedToFixed(mealEntry.nutritionalValue.proteins)} Fat:${roundedToFixed(mealEntry.nutritionalValue.fats)}`;
     const consNutriValueDiv = document.createElement("div");
     consNutriValueDiv.classList.add("col-6");
-    consNutriValueDiv.appendChild(consNutriValueSpan);
+    // const consNutriValueSpan = document.createElement("span");
+    // consNutriValueSpan.classList.add("fmt-font-sm", "float-right");
+    // consNutriValueSpan.innerHTML = `Carb:${roundedToFixed(mealEntry.nutritionalValue.carbohydrates)} Protein:${roundedToFixed(mealEntry.nutritionalValue.proteins)} Fat:${roundedToFixed(mealEntry.nutritionalValue.fats)}`;
+    // consNutriValueDiv.appendChild(consNutriValueSpan);
+
+    const _progress = FMTCreateMacroProgressBar(mealEntry.nutritionalValue.carbohydrates, mealEntry.nutritionalValue.proteins, mealEntry.nutritionalValue.fats, fmtAppInstance.mealEntryMacroBarInPercent, "0.7rem");
+    consNutriValueDiv.appendChild(_progress);
 
     mealEntryDiv.appendChild(consNameDiv);
     mealEntryDiv.appendChild(consKcalDiv);
