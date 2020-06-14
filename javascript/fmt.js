@@ -2109,20 +2109,23 @@ function FMTShowAlert(divId, alertLevel, msg, scrollOptions) {
     }
     return;
 }
-function FMTDropdownToggleValue(targetDiv, text, attributes, skipEvent) {
-    let elem = document.getElementById(targetDiv);
-    if (!!elem) {
-        elem.innerHTML = text;
-        let attributeNames = Object.keys(attributes);
-        for (let j=0; j<attributeNames.length; j++) {
-            let attrName = attributeNames[j];
-            let attrValue = attributes[attrName];
-            elem.setAttribute(attrName, attrValue);
-        }
-        if (!skipEvent) {
-            elem.dispatchEvent(new Event("unitChanged"));
-        }
-    }
+function _FMTDropdownToggleValue(elem, text, attributes, skipEvent) {
+  if (!!elem) {
+      elem.innerHTML = text;
+      let attributeNames = Object.keys(attributes);
+      for (let j=0; j<attributeNames.length; j++) {
+          let attrName = attributeNames[j];
+          let attrValue = attributes[attrName];
+          elem.setAttribute(attrName, attrValue);
+      }
+      if (!skipEvent) {
+          elem.dispatchEvent(new Event("unitChanged"));
+      }
+  }
+}
+function FMTDropdownToggleValue(targetDivId, text, attributes, skipEvent) {
+    let elem = document.getElementById(targetDivId);
+    _FMTDropdownToggleValue(elem, text, attributes, skipEvent)
 }
 function FMTShowPrompt(divId, alertLevel, msg, scrollOptions, oncompleteFn) {
   /*oncompleteFn - User defined functions that takes a boolean based on if user
@@ -2351,7 +2354,7 @@ function FMTCreateUnitDropdownMenu(baseName, targetDiv, unitsChart, defaultUnitN
         }
         targetDiv.appendChild(inputGroup);
         if (!!defaultUnitName && (defaultUnitName) in unitsChart) {
-            FMTDropdownToggleValue(selectedBtnId, defaultUnitName, {"unit": defaultUnitName});
+            _FMTDropdownToggleValue(selectedBtn, defaultUnitName, {"unit": defaultUnitName});
         }
     }
     else {
@@ -2408,12 +2411,12 @@ function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj
     addNutriInGroup.appendChild(inputField);
     inGroupCont.appendChild(addNutriInGroup);
     elements.push(inGroupCont);
-    FMTCreateUnitDropdownMenu(nutriBaseId, addNutriInGroup, unitsChart, defaultUnit, readonly, suffix, unitFilterFn);
     //Append to target div if exists
     const targetDiv = document.getElementById(targetDivID);
     if (!!targetDiv) {
       appendChildren(targetDiv, elements);
     }
+    FMTCreateUnitDropdownMenu(nutriBaseId, addNutriInGroup, unitsChart, defaultUnit, readonly, suffix, unitFilterFn);
     return nutriBaseId;
 }
 function FMTCreateFoodsTableRowElement(foodObj, eventListeners) {
