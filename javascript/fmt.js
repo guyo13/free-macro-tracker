@@ -78,7 +78,7 @@ fmtAppGlobals.FMT_DB_USER_GOALS_STORE = "fmt_user_goals";
 fmtAppGlobals.FMT_DB_USER_GOALS_KP = ["profile_id", "year", "month", "day"];
 
 //Globals - Page
-fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-recipes", "goto-profile", "goto-settings"];
+fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-profile", "goto-settings"];
 fmtAppGlobals.dynamicScreenIds = ["add-food-screen", "edit-food-screen", "view-food-screen", "add-to-meal-screen", "edit-meal-entry-screen"];
 fmtAppGlobals.overlaysIds = ["fmt-app-load-overlay", "fmt-app-first-time-overlay", "fmt-app-nav-overlay"];
 fmtAppGlobals.consumableItemScreenStaticViewInputFields = ["name", "brand", "calories", "proteins", "carbohydrates", "fats"];
@@ -3656,7 +3656,6 @@ var pageController = {
                        };
         FMTDisplayFoodsTable("foods", onsuccessFn, onerrorFn, events);
     },
-    showRecipes: function () {pageController.setTabActive("goto-recipes");},
     showSettings: function () {pageController.setTabActive("goto-settings");},
     showProfile: function () {
         pageController.setTabActive("goto-profile");
@@ -4106,9 +4105,6 @@ function prepareEventHandlers() {
     });
     $("#goto-foods").click( (e) => {
         pageController.showFoods();
-    });
-    $("#goto-recipes").click( (e) => {
-        pageController.showRecipes();
     });
     $("#goto-profile").click( (e) => {
         pageController.showProfile();

@@ -25,16 +25,16 @@
             <div id="overview-container" class="">
                 <div id="overview-date-container" class="mb-3 mt-3 row justify-content-center">
                     <div class="col-lg-1 col-1">
-                        <button id="overview-date-prev-day-lg" type="button" class="fal fa-chevron-left fmt-prev-day-btn btn btn-lg d-none d-md-block float-left"></button>
-                        <button id="overview-date-prev-day-sm" type="button" class="fal fa-chevron-left fmt-prev-day-btn btn d-md-none float-left"></button>
+                        <button id="overview-date-prev-day-lg" type="button" class="fal fa-chevron-left fmt-prev-day-btn btn btn-lg fmt-btn-no-focus d-none d-md-block float-left"></button>
+                        <button id="overview-date-prev-day-sm" type="button" class="fal fa-chevron-left fmt-prev-day-btn btn fmt-btn-no-focus d-md-none float-left"></button>
                     </div>
                     <div class="col-lg-6 col-8 fmt-center-text">
                         <h1 id="overview-date-day-large" class="display-5 d-none d-md-block"></h1>
                         <h4 id="overview-date-day-small" class="display-5 d-md-none"></h4>
                     </div>
                     <div class="col-lg-1 col-1">
-                        <button id="overview-date-next-day-lg" type="button" class="fal fa-chevron-right fmt-next-day-btn btn btn-lg d-none d-md-block float-right"></button>
-                        <button id="overview-date-next-day-sm" type="button" class="fal fa-chevron-right fmt-next-day-btn btn d-md-none float-right"></button>
+                        <button id="overview-date-next-day-lg" type="button" class="fal fa-chevron-right fmt-next-day-btn btn btn-lg fmt-btn-no-focus d-none d-md-block float-right"></button>
+                        <button id="overview-date-next-day-sm" type="button" class="fal fa-chevron-right fmt-next-day-btn btn fmt-btn-no-focus d-md-none float-right"></button>
                     </div>
                 </div>
                 <div id="calories-cont" class="mb-3 mt-3 row justify-content-center">
@@ -112,7 +112,7 @@
                         <h5 class="d-md-none">Food</h5>
                     </div>
                     <div class="col-6 col-sm-2 d-flex">
-                        <button id="foods-add-food" class="fal fa-plus btn fmt-text-btn1 flex-fill" type="button"></button>
+                        <button id="foods-add-food" class="fal fa-plus btn fmt-text-btn1 flex-fill fmt-btn-no-focus" type="button"></button>
                     </div>
                 </div>
             </div>
@@ -135,36 +135,6 @@
                         </tr>
                       </thead>
                       <tbody id="foods-food-table-body">
-                      </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div id="recipes" class="fmt-tab container-fluid">
-            <div id="recipes-alerts" class="row justify-content-center"></div>
-            <div class="d-flex justify-content-center mt-3">
-                <div class="d-flex col-12 col-lg-8 mb-1 justify-content-between">
-                    <div class="">
-                        <h4 class="d-none d-md-block">Recipes</h4>
-                        <h5 class="d-md-none">Recipes</h5>
-                    </div>
-                    <div class="">
-                        <button id="add-recipe" class="fal fa-plus btn fmt-text-btn1" type="button"></button>
-                    </div>
-                </div>
-            </div>
-            <div id="recipe-menu-container" class="row justify-content-center">
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Search</span>
-                        <input id="myrecipes-search" type="text" class="form-control" placeholder="Type to Search..." aria-label="Search" aria-describedby="basic-addon2">
-                    </div>
-                </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                    <table class="table table-striped table-hover">
-                      <tbody>
                       </tbody>
                     </table>
                 </div>
@@ -821,8 +791,6 @@
               </div>
               <div id="goto-foods" class="col-3 align-self-center fmt-menu-font" title="Foods">
                 <i class="fal fa-utensils"></i>
-              </div>
-              <div id="goto-recipes" class="col-2 align-self-center fmt-menu-font d-none" title="Recipes">
               </div>
               <div id="goto-settings" class="col-3 align-self-center fmt-menu-font" title="Settings">
                 <i class="fal fa-cog"></i>
