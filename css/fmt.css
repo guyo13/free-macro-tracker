@@ -82,7 +82,7 @@ button {
 }
 #fmt-app-nav-overlay-content .active {}
 #fmt-app-nav-overlay-content .fmt-menu-font {
-  font-size: 2rem;
+  font-size: 1rem;
   color: var(--fmt-dark-green);
 }
 #fmt-heading {
@@ -96,7 +96,7 @@ button {
 .fmt-navbar-position {
   bottom: 0;
   position: fixed;
-  height: 4rem;
+  height: 2rem;
   width: 100vw;
   transition: bottom 0.3s;
 }
@@ -105,8 +105,9 @@ button {
     width: 100%;
     z-index: 0;
     background-color: white;
-    height: calc( 100% - 4rem - 1.55 * 1.8rem );
-    height: -webkit-calc( 100% - 4rem - 1.55 * 1.8rem );
+    /*100% of screen  - navbar height - factorXheading height*/
+    height: calc( 100% - 2rem - 1.55 * 1.8rem );
+    height: -webkit-calc( 100% - 2rem - 1.55 * 1.8rem );
     overflow-y: auto;
 }
 .fmt-dynamic-screen {
