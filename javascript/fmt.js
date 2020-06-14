@@ -2768,7 +2768,9 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
         if (multiplier !== 1) {
           for (let k=0; k<addiNutrients.length; k++) {
               const _field = addiNutrients[k];
-              _field.value = Number(roundedToFixed(_field.value * multiplier, fmtAppInstance.nutrientRoundingPrecision) );
+              if (isNumber(_field.value)) {
+                _field.value = Number(roundedToFixed(_field.value * multiplier, fmtAppInstance.nutrientRoundingPrecision) );
+              }
           }
         }
     }
@@ -2994,7 +2996,7 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
     const conversionRes = FMTCalculateMultiplier(referenceServing, referenceServingUnits, servingValue, units, fmtAppInstance.unitsChart);
     let multiplier = 1;
     if (conversionRes.error != null || conversionRes.multiplier == null) {
-      FMTShowAlert(alertsDivID, "danger", conversionRes.error, fmtAppGlobals.defaultAlertScroll);
+      //FMTShowAlert(alertsDivID, "danger", conversionRes.error, fmtAppGlobals.defaultAlertScroll);
       units = undefined;
       servingValue = undefined;
     }
@@ -3004,7 +3006,7 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
     let objectId = document.getElementById(`${baseScreenID}-save`).getAttribute(idProp);
     if (!isNumber(objectId)) {
         console.error(`${objectType} ID (${objectId}) is not valid on serving change`);
-        FMTShowAlert(alertsDivID, "danger", "Error while calculating nutritional value. Please reload page", fmtAppGlobals.defaultAlertScroll);
+        FMTShowAlert(alertsDivID, "danger", "Error while calculating nutritional value. Please reload", fmtAppGlobals.defaultAlertScroll);
     }
     else {
         pageFunction(objectId, multiplier, false, servingValue, units);
