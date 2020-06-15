@@ -2275,9 +2275,9 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
                         const gramC = Math.round(macroSplit.Calories * macroSplit.Carbohydrate/100 / 4);
                         const gramF = Math.round(macroSplit.Calories * macroSplit.Fat/100 / 9);
                         if (!isNaN(gramC) && !isNaN(gramF) && !isNaN(gramP)) {
-                            document.getElementById("profile-macro-protein-grams").innerHTML = `${gramP} gram`;
-                            document.getElementById("profile-macro-carb-grams").innerHTML = `${gramC} gram`;
-                            document.getElementById("profile-macro-fat-grams").innerHTML = `${gramF} gram`;
+                            document.getElementById("profile-macro-protein-grams").innerHTML = `${gramP}g`;
+                            document.getElementById("profile-macro-carb-grams").innerHTML = `${gramC}g`;
+                            document.getElementById("profile-macro-fat-grams").innerHTML = `${gramF}g`;
                         }
                     }
                     if (onsuccessFn) {onsuccessFn();}
@@ -4640,26 +4640,6 @@ function prepareEventHandlers() {
     });
     $(".fmt-prev-day-btn").click( (e) => { FMTPreviousDay(FMTOverviewLoadCurrentDay); } );
     $(".fmt-next-day-btn").click( (e) => { FMTNextDay(FMTOverviewLoadCurrentDay); } );
-    //Page interaction
-    // let prevScrollpos = window.pageYOffset;
-    // const navOverlay = document.getElementById("fmt-app-nav-overlay-content");
-    // let resetNav;
-    // window.onscroll = function() {
-    //   var currentScrollPos = window.pageYOffset;
-    //   if (prevScrollpos > currentScrollPos) {
-    //     navOverlay.style.bottom = "0";
-    //   } else {
-    //     navOverlay.style.bottom = "-150px";
-    //   }
-    //   prevScrollpos = currentScrollPos;
-    //   if (resetNav != null) {
-    //     clearTimeout(resetNav);
-    //   }
-    //   resetNav = setTimeout(function() {
-    //     navOverlay.style.bottom = "0";
-    //   }, 300);
-    // };
-
 }
 function startIndexedDB() {
   //Check if IndexedDB supported
