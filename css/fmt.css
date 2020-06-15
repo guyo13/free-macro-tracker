@@ -520,6 +520,9 @@ button {
    border-width: 3px;
    border-image: linear-gradient(to right, #11998e, #38ef7d);
    border-image-slice: 1;
+   border-top: none;
+   border-left: none;
+   border-right: none;
  }
  .form__field:focus ~ .form__label {
    position: absolute;
