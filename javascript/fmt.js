@@ -2247,10 +2247,10 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
                     document.getElementById("profile-height-units").innerHTML = profile.heightUnits;
                     document.getElementById("profile-height-units").setAttribute("units", profile.heightUnits);
                     document.getElementById("profile-age").value = profile.age;
-                    document.getElementById("profile-sex").innerHTML = profile.sex;
+                    document.getElementById("profile-sex").value = profile.sex;
                     document.getElementById("profile-sex").setAttribute("sex", profile.sex);
                     if (!isNaN(profile.bodyfat)) {document.getElementById("profile-bodyfat").value = profile.bodyfat;}
-                    document.getElementById("profile-active-level").innerHTML = profile.activityLevel;
+                    document.getElementById("profile-active-level").value = profile.activityLevel;
                     document.getElementById("profile-active-level").setAttribute("level", profile.activityLevel);
                     document.getElementById("profile-activity-mult").setAttribute("value", profile.activityMultiplier);
                     document.getElementById("profile-activity-mult").innerHTML = profile.activityMultiplier;
@@ -4133,17 +4133,17 @@ function prepareEventHandlers() {
         });
     $("#profile-sex-male").click( (e) => {
         let DOMSex = document.getElementById("profile-sex");
-        DOMSex.innerHTML = "Male";
+        DOMSex.value = "Male";
         DOMSex.setAttribute("sex", "Male");
         });
     $("#profile-sex-female").click( (e) => {
         let DOMSex = document.getElementById("profile-sex");
-        DOMSex.innerHTML = "Female";
+        DOMSex.value = "Female";
         DOMSex.setAttribute("sex", "Female");
         });
     $("#profile-active-level-sed").click( (e) => {
         let DOMActiveLevel = document.getElementById("profile-active-level");
-        DOMActiveLevel.innerHTML = "Sedentary";
+        DOMActiveLevel.value = "Sedentary";
         DOMActiveLevel.setAttribute("level", "Sedentary");
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
         DOMActiveLevelMult.setAttribute("value", 1.2);
@@ -4152,7 +4152,7 @@ function prepareEventHandlers() {
         });
     $("#profile-active-level-light").click( (e) => {
         let DOMActiveLevel = document.getElementById("profile-active-level");
-        DOMActiveLevel.innerHTML = "Light";
+        DOMActiveLevel.value = "Light";
         DOMActiveLevel.setAttribute("level", "Light");
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
         DOMActiveLevelMult.setAttribute("value", 1.375);
@@ -4161,7 +4161,7 @@ function prepareEventHandlers() {
         });
     $("#profile-active-level-mod").click( (e) => {
         let DOMActiveLevel = document.getElementById("profile-active-level");
-        DOMActiveLevel.innerHTML = "Moderate";
+        DOMActiveLevel.value = "Moderate";
         DOMActiveLevel.setAttribute("level", "Moderate");
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
         DOMActiveLevelMult.setAttribute("value", 1.55);
@@ -4170,7 +4170,7 @@ function prepareEventHandlers() {
         });
     $("#profile-active-level-high").click( (e) => {
         let DOMActiveLevel = document.getElementById("profile-active-level");
-        DOMActiveLevel.innerHTML = "High";
+        DOMActiveLevel.value = "High";
         DOMActiveLevel.setAttribute("level", "High");
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
         DOMActiveLevelMult.setAttribute("value", 1.725);
@@ -4179,7 +4179,7 @@ function prepareEventHandlers() {
         });
     $("#profile-active-level-vhigh").click( (e) => {
         let DOMActiveLevel = document.getElementById("profile-active-level");
-        DOMActiveLevel.innerHTML = "Very High";
+        DOMActiveLevel.value = "Very High";
         DOMActiveLevel.setAttribute("level", "Very High");
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
         DOMActiveLevelMult.setAttribute("value", 1.9);
@@ -4191,7 +4191,7 @@ function prepareEventHandlers() {
         console.debug(mult);
         if (!isNaN(mult)) {
             let DOMActiveLevel = document.getElementById("profile-active-level");
-            DOMActiveLevel.innerHTML = "Custom";
+            DOMActiveLevel.value = "Custom";
             DOMActiveLevel.setAttribute("level", "Custom");
             let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
             DOMActiveLevelMult.setAttribute("value", mult);
