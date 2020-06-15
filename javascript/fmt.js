@@ -4131,6 +4131,7 @@ function prepareEventHandlers() {
       if (activityLevel === "Custom") {
         DOMActiveLevelMult.removeAttribute("readonly");
         DOMActiveLevelMult.classList.remove("d-none");
+        DOMActiveLevelMult.click();
         DOMActiveLevelMult.focus();
       }
       else {
