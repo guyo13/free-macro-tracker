@@ -2164,9 +2164,9 @@ function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
     profile.profile_id = profileId;
     profile.name = document.getElementById('profile-name').value || null;
     profile.bodyWeight = document.getElementById('profile-weight').value;
-    profile.bodyWeightUnits = document.getElementById('profile-weight-units').getAttribute('units');
+    profile.bodyWeightUnits = document.getElementById('profile-weight-units').value;
     profile.height = document.getElementById('profile-height').value;
-    profile.heightUnits = document.getElementById('profile-height-units').getAttribute('units');
+    profile.heightUnits = document.getElementById('profile-height-units').value;
     profile.age = document.getElementById('profile-age').value;
     profile.sex = document.getElementById('profile-sex').getAttribute('sex');
     profile.bodyfat = document.getElementById('profile-bodyfat').value || null;
@@ -2244,11 +2244,9 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
                     }
                     if (profile.name) {document.getElementById("profile-name").value = profile.name;}
                     document.getElementById("profile-weight").value = profile.bodyWeight;
-                    document.getElementById("profile-weight-units").innerHTML = profile.bodyWeightUnits;
-                    document.getElementById("profile-weight-units").setAttribute("units", profile.bodyWeightUnits);
+                    document.getElementById("profile-weight-units").value = profile.bodyWeightUnits;
                     document.getElementById("profile-height").value = profile.height;
-                    document.getElementById("profile-height-units").innerHTML = profile.heightUnits;
-                    document.getElementById("profile-height-units").setAttribute("units", profile.heightUnits);
+                    document.getElementById("profile-height-units").value = profile.heightUnits;
                     document.getElementById("profile-age").value = profile.age;
                     document.getElementById("profile-sex").value = profile.sex;
                     document.getElementById("profile-sex").setAttribute("sex", profile.sex);
@@ -4115,26 +4113,6 @@ function prepareEventHandlers() {
     $("#goto-settings").click( (e) => {
         pageController.showSettings();
     });
-    $("#profile-weight-units-kg").click( (e) => {
-        let DOMWeightUnits = document.getElementById("profile-weight-units");
-        DOMWeightUnits.innerHTML = "Kg";
-        DOMWeightUnits.setAttribute("units", "Kg");
-        });
-    $("#profile-weight-units-lbs").click( (e) => {
-        let DOMWeightUnits = document.getElementById("profile-weight-units");
-        DOMWeightUnits.innerHTML = "Lbs";
-        DOMWeightUnits.setAttribute("units", "Lbs");
-        });
-    $("#profile-height-units-cm").click( (e) => {
-        let DOMHeightUnits = document.getElementById("profile-height-units");
-        DOMHeightUnits.innerHTML = "Cm";
-        DOMHeightUnits.setAttribute("units", "Cm");
-        });
-    $("#profile-height-units-inch").click( (e) => {
-        let DOMHeightUnits = document.getElementById("profile-height-units");
-        DOMHeightUnits.innerHTML = "Inch";
-        DOMHeightUnits.setAttribute("units", "Inch");
-        });
     $("#profile-sex-male").click( (e) => {
         let DOMSex = document.getElementById("profile-sex");
         DOMSex.value = "Male";
@@ -4152,6 +4130,7 @@ function prepareEventHandlers() {
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
         DOMActiveLevelMult.value = 1.2;
         DOMActiveLevelMult.classList.remove("d-none");
+        DOMActiveLevelMult.setAttribute("readonly", "true");
         });
     $("#profile-active-level-light").click( (e) => {
         let DOMActiveLevel = document.getElementById("profile-active-level");
@@ -4160,6 +4139,7 @@ function prepareEventHandlers() {
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
         DOMActiveLevelMult.value = 1.375;
         DOMActiveLevelMult.classList.remove("d-none");
+        DOMActiveLevelMult.setAttribute("readonly", "true");
         });
     $("#profile-active-level-mod").click( (e) => {
         let DOMActiveLevel = document.getElementById("profile-active-level");
@@ -4168,6 +4148,7 @@ function prepareEventHandlers() {
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
         DOMActiveLevelMult.value = 1.55;
         DOMActiveLevelMult.classList.remove("d-none");
+        DOMActiveLevelMult.setAttribute("readonly", "true");
         });
     $("#profile-active-level-high").click( (e) => {
         let DOMActiveLevel = document.getElementById("profile-active-level");
@@ -4176,6 +4157,7 @@ function prepareEventHandlers() {
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
         DOMActiveLevelMult.value = 1.725;
         DOMActiveLevelMult.classList.remove("d-none");
+        DOMActiveLevelMult.setAttribute("readonly", "true");
         });
     $("#profile-active-level-vhigh").click( (e) => {
         let DOMActiveLevel = document.getElementById("profile-active-level");
@@ -4184,6 +4166,7 @@ function prepareEventHandlers() {
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
         DOMActiveLevelMult.value = 1.9;
         DOMActiveLevelMult.classList.remove("d-none");
+        DOMActiveLevelMult.setAttribute("readonly", "true");
         });
     $("#profile-active-level-custom").click( (e) => {
         let DOMActiveLevel = document.getElementById("profile-active-level");

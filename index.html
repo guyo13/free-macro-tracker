@@ -158,30 +158,20 @@
                   <div class="form__group">
                     <input type="number" class="form__field fmt-input-field" placeholder="Body-Weight" id='profile-weight' required />
                     <label for="profile-weight" class="form__label">Weight</label>
-                    <button id="profile-weight-units" type="button" class="btn btn-outline-dark fmt-outline-success flex-fill" units="Kg">Kg</button>
-                    <button id="profile-weight-units-drop" type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split fmt-outline-success" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <div  class="dropdown-menu">
-                      <a id="profile-weight-units-kg" class="dropdown-item" href="#">Kg</a>
-                      <a id="profile-weight-units-lbs" class="dropdown-item" href="#">Lbs</a>
-                    </div>
+                    <select id="profile-weight-units" name="profile-weight-units" class="custom-select fmt-select">
+                      <option value="Kg">Kg</option>
+                      <option value="Lbs">Lbs</option>
+                    </select>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
                   <div class="form__group">
                     <input type="number" class="form__field fmt-input-field" placeholder="Height" id='profile-height' required />
                     <label for="profile-height" class="form__label">Height</label>
-
-                    <button id="profile-height-units" type="button" class="btn btn-outline-dark fmt-outline-success flex-fill" units="Cm">Cm</button>
-                    <button id="profile-height-units-drop" type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split fmt-outline-success" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <div  class="dropdown-menu">
-                      <a id="profile-height-units-cm" class="dropdown-item" href="#">Cm</a>
-                      <a id="profile-height-units-inch" class="dropdown-item" href="#">Inch</a>
-                    </div>
-
+                    <select id="profile-height-units" name="profile-height-units" class="custom-select fmt-select">
+                      <option value="Cm">Cm</option>
+                      <option value="Inch">Inch</option>
+                    </select>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
@@ -200,7 +190,7 @@
                     <div class="form__group">
                       <input id="profile-sex" type="text" class="form__field fmt-input-field" placeholder="Sex" required readonly="true"/>
                       <label for="profile-sex" class="form__label">Sex</label>
-                      <button id="profile-sex-drop" type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split fmt-outline-success flex-fill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <button id="profile-sex-drop" type="button" class="btn dropdown-toggle dropdown-toggle-split flex-fill custom-select fmt-select" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="sr-only">Toggle Dropdown</span>
                       </button>
                       <div  class="dropdown-menu">
@@ -213,7 +203,7 @@
                     <div class="form__group">
                       <input id="profile-active-level" type="text" class="form__field fmt-input-field" placeholder="Activity Level" required readonly="true"/>
                       <label for="profile-active-level" class="form__label">Activity Level</label>
-                      <button id="profile-active-level-drop" type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split fmt-outline-success flex-fill" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <button id="profile-active-level-drop" type="button" class="btn dropdown-toggle dropdown-toggle-split flex-fill custom-select fmt-select" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           <span class="sr-only">Toggle Dropdown</span>
                       </button>
                       <div  class="dropdown-menu">

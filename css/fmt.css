@@ -295,6 +295,13 @@ button {
         width: 70%;
     }
 }
+.fmt-select {
+  width: auto!important;
+  box-shadow: none!important;
+}
+.fmt-select:focus {
+  border-color: #11998e!important;
+}
 .fmt-font-white-bold {
     color: white;
     font-weight: bold;
