@@ -2156,6 +2156,34 @@ function FMTShowPrompt(divId, alertLevel, msg, scrollOptions, oncompleteFn) {
 }
 
 //Functions - UI - Profile
+function FMTProfileSelectActivityLevel(activityLevel, multiplierDivId, levelDivId) {
+  const DOMActiveLevel = document.getElementById(levelDivId);
+  const DOMActiveLevelMult = document.getElementById(multiplierDivId);
+  if (fmtAppGlobals.supportedActivityLevels.indexOf(activityLevel) < 0) {
+    DOMActiveLevel.value = "";
+    DOMActiveLevel.setAttribute("level", "");
+    DOMActiveLevelMult.value = "";
+    DOMActiveLevelMult.setAttribute("readonly", "true");
+    return;
+  }
+  DOMActiveLevel.value = activityLevel;
+  DOMActiveLevel.setAttribute("level", activityLevel);
+  if (activityLevel === "Custom") {
+    DOMActiveLevelMult.removeAttribute("readonly");
+    DOMActiveLevelMult.classList.remove("d-none");
+    DOMActiveLevelMult.focus();
+  }
+  else {
+    DOMActiveLevelMult.value = fmtAppGlobals.activityLevelsMultipliers[activityLevel];
+    DOMActiveLevelMult.classList.remove("d-none");
+    DOMActiveLevelMult.setAttribute("readonly", "true");
+  }
+}
+function FMTProfileSelectSex(sex, divId) {
+  const DOMSex = document.getElementById(divId);
+  DOMSex.value = sex;
+  DOMSex.setAttribute("sex", sex);
+}
 function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
     if (isNaN(profileId)) {
         throw TypeError(`Invalid profile_id ${profileId}`);
@@ -4116,29 +4144,12 @@ function prepareEventHandlers() {
         pageController.showSettings();
     });
     $("#profile-sex-select").change( (e) => {
-      const select = e.currentTarget;
-      const DOMSex = document.getElementById("profile-sex");
-      DOMSex.value = select.value;
-      DOMSex.setAttribute("sex", select.value);
+      const sex = e.currentTarget.value;
+      FMTProfileSelectSex(sex, "profile-sex");
     });
     $("#profile-activity-select").change( (e) => {
       const activityLevel = e.currentTarget.value;
-      if (fmtAppGlobals.supportedActivityLevels.indexOf(activityLevel) < 0) { return; }
-      const DOMActiveLevel = document.getElementById("profile-active-level");
-      const DOMActiveLevelMult = document.getElementById("profile-activity-mult");
-      DOMActiveLevel.value = activityLevel;
-      DOMActiveLevel.setAttribute("level", activityLevel);
-      if (activityLevel === "Custom") {
-        DOMActiveLevelMult.removeAttribute("readonly");
-        DOMActiveLevelMult.classList.remove("d-none");
-        DOMActiveLevelMult.click();
-        DOMActiveLevelMult.focus();
-      }
-      else {
-        DOMActiveLevelMult.value = fmtAppGlobals.activityLevelsMultipliers[activityLevel];
-        DOMActiveLevelMult.classList.remove("d-none");
-        DOMActiveLevelMult.setAttribute("readonly", "true");
-      }
+      FMTProfileSelectActivityLevel(activityLevel, "profile-activity-mult", "profile-active-level");
     });
     $("#save-profile-details").click( (e) => {
         let onsuccessFn = function(ev) {
