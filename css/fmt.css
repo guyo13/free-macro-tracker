@@ -486,12 +486,10 @@ button {
 
  .form__field {
    font-family: inherit;
-   /* width: 100%; */
    border: 0;
    border-bottom: 2px solid #9b9b9b;
    outline: 0;
    font-size: 1.3rem;
-   /* color: #fff; */
    padding: 7px 0;
    background: transparent;
    transition: border-color 0.2s;
@@ -518,11 +516,13 @@ button {
    padding-bottom: 6px;
    font-weight: 700;
    border-width: 3px;
+   -webkit-border-image: linear-gradient(to right, #11998e, #38ef7d);
+   -webkit-border-image-slice: 1;
    border-image: linear-gradient(to right, #11998e, #38ef7d);
    border-image-slice: 1;
-   border-top: none;
-   border-left: none;
-   border-right: none;
+   border-top: 0;
+   border-left: 0;
+   border-right: 0;
  }
  .form__field:focus ~ .form__label {
    position: absolute;
