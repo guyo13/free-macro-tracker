@@ -2159,6 +2159,7 @@ function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
     if (isNaN(profileId)) {
         throw TypeError(`Invalid profile_id ${profileId}`);
     }
+    document.getElementById("profile-alerts").innerHTML = "";
     let profile = {}
     profile.profile_id = profileId;
     profile.name = document.getElementById('profile-name').value || null;
@@ -2198,6 +2199,7 @@ function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
         onerrorFn = onerrorFn || function(e) { console.error(msg); }
         return onerrorFn(msg);
     }
+    document.getElementById("profile-alerts").innerHTML = "";
     let macroSplit = {};
     macroSplit.Calories = document.getElementById("profile-daily-calories").value;
     macroSplit.Protein = document.getElementById("profile-macro-protein").value;
