@@ -292,7 +292,7 @@ button {
         width: 100%;
     }
     .fmt-input-field {
-        width: 100%;
+        width: 70%;
     }
 }
 .fmt-font-white-bold {
@@ -533,8 +533,12 @@ button {
    color: #11998e;
    font-weight: 700;
  }
-
  /* reset input */
  .form__field:required, .form__field:invalid {
    box-shadow: none;
+ }
+ @media screen and (max-width: 768px) {
+     .form__group {
+         width: 100%;
+     }
  }
