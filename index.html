@@ -190,30 +190,24 @@
                     <div class="form__group">
                       <input id="profile-sex" type="text" class="form__field fmt-input-field" placeholder="Sex" required readonly="true"/>
                       <label for="profile-sex" class="form__label">Sex</label>
-                      <button id="profile-sex-drop" type="button" class="btn dropdown-toggle dropdown-toggle-split flex-fill custom-select fmt-select" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="sr-only">Toggle Dropdown</span>
-                      </button>
-                      <div  class="dropdown-menu">
-                        <a id="profile-sex-male" class="dropdown-item" href="#">Male</a>
-                        <a id="profile-sex-female" class="dropdown-item" href="#">Female</a>
-                      </div>
+                      <select name="profile-sex-select" class="custom-select fmt-select">
+                        <option id="profile-sex-male" value="Male">Male</option>
+                        <option id="profile-sex-female" value="Female">Female</option>
+                      </select>
                     </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
                     <div class="form__group">
                       <input id="profile-active-level" type="text" class="form__field fmt-input-field" placeholder="Activity Level" required readonly="true"/>
                       <label for="profile-active-level" class="form__label">Activity Level</label>
-                      <button id="profile-active-level-drop" type="button" class="btn dropdown-toggle dropdown-toggle-split flex-fill custom-select fmt-select" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <span class="sr-only">Toggle Dropdown</span>
-                      </button>
-                      <div  class="dropdown-menu">
-                        <a id="profile-active-level-sed" class="dropdown-item" href="#">Sedentary</a>
-                        <a id="profile-active-level-light" class="dropdown-item" href="#">Exercise 1-3 days/week</a>
-                        <a id="profile-active-level-mod" class="dropdown-item" href="#">Exercise 3-5 days/week</a>
-                        <a id="profile-active-level-high" class="dropdown-item" href="#">Exercise 6-7 days/week</a>
-                        <a id="profile-active-level-vhigh" class="dropdown-item" href="#">Exercise x2/day</a>
-                        <a id="profile-active-level-custom" class="dropdown-item" href="#">Custom Multiplier</a>
-                      </div>
+                      <select name="profile-activity-select" class="custom-select fmt-select">
+                        <option id="profile-active-level-sed" value="Sedentary">Sedentary</option>
+                        <option id="profile-active-level-light" value="Light">1-3 days/week</option>
+                        <option id="profile-active-level-mod" value="Moderate">3-5 days/week</option>
+                        <option id="profile-active-level-high" value="High">6-7 days/week</option>
+                        <option id="profile-active-level-vhigh" value="Very High">x2/day</option>
+                        <option id="profile-active-level-custom" value="Custom">Custom</option>
+                      </select>
                     </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
@@ -263,28 +257,28 @@
 
                 <div class="col-12 col-lg-8 mb-1">
                   <div class="form__group">
-                    <input id="profile-daily-calories" type="number" class="form__field fmt-input-field" required />
-                    <label for="profile-daily-calories" class="form__label">Calories:</label>
+                    <input id="profile-daily-calories" type="number" class="form__field fmt-input-field" placeholder="Calories" required />
+                    <label for="profile-daily-calories" class="form__label">Calories</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
                   <div class="form__group">
-                    <input id="profile-macro-protein" type="number" class="form__field fmt-input-field" required />
-                    <label for="profile-macro-protein" class="form__label">Protein:</label>
+                    <input id="profile-macro-protein" type="number" class="form__field fmt-input-field" placeholder="Protein" required />
+                    <label for="profile-macro-protein" class="form__label">Protein</label>
                     <span id="profile-macro-protein-grams" class=""></span>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
                   <div class="form__group">
-                    <input id="profile-macro-carb" type="number" class="form__field fmt-input-field" required />
-                    <label for="profile-macro-carb" class="form__label">Carbs:</label>
+                    <input id="profile-macro-carb" type="number" class="form__field fmt-input-field" placeholder="Carbs" required />
+                    <label for="profile-macro-carb" class="form__label">Carbs</label>
                     <span id="profile-macro-carb-grams" class=""></span>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
                   <div class="form__group">
-                    <input id="profile-macro-fat" type="number" class="form__field fmt-input-field" required />
-                    <label for="profile-macro-fat" class="form__label">Fat:</label>
+                    <input id="profile-macro-fat" type="number" class="form__field fmt-input-field" placeholder="Fat" required />
+                    <label for="profile-macro-fat" class="form__label">Fat</label>
                     <span id="profile-macro-fat-grams" class=""></span>
                   </div>
                 </div>

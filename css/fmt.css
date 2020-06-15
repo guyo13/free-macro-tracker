@@ -292,11 +292,11 @@ button {
         width: 100%;
     }
     .fmt-input-field {
-        width: 70%;
+        width: 60%;
     }
 }
 .fmt-select {
-  width: auto!important;
+  width: 30%!important;
   box-shadow: none!important;
 }
 .fmt-select:focus {
