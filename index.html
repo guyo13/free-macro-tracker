@@ -149,55 +149,54 @@
                 </div>
                 <div class="w-100"></div>
 
-                <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend row flex-grow-1 fmt-profile-input-field">
-                    <span class="input-group-text fmt-outline-success col-5 col-lg-2">Name</span>
-                    <input id="profile-name" type="text" class="form-control col-4 col-lg-3" placeholder="(Optional)" aria-label="Name" aria-describedby="basic-addon2">
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="input" class="form__field fmt-input-field" placeholder="Name" id='profile-name'/>
+                    <label for="profile-name" class="form__label">Name</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Body-Weight" id='profile-weight' required />
+                    <label for="profile-weight" class="form__label">Weight</label>
+
+                    <button id="profile-weight-units" type="button" class="btn btn-outline-dark fmt-outline-success flex-fill" units="Kg">Kg</button>
+                    <button id="profile-weight-units-drop" type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split fmt-outline-success" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div  class="dropdown-menu">
+                      <a id="profile-weight-units-kg" class="dropdown-item" href="#">Kg</a>
+                      <a id="profile-weight-units-lbs" class="dropdown-item" href="#">Lbs</a>
+                    </div>
+
                   </div>
                 </div>
 
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                    <div class="input-group-prepend row flex-grow-1 fmt-profile-input-field">
-                        <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Weight</span>
-                        <input id="profile-weight" type="text" class="col-4 col-lg-3 form-control" placeholder="Body-Weight" aria-label="Weight" aria-describedby="basic-addon2">
-                        <div class="input-group-append col-3 col-lg-1 pl-0">
-                            <button id="profile-weight-units" type="button" class="btn btn-outline-dark fmt-outline-success flex-fill" units="Kg">Kg</button>
-                            <button id="profile-weight-units-drop" type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split fmt-outline-success" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <div  class="dropdown-menu">
-                              <a id="profile-weight-units-kg" class="dropdown-item" href="#">Kg</a>
-                              <a id="profile-weight-units-lbs" class="dropdown-item" href="#">Lbs</a>
-                            </div>
-                        </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Height" id='profile-height' required />
+                    <label for="profile-height" class="form__label">Height</label>
+
+                    <button id="profile-height-units" type="button" class="btn btn-outline-dark fmt-outline-success flex-fill" units="Cm">Cm</button>
+                    <button id="profile-height-units-drop" type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split fmt-outline-success" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div  class="dropdown-menu">
+                      <a id="profile-height-units-cm" class="dropdown-item" href="#">Cm</a>
+                      <a id="profile-height-units-inch" class="dropdown-item" href="#">Inch</a>
+                    </div>
+
+                  </div>
+                </div>
+
+
+                <div class="col-12 col-lg-8 mb-1">
+                    <div class="form__group">
+                      <input id="profile-age" type="number" class="form__field fmt-input-field" placeholder="Age" required />
+                      <label for="profile-age" class="form__label">Age</label>
                     </div>
                 </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                    <div class="input-group-prepend row flex-grow-1 fmt-profile-input-field">
-                        <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Height</span>
-                        <input id="profile-height" type="text" class="col-4 col-lg-3 form-control" placeholder="Height" aria-label="Height" aria-describedby="basic-addon2">
-                        <div class="input-group-append col-3 col-lg-1 pl-0">
-                            <button id="profile-height-units" type="button" class="btn btn-outline-dark fmt-outline-success flex-fill" units="Cm">Cm</button>
-                            <button id="profile-height-units-drop" type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split fmt-outline-success" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <div  class="dropdown-menu">
-                              <a id="profile-height-units-cm" class="dropdown-item" href="#">Cm</a>
-                              <a id="profile-height-units-inch" class="dropdown-item" href="#">Inch</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                    <div class="input-group-prepend row flex-grow-1 fmt-profile-input-field">
-                        <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Age</span>
-                        <input id="profile-age" type="text" class="col-4 col-lg-3 form-control" placeholder="Your Age" aria-label="Age" aria-describedby="basic-addon2">
-                    </div>
-                </div>
-                <div class="w-100"></div>
+
                 <div class="input-group col-12 col-lg-8 mb-1">
                     <div class="input-group-prepend row flex-grow-1 fmt-profile-input-field">
                       <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Sex</span>
@@ -213,14 +212,14 @@
                       </div>
                     </div>
                 </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                    <div class="input-group-prepend row flex-grow-1 fmt-profile-input-field">
-                        <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Body Fat %</span>
-                        <input id="profile-bodyfat" type="text" class="col-4 col-lg-3 form-control" placeholder="(Optional)" aria-label="Bodyfat" aria-describedby="basic-addon2">
+
+                <div class="col-12 col-lg-8 mb-1">
+                    <div class="form__group">
+                      <input id="profile-bodyfat" type="number" class="form__field fmt-input-field" placeholder="(Optional)"/>
+                      <label for="profile-bodyfat" class="form__label">Body Fat %</label>
                     </div>
                 </div>
-                <div class="w-100"></div>
+
                 <div class="input-group col-12 col-lg-8 mb-1">
                     <div class="input-group-prepend row flex-grow-1 fmt-profile-input-field">
                         <span id="_aclevel" class="col-5 col-lg-2 input-group-text fmt-outline-success">Activity Level</span>
@@ -240,81 +239,82 @@
                       </div>
                     </div>
                 </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend row flex-grow-1 fmt-profile-input-field">
-                    <span class="input-group-text col-9 col-lg-5 fmt-outline-success">Activity Level Multiplier</span>
-                    <span id="profile-activity-mult" class="col-3 col-lg-1 input-group-text fmt-outline-success d-none" value=""></span>
+
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input id="profile-activity-mult" type="text" class="form__field fmt-input-field" required readonly="true"/>
+                    <label for="profile-activity-mult" class="form__label">Activity Level Multiplier</label>
                   </div>
                 </div>
                 <div class="w-100"></div>
+
                 <div class="input-group col-12 col-lg-4 mb-3">
                   <button id="save-profile-details" class="btn btn-outline-dark flex-fill" type="button">Save Personal Details</button>
                 </div>
             </div>
-            <div id="energy-data" class="row justify-content-center">
+
+            <div id="energy-data" class="row justify-content-center mb-4">
                 <div class="input-group col-12 col-lg-8 mb-1">
-                    <h4 class="d-none d-md-block">Calculated Consumption</h4>
-                    <h5 class="d-md-none">Calculated Consumption</h5>
+                    <h4 class="d-none d-md-block">Energy Requirements</h4>
+                    <h5 class="d-md-none">Energy Requirements</h5>
                 </div>
                 <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                    <div class="input-group-prepend row flex-grow-1 fmt-profile-input-field">
-                        <span class="col-5 col-lg-2 input-group-text fmt-outline-success">BMR</span>
-                        <span id="profile-bmr" class="col-7 col-lg-4 input-group-text"></span>
-                    </div>
+
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input id="profile-bmr" type="text" class="form__field fmt-input-field" required readonly="true"/>
+                    <label for="profile-bmr" class="form__label">BMR</label>
+                  </div>
                 </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                    <div class="input-group-prepend row flex-grow-1 fmt-profile-input-field">
-                        <span class="col-5 col-lg-2 input-group-text fmt-outline-success">TDEE</span>
-                        <span id="profile-tdee" class="col-7 col-lg-4 input-group-text"></span>
-                    </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input id="profile-tdee" type="text" class="form__field fmt-input-field" required readonly="true"/>
+                    <label for="profile-tdee" class="form__label">TDEE</label>
+                  </div>
                 </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-4">
-                    <div class="input-group-prepend row flex-grow-1 fmt-profile-input-field">
-                        <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Formula Used</span>
-                        <span id="profile-formula" class="col-7 col-lg-4 input-group-text"></span>
-                    </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input id="profile-formula" type="text" class="form__field fmt-input-field" required readonly="true"/>
+                    <label for="profile-formula" class="form__label">Formula Used</label>
+                  </div>
                 </div>
             </div>
+
             <div id="macro-split" class="row justify-content-center">
                 <div class="input-group col-12 col-lg-8 mb-1">
                     <h4 class="d-none d-md-block">Macro Split</h4>
                     <h5 class="d-md-none">Macro Split</h5>
                 </div>
                 <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                    <div class="input-group-prepend row flex-grow-1 fmt-profile-input-field">
-                        <span class="col-5 col-lg-2 input-group-text fmt-label1 fmt-outline-success">Calories:</span>
-                        <input id="profile-daily-calories" type="text" class="col-4 col-lg-3 form-control" placeholder="Goal Calories" aria-label="Target Calories" aria-describedby="basic-addon2">
-                    </div>
+
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input id="profile-daily-calories" type="number" class="form__field fmt-input-field" required />
+                    <label for="profile-daily-calories" class="form__label">Calories:</label>
+                  </div>
                 </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                    <div class="input-group-prepend row flex-grow-1 fmt-profile-input-field">
-                        <span class="col-5 col-lg-2 input-group-text fmt-label1 fmt-outline-success">Protein:</span>
-                        <input id="profile-macro-protein" type="text" class="col-4 col-lg-3 form-control" placeholder="%Protein" aria-label="Protein" aria-describedby="basic-addon2">
-                        <span id="profile-macro-protein-grams" class="col-3 col-lg-1 input-group-text flex-fill fmt-outline-success"></span>
-                    </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input id="profile-macro-protein" type="number" class="form__field fmt-input-field" required />
+                    <label for="profile-macro-protein" class="form__label">Protein:</label>
+                    <span id="profile-macro-protein-grams" class="fmt-outline-success"></span>
+                  </div>
                 </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                    <div class="input-group-prepend row flex-grow-1 fmt-profile-input-field">
-                        <span class="col-5 col-lg-2 input-group-text fmt-label1 fmt-outline-success">Carbs:</span>
-                        <input id="profile-macro-carb" type="text" class="col-4 col-lg-3 form-control" placeholder="%Carb" aria-label="Carb" aria-describedby="basic-addon2">
-                        <span id="profile-macro-carb-grams" class="col-3 col-lg-1 input-group-text flex-fill fmt-outline-success"></span>
-                    </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input id="profile-macro-carb" type="number" class="form__field fmt-input-field" required />
+                    <label for="profile-macro-carb" class="form__label">Carbs:</label>
+                    <span id="profile-macro-carb-grams" class="fmt-outline-success"></span>
+                  </div>
                 </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                    <div class="input-group-prepend row flex-grow-1 fmt-profile-input-field">
-                        <span class="col-5 col-lg-2 input-group-text fmt-label1 fmt-outline-success">Fat:</span>
-                        <input id="profile-macro-fat" type="text" class="col-4 col-lg-3 form-control" placeholder="%Fat" aria-label="Fat" aria-describedby="basic-addon2">
-                        <span id="profile-macro-fat-grams" class="col-3 col-lg-1 input-group-text flex-fill fmt-outline-success"></span>
-                    </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input id="profile-macro-fat" type="number" class="form__field fmt-input-field" required />
+                    <label for="profile-macro-fat" class="form__label">Fat:</label>
+                    <span id="profile-macro-fat-grams" class="fmt-outline-success"></span>
+                  </div>
                 </div>
+
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-4 mb-1">
                     <button id="save-profile-macro" class="btn btn-outline-dark flex-fill" type="button">Save Macro Split</button>
