@@ -89,6 +89,7 @@ fmtAppGlobals.supportedBodyweightUnits = ["Kg", "Lbs"];
 fmtAppGlobals.supportedHeightUnits = ["Cm", "Inch"];
 fmtAppGlobals.sexes = ["Male", "Female"];
 fmtAppGlobals.supportedActivityLevels = ["Sedentary", "Light", "Moderate", "High", "Very High", "Custom"];
+fmtAppGlobals.activityLevelsMultipliers = {"Sedentary": 1.2, "Light": 1.375, "Moderate": 1.55, "High": 1.725, "Very High": 1.9};
 fmtAppGlobals.supportedUnitTypes = ["mass", "volume", "arbitrary"];
 fmtAppGlobals.dateConstants = {};
 fmtAppGlobals.dateConstants.monthNames = {0: "Jan", 1: "Feb", 2: "Mar", 3: "Apr", 4: "May", 5: "Jun", 6: "Jul", 7: "Aug",
@@ -2253,6 +2254,7 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
                     if (!isNaN(profile.bodyfat)) {document.getElementById("profile-bodyfat").value = profile.bodyfat;}
                     document.getElementById("profile-active-level").value = profile.activityLevel;
                     document.getElementById("profile-active-level").setAttribute("level", profile.activityLevel);
+                    document.getElementById("profile-activity-select").value = profile.activityLevel;
                     const activityMultiplier = document.getElementById("profile-activity-mult");
                     activityMultiplier.value = profile.activityMultiplier;
                     activityMultiplier.setAttribute("readonly", true);
@@ -4113,70 +4115,30 @@ function prepareEventHandlers() {
     $("#goto-settings").click( (e) => {
         pageController.showSettings();
     });
-    $("#profile-sex-male").click( (e) => {
-        let DOMSex = document.getElementById("profile-sex");
-        DOMSex.value = "Male";
-        DOMSex.setAttribute("sex", "Male");
-        });
-    $("#profile-sex-female").click( (e) => {
-        let DOMSex = document.getElementById("profile-sex");
-        DOMSex.value = "Female";
-        DOMSex.setAttribute("sex", "Female");
-        });
-    $("#profile-active-level-sed").click( (e) => {
-        let DOMActiveLevel = document.getElementById("profile-active-level");
-        DOMActiveLevel.value = "Sedentary";
-        DOMActiveLevel.setAttribute("level", "Sedentary");
-        let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
-        DOMActiveLevelMult.value = 1.2;
-        DOMActiveLevelMult.classList.remove("d-none");
-        DOMActiveLevelMult.setAttribute("readonly", "true");
-        });
-    $("#profile-active-level-light").click( (e) => {
-        let DOMActiveLevel = document.getElementById("profile-active-level");
-        DOMActiveLevel.value = "Light";
-        DOMActiveLevel.setAttribute("level", "Light");
-        let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
-        DOMActiveLevelMult.value = 1.375;
-        DOMActiveLevelMult.classList.remove("d-none");
-        DOMActiveLevelMult.setAttribute("readonly", "true");
-        });
-    $("#profile-active-level-mod").click( (e) => {
-        let DOMActiveLevel = document.getElementById("profile-active-level");
-        DOMActiveLevel.value = "Moderate";
-        DOMActiveLevel.setAttribute("level", "Moderate");
-        let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
-        DOMActiveLevelMult.value = 1.55;
-        DOMActiveLevelMult.classList.remove("d-none");
-        DOMActiveLevelMult.setAttribute("readonly", "true");
-        });
-    $("#profile-active-level-high").click( (e) => {
-        let DOMActiveLevel = document.getElementById("profile-active-level");
-        DOMActiveLevel.value = "High";
-        DOMActiveLevel.setAttribute("level", "High");
-        let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
-        DOMActiveLevelMult.value = 1.725;
-        DOMActiveLevelMult.classList.remove("d-none");
-        DOMActiveLevelMult.setAttribute("readonly", "true");
-        });
-    $("#profile-active-level-vhigh").click( (e) => {
-        let DOMActiveLevel = document.getElementById("profile-active-level");
-        DOMActiveLevel.value = "Very High";
-        DOMActiveLevel.setAttribute("level", "Very High");
-        let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
-        DOMActiveLevelMult.value = 1.9;
-        DOMActiveLevelMult.classList.remove("d-none");
-        DOMActiveLevelMult.setAttribute("readonly", "true");
-        });
-    $("#profile-active-level-custom").click( (e) => {
-        let DOMActiveLevel = document.getElementById("profile-active-level");
-        DOMActiveLevel.value = "Custom";
-        DOMActiveLevel.setAttribute("level", "Custom");
-        let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
+    $("#profile-sex-select").change( (e) => {
+      const select = e.currentTarget;
+      const DOMSex = document.getElementById("profile-sex");
+      DOMSex.value = select.value;
+      DOMSex.setAttribute("sex", select.value);
+    });
+    $("#profile-activity-select").change( (e) => {
+      const activityLevel = e.currentTarget.value;
+      if (fmtAppGlobals.supportedActivityLevels.indexOf(activityLevel) < 0) { return; }
+      const DOMActiveLevel = document.getElementById("profile-active-level");
+      const DOMActiveLevelMult = document.getElementById("profile-activity-mult");
+      DOMActiveLevel.value = activityLevel;
+      DOMActiveLevel.setAttribute("level", activityLevel);
+      if (activityLevel === "Custom") {
         DOMActiveLevelMult.removeAttribute("readonly");
         DOMActiveLevelMult.classList.remove("d-none");
         DOMActiveLevelMult.focus();
-        });
+      }
+      else {
+        DOMActiveLevelMult.value = fmtAppGlobals.activityLevelsMultipliers[activityLevel];
+        DOMActiveLevelMult.classList.remove("d-none");
+        DOMActiveLevelMult.setAttribute("readonly", "true");
+      }
+    });
     $("#save-profile-details").click( (e) => {
         let onsuccessFn = function(ev) {
             console.debug(`Profile ${fmtAppInstance.currentProfileId} updated successfully`);
