@@ -2170,7 +2170,8 @@ function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
     profile.sex = document.getElementById('profile-sex').getAttribute('sex');
     profile.bodyfat = document.getElementById('profile-bodyfat').value || null;
     profile.activityLevel = document.getElementById('profile-active-level').getAttribute("level");
-    profile.activityMultiplier = document.getElementById('profile-activity-mult').getAttribute("value");
+    profile.activityMultiplier = document.getElementById('profile-activity-mult').value;
+    document.getElementById('profile-activity-mult').setAttribute("readonly", true);
     profile.formula = "Mifflin-St Jeor";
 
     FMTReadProfile(profileId,
@@ -2252,9 +2253,10 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
                     if (!isNaN(profile.bodyfat)) {document.getElementById("profile-bodyfat").value = profile.bodyfat;}
                     document.getElementById("profile-active-level").value = profile.activityLevel;
                     document.getElementById("profile-active-level").setAttribute("level", profile.activityLevel);
-                    document.getElementById("profile-activity-mult").setAttribute("value", profile.activityMultiplier);
-                    document.getElementById("profile-activity-mult").innerHTML = profile.activityMultiplier;
-                    document.getElementById("profile-activity-mult").classList.remove("d-none");
+                    const activityMultiplier = document.getElementById("profile-activity-mult");
+                    activityMultiplier.value = profile.activityMultiplier;
+                    activityMultiplier.setAttribute("readonly", true);
+                    activityMultiplier.classList.remove("d-none");
                     let bmr = Math.round(profile.bmr);
                     let tdee = Math.round(profile.tdee);
                     document.getElementById("profile-bmr").setAttribute("value", bmr);
@@ -4146,8 +4148,7 @@ function prepareEventHandlers() {
         DOMActiveLevel.value = "Sedentary";
         DOMActiveLevel.setAttribute("level", "Sedentary");
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
-        DOMActiveLevelMult.setAttribute("value", 1.2);
-        DOMActiveLevelMult.innerHTML = 1.2;
+        DOMActiveLevelMult.value = 1.2;
         DOMActiveLevelMult.classList.remove("d-none");
         });
     $("#profile-active-level-light").click( (e) => {
@@ -4155,8 +4156,7 @@ function prepareEventHandlers() {
         DOMActiveLevel.value = "Light";
         DOMActiveLevel.setAttribute("level", "Light");
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
-        DOMActiveLevelMult.setAttribute("value", 1.375);
-        DOMActiveLevelMult.innerHTML = 1.375;
+        DOMActiveLevelMult.value = 1.375;
         DOMActiveLevelMult.classList.remove("d-none");
         });
     $("#profile-active-level-mod").click( (e) => {
@@ -4164,8 +4164,7 @@ function prepareEventHandlers() {
         DOMActiveLevel.value = "Moderate";
         DOMActiveLevel.setAttribute("level", "Moderate");
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
-        DOMActiveLevelMult.setAttribute("value", 1.55);
-        DOMActiveLevelMult.innerHTML = 1.55;
+        DOMActiveLevelMult.value = 1.55;
         DOMActiveLevelMult.classList.remove("d-none");
         });
     $("#profile-active-level-high").click( (e) => {
@@ -4173,8 +4172,7 @@ function prepareEventHandlers() {
         DOMActiveLevel.value = "High";
         DOMActiveLevel.setAttribute("level", "High");
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
-        DOMActiveLevelMult.setAttribute("value", 1.725);
-        DOMActiveLevelMult.innerHTML = 1.725;
+        DOMActiveLevelMult.value = 1.725;
         DOMActiveLevelMult.classList.remove("d-none");
         });
     $("#profile-active-level-vhigh").click( (e) => {
@@ -4182,22 +4180,17 @@ function prepareEventHandlers() {
         DOMActiveLevel.value = "Very High";
         DOMActiveLevel.setAttribute("level", "Very High");
         let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
-        DOMActiveLevelMult.setAttribute("value", 1.9);
-        DOMActiveLevelMult.innerHTML = 1.9;
+        DOMActiveLevelMult.value = 1.9;
         DOMActiveLevelMult.classList.remove("d-none");
         });
     $("#profile-active-level-custom").click( (e) => {
-        let mult = prompt("Enter Custom Multiplier:");
-        console.debug(mult);
-        if (!isNaN(mult)) {
-            let DOMActiveLevel = document.getElementById("profile-active-level");
-            DOMActiveLevel.value = "Custom";
-            DOMActiveLevel.setAttribute("level", "Custom");
-            let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
-            DOMActiveLevelMult.setAttribute("value", mult);
-            DOMActiveLevelMult.innerHTML = mult;
-            DOMActiveLevelMult.classList.remove("d-none");
-        }
+        let DOMActiveLevel = document.getElementById("profile-active-level");
+        DOMActiveLevel.value = "Custom";
+        DOMActiveLevel.setAttribute("level", "Custom");
+        let DOMActiveLevelMult = document.getElementById("profile-activity-mult");
+        DOMActiveLevelMult.removeAttribute("readonly");
+        DOMActiveLevelMult.classList.remove("d-none");
+        DOMActiveLevelMult.focus();
         });
     $("#save-profile-details").click( (e) => {
         let onsuccessFn = function(ev) {
