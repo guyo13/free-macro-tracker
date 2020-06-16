@@ -2526,6 +2526,48 @@ function FMTCreateUnitDropdownMenu(baseName, targetDiv, unitsChart, defaultUnitN
         console.warn(`[${_fnName}] - Requested dropdown menu creation with base name ${baseName} in inexisting target Div ID ${targetDivId}`);
     }
 }
+function FMTCreateUnitSelectMenu(baseName, targetDiv, unitsChart, defaultUnitName, readonly, suffix, unitFilerFn) {
+    const _fnName = "FMTCreateUnitSelectMenu";
+    if (!!targetDiv) {
+        let selectId = `${baseName}-unit-select${!!suffix ? `-${suffix}`: ""}`;
+        let select = document.getElementById(selectId);
+        if (!!select) {
+            select.parentElement.removeChild(select);
+        }
+        select = document.createElement("select");
+        //Add Classes
+        select.classList.add("custom-select", "fmt-select");
+        select.setAttribute("id", selectId);
+        if (!readonly) {
+            //Populate options
+            let unitNames = Object.keys(unitsChart);
+            if (isFunction(unitFilerFn)) {
+              unitNames = unitNames.filter(unitFilerFn);
+            }
+            for (let j=0; j<unitNames.length; j++) {
+                let unitName = unitNames[j];
+                let unit = unitsChart[unitName];
+                if (!unit) {
+                  console.warn(`[${_fnName}] - ${unitName} couldn't be found in units chart`);
+                  continue;
+                }
+                let normUnitName = unitName.replace(/ /g, "_");
+                const option = document.createElement("option");
+                option.innerHTML = unit.description;
+                option.setAttribute("value", unitName);
+                select.appendChild(option);
+                select.addEventListener("change", function(ev) {
+                  ev.currentTarget.dispatchEvent(new Event("unitChanged"));
+                });
+            }
+        }
+        targetDiv.appendChild(select);
+        if (!!defaultUnitName && (defaultUnitName) in unitsChart) { select.value = defaultUnitName; }
+    }
+    else {
+        console.warn(`[${_fnName}] - Requested dropdown menu creation with base name ${baseName} in inexisting target Div ID ${targetDivId}`);
+    }
+}
 
 //Functions - UI - Consumables (Food Items, Recipe Items, Meal Entries)
 function FMTCreateNutrientCategoryHeading(category, targetDivID) {
@@ -2750,7 +2792,7 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, ob
     const servingTargetDiv = document.getElementById(servingTargetDivId);
     const unitsChart = fmtAppInstance.unitsChart;
     const readonly = optionsObj.readonly || false;
-    FMTCreateUnitDropdownMenu(servingBaseName, servingTargetDiv, unitsChart, "g", readonly, undefined, undefined);
+    FMTCreateUnitSelectMenu(servingBaseName, servingTargetDiv, unitsChart, "g", readonly, undefined, undefined);
 
     //Validate and Add ID of consumable/entry (food_id, recipe_id, entry_id).
     const saveOrAddBtn = document.getElementById(`${baseScreenID}-save`);
@@ -2790,6 +2832,7 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, ob
     //Create Input fields for Additional Nutrients and attach event listeners to elements passed in optionsObj
     const res = FMTPopulateAdditionalNutrientsInConsumableItemScreen(baseScreenID, readonly, qualifier);
     if (!res) { console.warn(`Failed adding additional nutrients fields to ${baseScreenID}`); }
+    //Attached event listeners if needed
     if (optionsObj.eventListenersObj) {
         for (const elemName in optionsObj.eventListenersObj) {
             const element = document.getElementById(elemName);
@@ -2844,8 +2887,8 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
         servInElem.value = consumableItem[servingProp];
         servInElem.setAttribute("reference_serving", consumableItem[servingProp]);
         servInElem.setAttribute("reference_serving_units", consumableItem.units);
-        const _unitId = `${baseScreenID}-${qualifier}-serving-unit-${consumableItem.units}`;
-        FMTDropdownToggleValue(_unitId, consumableItem.units, {"unit": consumableItem.units}, true);
+        const select = document.getElementById(`${baseScreenID}-${qualifier}-serving-unit-select`);
+        if (select) { select.value = consumableItem.units; }
     }//Else dont touch these fields
     document.getElementById(`${baseScreenID}-${qualifier}-calories`).value = Number(roundedToFixed(consumableItem.nutritionalValue.calories * multiplier));
     document.getElementById(`${baseScreenID}-${qualifier}-proteins`).value = Number(roundedToFixed(consumableItem.nutritionalValue.proteins * multiplier));
@@ -3091,7 +3134,7 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
     consumableObj[nameProp] = document.getElementById(`${baseScreenID}-${qualifier}-name`).value;
     consumableObj[brandProp] = document.getElementById(`${baseScreenID}-${qualifier}-brand`).value;
     consumableObj[servingProp] = document.getElementById(`${baseScreenID}-${qualifier}-serving-input`).value;
-    consumableObj.units = document.getElementById(`${baseScreenID}-${qualifier}-serving-units`).getAttribute("unit");
+    consumableObj.units = document.getElementById(`${baseScreenID}-${qualifier}-serving-unit-select`).value;
     consumableObj.nutritionalValue = {};
     consumableObj.nutritionalValue.calories = document.getElementById(`${baseScreenID}-${qualifier}-calories`).value;
     consumableObj.nutritionalValue.proteins = document.getElementById(`${baseScreenID}-${qualifier}-proteins`).value;
@@ -3139,6 +3182,7 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
             break;
     }
 }
+
 function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier, objectType) {
     let idProp, pageFunction;
     switch (objectType) {
@@ -3160,7 +3204,7 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
     const servingInputField = document.getElementById(`${baseScreenID}-${qualifier}-serving-input`);
     let servingValue = servingInputField.value;
     if (servingValue === "") { servingValue = 0; }
-    let units = document.getElementById(`${baseScreenID}-${qualifier}-serving-units`).getAttribute("unit");
+    let units = document.getElementById(`${baseScreenID}-${qualifier}-serving-unit-select`).value;
     let referenceServing = servingInputField.getAttribute("reference_serving");
     let referenceServingUnits = servingInputField.getAttribute("reference_serving_units");
     const conversionRes = FMTCalculateMultiplier(referenceServing, referenceServingUnits, servingValue, units, fmtAppInstance.unitsChart);
@@ -3182,7 +3226,6 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
         pageFunction(objectId, multiplier, false, servingValue, units);
     }
 }
-
 //Functions - UI - Overview
 function FMTCreateMacroProgressBar(c, p, f, inPercent, className) {
   className = className || "fmt-macros-dist-progress-bar";
@@ -3966,7 +4009,7 @@ var pageController = {
         //Clear Screen if needed (Basically anytime except when updating values on serving change)
         if (clear) {
             FMTClearViewConsumableItemScreen(screenID, qualifier, objectType);
-            const eventListenersObj = { [`${screenID}-${qualifier}-serving-units`] :
+            const eventListenersObj = { [`${screenID}-${qualifier}-serving-unit-select`] :
                                         {"unitChanged": function(event) { FMTUpdateConsumableValuesOnServingChange(event, screenID, qualifier, objectType); }, }
                                      };
             const optionsObj = {"consumableId": foodId, "eventListenersObj": eventListenersObj };
@@ -4082,7 +4125,7 @@ var pageController = {
             }
             //Clear if requested (if arrived from overview. if on serving value change no.)
             if (clear) {
-                const eventListenersObj = {[`${screenID}-${qualifier}-serving-units`]:
+                const eventListenersObj = {[`${screenID}-${qualifier}-serving-unit-select`]:
                                           {"unitChanged": function(event) { FMTUpdateConsumableValuesOnServingChange(event, screenID, qualifier, objectType); },}
                                          };
                 FMTClearConsumableItemScreen(screenID, qualifier, objectType);
