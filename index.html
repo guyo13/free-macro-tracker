@@ -183,7 +183,7 @@
                 <div class="col-12 col-lg-8 mb-1">
                     <div class="form__group">
                       <input id="profile-bodyfat" type="number" class="form__field fmt-input-field" placeholder="(Optional)"/>
-                      <label for="profile-bodyfat" class="form__label">Body Fat %</label>
+                      <label for="profile-bodyfat" class="form__label">Body Fat % (Optional)</label>
                     </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
@@ -267,21 +267,36 @@
                   <div class="form__group">
                     <input id="profile-macro-protein" type="number" class="form__field fmt-input-field" placeholder="Protein" required />
                     <label for="profile-macro-protein" class="form__label">Protein</label>
-                    <span id="profile-macro-protein-grams" class=""></span>
+                    <select id="profile-macro-protein-units-select" name="profile-macro-protein-units-select" class="custom-select fmt-select-sm">
+                      <option value="%" selected="selected">%</option>
+                      <option value="g">g</option>
+                      <option value="kCal">kCal</option>
+                    </select>
+                    <span id="profile-macro-protein-result" class="form__field fmt-select-sm"></span>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
                   <div class="form__group">
                     <input id="profile-macro-carb" type="number" class="form__field fmt-input-field" placeholder="Carbs" required />
                     <label for="profile-macro-carb" class="form__label">Carbs</label>
-                    <span id="profile-macro-carb-grams" class=""></span>
+                    <select id="profile-macro-carb-units-select" name="profile-macro-carb-units-select" class="custom-select fmt-select-sm">
+                      <option value="%" selected="selected">%</option>
+                      <option value="g">g</option>
+                      <option value="kCal">kCal</option>
+                    </select>
+                    <span id="profile-macro-carb-result" class="form__field fmt-select-sm"></span>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
                   <div class="form__group">
                     <input id="profile-macro-fat" type="number" class="form__field fmt-input-field" placeholder="Fat" required />
                     <label for="profile-macro-fat" class="form__label">Fat</label>
-                    <span id="profile-macro-fat-grams" class=""></span>
+                    <select id="profile-macro-fat-units-select" name="profile-macro-fat-units-select" class="custom-select fmt-select-sm">
+                      <option value="%" selected="selected">%</option>
+                      <option value="g">g</option>
+                      <option value="kCal">kCal</option>
+                    </select>
+                    <span id="profile-macro-fat-result" class="form__field fmt-select-sm"></span>
                   </div>
                 </div>
 

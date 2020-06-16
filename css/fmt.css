@@ -302,6 +302,13 @@ button {
 .fmt-select:focus {
   border-color: #11998e!important;
 }
+.fmt-select-sm {
+  width: 15%!important;
+  box-shadow: none!important;
+}
+.fmt-select-sm:focus {
+  border-color: #11998e!important;
+}
 .fmt-font-white-bold {
     color: white;
     font-weight: bold;
