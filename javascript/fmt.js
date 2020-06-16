@@ -2174,23 +2174,26 @@ function FMTConvertMacro(macroName, unit, value, calories) {
     switch(unit) {
       case "%":
         if (isPercent(value)) {
-          percent = value;
+          percent = roundedToFixed(value, fmtAppInstance.defaultRoundingPrecision, true);
           if (!!calories) {
-            kcal = roundedToFixed(calories * percent / 100, 0, true);
-            gram = roundedToFixed(kcal / factor, 0, true);
+            kcal = calories * percent / 100;
+            gram = kcal / factor;
+            kcal = Math.round(kcal);
+            gram = Math.round(gram);
           }
         }
       break;
       case "g":
-        gram = value;
-        kcal = roundedToFixed(gram * factor, 0, true);
+        gram = Math.round(value);
+        kcal = gram * factor;
         if (!!calories && calories > 0) {
           percent = roundedToFixed(kcal / calories * 100, fmtAppInstance.defaultRoundingPrecision, true);
         }
+        kcal = Math.round(kcal);
       break;
       case "kCal":
-        kcal = value;
-        gram = roundedToFixed(kcal / factor, 0, true);
+        kcal = Math.round(value);
+        gram = Math.round(kcal / factor);
         if (!!calories && calories > 0) {
           percent = roundedToFixed(kcal / calories * 100, fmtAppInstance.defaultRoundingPrecision, true);
         }
@@ -2341,11 +2344,17 @@ function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
         return onerrorFn(msg);
     }
     document.getElementById("profile-alerts").innerHTML = "";
-    let macroSplit = {};
+    const macroSplit = {};
+    const proteinVal = document.getElementById("profile-macro-protein").value;
+    const carbVal = document.getElementById("profile-macro-carb").value;
+    const fatVal = document.getElementById("profile-macro-fat").value;
+    const pSelect = document.getElementById("profile-macro-protein-units-select");
+    const cSelect = document.getElementById("profile-macro-carb-units-select");
+    const fSelect = document.getElementById("profile-macro-fat-units-select");
     macroSplit.Calories = document.getElementById("profile-daily-calories").value;
-    macroSplit.Protein = document.getElementById("profile-macro-protein").value;
-    macroSplit.Carbohydrate = document.getElementById("profile-macro-carb").value;
-    macroSplit.Fat = document.getElementById("profile-macro-fat").value;
+    macroSplit.Protein = FMTConvertMacro("protein", pSelect.value, proteinVal, macroSplit.Calories)["%"];
+    macroSplit.Carbohydrate = FMTConvertMacro("carbohydrate", cSelect.value, carbVal, macroSplit.Calories)["%"];
+    macroSplit.Fat = FMTConvertMacro("fat", fSelect.value, fatVal, macroSplit.Calories)["%"];
     FMTReadProfile(profileId,
                 function(e) {
                     let profile = e.target.result;
@@ -4293,6 +4302,26 @@ function prepareEventHandlers() {
     $("#profile-macro-fat-units-select").change( (e) => {
       FMTProfileSelectMacroUnits(e, "fat", "profile-macro-fat", "profile-macro-fat-result", "profile-daily-calories");
       FMTProfileStorePreviousSelection(e);
+    });
+    $("#profile-macro-protein").keyup( (e) => {
+      const _e = { "currentTarget": document.getElementById("profile-macro-protein-units-select") };
+      FMTProfileSelectMacroUnits(_e, "protein", "profile-macro-protein", "profile-macro-protein-result", "profile-daily-calories");
+    });
+    $("#profile-macro-carb").keyup( (e) => {
+      const _e = { "currentTarget": document.getElementById("profile-macro-carb-units-select") };
+      FMTProfileSelectMacroUnits(_e, "carbohydrate", "profile-macro-carb", "profile-macro-carb-result", "profile-daily-calories");
+    });
+    $("#profile-macro-fat").keyup( (e) => {
+      const _e = { "currentTarget": document.getElementById("profile-macro-fat-units-select") };
+      FMTProfileSelectMacroUnits(_e, "fat", "profile-macro-fat", "profile-macro-fat-result", "profile-daily-calories");
+    });
+    $("#profile-daily-calories").keyup( (e) => {
+      const _e = { "currentTarget": document.getElementById("profile-macro-protein-units-select") };
+      FMTProfileSelectMacroUnits(_e, "protein", "profile-macro-protein", "profile-macro-protein-result", "profile-daily-calories");
+      _e.currentTarget = document.getElementById("profile-macro-carb-units-select");
+      FMTProfileSelectMacroUnits(_e, "carbohydrate", "profile-macro-carb", "profile-macro-carb-result", "profile-daily-calories");
+      _e.currentTarget = document.getElementById("profile-macro-fat-units-select");
+      FMTProfileSelectMacroUnits(_e, "fat", "profile-macro-fat", "profile-macro-fat-result", "profile-daily-calories");
     });
     $("#save-profile-details").click( (e) => {
         let onsuccessFn = function(ev) {
