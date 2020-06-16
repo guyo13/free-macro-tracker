@@ -2399,6 +2399,7 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
                     document.getElementById("profile-height-units").value = profile.heightUnits;
                     document.getElementById("profile-age").value = profile.age;
                     document.getElementById("profile-sex").value = profile.sex;
+                    document.getElementById("profile-sex-select").value = profile.sex;
                     document.getElementById("profile-sex").setAttribute("sex", profile.sex);
                     if (!isNaN(profile.bodyfat)) {document.getElementById("profile-bodyfat").value = profile.bodyfat;}
                     document.getElementById("profile-active-level").value = profile.activityLevel;
