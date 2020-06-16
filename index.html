@@ -348,59 +348,53 @@
                 </div>
             </div>
             <div id="add-food-screen-content" class="row justify-content-center fmt-max-height60">
-                <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend row flex-grow-1 fmt-food-input-field">
-                    <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Description</span>
-                    <input id="add-food-screen-food-name" type="text" class="col-4 col-lg-3 form-control" placeholder="(Required)" aria-label="Description" aria-describedby="basic-addon2">
+              <div class="col-12 col-lg-8 mb-1">
+                <div class="form__group">
+                  <input type="text" class="form__field fmt-input-field" placeholder="Item Name" id='add-food-screen-food-name' required />
+                  <label for="add-food-screen-food-name" class="form__label">Item Name</label>
+                </div>
+              </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="text" class="form__field fmt-input-field" placeholder="Item Brand" id='add-food-screen-food-brand' required />
+                    <label for="add-food-screen-food-brand" class="form__label">Brand</label>
                   </div>
                 </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend row flex-grow-1 fmt-food-input-field">
-                    <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Brand</span>
-                    <input id="add-food-screen-food-brand" type="text" class="col-4 col-lg-3 form-control" placeholder="(Optional)" aria-label="Brand" aria-describedby="basic-addon2">
-                  </div>
-                </div>
-                <div class="w-100"></div>
+
                 <div class="input-group col-12 col-lg-8 mb-1">
                     <div id="add-food-screen-food-serving" class="input-group-prepend row flex-grow-1 fmt-food-input-field">
                         <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Serving</span>
-                        <input id="add-food-screen-food-serving-input" type="text" class="col-4 col-lg-3 form-control" placeholder="(Required)" aria-label="Brand" aria-describedby="basic-addon2">
+                        <input id="add-food-screen-food-serving-input" type="text" class="col-4 col-lg-3 form-control" placeholder="(Required)" aria-label="Serving" aria-describedby="basic-addon2">
                     </div>
                 </div>
                 <div class="w-100"></div>
                 <div class="col-12 col-lg-8 mb-1">
                     <h4 class="fmt-font-2">Nutritional Facts</h4>
                 </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend row flex-grow-1 fmt-food-input-field">
-                    <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Calories</span>
-                    <input id="add-food-screen-food-calories" type="text" class="col-4 col-lg-3 form-control" placeholder="(Kcal)" aria-label="Calories" aria-describedby="basic-addon2">
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Calories" id='add-food-screen-food-calories' required />
+                    <label for="add-food-screen-food-calories" class="form__label">Calories</label>
                   </div>
                 </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend row flex-grow-1 fmt-food-input-field">
-                    <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Proteins</span>
-                    <input id="add-food-screen-food-proteins" type="text" class="col-4 col-lg-3 form-control" placeholder="(g)" aria-label="Proteins" aria-describedby="basic-addon2">
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Proteins" id='add-food-screen-food-proteins' required />
+                    <label for="add-food-screen-food-proteins" class="form__label">Proteins</label>
                   </div>
                 </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend row flex-grow-1 fmt-food-input-field">
-                    <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Carbohydrates</span>
-                    <input id="add-food-screen-food-carbohydrates" type="text" class="col-4 col-lg-3 form-control" placeholder="(g)" aria-label="Carbohydrates" aria-describedby="basic-addon2">
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Carbohydrates" id='add-food-screen-food-carbohydrates' required />
+                    <label for="add-food-screen-food-carbohydrates" class="form__label">Carbohydrates</label>
                   </div>
                 </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend row flex-grow-1 fmt-food-input-field">
-                    <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Fats</span>
-                    <input id="add-food-screen-food-fats" type="text" class="col-4 col-lg-3 form-control" placeholder="(g)" aria-label="Fats" aria-describedby="basic-addon2">
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Fats" id='add-food-screen-food-fats' required />
+                    <label for="add-food-screen-food-fats" class="form__label">Fats</label>
                   </div>
                 </div>
-                <div class="w-100"></div>
                 <div id="add-food-screen-food-additional" class="d-none col-12 col-lg-8">
                 </div>
             </div>
@@ -428,59 +422,54 @@
                 </div>
             </div>
             <div id="edit-food-screen-content" class="row justify-content-center fmt-max-height60">
-                <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend row flex-grow-1 fmt-food-input-field">
-                    <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Description</span>
-                    <input id="edit-food-screen-food-name" type="text" class="col-4 col-lg-3 form-control" placeholder="(Required)" aria-label="Description" aria-describedby="basic-addon2">
+
+              <div class="col-12 col-lg-8 mb-1">
+                <div class="form__group">
+                  <input type="text" class="form__field fmt-input-field" placeholder="Item Name" id='edit-food-screen-food-name' required />
+                  <label for="edit-food-screen-food-name" class="form__label">Item Name</label>
+                </div>
+              </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="text" class="form__field fmt-input-field" placeholder="Item Brand" id='edit-food-screen-food-brand' required />
+                    <label for="edit-food-screen-food-brand" class="form__label">Brand</label>
                   </div>
                 </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend row flex-grow-1 fmt-food-input-field">
-                    <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Brand</span>
-                    <input id="edit-food-screen-food-brand" type="text" class="col-4 col-lg-3 form-control" placeholder="(Optional)" aria-label="Brand" aria-describedby="basic-addon2">
-                  </div>
-                </div>
-                <div class="w-100"></div>
+
                 <div class="input-group col-12 col-lg-8 mb-1">
                     <div id="edit-food-screen-food-serving" class="row flex-grow-1 input-group-prepend fmt-food-input-field">
                         <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Serving</span>
-                        <input id="edit-food-screen-food-serving-input" type="text" class="col-4 col-lg-3 form-control" placeholder="(Required)" aria-label="Brand" aria-describedby="basic-addon2">
+                        <input id="edit-food-screen-food-serving-input" type="text" class="col-4 col-lg-3 form-control" placeholder="(Required)" aria-label="Serving" aria-describedby="basic-addon2">
                     </div>
                 </div>
-                <div class="w-100"></div>
+
                 <div class="col-12 col-lg-8 mb-1">
                     <h4 class="fmt-font-2">Nutritional Facts</h4>
                 </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend row flex-grow-1 fmt-food-input-field">
-                    <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Calories</span>
-                    <input id="edit-food-screen-food-calories" type="text" class="col-4 col-lg-3 form-control" placeholder="Calories (Kcal)" aria-label="Calories" aria-describedby="basic-addon2">
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Calories" id='edit-food-screen-food-calories' required />
+                    <label for="edit-food-screen-food-calories" class="form__label">Calories</label>
                   </div>
                 </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend row flex-grow-1 fmt-food-input-field">
-                    <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Proteins</span>
-                    <input id="edit-food-screen-food-proteins" type="text" class="col-4 col-lg-3 form-control" placeholder="Proteins (g)" aria-label="Proteins" aria-describedby="basic-addon2">
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Proteins" id='edit-food-screen-food-proteins' required />
+                    <label for="edit-food-screen-food-proteins" class="form__label">Proteins</label>
                   </div>
                 </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend row flex-grow-1 fmt-food-input-field">
-                    <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Carbohydrates</span>
-                    <input id="edit-food-screen-food-carbohydrates" type="text" class="col-4 col-lg-3 form-control" placeholder="Carbohydrates (g)" aria-label="Carbohydrates" aria-describedby="basic-addon2">
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Carbohydrates" id='edit-food-screen-food-carbohydrates' required />
+                    <label for="edit-food-screen-food-carbohydrates" class="form__label">Carbohydrates</label>
                   </div>
                 </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-8 mb-1">
-                  <div class="input-group-prepend row flex-grow-1 fmt-food-input-field">
-                    <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Fats</span>
-                    <input id="edit-food-screen-food-fats" type="text" class="col-4 col-lg-3 form-control" placeholder="Fats (g)" aria-label="Fats" aria-describedby="basic-addon2">
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Fats" id='edit-food-screen-food-fats' required />
+                    <label for="edit-food-screen-food-fats" class="form__label">Fats</label>
                   </div>
                 </div>
-                <div class="w-100"></div>
                 <div id="edit-food-screen-food-additional" class="d-none col-12 col-lg-8">
                 </div>
             </div>
@@ -551,7 +540,7 @@
                 <div class="input-group col-12 col-lg-8 mb-1">
                     <div id="view-food-screen-food-serving" class="input-group-prepend row flex-grow-1 fmt-food-input-field">
                         <span class="col-5 col-lg-2 input-group-text fmt-outline-success">Serving</span>
-                        <input id="view-food-screen-food-serving-input" type="text" class="col-4 col-lg-3 form-control" placeholder="Food Serving" aria-label="Brand" aria-describedby="basic-addon2">
+                        <input id="view-food-screen-food-serving-input" type="text" class="col-4 col-lg-3 form-control" placeholder="Food Serving" aria-label="Serving" aria-describedby="basic-addon2">
                     </div>
                 </div>
                 <div class="w-100"></div>
@@ -642,19 +631,19 @@
             <div id="edit-meal-entry-screen-content" class="row justify-content-center fmt-max-height60">
             <div class="col-12 col-lg-8 mb-1">
               <div class="form__group">
-                <input type="text" class="form__field fmt-input-field" placeholder="Consumable Name" id='edit-meal-entry-screen-consumable-name' required />
+                <input type="text" class="form__field fmt-input-field" placeholder="Consumable Name" id='edit-meal-entry-screen-consumable-name' required readonly="true" />
                 <label for="edit-meal-entry-screen-consumable-name" class="form__label">Name</label>
               </div>
             </div>
             <div class="col-12 col-lg-8 mb-1">
               <div class="form__group">
-                <input type="text" class="form__field fmt-input-field" placeholder="Consumable Brand" id='edit-meal-entry-screen-consumable-brand' required />
+                <input type="text" class="form__field fmt-input-field" placeholder="Consumable Brand" id='edit-meal-entry-screen-consumable-brand' required readonly="true" />
                 <label for="edit-meal-entry-screen-consumable-brand" class="form__label">Brand</label>
               </div>
             </div>
             <div class="col-12 col-lg-8 mb-1">
               <div class="form__group">
-                <input type="text" class="form__field fmt-input-field" placeholder="Consumable Type" id='edit-meal-entry-screen-consumable-type' required />
+                <input type="text" class="form__field fmt-input-field" placeholder="Consumable Type" id='edit-meal-entry-screen-consumable-type' required readonly="true" />
                 <label for="edit-meal-entry-screen-consumable-type" class="form__label">Type</label>
               </div>
             </div>
