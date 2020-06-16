@@ -2803,7 +2803,7 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, ob
     return result;
 }
 function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableItem, qualifier, objectType, multiplier,
-                                                      readonly, focusDivId, currentServingValue, currentServingUnits) {
+                                                      readonly, focusDivId, currentServingValue, currentServingUnits, headingPrefix) {
     //TODO in this call flow need to merge instance unit chart and consumable additional nutrients that can repeat themselves up to 3 times
     if (multiplier !== 0) {
         multiplier = multiplier || 1;
@@ -2836,6 +2836,7 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
             servingProp = "referenceServing";
             break;
     }
+    document.getElementById(`${baseScreenID}-heading`).innerHTML = `${!!headingPrefix ? `${headingPrefix} - ` : ""}${consumableItem[nameProp]}`;
     document.getElementById(`${baseScreenID}-${qualifier}-name`).value = consumableItem[nameProp];
     document.getElementById(`${baseScreenID}-${qualifier}-brand`).value = consumableItem[brandProp] || "";
     if (!isNumber(currentServingValue) || !(currentServingUnits in fmtAppInstance.unitsChart)) {
@@ -3003,6 +3004,10 @@ function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
     }
 
     document.getElementById(`${baseScreenID}-alerts`).innerHTML = "";
+    const _heading = document.getElementById(`${baseScreenID}-heading`);
+    if (_heading) {
+      _heading.innerHTML = "";
+    }
     document.getElementById(`${baseScreenID}-${qualifier}-name`).value = "";
     document.getElementById(`${baseScreenID}-${qualifier}-brand`).value = "";
     document.getElementById(`${baseScreenID}-${qualifier}-calories`).value = "";
@@ -3926,7 +3931,7 @@ var pageController = {
             }
             //Load values and open screen
             const food = validateResult.food;
-            FMTPopulateSavedValuesInConsumableItemScreen(screenID, food, qualifier, objectType, 1, false, null, undefined, undefined);
+            FMTPopulateSavedValuesInConsumableItemScreen(screenID, food, qualifier, objectType, 1, false, null, undefined, undefined, "Editing");
             pageController.openDynamicScreen(screenID);
         },
                     //OnError
@@ -4005,7 +4010,7 @@ var pageController = {
             }
             const food = validateResult.food;
             //Update and open Screen
-            FMTPopulateSavedValuesInConsumableItemScreen(screenID, food, qualifier, objectType, multiplier, true, `${screenID}-${qualifier}-serving-input`, currentServingValue, currentServingUnits);
+            FMTPopulateSavedValuesInConsumableItemScreen(screenID, food, qualifier, objectType, multiplier, true, `${screenID}-${qualifier}-serving-input`, currentServingValue, currentServingUnits, "Viewing");
             pageController.openDynamicScreen(screenID);
         },
                     //OnError
@@ -4092,7 +4097,7 @@ var pageController = {
                 updateBtn.setAttribute("profile_id", validateResult.mealEntry.profile_id);
                 updateBtn.setAttribute("consumable_id", validateResult.mealEntry.consumable_id);
             }
-            FMTPopulateSavedValuesInConsumableItemScreen(screenID, validateResult.mealEntry, qualifier, objectType, multiplier, true, focusDivID, currentServingValue, currentServingUnits);
+            FMTPopulateSavedValuesInConsumableItemScreen(screenID, validateResult.mealEntry, qualifier, objectType, multiplier, true, focusDivID, currentServingValue, currentServingUnits, "Editing Meal Item");
             pageController.openDynamicScreen(screenID);
         },
                          //OnError

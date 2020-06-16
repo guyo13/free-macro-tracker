@@ -250,13 +250,13 @@ button {
 @media screen and (max-width: 768px) {
     .fmt-font-2 {
         font-size: 1.3rem;
-        font-weight: 400;
+        font-weight: 300;
     }
 }
 @media screen and (max-width: 576px) {
     .fmt-font-2 {
         font-size: 1.2rem;
-        font-weight: 400;
+        font-weight: 300;
     }
 }
 .fmt-font-3 {
@@ -266,13 +266,13 @@ button {
 @media screen and (max-width: 768px) {
     .fmt-font-3 {
         font-size: 1.6rem;
-        font-weight: 400;
+        font-weight: 300;
     }
 }
 @media screen and (max-width: 576px) {
     .fmt-font-3 {
         font-size: 1.5rem;
-        font-weight: 400;
+        font-weight: 300;
     }
 }
 .fmt-food-input-field {
