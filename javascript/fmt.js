@@ -4304,16 +4304,22 @@ function prepareEventHandlers() {
       FMTProfileStorePreviousSelection(e);
     });
     $("#profile-macro-protein").keyup( (e) => {
-      const _e = { "currentTarget": document.getElementById("profile-macro-protein-units-select") };
-      FMTProfileSelectMacroUnits(_e, "protein", "profile-macro-protein", "profile-macro-protein-result", "profile-daily-calories");
+      if (isNumber(e.currentTarget.value) && !e.currentTarget.value.endsWith(".") ) {
+        const _e = { "currentTarget": document.getElementById("profile-macro-protein-units-select") };
+        FMTProfileSelectMacroUnits(_e, "protein", "profile-macro-protein", "profile-macro-protein-result", "profile-daily-calories");
+      }
     });
     $("#profile-macro-carb").keyup( (e) => {
-      const _e = { "currentTarget": document.getElementById("profile-macro-carb-units-select") };
-      FMTProfileSelectMacroUnits(_e, "carbohydrate", "profile-macro-carb", "profile-macro-carb-result", "profile-daily-calories");
+      if (isNumber(e.currentTarget.value) && !e.currentTarget.value.endsWith(".")) {
+        const _e = { "currentTarget": document.getElementById("profile-macro-carb-units-select") };
+        FMTProfileSelectMacroUnits(_e, "carbohydrate", "profile-macro-carb", "profile-macro-carb-result", "profile-daily-calories");
+      }
     });
     $("#profile-macro-fat").keyup( (e) => {
-      const _e = { "currentTarget": document.getElementById("profile-macro-fat-units-select") };
-      FMTProfileSelectMacroUnits(_e, "fat", "profile-macro-fat", "profile-macro-fat-result", "profile-daily-calories");
+      if (isNumber(e.currentTarget.value) && !e.currentTarget.value.endsWith(".")) {
+        const _e = { "currentTarget": document.getElementById("profile-macro-fat-units-select") };
+        FMTProfileSelectMacroUnits(_e, "fat", "profile-macro-fat", "profile-macro-fat-result", "profile-daily-calories");
+      }
     });
     $("#profile-daily-calories").keyup( (e) => {
       const _e = { "currentTarget": document.getElementById("profile-macro-protein-units-select") };
