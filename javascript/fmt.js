@@ -3826,6 +3826,14 @@ var pageController = {
                             document.getElementById("foods-alerts").innerHTML = "";
                             }
                        };
+        //Handle Tabs
+        document.getElementById("food-menu-my-recipes").classList.remove("fmt-tab-li-active");
+        document.getElementById("food-menu-my-foods").classList.add("fmt-tab-li-active");
+        //Hide Recipes and show foods
+        document.getElementById("foods-recipe-search-cont").classList.add("d-none");
+        document.getElementById("foods-recipe-table-cont").classList.add("d-none");
+        document.getElementById("foods-food-search-cont").classList.remove("d-none");
+        document.getElementById("foods-food-table-cont").classList.remove("d-none");
         FMTDisplayFoodsTable("foods", onsuccessFn, onerrorFn, events);
     },
     showSettings: function () {pageController.setTabActive("goto-settings");},
@@ -4039,6 +4047,9 @@ var pageController = {
     openAddToMealDynamicScreen: function(mealIdentifierObj) {
         const screenID = "add-to-meal-screen";
         pageController.openDynamicScreen(screenID);
+        if (!!mealIdentifierObj.meal_name) {
+            document.getElementById("add-to-meal-screen-heading").innerHTML = `Add to ${mealIdentifierObj.meal_name}`;
+        }
         let onsuccessFn = function() {
             console.debug("[openAddToMealDynamicScreen] - Foods loaded successfully");
         };
@@ -4056,6 +4067,7 @@ var pageController = {
     },
     closeAddToMealDynamicScreen: function() {
         pageController.closeDynamicScreen("add-to-meal-screen");
+        document.getElementById("add-to-meal-screen-heading").innerHTML = "Add to Meal";
     },
     openEditMealEntryDynamicScreen: function(entry_id, multiplier, clear, currentServingValue, currentServingUnits) {
         //Sync Tasks - Argument validation and constants definition
