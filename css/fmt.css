@@ -392,12 +392,12 @@ button {
 }
 .fmt-loading-screen-font {
     font-size: 4.5rem;
-    color: white;
+    color: var(--fmt-dark-green);;
     letter-spacing: -0.2rem;
 }
 .fmt-loading-screen-font-responsive {
     font-size: 4.5rem;
-    color: white;
+    color: var(--fmt-dark-green);;
     letter-spacing: -0.2rem;
 }
 @media screen and (max-width: 576px) {

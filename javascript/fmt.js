@@ -4126,13 +4126,17 @@ var pageController = {
     },
     showLoadingScreen: function() {
         const loadingScreen = document.getElementById("fmt-app-load-overlay");
-        loadingScreen.classList.remove("d-none");
+        loadingScreen.classList.remove("d-none", "fmt-faded", "fmt-fadeout");
         loadingScreen.style.zIndex = fmtAppGlobals.maxDynamicScreens + 3;
     },
     closeLoadingScreen: function() {
         const loadingScreen = document.getElementById("fmt-app-load-overlay");
-        loadingScreen.classList.add("d-none");
-        loadingScreen.style.zIndex = -3;
+        loadingScreen.classList.add("fmt-fadeout");
+        setTimeout( ()=> {
+          loadingScreen.classList.add("d-none", "fmt-faded");
+          loadingScreen.style.zIndex = -3;
+        }, 1500);
+
     },
     showFirstTimeScreen: function() {
         const overlay = document.getElementById("fmt-app-first-time-overlay");
