@@ -13,6 +13,8 @@ fmtAppInstance.defaultRoundingPrecision = 1;
 fmtAppInstance.nutrientRoundingPrecision = 4;
 fmtAppInstance.allowForeignNutrients = true;
 fmtAppInstance.mealEntryMacroBarInPercent = false;
+//TODO - Default meals
+fmtAppInstance.defaultMeals = ["Breakfast", "Early Snack", "Lunch", "Late Snack", "Dinner"];
 //Instance - State - Page
 fmtAppInstance.pageState = {};
 fmtAppInstance.pageState.activeTab = null;
@@ -1615,7 +1617,6 @@ function FMTValidateRecipeObject(recipeObj, unitsChart) {
         result.error = error;
         return error;
       }
-      //TODO - revise if better to push item
       recipe.ingredients.push(validateIngredient.food);
       nutriValuesArr.push(validateIngredient.food.nutritionalValue);
     });
@@ -2721,10 +2722,8 @@ function FMTPopulateAdditionalNutrientsInConsumableItemScreen(baseScreenID, read
     return true;
 }
 function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, objectType, mealIdentifierObj, createAdditionalNutrients) {
-  //TODO review if needed date and mealName -
   //optionsObj {consumableId(int),readonly(bool),eventListenersObj}
   //evenListenerObj{"DOM ID1": {"event": fn},...,"DOM IDN": {"event": fn}}
-  //TODO - Add option to NOT create Additional Nutrients (Add and Edit food/recipe only)
     const result = {};
     if (fmtAppGlobals.inputScreensQualifiers.indexOf(qualifier) < 0 ) {
       result.error = `Invalid qualifier ${qualifier}`;
@@ -2920,7 +2919,7 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
                   select.value = nutrient.unit;
                 }
                 else {
-                  //TODO - Lazy Load inexisting nutrients/categories based on APP settings
+                  //TODO - Review if needed to Lazy Load inexisting nutrients/categories based on APP settings
                   console.warn(`[${_funcName}] - Consumable (${consumableItem}), could not find DOM element "${inputElementId}"`);
                 }
             }
@@ -4212,8 +4211,6 @@ function FMTLoadProfile(profile_id, onloadedFn, onNoProfileFn) {
     FMTReadProfile(fmtAppInstance.currentProfileId,
                    function(e) {
         let profile = e.target.result;
-        //TODO - Default meals
-        fmtAppInstance.defaultMeals = ["Breakfast", "Early Snack", "Lunch", "Late Snack", "Dinner"];
         if (!!profile) {
             fmtAppInstance.currentProfile = profile;
             if (onloadedFn) { onloadedFn(); }
@@ -4494,7 +4491,7 @@ function prepareEventHandlers() {
                         const foodsTableBodyID = delBtn.getAttribute("foods-table-body-id");
                         const foodsTableBodyNode = document.getElementById(foodsTableBodyID);
                         if (!!foodsTableBodyNode) {
-                            console.debug(`Firing onFoodEdited event to ${foodsTableBodyID}`);
+                            console.debug(`Firing onFoodDeleted event to ${foodsTableBodyID}`);
                             const event = new Event("onFoodDeleted");
                             event.food_id = foodId;
                             foodsTableBodyNode.dispatchEvent(event);
@@ -4506,7 +4503,6 @@ function prepareEventHandlers() {
                     pageController.closeViewFoodDynamicScreen();
                     const alertDivID = pageController.getAlertDivId();
                     FMTShowAlert(alertDivID, "success", msg, fmtAppGlobals.defaultAlertScroll);
-                    //TODO - pass event food deleted so that underlying screen/tab can update it's foods table
                 },
                               function(e) {
                     pageController.closeEditFoodDynamicScreen();
