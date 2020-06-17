@@ -2553,6 +2553,7 @@ function FMTCreateUnitSelectMenu(baseName, targetDiv, unitsChart, defaultUnitNam
   //TODO Pass boolean parameter 'firesEvent'
     const _fnName = "FMTCreateUnitSelectMenu";
     if (!!targetDiv) {
+      //FIXME - bring this inline with how it is in create additional nutrients input where suffix is actually prefix
       let selectId = `${baseName}-unit-select${!!suffix ? `-${suffix}`: ""}`;
       let select = document.getElementById(selectId);
       if (!!select) {
@@ -3172,26 +3173,32 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
     consumableObj.nutritionalValue.proteins = document.getElementById(`${baseScreenID}-${qualifier}-proteins`).value;
     consumableObj.nutritionalValue.carbohydrates = document.getElementById(`${baseScreenID}-${qualifier}-carbohydrates`).value;
     consumableObj.nutritionalValue.fats = document.getElementById(`${baseScreenID}-${qualifier}-fats`).value;
-    consumableObj.nutritionalValue.additionalNutrients = {};
-    const baseID = `${baseScreenID}-${qualifier}-addi`;
-    for (const category in fmtAppInstance.additionalNutrients) {
-        const baseCatID = `${baseID}-${category.replace(/ /g, "_")}`;
-        const nutrientsInCat = fmtAppInstance.additionalNutrients[category];
-        if (Array.isArray(nutrientsInCat) && nutrientsInCat.length > 0) {
-            let addNutri = [];
-            for (const i in nutrientsInCat) {
-                const nutriObj = nutrientsInCat[i];
-                const baseNutriId = `${baseCatID}-${nutriObj.name.replace(/ /g, "_")}`;
-                const inputElemId = `${baseNutriId}-input`;
-                const unitElemId = `${baseNutriId}-unit-select`;
-                const nutriUserInput = document.getElementById(inputElemId).value;
-                if (nutriUserInput == null || nutriUserInput === "") { continue; }
-                const nutriUserUnit = document.getElementById(unitElemId).value;
-                addNutri.push({"name": nutriObj.name, "amount": nutriUserInput, "unit": nutriUserUnit});
-            }
-            if (addNutri.length > 0) { consumableObj.nutritionalValue.additionalNutrients[category] = addNutri; }
+
+    const screenAdditionalNutrients = {};
+    const additionalNutriDiv = document.getElementById(`${baseScreenID}-${qualifier}-additional`);
+    const addiNutrients = additionalNutriDiv.getElementsByClassName("fmt-add-nutri");
+    for (let k=0; k<addiNutrients.length; k++) {
+        const _field = addiNutrients[k];
+        if (isNumber(_field.value) && Number(_field.value) > 0) {
+          const amount = Number(_field.value);
+          const category = _field.getAttribute("nutrient-category");
+          const name = _field.getAttribute("nutrient-name");
+          const inputFieldId = _field.getAttribute("id");
+          //Get the select element ID based on input's ID - 6 last characters ("-input")
+          const selectId = `${inputFieldId.substring(0, inputFieldId.length-6)}-unit-select`;
+          const select = document.getElementById(selectId);
+          if (!select) {
+            //TODO increase error count
+            console.error(`[${_funcName}] - Failed finding select element at id: ${selectId}`);
+            continue;
+          }
+          if ( !Array.isArray(screenAdditionalNutrients[category]) ) {
+            screenAdditionalNutrients[category] = [];
+          }
+          screenAdditionalNutrients[category].push({"name": name, "amount": amount, "unit": select.value});
         }
     }
+    consumableObj.nutritionalValue.additionalNutrients = screenAdditionalNutrients;
     switch(action) {
             //FIXME - add and edit only working for Food Item object.
             //either remove them and use get-object only or implement for other consumable types
@@ -4639,7 +4646,7 @@ function prepareEventHandlers() {
             || !mealIdentifierObj.meal_day
             || !mealIdentifierObj.meal_name) {
             document.getElementById("view-food-screen-add-to-meal").classList.remove("d-none");
-            FMTShowAlert("view-food-screen-alerts", "primary", "Please fill Year, Month, Day and Meal Name of the meal you wish to add to");
+            FMTShowAlert("view-food-screen-alerts", "primary", "Please enter the Year, Month and Day as well as the Meal Name into which to add");
             return;
         }
         const validateMealIdentifierObjRes = FMTValidateMealIdentifier(mealIdentifierObj);
