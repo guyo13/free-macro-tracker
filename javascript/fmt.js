@@ -434,6 +434,7 @@ function FMTGetConvertibleUnits(unitName, unitsChart) {
   }
   return result;
 }
+
 //Functions - DB
 function prepareDBv1() {
     console.debug("Preparing DB...");
@@ -1797,8 +1798,8 @@ function FMTReadAllFoods( onsuccessFn, onerrorFn) {
     getRequest.onerror = onerrorFn;
     getRequest.onsuccess = onsuccessFn;
 }
-/*onsuccessFn must implement success function accessing the cursor*/
 function FMTIterateFoods( onsuccessFn, onerrorFn) {
+  /*onsuccessFn must implement success function accessing the cursor*/
     onerrorFn = onerrorFn || function(e) { console.error(`[FMTIterateFoods] - ${e}`);}
     let foodStore = getObjectStore(fmtAppGlobals.FMT_DB_FOODS_STORE, fmtAppGlobals.FMT_DB_READONLY);
     let getRequest = foodStore.openCursor();
@@ -2472,83 +2473,6 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
 }
 
 //Functions - UI - Units
-function FMTCreateUnitDropdownMenu(baseName, targetDiv, unitsChart, defaultUnitName, readonly, suffix, unitFilerFn) {
-    const _fnName = "FMTCreateUnitDropdownMenu";
-    //let tDiv = document.getElementById(targetDivId);
-    if (!!targetDiv) {
-        let inputGroupId = `${baseName}-fmtigroup${!!suffix ? `-${suffix}`: ""}`;
-        let inputGroup = document.getElementById(inputGroupId);
-        if (!!inputGroup) {
-            inputGroup.parentElement.removeChild(inputGroup);
-        }
-        //Input group container Div for Units
-        inputGroup = document.createElement("div");
-        inputGroup.classList.add("col-3", "col-lg-1", "pl-0", "input-group-append", "fmt-unit-igroup");
-        inputGroup.setAttribute("id", inputGroupId);
-        //Button element that holds the 'unit' attribute and the unit text
-        let selectedBtn = document.createElement("button");
-        let selectedBtnId = `${baseName}-units${!!suffix ? `-${suffix}`: ""}`;
-        selectedBtn.classList.add("btn", "btn-outline-dark", "fmt-outline-success");
-        selectedBtn.setAttribute("type", "button");
-        selectedBtn.setAttribute("id", selectedBtnId);
-        inputGroup.appendChild(selectedBtn);
-
-        //
-        if (!readonly) {
-            //Dropdown caret button
-            let ddBtn = document.createElement("div");
-            ddBtn.classList.add("btn", "btn-outline-dark", "dropdown-toggle", "dropdown-toggle-split", "fmt-outline-success");
-            ddBtn.setAttribute("type", "button");
-            ddBtn.setAttribute("data-toggle", "dropdown");
-            ddBtn.setAttribute("aria-haspopup", "true");
-            ddBtn.setAttribute("aria-expanded", "false");
-            let span = document.createElement("span");
-            span.classList.add("sr-only");
-            span.innerHTML = "Toggle Dropdown";
-            ddBtn.appendChild(span);
-            inputGroup.appendChild(ddBtn);
-            //Dropdown Menu
-            let ddMenu = document.createElement("div");
-            let ddMenuId = `${baseName}-units-dropdown${!!suffix ? `-${suffix}`: ""}`;
-            ddMenu.classList.add("dropdown-menu");
-            ddMenu.setAttribute("id", ddMenuId);
-
-            //Populate dropdown menu. TODO - Add function...
-            let unitNames = Object.keys(unitsChart);
-            if (isFunction(unitFilerFn)) {
-              unitNames = unitNames.filter(unitFilerFn);
-            }
-            for (let j=0; j<unitNames.length; j++) {
-                let unitName = unitNames[j];
-                let unit = unitsChart[unitName];
-                if (!unit) {
-                  console.warn(`[${_fnName}] - ${unitName} couldn't be found in units chart`);
-                  continue;
-                }
-                let normUnitName = unitName.replace(/ /g, "_");
-                let mUnitId = `${baseName}-unit-${normUnitName}${!!suffix ? `-${suffix}`: ""}`;
-                let ddItem = document.createElement("a");
-                ddItem.classList.add("dropdown-item");
-                ddItem.setAttribute("href", `#${ddMenuId}`);
-                ddItem.setAttribute("id", mUnitId);
-                ddItem.innerHTML = unit.description;
-                ddItem.addEventListener("click", function(e) {
-                    FMTDropdownToggleValue(selectedBtnId, unitName, {"unit": unitName});
-                });
-                ddMenu.appendChild(ddItem);
-            }
-            //Append finished dropdown menu to container div
-            inputGroup.appendChild(ddMenu);
-        }
-        targetDiv.appendChild(inputGroup);
-        if (!!defaultUnitName && (defaultUnitName) in unitsChart) {
-            _FMTDropdownToggleValue(selectedBtn, defaultUnitName, {"unit": defaultUnitName});
-        }
-    }
-    else {
-        console.warn(`[${_fnName}] - Requested dropdown menu creation with base name ${baseName} in inexisting target Div ID ${targetDivId}`);
-    }
-}
 function FMTCreateUnitSelectMenu(baseName, targetDiv, unitsChart, defaultUnitName, readonly, suffix, unitFilerFn) {
   //TODO Pass boolean parameter 'firesEvent'
     const _fnName = "FMTCreateUnitSelectMenu";
@@ -2889,8 +2813,6 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, ob
 }
 function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableItem, qualifier, objectType, multiplier,
                                                       readonly, focusDivId, currentServingValue, currentServingUnits, headingPrefix, createAdditionalNutrients, restrictNutrientUnit) {
-    //TODO in this call flow need to merge instance unit chart and consumable additional nutrients that can repeat themselves up to 3 times
-    //TODO - Add option to either create Addititional Nutrients based on nutrients in instance + nutrients of Consumable (view food/recipe and edit meal entry) OR Populate values only (edit food/recipe)
     if (multiplier !== 0) {
         multiplier = multiplier || 1;
     }
@@ -2945,7 +2867,7 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
     }
 
     if (!!consumableItem.nutritionalValue.additionalNutrients) {
-      //Populate Additional Nutrients values
+      //Create and/or Populate Additional Nutrients values
       const unitsChart = fmtAppInstance.unitsChart;
       const additionalNutriDivId = `${baseScreenID}-${qualifier}-additional`;
       const additionalNutriDiv = document.getElementById(additionalNutriDivId);
@@ -3221,7 +3143,6 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
             break;
     }
 }
-
 function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier, objectType) {
   //TODO add object ID validation function based on objectType
     let idProp, pageFunction;
@@ -3266,6 +3187,7 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
         pageFunction(objectId, multiplier, false, servingValue, units);
     }
 }
+
 //Functions - UI - Overview
 function FMTCreateMacroProgressBar(c, p, f, inPercent, className) {
   className = className || "fmt-macros-dist-progress-bar";
