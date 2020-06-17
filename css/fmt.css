@@ -567,3 +567,13 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+.fmt-select-noexpand {
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  -o-appearance:none;
+   appearance:none;
+   pointer-events: none;
+}
+.fmt-select-noexpand::-ms-expand {
+    display: none;
+}

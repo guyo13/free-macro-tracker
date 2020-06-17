@@ -2592,6 +2592,7 @@ function FMTCreateUnitSelectMenu(baseName, targetDiv, unitsChart, defaultUnitNam
           option.setAttribute("value", defaultUnitName);
           select.appendChild(option);
         }
+        select.classList.add("fmt-select-noexpand");
       }
       if (!!defaultUnitName && (defaultUnitName) in unitsChart) { select.value = defaultUnitName; }
       targetDiv.appendChild(select);
@@ -2618,43 +2619,49 @@ function FMTCreateNutrientCategoryHeading(category, targetDivID) {
 }
 function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj, category, unitsChart, readonly, defaultUnit, suffix, unitFilterFn, value) {
     defaultUnit = defaultUnit || nutriObj.default_unit;
-    const elements = [];
     const normalizedCategory = category.replace(/ /g, "_");
     const normalizedNutriName = nutriObj.name.replace(/ /g, "_");
-
+    const placeholder = nutriObj.help != null ? `(${nutriObj.help})` : "";
     const nutriBaseId = `${baseID}-${normalizedCategory}-${normalizedNutriName}${!!suffix ? `-${suffix}`: ""}`;
     const nutriId = `${nutriBaseId}-input`;
 
-    const inGroupCont = document.createElement("div");
-    inGroupCont.classList.add("input-group", "mb-1");
-    const addNutriInGroup = document.createElement("div");
-    addNutriInGroup.classList.add("input-group-prepend", "row", "flex-grow-1", "fmt-food-input-field");
-    addNutriInGroup.setAttribute("id", nutriBaseId);
-    const span = document.createElement("span");
-    span.classList.add("col-5", "col-lg-2", "input-group-text", "fmt-outline-success");
-    span.innerHTML = `${nutriObj.name}`;
-    addNutriInGroup.appendChild(span);
+    //Containers
+    const columnContainerDiv = document.createElement("div");
+    columnContainerDiv.classList.add("col-12", "col-lg-8", "mb-1");
+    const formGroupDiv = document.createElement("div");
+    formGroupDiv.classList.add("form__group");
+    formGroupDiv.setAttribute("id", nutriBaseId);
+
+    //Input
     const inputField = document.createElement("input");
-    inputField.classList.add("col-4", "col-lg-3","form-control", "fmt-add-nutri");
+    inputField.classList.add("form__field", "fmt-input-field", "fmt-add-nutri");
     inputField.setAttribute("id", nutriId);
-    inputField.setAttribute("type", "text");
-    inputField.setAttribute("placeholder", nutriObj.help != null ? `(${nutriObj.help})` : "");
-    inputField.setAttribute("aria-label", nutriObj.name);
-    inputField.setAttribute("aria-describedby", "basic-addon2");
+    inputField.setAttribute("type", "number");
+    inputField.setAttribute("placeholder", placeholder);
     inputField.setAttribute("nutrient-name", nutriObj.name);
     inputField.setAttribute("nutrient-category", category);
+    if (readonly) {
+      inputField.setAttribute("readonly", "true");
+    }
     if (isNumber(value)) {
       inputField.value = value;
     }
-    addNutriInGroup.appendChild(inputField);
-    inGroupCont.appendChild(addNutriInGroup);
-    elements.push(inGroupCont);
+    //Label
+    const label = document.createElement("label");
+    label.classList.add("form__label");
+    label.innerHTML = `${nutriObj.name}`;
+    label.setAttribute("for", nutriId);
+
+    //Append Elements
+    formGroupDiv.appendChild(inputField);
+    formGroupDiv.appendChild(label);
+    columnContainerDiv.appendChild(formGroupDiv);
     //Append to target div if exists
     const targetDiv = document.getElementById(targetDivID);
     if (!!targetDiv) {
-      appendChildren(targetDiv, elements);
+      targetDiv.appendChild(columnContainerDiv);
     }
-    FMTCreateUnitSelectMenu(nutriBaseId, addNutriInGroup, unitsChart, defaultUnit, readonly, undefined, unitFilterFn);
+    FMTCreateUnitSelectMenu(nutriBaseId, formGroupDiv, unitsChart, defaultUnit, readonly, undefined, unitFilterFn);
     return nutriBaseId;
 }
 function FMTCreateFoodsTableRowElement(foodObj, eventListeners) {
@@ -3945,7 +3952,7 @@ var pageController = {
         const optionsObj = undefined;
         pageController.openDynamicScreen(screenID);
         FMTClearConsumableItemScreen(screenID, qualifier);
-        FMTPopulateConsumableItemScreen(screenID, optionsObj, qualifier, objectType, true);
+        FMTPopulateConsumableItemScreen(screenID, optionsObj, qualifier, objectType, undefined, true);
         if (!!foodsTableBodyID) {
             const saveBtn = document.getElementById(`${screenID}-save`);
             if (!!saveBtn) {
@@ -4155,9 +4162,10 @@ var pageController = {
                                           {"unitChanged": function(event) { FMTUpdateConsumableValuesOnServingChange(event, screenID, qualifier, objectType); },}
                                          };
                 FMTClearConsumableItemScreen(screenID, qualifier, objectType);
-                FMTPopulateConsumableItemScreen(screenID, {"consumableId": validateResult.mealEntry.entry_id, "eventListenersObj": eventListenersObj }, qualifier, objectType, false);
+                FMTPopulateConsumableItemScreen(screenID, {"consumableId": validateResult.mealEntry.entry_id, "eventListenersObj": eventListenersObj }, qualifier, objectType, undefined, false);
                 const delBtn = document.getElementById(`${screenID}-delete`);
                 const updateBtn = document.getElementById(`${screenID}-save`);
+                //TODO move it to the generic function
                 delBtn.setAttribute("entry_id", entry_id);
                 updateBtn.setAttribute("meal_year", validateResult.mealEntry.year);
                 updateBtn.setAttribute("meal_month", validateResult.mealEntry.month);
