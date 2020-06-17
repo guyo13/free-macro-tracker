@@ -2625,9 +2625,6 @@ function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj
     const nutriBaseId = `${baseID}-${normalizedCategory}-${normalizedNutriName}${!!suffix ? `-${suffix}`: ""}`;
     const nutriId = `${nutriBaseId}-input`;
 
-    const spacer = document.createElement("div");
-    spacer.classList.add("w-100");
-    elements.push(spacer);
     const inGroupCont = document.createElement("div");
     inGroupCont.classList.add("input-group", "mb-1");
     const addNutriInGroup = document.createElement("div");
@@ -2645,6 +2642,7 @@ function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj
     inputField.setAttribute("aria-label", nutriObj.name);
     inputField.setAttribute("aria-describedby", "basic-addon2");
     inputField.setAttribute("nutrient-name", nutriObj.name);
+    inputField.setAttribute("nutrient-category", category);
     if (isNumber(value)) {
       inputField.value = value;
     }
@@ -2947,6 +2945,7 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
       const consumableItemAdditionalNutrients = consumableItem.nutritionalValue.additionalNutrients;
 
       if (createAdditionalNutrients === true) {
+        additionalNutriDiv.innerHTML = "";
         let emptyAdditionalNutrients = FMTCreateEmptyAdditionalNutrients();
         FMTSumAdditionalNutrients(consumableItemAdditionalNutrients, emptyAdditionalNutrients, unitsChart);
         for (const category in consumableItemAdditionalNutrients) {
@@ -3210,6 +3209,7 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
 }
 
 function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier, objectType) {
+  //TODO add object ID validation function based on objectType
     let idProp, pageFunction;
     switch (objectType) {
         case "Food Item":
