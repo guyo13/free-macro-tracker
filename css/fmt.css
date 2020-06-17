@@ -435,22 +435,9 @@ button {
 }
 .fmt-loading-screen-position {
     position:absolute;
-    top: 30%;
-}
-@media screen and (min-width: 743px) {
-    .fmt-loading-screen-position {
-        left: 10%;
-    }
-}
-@media screen and (min-width: 1000px) {
-    .fmt-loading-screen-position {
-        left: 20%;
-    }
-}
-@media screen and (min-width: 1300px) {
-    .fmt-loading-screen-position {
-        left: 25%;
-    }
+    top: calc( 50% - 2 * 1.5 * 4.5rem / 2 ); /* 2 rows of text 4.5 rem font size 1.5 line height*/
+    left: calc(50% - 13 * 1.05rem);
+    right: calc(50% - 13 * 1.05rem);
 }
 @keyframes fmt-fadein-keyframe {
     from {opacity: 0;}
