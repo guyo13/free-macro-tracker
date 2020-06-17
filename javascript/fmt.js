@@ -185,6 +185,50 @@ function getOnEndRemoveFirstFromArrayAndExec(globalArray, elem, fn) {
     if (typeof fn === 'function') { fn(); }
   };
 }
+function FMTCreateEmptyAdditionalNutrients(additional) {
+  additional = additional || fmtAppInstance.additionalNutrients;
+  const additionalNutrients = {};
+  for (const category in additional) {
+    additionalNutrients[category] = [];
+    additional[category].forEach((nutriObj, i) => {
+      const nutrient = {};
+      nutrient.name = nutriObj.name;
+      nutrient.amount = 0;
+      nutrient.unit = nutriObj.default_unit;
+      additionalNutrients[category].push(nutrient);
+    });
+  }
+  return additionalNutrients;
+}
+function FMTSumAdditionalNutrients(additionalNutrientsSum, additionalNutrientsObj, unitsChart) {
+  unitsChart = unitsChart || fmtAppInstance.unitsChart;
+  const categories = Object.keys(additionalNutrientsObj);
+  categories.forEach((category, j) => {
+    if (!Array.isArray(additionalNutrientsSum[category])) {
+      additionalNutrientsSum[category] = [];
+    }
+    additionalNutrientsObj[category].forEach((addiNutriObj, k) => {
+      const idx = indexesOfObject(additionalNutrientsSum[category], "name", addiNutriObj.name);
+      let isConvertible = false;
+      let l = 0;
+      while (l < idx.length && !isConvertible ) {
+        const existingNutri = additionalNutrientsSum[category][idx[l]];
+        const convRes = FMTConvertUnits(existingNutri.unit, addiNutriObj.unit, unitsChart);
+        isConvertible = convRes.isConvertible;
+        if (isConvertible) {
+          //Convert in direction of "target" to "reference", multiply by multiplier
+          existingNutri.amount += (addiNutriObj.amount * convRes.unitMultiplier);
+        }
+        l++;
+      }
+      if (!isConvertible) {
+        //Insert Non convertible unit of same name after the last index found or at end
+        const insertIndex = idx.length < 1 ? (additionalNutrientsSum[category].length) : idx[idx.length - 1] + 1;
+        additionalNutrientsSum[category].splice(insertIndex, 0, addiNutriObj);
+      }
+    });
+  });
+}
 function indexesOfObject(array, key, value) {
   let idx = [];
   array.forEach((item, i) => {
@@ -208,29 +252,7 @@ function FMTSumNutritionalValues(nutritionalValuesArray, unitsChart) {
     nutritionalValue.carbohydrates += nutriValueObj.carbohydrates;
     nutritionalValue.fats += nutriValueObj.fats;
     if ("additionalNutrients" in nutriValueObj) {
-      const categories = Object.keys(nutriValueObj.additionalNutrients);
-      categories.forEach((category, j) => {
-        if (!Array.isArray(nutritionalValue.additionalNutrients[category])) {
-          nutritionalValue.additionalNutrients[category] = [];
-        }
-        nutriValueObj.additionalNutrients[category].forEach((addiNutriObj, k) => {
-          const idx = indexesOfObject(nutritionalValue.additionalNutrients[category], "name", addiNutriObj.name);
-          let isConvertible = false;
-          let l = 0;
-          while (l < idx.length && !isConvertible ) {
-            const existingNutri = nutritionalValue.additionalNutrients[category][idx[l]];
-            const convRes = FMTConvertUnits(existingNutri.unit, addiNutriObj.unit, unitsChart);
-            isConvertible = convRes.isConvertible;
-            if (isConvertible) {
-              //Convert in direction of "target" to "reference", divide by multiplier
-              existingNutri.mass += (addiNutriObj.mass / convRes.unitMultiplier);
-            }
-          }
-          if (!isConvertible) {
-            nutritionalValue.additionalNutrients[category].push(addiNutriObj);
-          }
-        });
-      });
+      FMTSumAdditionalNutrients(nutritionalValue.additionalNutrients, nutriValueObj.additionalNutrients, unitsChart);
     }
   });
   return nutritionalValue;
@@ -308,6 +330,7 @@ function FMTIsConvertible(referenceUnits, valueUnits) {
   return result;
 }
 function FMTConvertUnits(referenceUnits, valueUnits, unitsChart) {
+  //returns by how many times valueUnits is greater than referenceUnits (or lower than if results is < 1)
   unitsChart = unitsChart || fmtAppInstance.unitsChart;
   const result = {};
   if (!unitsChart) {
@@ -2527,45 +2550,54 @@ function FMTCreateUnitDropdownMenu(baseName, targetDiv, unitsChart, defaultUnitN
     }
 }
 function FMTCreateUnitSelectMenu(baseName, targetDiv, unitsChart, defaultUnitName, readonly, suffix, unitFilerFn) {
+  //TODO Pass boolean parameter 'firesEvent'
     const _fnName = "FMTCreateUnitSelectMenu";
     if (!!targetDiv) {
-        let selectId = `${baseName}-unit-select${!!suffix ? `-${suffix}`: ""}`;
-        let select = document.getElementById(selectId);
-        if (!!select) {
-            select.parentElement.removeChild(select);
+      let selectId = `${baseName}-unit-select${!!suffix ? `-${suffix}`: ""}`;
+      let select = document.getElementById(selectId);
+      if (!!select) {
+          select.parentElement.removeChild(select);
+      }
+      select = document.createElement("select");
+      //Add Classes
+      select.classList.add("custom-select", "fmt-select");
+      select.setAttribute("id", selectId);
+      if (!readonly) {
+        //Populate options
+        let unitNames = Object.keys(unitsChart);
+        if (isFunction(unitFilerFn)) {
+          unitNames = unitNames.filter(unitFilerFn);
         }
-        select = document.createElement("select");
-        //Add Classes
-        select.classList.add("custom-select", "fmt-select");
-        select.setAttribute("id", selectId);
-        if (!readonly) {
-            //Populate options
-            let unitNames = Object.keys(unitsChart);
-            if (isFunction(unitFilerFn)) {
-              unitNames = unitNames.filter(unitFilerFn);
+        for (let j=0; j<unitNames.length; j++) {
+            let unitName = unitNames[j];
+            let unit = unitsChart[unitName];
+            if (!unit) {
+              console.warn(`[${_fnName}] - ${unitName} couldn't be found in units chart`);
+              continue;
             }
-            for (let j=0; j<unitNames.length; j++) {
-                let unitName = unitNames[j];
-                let unit = unitsChart[unitName];
-                if (!unit) {
-                  console.warn(`[${_fnName}] - ${unitName} couldn't be found in units chart`);
-                  continue;
-                }
-                let normUnitName = unitName.replace(/ /g, "_");
-                const option = document.createElement("option");
-                option.innerHTML = unit.description;
-                option.setAttribute("value", unitName);
-                select.appendChild(option);
-                select.addEventListener("change", function(ev) {
-                  ev.currentTarget.dispatchEvent(new Event("unitChanged"));
-                });
-            }
+            const option = document.createElement("option");
+            option.innerHTML = unit.description;
+            option.setAttribute("value", unitName);
+            select.appendChild(option);
         }
-        targetDiv.appendChild(select);
-        if (!!defaultUnitName && (defaultUnitName) in unitsChart) { select.value = defaultUnitName; }
+        select.addEventListener("change", function(ev) {
+          ev.currentTarget.dispatchEvent(new Event("unitChanged"));
+        });
+      }
+      else {
+        const unit = unitsChart[defaultUnitName];
+        if (unit) {
+          const option = document.createElement("option");
+          option.innerHTML = unit.description;
+          option.setAttribute("value", defaultUnitName);
+          select.appendChild(option);
+        }
+      }
+      if (!!defaultUnitName && (defaultUnitName) in unitsChart) { select.value = defaultUnitName; }
+      targetDiv.appendChild(select);
     }
     else {
-        console.warn(`[${_fnName}] - Requested dropdown menu creation with base name ${baseName} in inexisting target Div ID ${targetDivId}`);
+      console.warn(`[${_fnName}] - Requested dropdown menu creation with base name ${baseName} in inexisting target Div ID ${targetDivId}`);
     }
 }
 
@@ -2589,7 +2621,8 @@ function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj
     const elements = [];
     const normalizedCategory = category.replace(/ /g, "_");
     const normalizedNutriName = nutriObj.name.replace(/ /g, "_");
-    const nutriBaseId = `${baseID}-${normalizedCategory}-${normalizedNutriName}`;
+
+    const nutriBaseId = `${baseID}-${normalizedCategory}-${normalizedNutriName}${!!suffix ? `-${suffix}`: ""}`;
     const nutriId = `${nutriBaseId}-input`;
 
     const spacer = document.createElement("div");
@@ -2623,7 +2656,7 @@ function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj
     if (!!targetDiv) {
       appendChildren(targetDiv, elements);
     }
-    FMTCreateUnitDropdownMenu(nutriBaseId, addNutriInGroup, unitsChart, defaultUnit, readonly, suffix, unitFilterFn);
+    FMTCreateUnitSelectMenu(nutriBaseId, addNutriInGroup, unitsChart, defaultUnit, readonly, undefined, unitFilterFn);
     return nutriBaseId;
 }
 function FMTCreateFoodsTableRowElement(foodObj, eventListeners) {
@@ -2757,10 +2790,11 @@ function FMTPopulateAdditionalNutrientsInConsumableItemScreen(baseScreenID, read
     }
     return true;
 }
-function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, objectType, mealIdentifierObj) {
+function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, objectType, mealIdentifierObj, createAdditionalNutrients) {
   //TODO review if needed date and mealName -
   //optionsObj {consumableId(int),readonly(bool),eventListenersObj}
   //evenListenerObj{"DOM ID1": {"event": fn},...,"DOM IDN": {"event": fn}}
+  //TODO - Add option to NOT create Additional Nutrients (Add and Edit food/recipe only)
     const result = {};
     if (fmtAppGlobals.inputScreensQualifiers.indexOf(qualifier) < 0 ) {
       result.error = `Invalid qualifier ${qualifier}`;
@@ -2830,8 +2864,10 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, ob
     }
 
     //Create Input fields for Additional Nutrients and attach event listeners to elements passed in optionsObj
-    const res = FMTPopulateAdditionalNutrientsInConsumableItemScreen(baseScreenID, readonly, qualifier);
-    if (!res) { console.warn(`Failed adding additional nutrients fields to ${baseScreenID}`); }
+    if (createAdditionalNutrients) {
+      const res = FMTPopulateAdditionalNutrientsInConsumableItemScreen(baseScreenID, readonly, qualifier);
+      if (!res) { console.warn(`Failed adding additional nutrients fields to ${baseScreenID}`); }
+    }
     //Attached event listeners if needed
     if (optionsObj.eventListenersObj) {
         for (const elemName in optionsObj.eventListenersObj) {
@@ -2846,8 +2882,9 @@ function FMTPopulateConsumableItemScreen(baseScreenID, optionsObj, qualifier, ob
     return result;
 }
 function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableItem, qualifier, objectType, multiplier,
-                                                      readonly, focusDivId, currentServingValue, currentServingUnits, headingPrefix) {
+                                                      readonly, focusDivId, currentServingValue, currentServingUnits, headingPrefix, createAdditionalNutrients, restrictNutrientUnit) {
     //TODO in this call flow need to merge instance unit chart and consumable additional nutrients that can repeat themselves up to 3 times
+    //TODO - Add option to either create Addititional Nutrients based on nutrients in instance + nutrients of Consumable (view food/recipe and edit meal entry) OR Populate values only (edit food/recipe)
     if (multiplier !== 0) {
         multiplier = multiplier || 1;
     }
@@ -2903,85 +2940,74 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
 
     if (!!consumableItem.nutritionalValue.additionalNutrients) {
       //Populate Additional Nutrients values
-        const unitsChart = fmtAppInstance.unitsChart;
-        const additionalNutriDivId = `${baseScreenID}-${qualifier}-additional`;
-        const additionalNutriDiv = document.getElementById(additionalNutriDivId);
-        const baseID = `${baseScreenID}-${qualifier}-addi`;
-        for (const nutriCatName in consumableItem.nutritionalValue.additionalNutrients) {
-            const nutrientsList = consumableItem.nutritionalValue.additionalNutrients[nutriCatName];
-            const nutrientCatNameNormalized = nutriCatName.replace(/ /g, "_");
+      const unitsChart = fmtAppInstance.unitsChart;
+      const additionalNutriDivId = `${baseScreenID}-${qualifier}-additional`;
+      const additionalNutriDiv = document.getElementById(additionalNutriDivId);
+      const baseID = `${baseScreenID}-${qualifier}-addi`;
+      const consumableItemAdditionalNutrients = consumableItem.nutritionalValue.additionalNutrients;
+
+      if (createAdditionalNutrients === true) {
+        let emptyAdditionalNutrients = FMTCreateEmptyAdditionalNutrients();
+        FMTSumAdditionalNutrients(consumableItemAdditionalNutrients, emptyAdditionalNutrients, unitsChart);
+        for (const category in consumableItemAdditionalNutrients) {
+          FMTCreateNutrientCategoryHeading(category, additionalNutriDivId);
+          const normalizedCategory = category.replace(/ /g, "_");
+          consumableItemAdditionalNutrients[category].forEach((nutrient, i) => {
+            let suffix, unitFilterFn;
+            const nutrientNameNormalized = nutrient.name.replace(/ /g, "_");
+            const baseElementId = `${baseScreenID}-${qualifier}-addi-${normalizedCategory}-${nutrientNameNormalized}`;
+            const inputElementId = `${baseElementId}-input`;
+            if (document.getElementById(inputElementId) != null) {
+              suffix = nutrient.unit;
+            }
+            if (restrictNutrientUnit) {
+              const convertibleUnits = FMTGetConvertibleUnits(nutrient.unit, unitsChart);
+              const convertibleUnitsArray = convertibleUnits.error == null ? Object.keys(convertibleUnits.convertibleUnits) : [nutrient.unit];
+              unitFilterFn = function(unitName) {
+                if (convertibleUnitsArray.indexOf(unitName) >= 0) return true;
+              };
+            }
+            FMTCreateAdditionalNutrientWithUnitsInput(baseID, additionalNutriDivId, nutrient, category, unitsChart, readonly, nutrient.unit, suffix, unitFilterFn, nutrient.amount || NaN);
+          });
+        }
+      }
+      else {
+        //Fill values only
+        for (const category in consumableItemAdditionalNutrients) {
+            const nutrientsList = consumableItemAdditionalNutrients[category];
+            const normalizedCategory = category.replace(/ /g, "_");
             for (const i in nutrientsList) {
                 const nutrient = nutrientsList[i];
                 if (nutrient.amount == 0) { continue; }
                 const nutrientNameNormalized = nutrient.name.replace(/ /g, "_");
-                const baseElementId = `${baseScreenID}-${qualifier}-addi-${nutrientCatNameNormalized}-${nutrientNameNormalized}`;
+                const baseElementId = `${baseScreenID}-${qualifier}-addi-${normalizedCategory}-${nutrientNameNormalized}`;
                 const inputElementId = `${baseElementId}-input`;
-                const currentUnitsBtnId = `${baseElementId}-units`;
-                const unitDropdownItemId = `${baseElementId}-unit-${nutrient.unit}`;
+                const selectId = `${baseElementId}-unit-select`;
                 const baseElement = document.getElementById(baseElementId);
                 const inputElement = document.getElementById(inputElementId);
-                const unitDropdownItem = document.getElementById(unitDropdownItemId);
-                const currentUnitsBtn = document.getElementById(currentUnitsBtnId);
-                if (inputElement && unitDropdownItem) {
-                    const currentInputValue = inputElement.value;
-                    if (isNumber(currentInputValue)) {
-                      const currentInputUnits = currentUnitsBtn.getAttribute("unit");
-                      const _conv = FMTConvertUnits(currentInputUnits, nutrient.unit, unitsChart);
-                      if (_conv.isConvertible) {
-                        inputElement.value = nutrient.amount / _conv.unitMultiplier;
-                        FMTDropdownToggleValue(currentUnitsBtnId, nutrient.unit, {"unit": nutrient.unit}, true);
-                      }
-                      else {
-                        //Create new Input for non convertible nutrient
-                        //TODO - review if needed convertible units at all
-                        console.debug(`Creating new nutrient input for`, nutrient);
-                        const convertibleUnits = FMTGetConvertibleUnits(nutrient.unit, unitsChart);
-                        if (convertibleUnits.error != null || !(nutrient.unit in convertibleUnits.convertibleUnits) ) {
-                          //TODO lazy load
-                          console.error(`Error - ${convertibleUnits.error} - nutrient :`, nutrient);
-                          continue;
-                        }
-                        const _filter = function(unitName) { if (unitName in convertibleUnits.convertibleUnits) {return true;} };
-                        const _uni = convertibleUnits.convertibleUnits[nutrient.unit];
-                        let suffix = !!_uni ? _uni.type : nutrient.unit;
-                        //Make sure it's unique
-                        suffix = `${suffix}_${nutrient.unit}`
-                        const newAddinutri = FMTCreateAdditionalNutrientWithUnitsInput(baseID, undefined, _uni, nutriCatName, unitsChart, readonly, nutrient.unit, suffix, _filter, nutrient.amount);
-                        additionalNutriDiv.insertBefore(newAddinutri, baseElement);
-                      }
-                    }
-                    else {
-                      inputElement.value = nutrient.amount * multiplier;
-                      FMTDropdownToggleValue(currentUnitsBtnId, nutrient.unit, {"unit": nutrient.unit}, true);
-                    }
+                const select = document.getElementById(selectId);
+                if (inputElement) {
+                  inputElement.value = nutrient.amount;
+                  select.value = nutrient.unit;
                 }
                 else {
-                    //TODO - Lazy Load inexisting nutrients/categories based on APP settings
-                    console.warn(`[${_funcName}] - Consumable (${consumableItem}), could not find DOM elements "${inputElementId}", "${unitDropdownItemId}"`);
+                  //TODO - Lazy Load inexisting nutrients/categories based on APP settings
+                  console.warn(`[${_funcName}] - Consumable (${consumableItem}), could not find DOM element "${inputElementId}"`);
                 }
             }
         }
-        //Iterate and manipulate fields as needed
-        const addiNutrients = additionalNutriDiv.getElementsByClassName("fmt-add-nutri");
-        const ddToggles = additionalNutriDiv.getElementsByClassName("dropdown-toggle");
-        //Hide dropdowns and apply readonly property
-        if (readonly) {
-            for (let k=0; k<addiNutrients.length; k++) {
-                addiNutrients[k].setAttribute("readonly", true);
-            }
-            for (let k=0; k<ddToggles.length; k++) {
-                ddToggles[k].classList.add("d-none");
+      }
+      //Iterate and manipulate fields as needed
+      const addiNutrients = additionalNutriDiv.getElementsByClassName("fmt-add-nutri");
+      //Apply multiplier
+      if (multiplier !== 1) {
+        for (let k=0; k<addiNutrients.length; k++) {
+            const _field = addiNutrients[k];
+            if (isNumber(_field.value)) {
+              _field.value = Number(roundedToFixed(_field.value * multiplier, fmtAppInstance.nutrientRoundingPrecision) );
             }
         }
-        //Apply multiplier
-        if (multiplier !== 1) {
-          for (let k=0; k<addiNutrients.length; k++) {
-              const _field = addiNutrients[k];
-              if (isNumber(_field.value)) {
-                _field.value = Number(roundedToFixed(_field.value * multiplier, fmtAppInstance.nutrientRoundingPrecision) );
-              }
-          }
-        }
+      }
     }
     //Focus on an element - on keyup values updating function uses this
     if (focusDivId) {
@@ -3151,10 +3177,10 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
                 const nutriObj = nutrientsInCat[i];
                 const baseNutriId = `${baseCatID}-${nutriObj.name.replace(/ /g, "_")}`;
                 const inputElemId = `${baseNutriId}-input`;
-                const unitElemId = `${baseNutriId}-units`;
+                const unitElemId = `${baseNutriId}-unit-select`;
                 const nutriUserInput = document.getElementById(inputElemId).value;
                 if (nutriUserInput == null || nutriUserInput === "") { continue; }
-                const nutriUserUnit = document.getElementById(unitElemId).getAttribute("unit");
+                const nutriUserUnit = document.getElementById(unitElemId).value;
                 addNutri.push({"name": nutriObj.name, "amount": nutriUserInput, "unit": nutriUserUnit});
             }
             if (addNutri.length > 0) { consumableObj.nutritionalValue.additionalNutrients[category] = addNutri; }
@@ -3919,7 +3945,7 @@ var pageController = {
         const optionsObj = undefined;
         pageController.openDynamicScreen(screenID);
         FMTClearConsumableItemScreen(screenID, qualifier);
-        FMTPopulateConsumableItemScreen(screenID, optionsObj, qualifier, objectType);
+        FMTPopulateConsumableItemScreen(screenID, optionsObj, qualifier, objectType, true);
         if (!!foodsTableBodyID) {
             const saveBtn = document.getElementById(`${screenID}-save`);
             if (!!saveBtn) {
@@ -3956,7 +3982,7 @@ var pageController = {
         }
         //Render screen
         FMTClearConsumableItemScreen(screenID, qualifier);
-        FMTPopulateConsumableItemScreen(screenID, {"consumableId": foodId}, qualifier, objectType, mealIdentifier);
+        FMTPopulateConsumableItemScreen(screenID, {"consumableId": foodId}, qualifier, objectType, mealIdentifier, false);
         //Async Tasks - Read food item and update screen
         FMTReadFood(foodId,
                     //OnSuccess
@@ -3974,7 +4000,7 @@ var pageController = {
             }
             //Load values and open screen
             const food = validateResult.food;
-            FMTPopulateSavedValuesInConsumableItemScreen(screenID, food, qualifier, objectType, 1, false, null, undefined, undefined, "Editing");
+            FMTPopulateSavedValuesInConsumableItemScreen(screenID, food, qualifier, objectType, 1, false, null, undefined, undefined, "Editing", true, false);
             pageController.openDynamicScreen(screenID);
         },
                     //OnError
@@ -4013,7 +4039,7 @@ var pageController = {
                                         {"unitChanged": function(event) { FMTUpdateConsumableValuesOnServingChange(event, screenID, qualifier, objectType); }, }
                                      };
             const optionsObj = {"consumableId": foodId, "eventListenersObj": eventListenersObj };
-            const result = FMTPopulateConsumableItemScreen(screenID, optionsObj, qualifier, objectType, mealIdentifierObj);
+            const result = FMTPopulateConsumableItemScreen(screenID, optionsObj, qualifier, objectType, mealIdentifierObj, false);
             const mealIdentifier = result.mealIdentifier;
             if (!!foodsTableBodyID) {
                 editFoodBtn.setAttribute("foods-table-body-id", foodsTableBodyID);
@@ -4053,7 +4079,7 @@ var pageController = {
             }
             const food = validateResult.food;
             //Update and open Screen
-            FMTPopulateSavedValuesInConsumableItemScreen(screenID, food, qualifier, objectType, multiplier, true, `${screenID}-${qualifier}-serving-input`, currentServingValue, currentServingUnits, "Viewing");
+            FMTPopulateSavedValuesInConsumableItemScreen(screenID, food, qualifier, objectType, multiplier, true, `${screenID}-${qualifier}-serving-input`, currentServingValue, currentServingUnits, "Viewing", true, true);
             pageController.openDynamicScreen(screenID);
         },
                     //OnError
@@ -4129,7 +4155,7 @@ var pageController = {
                                           {"unitChanged": function(event) { FMTUpdateConsumableValuesOnServingChange(event, screenID, qualifier, objectType); },}
                                          };
                 FMTClearConsumableItemScreen(screenID, qualifier, objectType);
-                FMTPopulateConsumableItemScreen(screenID, {"consumableId": validateResult.mealEntry.entry_id, "eventListenersObj": eventListenersObj }, qualifier, objectType);
+                FMTPopulateConsumableItemScreen(screenID, {"consumableId": validateResult.mealEntry.entry_id, "eventListenersObj": eventListenersObj }, qualifier, objectType, false);
                 const delBtn = document.getElementById(`${screenID}-delete`);
                 const updateBtn = document.getElementById(`${screenID}-save`);
                 delBtn.setAttribute("entry_id", entry_id);
@@ -4140,7 +4166,7 @@ var pageController = {
                 updateBtn.setAttribute("profile_id", validateResult.mealEntry.profile_id);
                 updateBtn.setAttribute("consumable_id", validateResult.mealEntry.consumable_id);
             }
-            FMTPopulateSavedValuesInConsumableItemScreen(screenID, validateResult.mealEntry, qualifier, objectType, multiplier, true, focusDivID, currentServingValue, currentServingUnits, "Editing Meal Item");
+            FMTPopulateSavedValuesInConsumableItemScreen(screenID, validateResult.mealEntry, qualifier, objectType, multiplier, true, focusDivID, currentServingValue, currentServingUnits, "Editing Meal Item", true, true);
             pageController.openDynamicScreen(screenID);
         },
                          //OnError
