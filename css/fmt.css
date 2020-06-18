@@ -456,7 +456,7 @@ button {
     animation: fmt-fadein-keyframe 1.1s;
 }
 .fmt-fadeout {
-    animation: fmt-fadeout-keyframe 1.5s;
+    animation: fmt-fadeout-keyframe 1s;
 }
 .fmt-fadeinout {
     animation: fmt-fadeinout-keyframe 3s;

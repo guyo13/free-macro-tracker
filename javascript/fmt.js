@@ -4230,7 +4230,7 @@ var pageController = {
         setTimeout( ()=> {
           loadingScreen.classList.add("d-none", "fmt-faded");
           loadingScreen.style.zIndex = -3;
-        }, 1500);
+        }, 1000);
 
     },
     showFirstTimeScreen: function() {
@@ -4355,7 +4355,7 @@ function onDbSuccess(event) {
                 });
             });
         });
-    }, 500);
+    }, 300);
 }
 function onUpgradeNeeded(event) {
     fmtAppInstance.fmtDb = event.target.result;
