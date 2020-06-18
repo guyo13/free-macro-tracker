@@ -3747,6 +3747,34 @@ function FMTOverviewLoadCurrentDay(onsuccessFn, onerrorFn) {
     }
 }
 
+//Functions - UI - Foods and Recipes
+function FMTToggleFoodMenu(baseId, qualifier) {
+  //Buttons
+  const ul = document.getElementById(`${baseId}-toggles`);
+  if (!ul) { return; }
+  const btns = ul.getElementsByTagName("li");
+  for (let i=0 ; i<btns.length; i++) {
+    btns[i].classList.remove("fmt-tab-li-active");
+  }
+  document.getElementById(`${baseId}-my-${qualifier}-btn`).classList.add("fmt-tab-li-active");
+  //Search bar and table
+  const qualifiersToHide = [];
+  switch (qualifier) {
+    case "food":
+      qualifiersToHide.push("recipe");
+      break;
+    case "recipe":
+      qualifiersToHide.push("food");
+      break;
+  }
+  qualifiersToHide.forEach((qual, i) => {
+    document.getElementById(`${baseId}-${qual}-search-cont`).classList.add("d-none");
+    document.getElementById(`${baseId}-${qual}-table-cont`).classList.add("d-none");
+  });
+  document.getElementById(`${baseId}-${qualifier}-search-cont`).classList.remove("d-none");
+  document.getElementById(`${baseId}-${qualifier}-table-cont`).classList.remove("d-none");
+}
+
 //Functions - State
 //Functions - State - Date
 function FMTToday() { fmtAppInstance.today = new Date(); }
@@ -3826,14 +3854,7 @@ var pageController = {
                             document.getElementById("foods-alerts").innerHTML = "";
                             }
                        };
-        //Handle Tabs
-        document.getElementById("food-menu-my-recipes").classList.remove("fmt-tab-li-active");
-        document.getElementById("food-menu-my-foods").classList.add("fmt-tab-li-active");
-        //Hide Recipes and show foods
-        document.getElementById("foods-recipe-search-cont").classList.add("d-none");
-        document.getElementById("foods-recipe-table-cont").classList.add("d-none");
-        document.getElementById("foods-food-search-cont").classList.remove("d-none");
-        document.getElementById("foods-food-table-cont").classList.remove("d-none");
+        FMTToggleFoodMenu("foods", "food");
         FMTDisplayFoodsTable("foods", onsuccessFn, onerrorFn, events);
     },
     showSettings: function () {pageController.setTabActive("goto-settings");},
@@ -4063,6 +4084,7 @@ var pageController = {
                     pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, mealIdentifierObj, foodsTableBodyID);
                     }
                };
+        FMTToggleFoodMenu("add-to-meal-screen", "food");
         FMTDisplayFoodsTable(screenID, onsuccessFn, onerrorFn, events);
     },
     closeAddToMealDynamicScreen: function() {
@@ -4374,6 +4396,12 @@ function prepareEventHandlers() {
         const foodsTableBodyID = document.getElementById("foods-add-food").getAttribute("foods-table-body-id");
         pageController.openAddFoodDynamicScreen(foodsTableBodyID);
     });
+    $("#foods-my-food-btn").click( (e) => {
+      FMTToggleFoodMenu("foods", "food");
+    });
+    $("#foods-my-recipe-btn").click( (e) => {
+      FMTToggleFoodMenu("foods", "recipe");
+    });
     $("#add-food-screen-cancel").click( (e) => {
         if(fmtAppInstance.promptSettings.promptOnUnsavedFood) {
             let inputs = document.getElementById("add-food-screen").getElementsByTagName("input");
@@ -4636,6 +4664,12 @@ function prepareEventHandlers() {
     $("#add-to-meal-screen-add-food").click( (e) => {
         const foodsTableBodyID = "add-to-meal-screen-food-table-body";
         pageController.openAddFoodDynamicScreen(foodsTableBodyID);
+    });
+    $("#add-to-meal-screen-my-food-btn").click( (e) => {
+      FMTToggleFoodMenu("add-to-meal-screen", "food");
+    });
+    $("#add-to-meal-screen-my-recipe-btn").click( (e) => {
+      FMTToggleFoodMenu("add-to-meal-screen", "recipe");
     });
     $("#edit-meal-entry-screen-delete").click( (e) => {
         const alertsDivId = "edit-meal-entry-screen-alerts";
