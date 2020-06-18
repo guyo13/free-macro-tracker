@@ -2196,7 +2196,14 @@ function FMTShowPrompt(divId, alertLevel, msg, scrollOptions, oncompleteFn) {
     }
     return;
 }
-function FMTUICreateTextArea(labelText, placeholder, id, readonly, containerClasses, textareaClasses) {
+function FMTUICreateTextArea(type, labelText, placeholder, id, readonly, containerClasses, textareaClasses) {
+  switch (type) {
+    case "input":
+    case "textarea":
+      break;
+    default:
+      return;
+  }
   const column = document.createElement("div");
   column.classList.add("col-12", "col-lg-8");
   if (Array.isArray(containerClasses)) {
@@ -2206,7 +2213,7 @@ function FMTUICreateTextArea(labelText, placeholder, id, readonly, containerClas
   }
   const form = document.createElement("div");
   form.classList.add("form__group");
-  const textarea = document.createElement("textarea");
+  const textarea = document.createElement(type);
   textarea.classList.add("form__field");
   textarea.setAttribute("type", "text");
   if (Array.isArray(textareaClasses)) {
@@ -3825,14 +3832,22 @@ function FMTToggleFoodMenu(baseId, qualifier) {
   document.getElementById(`${baseId}-${qualifier}-search-cont`).classList.remove("d-none");
   document.getElementById(`${baseId}-${qualifier}-table-cont`).classList.remove("d-none");
 }
-function FMTUIAddIngredient(foodObj, ingredientsDivID) {
+function FMTUIAddIngredient(foodObj, ingredientsDiv) {
+  const _funcName = "FMTUIAddIngredient";
   const _res = FMTValidateFoodObject(foodObj);
   if (_res.error != null || _res.food == null) {
-    console.error(`[FMTUIAddIngredient] - Error validating food`);
+    console.error(`[${_funcName}] - Error validating food`);
     return;
   }
   const food = _res.food;
-
+  const col = FMTUICreateTextArea("input", undefined, undefined, undefined, true, ["fmt-recipe-ingredient-cont"], ["fmt-input-field", "fmt-recipe-ingredient"]);
+  const input = col.getElementsByTagName("input")[0];
+  input.value = `${food.foodName} ${food.referenceServing}/${food.units}`;
+  input.setAttribute("food_id", foodObj.food_id);
+  input.setAttribute("referenceServing", food.referenceServing);
+  input.setAttribute("units", food.units);
+  const lastElement = ingredientsDiv.children[ingredientsDiv.children.length - 1];
+  ingredientsDiv.insertBefore(col, lastElement);
 }
 
 //Functions - State
@@ -4793,10 +4808,12 @@ function prepareEventHandlers() {
         const foodObj = FMTSaveConsumableItemScreen("view-food-screen", "get-object", undefined, "food", "Food Item");
         foodObj.food_id = foodId;
         pageController.closeViewFoodDynamicScreen();
+
+        const baseID = "add-recipe-screen-recipe-ingredients";
+        const ingredientsDiv = document.getElementById(baseID);
+        FMTUIAddIngredient(foodObj, ingredientsDiv);
         //TODO - check what is better to leave it open or closed
         pageController.closeAddToRecipeDynamicScreen();
-        //TODO
-        FMTUIAddIngredient(foodObj, "add-recipe-screen-recipe-ingredients");
       }
       else {
         console.error(`Invalid food Id ${foodId} on Add Ingredient`);
@@ -4809,7 +4826,7 @@ function prepareEventHandlers() {
     $("#add-recipe-screen-recipe-preparation-steps-add").click( (e) => {
       const exisitingSteps = e.currentTarget.parentNode.getElementsByClassName("fmt-recipe-step-cont");
       const nextStepNum = exisitingSteps.length + 1;
-      const col = FMTUICreateTextArea(`Step ${nextStepNum}`, "Preparation Step", undefined, false, ["fmt-recipe-step-cont"], ["fmt-textarea"]);
+      const col = FMTUICreateTextArea("textarea" ,`Step ${nextStepNum}`, "Preparation Step", undefined, false, ["fmt-recipe-step-cont"], ["fmt-textarea"]);
       e.currentTarget.parentNode.insertBefore(col, e.currentTarget);
       col.scrollIntoView();
     });

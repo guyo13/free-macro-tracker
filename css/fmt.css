@@ -532,6 +532,10 @@ button {
   font-weight: 300;
 }
 .fmt-recipe-step-cont {}
+.fmt-recipe-ingredient-cont {}
+.fmt-recipe-ingredient {
+  width: 100%;
+}
 .form__group {
    position: relative;
    padding: 0.7rem 0 0;
@@ -591,9 +595,17 @@ button {
 .form__field:required, .form__field:invalid {
   box-shadow: none;
 }
+.fmt-form-btn {
+  width: 70%;
+  padding-right: 15px;
+  padding-left: 15px;
+}
 @media screen and (max-width: 768px) {
    .form__group {
        width: 100%;
+   }
+   .fmt-form-btn {
+     width: 100%;
    }
 }
 /* Chrome, Safari, Edge, Opera */
