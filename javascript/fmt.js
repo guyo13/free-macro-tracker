@@ -4725,6 +4725,7 @@ function prepareEventHandlers() {
     $("#add-recipe-screen-recipe-preparation-steps-add").click( (e) => {
       const col = FMTCreateTextArea(undefined, "Preparation Step", undefined, false, "fmt-recipe-step-cont");
       e.currentTarget.parentNode.insertBefore(col, e.currentTarget);
+      col.scrollIntoView();
     });
 /*    $("#overview-add-to-meal").click( (e) => {
         const overviewAddToMealBtn = document.getElementById("overview-add-to-meal");
