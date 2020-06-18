@@ -284,6 +284,10 @@ button {
 .fmt-input-field {
     width: 50%;
 }
+.fmt-textarea {
+    width: 100%;
+    resize: both;
+}
 @media screen and (max-width: 768px) {
     .fmt-food-input-field {
         width: 100%;

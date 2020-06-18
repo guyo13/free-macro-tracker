@@ -2187,15 +2187,24 @@ function FMTShowPrompt(divId, alertLevel, msg, scrollOptions, oncompleteFn) {
     }
     return;
 }
-function FMTCreateTextArea(labelText, placeholder, id, readonly, containerClass) {
-
+function FMTUICreateTextArea(labelText, placeholder, id, readonly, containerClasses, textareaClasses) {
   const column = document.createElement("div");
   column.classList.add("col-12", "col-lg-8");
+  if (Array.isArray(containerClasses)) {
+    containerClasses.forEach((cls, i) => {
+      column.classList.add(cls);
+    });
+  }
   const form = document.createElement("div");
   form.classList.add("form__group");
   const textarea = document.createElement("textarea");
-  textarea.classList.add("form__field", "fmt-input-field");
+  textarea.classList.add("form__field");
   textarea.setAttribute("type", "text");
+  if (Array.isArray(textareaClasses)) {
+    textareaClasses.forEach((cls, i) => {
+      textarea.classList.add(cls);
+    });
+  }
   const label = document.createElement("label");
   label.classList.add("form__label");
   if (!!placeholder) {
@@ -2205,17 +2214,14 @@ function FMTCreateTextArea(labelText, placeholder, id, readonly, containerClass)
     textarea.setAttribute("id", id);
     label.setAttribute("for", id);
   }
-  if (!!labelText) {
-    label.innerHTML = labelText;
-  }
   if (readonly === true) {
     textarea.setAttribute("readonly", "true");
   }
-  if (!!containerClass) {
-    column.classList.add(containerClass);
-  }
   form.appendChild(textarea);
-  form.appendChild(label);
+  if (!!labelText) {
+    label.innerHTML = labelText;
+    form.appendChild(label);
+  }
   column.appendChild(form);
   return column;
 }
@@ -3810,6 +3816,15 @@ function FMTToggleFoodMenu(baseId, qualifier) {
   document.getElementById(`${baseId}-${qualifier}-search-cont`).classList.remove("d-none");
   document.getElementById(`${baseId}-${qualifier}-table-cont`).classList.remove("d-none");
 }
+function FMTUIAddIngredient(foodObj, ingredientsDivID) {
+  const _res = FMTValidateFoodObject(foodObj);
+  if (_res.error != null || _res.food == null) {
+    console.error(`[FMTUIAddIngredient] - Error validating food`);
+    return;
+  }
+  const food = _res.food;
+
+}
 
 //Functions - State
 //Functions - State - Date
@@ -4066,6 +4081,7 @@ var pageController = {
         if (addBtn) {
           if (showAddToRecipe === true) {
             addBtn.classList.remove("d-none");
+            addBtn.setAttribute("food_id", foodId);
             addToMealBtn.classList.add("d-none");
           }
           else if (showAddToRecipe === false) {
@@ -4761,11 +4777,27 @@ function prepareEventHandlers() {
         });
 
     });
+    $("#view-food-screen-add").click( (e) => {
+      let foodId = e.currentTarget.getAttribute("food_id");
+      if (FMTIsValidFoodId(foodId)) {
+        e.currentTarget.removeAttribute("food_id");
+        const foodObj = FMTSaveConsumableItemScreen("view-food-screen", "get-object", undefined, "food", "Food Item");
+        foodObj.food_id = foodId;
+        pageController.closeViewFoodDynamicScreen();
+        //TODO - check what is better to leave it open or closed
+        pageController.closeAddToRecipeDynamicScreen();
+        //TODO
+        FMTUIAddIngredient(foodObj, "add-recipe-screen-recipe-ingredients");
+      }
+      else {
+        console.error(`Invalid food Id ${foodId} on Add Ingredient`);
+      }
+    });
     $("#add-recipe-screen-cancel").click( (e) => {
       pageController.closeAddRecipeDynamicScreen();
     });
     $("#add-recipe-screen-recipe-preparation-steps-add").click( (e) => {
-      const col = FMTCreateTextArea(undefined, "Preparation Step", undefined, false, "fmt-recipe-step-cont");
+      const col = FMTUICreateTextArea(undefined, "Preparation Step", undefined, false, ["fmt-recipe-step-cont"], ["fmt-textarea"]);
       e.currentTarget.parentNode.insertBefore(col, e.currentTarget);
       col.scrollIntoView();
     });
