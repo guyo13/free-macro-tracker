@@ -2187,7 +2187,38 @@ function FMTShowPrompt(divId, alertLevel, msg, scrollOptions, oncompleteFn) {
     }
     return;
 }
+function FMTCreateTextArea(labelText, placeholder, id, readonly, containerClass) {
 
+  const column = document.createElement("div");
+  column.classList.add("col-12", "col-lg-8");
+  const form = document.createElement("div");
+  form.classList.add("form__group");
+  const textarea = document.createElement("textarea");
+  textarea.classList.add("form__field", "fmt-input-field");
+  textarea.setAttribute("type", "text");
+  const label = document.createElement("label");
+  label.classList.add("form__label");
+  if (!!placeholder) {
+    textarea.setAttribute("placeholder", placeholder);
+  }
+  if (!!id) {
+    textarea.setAttribute("id", id);
+    label.setAttribute("for", id);
+  }
+  if (!!labelText) {
+    label.innerHTML = labelText;
+  }
+  if (readonly === true) {
+    textarea.setAttribute("readonly", "true");
+  }
+  if (!!containerClass) {
+    column.classList.add(containerClass);
+  }
+  form.appendChild(textarea);
+  form.appendChild(label);
+  column.appendChild(form);
+  return column;
+}
 //Functions - UI - Profile
 function FMTConvertMacro(macroName, unit, value, calories) {
   const result = {};
@@ -4690,6 +4721,10 @@ function prepareEventHandlers() {
     });
     $("#add-recipe-screen-cancel").click( (e) => {
       pageController.closeAddRecipeDynamicScreen();
+    });
+    $("#add-recipe-screen-recipe-preparation-steps-add").click( (e) => {
+      const col = FMTCreateTextArea(undefined, "Preparation Step", undefined, false, "fmt-recipe-step-cont");
+      e.currentTarget.parentNode.insertBefore(col, e.currentTarget);
     });
 /*    $("#overview-add-to-meal").click( (e) => {
         const overviewAddToMealBtn = document.getElementById("overview-add-to-meal");
