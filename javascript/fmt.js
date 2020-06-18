@@ -436,6 +436,15 @@ function FMTGetConvertibleUnits(unitName, unitsChart) {
   }
   return result;
 }
+function removeChildren(elementId, className) {
+  const element = document.getElementById(elementId);
+  if (element) {
+    const members = element.getElementsByClassName(className);
+    while (members.length > 0) {
+      element.removeChild(members[0]);
+    }
+  }
+}
 
 //Functions - DB
 function prepareDBv1() {
@@ -4794,10 +4803,13 @@ function prepareEventHandlers() {
       }
     });
     $("#add-recipe-screen-cancel").click( (e) => {
+      removeChildren("add-recipe-screen-recipe-preparation-steps", "fmt-recipe-step-cont");
       pageController.closeAddRecipeDynamicScreen();
     });
     $("#add-recipe-screen-recipe-preparation-steps-add").click( (e) => {
-      const col = FMTUICreateTextArea(undefined, "Preparation Step", undefined, false, ["fmt-recipe-step-cont"], ["fmt-textarea"]);
+      const exisitingSteps = e.currentTarget.parentNode.getElementsByClassName("fmt-recipe-step-cont");
+      const nextStepNum = exisitingSteps.length + 1;
+      const col = FMTUICreateTextArea(`Step ${nextStepNum}`, "Preparation Step", undefined, false, ["fmt-recipe-step-cont"], ["fmt-textarea"]);
       e.currentTarget.parentNode.insertBefore(col, e.currentTarget);
       col.scrollIntoView();
     });
