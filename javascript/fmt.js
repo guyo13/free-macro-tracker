@@ -81,7 +81,7 @@ fmtAppGlobals.FMT_DB_USER_GOALS_KP = ["profile_id", "year", "month", "day"];
 
 //Globals - Page
 fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-profile", "goto-settings"];
-fmtAppGlobals.dynamicScreenIds = ["add-food-screen", "edit-food-screen", "view-food-screen", "add-recipe-screen", "add-to-meal-screen", "edit-meal-entry-screen"];
+fmtAppGlobals.dynamicScreenIds = ["add-food-screen", "edit-food-screen", "view-food-screen", "add-recipe-screen", "add-to-recipe-screen", "add-to-meal-screen", "edit-meal-entry-screen"];
 fmtAppGlobals.overlaysIds = ["fmt-app-load-overlay", "fmt-app-first-time-overlay", "fmt-app-nav-overlay"];
 fmtAppGlobals.consumableItemScreenStaticViewInputFields = ["name", "brand", "calories", "proteins", "carbohydrates", "fats"];
 fmtAppGlobals.dateDivIDs = ["overview-date-day-large", "overview-date-day-small"];
@@ -3800,8 +3800,12 @@ function FMTToggleFoodMenu(baseId, qualifier) {
       break;
   }
   qualifiersToHide.forEach((qual, i) => {
-    document.getElementById(`${baseId}-${qual}-search-cont`).classList.add("d-none");
-    document.getElementById(`${baseId}-${qual}-table-cont`).classList.add("d-none");
+    const searchContainerToHide = document.getElementById(`${baseId}-${qual}-search-cont`);
+    const tableContainerToHide = document.getElementById(`${baseId}-${qual}-table-cont`);
+    if (searchContainerToHide && tableContainerToHide) {
+      searchContainerToHide.classList.add("d-none");
+      tableContainerToHide.classList.add("d-none");
+    }
   });
   document.getElementById(`${baseId}-${qualifier}-search-cont`).classList.remove("d-none");
   document.getElementById(`${baseId}-${qualifier}-table-cont`).classList.remove("d-none");
@@ -3882,7 +3886,7 @@ var pageController = {
         document.getElementById("foods-add").setAttribute("foods-table-body-id", foodsTableBodyID);
         const events = {"click": function(e) {
                             const foodId = Number(e.currentTarget.getAttribute("food_id"));
-                            pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, undefined, foodsTableBodyID);
+                            pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, undefined, foodsTableBodyID, false);
                             document.getElementById("foods-alerts").innerHTML = "";
                             }
                        };
@@ -4015,7 +4019,7 @@ var pageController = {
         FMTClearConsumableItemScreen(screenID, qualifier, objectType);
 
     },
-    openViewFoodDynamicScreen: function(foodId, multiplier, clear, currentServingValue, currentServingUnits, mealIdentifierObj, foodsTableBodyID) {
+    openViewFoodDynamicScreen: function(foodId, multiplier, clear, currentServingValue, currentServingUnits, mealIdentifierObj, foodsTableBodyID, showAddToRecipe) {
         //Sync Tasks - Argument Validation, constants definition
         if (!FMTIsValidFoodId(foodId) ) { console.error(`Invalid Food ID: ${foodId}`); return; }
         if (!isNumber(multiplier)) { console.error(`Invalid Multiplier: ${multiplier}`); return; }
@@ -4058,6 +4062,18 @@ var pageController = {
               document.getElementById("view-food-screen-meal-day").value = mealIdentifier.meal_day;
             }
         }
+        const addBtn = document.getElementById("view-food-screen-add");
+        if (addBtn) {
+          if (showAddToRecipe === true) {
+            addBtn.classList.remove("d-none");
+            addToMealBtn.classList.add("d-none");
+          }
+          else if (showAddToRecipe === false) {
+            addBtn.classList.add("d-none");
+            addToMealBtn.classList.remove("d-none");
+          }
+        }
+
         //Async Tasks
         FMTReadFood(foodId,
                     //OnSuccess
@@ -4075,7 +4091,7 @@ var pageController = {
             }
             const food = validateResult.food;
             //Update and open Screen
-            FMTPopulateSavedValuesInConsumableItemScreen(screenID, food, qualifier, objectType, multiplier, true, `${screenID}-${qualifier}-serving-input`, currentServingValue, currentServingUnits, "Viewing", true, true);
+            FMTPopulateSavedValuesInConsumableItemScreen(screenID, food, qualifier, objectType, multiplier, true, `${screenID}-${qualifier}-serving-input`, currentServingValue, currentServingUnits, undefined, true, true);
             pageController.openDynamicScreen(screenID);
         },
                     //OnError
@@ -4126,6 +4142,32 @@ var pageController = {
             saveBtn.removeAttribute("foods-table-body-id");
         }
     },
+    openAddToRecipeDynamicScreen: function(mealName) {
+        const screenID = "add-to-recipe-screen";
+        pageController.openDynamicScreen(screenID);
+        if (!!mealName) {
+            document.getElementById("add-to-recipe-screen-heading").innerHTML = `Add to ${mealName}`;
+        }
+        let onsuccessFn = function() {
+            console.debug("[openAddToMealDynamicScreen] - Foods loaded successfully");
+        };
+        let onerrorFn = function(e) {
+            FMTShowAlert(`${screenID}-alerts`, "danger", "Failed loading foods", fmtAppGlobals.defaultAlertScroll);
+            console.error(e);
+        };
+        const foodsTableBodyID = `${screenID}-food-table-body`;
+        const events = {"click": function(e) {
+                    const foodId = Number(e.currentTarget.getAttribute("food_id"));
+                    pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, undefined, foodsTableBodyID, true);
+                    }
+               };
+        FMTToggleFoodMenu("add-to-recipe-screen", "food");
+        FMTDisplayFoodsTable(screenID, onsuccessFn, onerrorFn, events);
+    },
+    closeAddToRecipeDynamicScreen: function() {
+        pageController.closeDynamicScreen("add-to-recipe-screen");
+        document.getElementById("add-to-recipe-screen-heading").innerHTML = "Add to Recipe";
+    },
     openAddToMealDynamicScreen: function(mealIdentifierObj) {
         const screenID = "add-to-meal-screen";
         pageController.openDynamicScreen(screenID);
@@ -4142,7 +4184,7 @@ var pageController = {
         const foodsTableBodyID = `${screenID}-food-table-body`;
         const events = {"click": function(e) {
                     const foodId = Number(e.currentTarget.getAttribute("food_id"));
-                    pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, mealIdentifierObj, foodsTableBodyID);
+                    pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, mealIdentifierObj, foodsTableBodyID, false);
                     }
                };
         FMTToggleFoodMenu("add-to-meal-screen", "food");
@@ -4580,7 +4622,7 @@ function prepareEventHandlers() {
             const mealIdentifier = validateMealIdentifierObjRes.mealIdentifier;
 
             pageController.closeEditFoodDynamicScreen();
-            pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, mealIdentifier);
+            pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, mealIdentifier, undefined, undefined);
             const alertDivID = pageController.getAlertDivId();
             FMTShowAlert(alertDivID, "success", msg);
         }
@@ -4726,6 +4768,24 @@ function prepareEventHandlers() {
       const col = FMTCreateTextArea(undefined, "Preparation Step", undefined, false, "fmt-recipe-step-cont");
       e.currentTarget.parentNode.insertBefore(col, e.currentTarget);
       col.scrollIntoView();
+    });
+    $("#add-recipe-screen-recipe-ingredients-add").click( (e) => {
+      const mealName = document.getElementById("add-recipe-screen-recipe-name").value || "";
+      pageController.openAddToRecipeDynamicScreen(mealName);
+    });
+    $("#add-to-recipe-screen-cancel").click( (e) => {
+      pageController.closeAddToRecipeDynamicScreen();
+    });
+    $("#add-to-recipe-screen-add").click( (e) => {
+      const addBtn = document.getElementById("add-to-recipe-screen-add");
+      const foodsTableBodyID = "add-to-recipe-screen-food-table-body";
+      const qualifier = addBtn.getAttribute("action");
+      switch (qualifier) {
+        case "food":
+        default:
+          pageController.openAddFoodDynamicScreen(foodsTableBodyID);
+        break;
+      }
     });
 /*    $("#overview-add-to-meal").click( (e) => {
         const overviewAddToMealBtn = document.getElementById("overview-add-to-meal");
