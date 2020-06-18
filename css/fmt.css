@@ -298,6 +298,7 @@ button {
 .fmt-select {
   width: 30%!important;
   box-shadow: none!important;
+  margin-bottom: 0.5rem;
 }
 .fmt-select:focus {
   border-color: #11998e!important;
@@ -306,6 +307,7 @@ button {
   width: 20%!important;
   box-shadow: none!important;
   font-size: 1rem!important;
+  margin-bottom: 0.5rem;
 }
 .fmt-select-sm:focus {
   border-color: #11998e!important;
@@ -528,8 +530,8 @@ button {
 .fmt-recipe-step-cont {}
 .form__group {
    position: relative;
-   padding: 15px 0 0;
-   margin-top: 10px;
+   padding: 0.7rem 0 0;
+   margin-top: 0.25rem;
    width: 70%;
 }
 .form__field {
@@ -538,7 +540,7 @@ button {
    border-bottom: 2px solid #9b9b9b;
    outline: 0;
    font-size: 1.2rem;
-   padding: 7px 0;
+   padding: 0.1rem 0;
    background: transparent;
    transition: border-color 0.2s;
 }
@@ -546,7 +548,7 @@ button {
    color: transparent;
 }
 .form__field:placeholder-shown ~ .form__label {
-   font-size: 1.1rem;
+   font-size: 1rem;
    cursor: text;
    top: 20px;
 }
@@ -556,7 +558,7 @@ button {
    top: 0;
    display: block;
    transition: 0.2s;
-   font-size: 1rem;
+   font-size: 0.8rem;
    color: #9b9b9b;
 }
 
@@ -577,7 +579,7 @@ button {
    top: 0;
    display: block;
    transition: 0.2s;
-   font-size: 1rem;
+   font-size: 0.8rem;
    color: #11998e;
    font-weight: 700;
 }
@@ -606,6 +608,7 @@ input[type=number] {
   -o-appearance:none;
    appearance:none;
    pointer-events: none;
+   margin-bottom: 0.5rem;
 }
 .fmt-select-noexpand::-ms-expand {
   display: none;
