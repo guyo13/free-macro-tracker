@@ -256,6 +256,18 @@ function indexesOfObject(array, key, value) {
   });
   return idx;
 }
+function indexesOfObjectMulti(array, obj) {
+  let idx = [];
+  array.forEach((item, i) => {
+    for (const k in obj) {
+      if(item[k] !== obj[k]) {
+        return;
+      }
+    }
+    idx.push(i);
+  });
+  return idx;
+}
 function _FMTSumNutritionalValues(nutritionalValue, nutritionalValuesArray, unitsChart) {
   unitsChart = unitsChart || fmtAppInstance.unitsChart;
   nutritionalValuesArray.forEach((nutriValueObj, i) => {
@@ -3852,7 +3864,7 @@ function FMTToggleFoodMenu(baseId, qualifier) {
   document.getElementById(`${baseId}-${qualifier}-search-cont`).classList.remove("d-none");
   document.getElementById(`${baseId}-${qualifier}-table-cont`).classList.remove("d-none");
 }
-function FMTUIAddIngredient(foodObj, ingredientsDiv) {
+function FMTUIAddIngredient(foodObj, ingredientsDiv, onDel, onEdit) {
   const _funcName = "FMTUIAddIngredient";
   const _res = FMTValidateFoodObject(foodObj);
   if (_res.error != null || _res.food == null) {
@@ -3870,11 +3882,17 @@ function FMTUIAddIngredient(foodObj, ingredientsDiv) {
   editBtn.classList.add("btn", "btn-secondary", "fal", "fa-pencil-alt", "mr-1");
   editBtn.addEventListener("click", (e) => {
     //TODO - implement edit ingredient screen
+    if (isFunction(onEdit)) {
+      onEdit();
+    }
   });
   const delBtn = document.createElement("button");
   delBtn.classList.add("btn", "btn-danger", "fal", "fa-trash-alt");
   delBtn.addEventListener("click", (e) => {
     ingredientsDiv.removeChild(col);
+    if (isFunction(onDel)) {
+      onDel();
+    }
   });
   input.parentNode.insertAdjacentElement('beforeend', editBtn);
   input.parentNode.insertAdjacentElement('beforeend', delBtn);
@@ -3931,7 +3949,18 @@ function FMTUIAddIngredientBtnClick(baseId, recipeBaseId, ingredientScreenCloseF
     ingredientScreenCloseFn();
     const baseIngredientsID = `${recipeBaseId}-recipe-ingredients`;
     const ingredientsDiv = document.getElementById(baseIngredientsID);
-    FMTUIAddIngredient(foodObj, ingredientsDiv);
+    //TODO on edit
+    const onEdit = undefined;
+    const onDel = () => {
+      const idx = indexesOfObjectMulti(ingredients, {"food_id": foodId,
+                                                     "referenceServing": food.referenceServing,
+                                                     "units": food.units});
+      if (idx.length > 0) {
+        console.debug(`Found ${idx.length} items matching for deletion, removing first`);
+        ingredients.splice(idx[0], 1);
+      }
+    };
+    FMTUIAddIngredient(foodObj, ingredientsDiv, onDel, onEdit);
     ingredients.push(food);
     //TODO - check what is better to leave it open or closed
     menuScreenCloseFn();
