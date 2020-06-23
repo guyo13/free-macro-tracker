@@ -25,6 +25,7 @@ fmtAppInstance.currentDay = null;
 //Instance - State - function pointers
 fmtAppInstance.eventFunctions = {};
 fmtAppInstance.viewFoodAddIngredientFn = null;
+fmtAppInstance.addRecipeAddIngredientFn = null;
 //Instance - User defined metrics
 fmtAppInstance.unitsChart = null;
 fmtAppInstance.additionalNutrients = null;
@@ -4241,6 +4242,7 @@ var pageController = {
         if (!!editFoodBtn) {
             editFoodBtn.removeAttribute("foods-table-body-id");
         }
+        fmtAppInstance.viewFoodAddIngredientFn = null;
     },
     openAddRecipeDynamicScreen: function(foodsTableBodyID) {
         const screenID = "add-recipe-screen";
@@ -4251,11 +4253,11 @@ var pageController = {
         const onAddIngredientClick = function() {
           const mealName = document.getElementById("add-recipe-screen-recipe-name").value || "";
           pageController.openAddToRecipeDynamicScreen(mealName, ingredients);
-      };
+        };
+        fmtAppInstance.addRecipeAddIngredientFn = onAddIngredientClick;
         pageController.openDynamicScreen(screenID);
         FMTClearConsumableItemScreen(screenID, qualifier, objectType);
         FMTPopulateConsumableItemScreen(screenID, optionsObj, qualifier, objectType, undefined, true);
-        document.getElementById(`${screenID}-${qualifier}-ingredients-add`).addEventListener("click", onAddIngredientClick);
         if (!!foodsTableBodyID) {
             const saveBtn = document.getElementById(`${screenID}-save`);
             if (!!saveBtn) {
@@ -4267,6 +4269,7 @@ var pageController = {
         const screenID = "add-recipe-screen";
         const qualifier = "recipe";
         const objectType = "Recipe Item";
+        fmtAppInstance.addRecipeAddIngredientFn = null;
         pageController.closeDynamicScreen(screenID);
         FMTClearConsumableItemScreen(screenID, qualifier, objectType);
         const saveBtn = document.getElementById(`${screenID}-save`);
@@ -4908,6 +4911,11 @@ function prepareEventHandlers() {
     });
     $("#add-recipe-screen-cancel").click( (e) => {
       pageController.closeAddRecipeDynamicScreen();
+    });
+    $("#add-recipe-screen-recipe-ingredients-add").click( (e) => {
+      if (isFunction(fmtAppInstance.addRecipeAddIngredientFn)) {
+        fmtAppInstance.addRecipeAddIngredientFn();
+      }
     });
     $("#add-recipe-screen-recipe-preparation-steps-add").click( (e) => {
       prepStepContainerDiv = e.currentTarget.parentNode;
