@@ -2537,7 +2537,7 @@ function FMTCreateUnitSelectMenu(baseName, targetDiv, unitsChart, defaultUnitNam
       }
       select = document.createElement("select");
       //Add Classes
-      select.classList.add("custom-select", "fmt-select");
+      select.classList.add("custom-select", "fmt-select", "fmt-center-text");
       select.setAttribute("id", selectId);
       if (!readonly) {
         //Populate options
@@ -2613,7 +2613,7 @@ function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj
 
     //Input
     const inputField = document.createElement("input");
-    inputField.classList.add("form__field", "fmt-input-field", "fmt-add-nutri");
+    inputField.classList.add("form__field", "fmt-add-nutri");
     inputField.setAttribute("id", nutriId);
     inputField.setAttribute("type", "number");
     inputField.setAttribute("placeholder", placeholder);

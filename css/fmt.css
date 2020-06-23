@@ -302,7 +302,8 @@ button {
 .fmt-select {
   width: 30%!important;
   box-shadow: none!important;
-  margin-bottom: 0.5rem;
+  font-size: 0.6rem;
+  font-weight: bold;
 }
 .fmt-select:focus {
   border-color: #11998e!important;
@@ -310,8 +311,8 @@ button {
 .fmt-select-sm {
   width: 20%!important;
   box-shadow: none!important;
-  font-size: 1rem!important;
-  margin-bottom: 0.5rem;
+  font-size: 0.6rem;
+  font-weight: bold;
 }
 .fmt-select-sm:focus {
   border-color: #11998e!important;
@@ -486,8 +487,14 @@ button {
 .fmt-w-inherit {
   width: inherit;
 }
+.fmt-w-20 {
+  width: 20%;
+}
 .fmt-w-45 {
   width: 45%;
+}
+.fmt-w-67 {
+  width: 67%;
 }
 .fmt-tab-ul {
   border-style: solid;
@@ -536,6 +543,10 @@ button {
 .fmt-recipe-ingredient {
   width: 100%;
 }
+.fmt-label-sm {
+  font-size: 0.7rem!important;
+  font-weight: bold;
+}
 .form__group {
    position: relative;
    padding: 0.7rem 0 0;
@@ -547,8 +558,8 @@ button {
    border: 0;
    border-bottom: 2px solid #9b9b9b;
    outline: 0;
-   font-size: 1.2rem;
-   padding: 0.1rem 0;
+   font-size: 1rem;
+   padding: 0.2rem 0;
    background: transparent;
    transition: border-color 0.2s;
 }
@@ -575,7 +586,7 @@ button {
 
 .form__field:focus {
    padding-bottom: 6px;
-   font-weight: 700;
+   /* font-weight: 700; */
    border-width: 3px;
    -webkit-border-image: linear-gradient(to right, #11998e, #38ef7d);
    -webkit-border-image-slice: 1;
