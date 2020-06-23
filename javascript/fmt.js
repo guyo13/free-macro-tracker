@@ -3866,10 +3866,30 @@ function FMTUIAddIngredient(foodObj, ingredientsDiv) {
   const lastElement = ingredientsDiv.children[ingredientsDiv.children.length - 1];
   ingredientsDiv.insertBefore(col, lastElement);
 }
+function FMTUIRefreshPreparationStepNumbers(prepStepContainerDiv) {
+  const exisitingSteps = prepStepContainerDiv.getElementsByClassName("fmt-recipe-step-cont");
+  let j = 1;
+  for (let i=0; i<exisitingSteps.length; i++) {
+    const step = exisitingSteps[i];
+    const labels = step.getElementsByTagName("label");
+    if (labels != null && labels.length > 0) {
+      labels[0].innerText = `Step ${j}`;
+      j++;
+    }
+  }
+}
 function FMTUIAddPreparationStep(prepStepContainerDiv, scroll) {
   const exisitingSteps = prepStepContainerDiv.getElementsByClassName("fmt-recipe-step-cont");
   const nextStepNum = exisitingSteps.length + 1;
   const col = FMTUICreateTextArea("textarea" ,`Step ${nextStepNum}`, "Preparation Step", undefined, false, ["fmt-recipe-step-cont"], ["fmt-textarea"]);
+  const textarea = col.getElementsByTagName("textarea")[0];
+  const delBtn = document.createElement("button");
+  delBtn.classList.add("btn", "btn-danger", "fal", "fa-trash-alt");
+  delBtn.addEventListener("click", (e) => {
+    prepStepContainerDiv.removeChild(col);
+    FMTUIRefreshPreparationStepNumbers(prepStepContainerDiv);
+  });
+  textarea.parentNode.insertAdjacentElement('beforeend', delBtn);
   const lastElement = prepStepContainerDiv.children[prepStepContainerDiv.children.length - 1];
   prepStepContainerDiv.insertBefore(col, lastElement);
   if (scroll === true) {

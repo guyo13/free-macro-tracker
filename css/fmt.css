@@ -285,7 +285,7 @@ button {
     width: 50%;
 }
 .fmt-textarea {
-    width: 100%;
+    width: 85%;
     resize: both;
 }
 @media screen and (max-width: 768px) {
