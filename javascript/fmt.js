@@ -24,6 +24,7 @@ fmtAppInstance.today = null;
 fmtAppInstance.currentDay = null;
 //Instance - State - function pointers
 fmtAppInstance.eventFunctions = {};
+fmtAppInstance.viewFoodAddIngredientFn = null;
 //Instance - User defined metrics
 fmtAppInstance.unitsChart = null;
 fmtAppInstance.additionalNutrients = null;
@@ -3909,7 +3910,7 @@ function FMTUIAddPreparationStep(prepStepContainerDiv, scroll) {
     col.scrollIntoView();
   }
 }
-function FMTUIAddIngredientBtnClick(baseId, recipeBaseId, ingredientScreenCloseFn, menuScreenCloseFn, recipeNutritionalValue) {
+function FMTUIAddIngredientBtnClick(baseId, recipeBaseId, ingredientScreenCloseFn, menuScreenCloseFn, ingredients) {
   const addBtn = document.getElementById(`${baseId}-add`);
   const recipeScreen = document.getElementById(recipeBaseId);
   if (addBtn == null || recipeScreen == null) { return; }
@@ -3919,16 +3920,19 @@ function FMTUIAddIngredientBtnClick(baseId, recipeBaseId, ingredientScreenCloseF
   if (FMTIsValidFoodId(foodId)) {
     addBtn.removeAttribute("food_id");
     const foodObj = FMTSaveConsumableItemScreen(baseId, "get-object", undefined, "food", "Food Item");
-    foodObj.food_id = foodId;
+    const _validate = FMTValidateFoodObject(foodObj);
+    if (_validate.error != null || _validate.food == null) {
+      console.error(`Error validating ingredient (ID ${foodId})`);
+      return;
+    }
+    const food = _validate.food;
+    food.food_id = foodId;
     ingredientScreenCloseFn();
-    //pageController.closeViewFoodDynamicScreen();
-    //const baseIngredientsID = `add-recipe-screen-recipe-ingredients`;
     const baseIngredientsID = `${recipeBaseId}-recipe-ingredients`;
     const ingredientsDiv = document.getElementById(baseIngredientsID);
     FMTUIAddIngredient(foodObj, ingredientsDiv);
-    _FMTSumNutritionalValues(recipeNutritionalValue, [foodObj.nutritionalValue], fmtAppInstance.unitsChart);
+    ingredients.push(food);
     //TODO - check what is better to leave it open or closed
-    //pageController.closeAddToRecipeDynamicScreen();
     menuScreenCloseFn();
   }
   else {
@@ -4243,10 +4247,10 @@ var pageController = {
         const qualifier = "recipe";
         const objectType = "Recipe Item";
         const optionsObj = undefined;
-        const recipeNutritionalValue = FMTCreateEmptyNutritionalValue(false);
+        const ingredients = [];
         const onAddIngredientClick = function() {
           const mealName = document.getElementById("add-recipe-screen-recipe-name").value || "";
-          pageController.openAddToRecipeDynamicScreen(mealName, recipeNutritionalValue);
+          pageController.openAddToRecipeDynamicScreen(mealName, ingredients);
       };
         pageController.openDynamicScreen(screenID);
         FMTClearConsumableItemScreen(screenID, qualifier, objectType);
@@ -4270,7 +4274,7 @@ var pageController = {
             saveBtn.removeAttribute("foods-table-body-id");
         }
     },
-    openAddToRecipeDynamicScreen: function(mealName, recipeNutritionalValue) {
+    openAddToRecipeDynamicScreen: function(mealName, ingredients) {
         const screenID = "add-to-recipe-screen";
         pageController.openDynamicScreen(screenID);
         if (!!mealName) {
@@ -4287,14 +4291,13 @@ var pageController = {
         const events = {"click": function(e) {
                     const foodId = Number(e.currentTarget.getAttribute("food_id"));
                     const addBtn = document.getElementById("view-food-screen-add");
+                    const clickFn = function() {
+                      FMTUIAddIngredientBtnClick("view-food-screen", "add-recipe-screen",
+                                                 pageController.closeViewFoodDynamicScreen, pageController.closeAddToRecipeDynamicScreen,
+                                                 ingredients);
+                    };
+                    fmtAppInstance.viewFoodAddIngredientFn = clickFn;
                     pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, undefined, foodsTableBodyID, true);
-                    addBtn.addEventListener("click", function() {
-                    FMTUIAddIngredientBtnClick("view-food-screen", "add-recipe-screen",
-                                               pageController.closeViewFoodDynamicScreen, pageController.closeAddToRecipeDynamicScreen,
-                                               recipeNutritionalValue);
-                    console.log(recipeNutritionalValue);
-                    addBtn.removeEventListener("click", this);
-                    });
                     }
                };
         FMTToggleFoodMenu("add-to-recipe-screen", "food");
@@ -4896,6 +4899,12 @@ function prepareEventHandlers() {
             FMTShowAlert("view-food-screen-alerts", "danger", msg);
         });
 
+    });
+    $("#view-food-screen-add").click( (e) => {
+      if (isFunction(fmtAppInstance.viewFoodAddIngredientFn)) {
+        fmtAppInstance.viewFoodAddIngredientFn();
+        fmtAppInstance.viewFoodAddIngredientFn = null;
+      }
     });
     $("#add-recipe-screen-cancel").click( (e) => {
       pageController.closeAddRecipeDynamicScreen();
