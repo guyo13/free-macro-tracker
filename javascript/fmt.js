@@ -3866,6 +3866,16 @@ function FMTUIAddIngredient(foodObj, ingredientsDiv) {
   const lastElement = ingredientsDiv.children[ingredientsDiv.children.length - 1];
   ingredientsDiv.insertBefore(col, lastElement);
 }
+function FMTUIAddPreparationStep(prepStepContainerDiv, scroll) {
+  const exisitingSteps = prepStepContainerDiv.getElementsByClassName("fmt-recipe-step-cont");
+  const nextStepNum = exisitingSteps.length + 1;
+  const col = FMTUICreateTextArea("textarea" ,`Step ${nextStepNum}`, "Preparation Step", undefined, false, ["fmt-recipe-step-cont"], ["fmt-textarea"]);
+  const lastElement = prepStepContainerDiv.children[prepStepContainerDiv.children.length - 1];
+  prepStepContainerDiv.insertBefore(col, lastElement);
+  if (scroll === true) {
+    col.scrollIntoView();
+  }
+}
 
 //Functions - State
 //Functions - State - Date
@@ -4838,11 +4848,8 @@ function prepareEventHandlers() {
       pageController.closeAddRecipeDynamicScreen();
     });
     $("#add-recipe-screen-recipe-preparation-steps-add").click( (e) => {
-      const exisitingSteps = e.currentTarget.parentNode.getElementsByClassName("fmt-recipe-step-cont");
-      const nextStepNum = exisitingSteps.length + 1;
-      const col = FMTUICreateTextArea("textarea" ,`Step ${nextStepNum}`, "Preparation Step", undefined, false, ["fmt-recipe-step-cont"], ["fmt-textarea"]);
-      e.currentTarget.parentNode.insertBefore(col, e.currentTarget);
-      //col.scrollIntoView();
+      prepStepContainerDiv = e.currentTarget.parentNode;
+      FMTUIAddPreparationStep(prepStepContainerDiv, false);
     });
     $("#add-recipe-screen-recipe-ingredients-add").click( (e) => {
       const mealName = document.getElementById("add-recipe-screen-recipe-name").value || "";
