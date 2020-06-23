@@ -541,7 +541,7 @@ button {
 .fmt-recipe-step-cont {}
 .fmt-recipe-ingredient-cont {}
 .fmt-recipe-ingredient {
-  width: 100%;
+  width: 70%;
 }
 .fmt-label-sm {
   font-size: 0.7rem!important;
@@ -558,8 +558,8 @@ button {
    border: 0;
    border-bottom: 1px solid #9b9b9b;
    outline: 0;
-   font-size: 1rem;
-   padding: 0.25rem 0;
+   font-size: 0.9rem;
+   padding: 0.3rem 0;
    background: transparent;
    transition: border-color 0.2s;
 }
@@ -585,7 +585,7 @@ button {
 }
 
 .form__field:focus {
-   padding-bottom: 0.25rem;
+   padding-bottom: 0.3rem;
    /* font-weight: 700; */
    border-width: 1px;
    -webkit-border-image: linear-gradient(to right, #11998e, #38ef7d);

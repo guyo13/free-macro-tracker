@@ -3845,12 +3845,24 @@ function FMTUIAddIngredient(foodObj, ingredientsDiv) {
     return;
   }
   const food = _res.food;
-  const col = FMTUICreateTextArea("input", undefined, undefined, undefined, true, ["fmt-recipe-ingredient-cont"], ["fmt-input-field", "fmt-recipe-ingredient"]);
+  const col = FMTUICreateTextArea("input", undefined, undefined, undefined, true, ["fmt-recipe-ingredient-cont"], ["fmt-recipe-ingredient"]);
   const input = col.getElementsByTagName("input")[0];
   input.value = `${food.foodName} ${food.referenceServing}/${food.units}`;
   input.setAttribute("food_id", foodObj.food_id);
   input.setAttribute("referenceServing", food.referenceServing);
   input.setAttribute("units", food.units);
+  const editBtn = document.createElement("button");
+  editBtn.classList.add("btn", "btn-secondary", "fal", "fa-pencil-alt", "mr-1");
+  editBtn.addEventListener("click", (e) => {
+    //TODO - implement edit ingredient screen
+  });
+  const delBtn = document.createElement("button");
+  delBtn.classList.add("btn", "btn-danger", "fal", "fa-trash-alt");
+  delBtn.addEventListener("click", (e) => {
+    ingredientsDiv.removeChild(col);
+  });
+  input.parentNode.insertAdjacentElement('beforeend', editBtn);
+  input.parentNode.insertAdjacentElement('beforeend', delBtn);
   const lastElement = ingredientsDiv.children[ingredientsDiv.children.length - 1];
   ingredientsDiv.insertBefore(col, lastElement);
 }
