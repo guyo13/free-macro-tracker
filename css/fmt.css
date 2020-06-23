@@ -552,6 +552,9 @@ button {
    background: transparent;
    transition: border-color 0.2s;
 }
+.form__group textarea {
+  font-size: 1rem;
+}
 .form__field::placeholder {
    color: transparent;
 }

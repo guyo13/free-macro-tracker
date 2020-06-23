@@ -3102,6 +3102,11 @@ function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
                 }
                 break;
             case "Recipe Item":
+                document.getElementById(`${baseScreenID}-${qualifier}-description`).value = "";
+                document.getElementById(`${baseScreenID}-${qualifier}-video-url`).value = "";
+                document.getElementById(`${baseScreenID}-${qualifier}-website`).value = "";
+                removeChildren(`${baseScreenID}-${qualifier}-preparation-steps`, "fmt-recipe-step-cont");
+                removeChildren(`${baseScreenID}-${qualifier}-ingredients`, "fmt-recipe-ingredient-cont");
                 break;
         }
     }
@@ -4159,9 +4164,8 @@ var pageController = {
         const objectType = "Recipe Item";
         const optionsObj = undefined;
         pageController.openDynamicScreen(screenID);
-        //FIXME - REVIEW
-        //FMTClearConsumableItemScreen(screenID, qualifier);
-        //FMTPopulateConsumableItemScreen(screenID, optionsObj, qualifier, objectType, undefined, true);
+        FMTClearConsumableItemScreen(screenID, qualifier, objectType);
+        FMTPopulateConsumableItemScreen(screenID, optionsObj, qualifier, objectType, undefined, true);
         ///
         if (!!foodsTableBodyID) {
             const saveBtn = document.getElementById(`${screenID}-save`);
@@ -4173,10 +4177,9 @@ var pageController = {
     closeAddRecipeDynamicScreen: function() {
         const screenID = "add-recipe-screen";
         const qualifier = "recipe";
+        const objectType = "Recipe Item";
         pageController.closeDynamicScreen(screenID);
-        //FIXME - REVIEW
-        //FMTClearConsumableItemScreen(screenID, qualifier);
-        ///
+        FMTClearConsumableItemScreen(screenID, qualifier, objectType);
         const saveBtn = document.getElementById(`${screenID}-save`);
         if (!!saveBtn) {
             saveBtn.removeAttribute("foods-table-body-id");
@@ -4820,7 +4823,6 @@ function prepareEventHandlers() {
       }
     });
     $("#add-recipe-screen-cancel").click( (e) => {
-      removeChildren("add-recipe-screen-recipe-preparation-steps", "fmt-recipe-step-cont");
       pageController.closeAddRecipeDynamicScreen();
     });
     $("#add-recipe-screen-recipe-preparation-steps-add").click( (e) => {
@@ -4828,12 +4830,14 @@ function prepareEventHandlers() {
       const nextStepNum = exisitingSteps.length + 1;
       const col = FMTUICreateTextArea("textarea" ,`Step ${nextStepNum}`, "Preparation Step", undefined, false, ["fmt-recipe-step-cont"], ["fmt-textarea"]);
       e.currentTarget.parentNode.insertBefore(col, e.currentTarget);
-      col.scrollIntoView();
+      //col.scrollIntoView();
     });
     $("#add-recipe-screen-recipe-ingredients-add").click( (e) => {
       const mealName = document.getElementById("add-recipe-screen-recipe-name").value || "";
       pageController.openAddToRecipeDynamicScreen(mealName);
     });
+    $("#add-recipe-screen-more").click( (e) => { FMTConsumableItemScreenShowMore("add-recipe-screen", "recipe"); } );
+    $("#add-recipe-screen-less").click( (e) => { FMTConsumableItemScreenShowLess("add-recipe-screen", "recipe"); } );
     $("#add-to-recipe-screen-cancel").click( (e) => {
       pageController.closeAddToRecipeDynamicScreen();
     });
