@@ -556,10 +556,10 @@ button {
 .form__field {
    font-family: inherit;
    border: 0;
-   border-bottom: 2px solid #9b9b9b;
+   border-bottom: 1px solid #9b9b9b;
    outline: 0;
    font-size: 1rem;
-   padding: 0.2rem 0;
+   padding: 0.25rem 0;
    background: transparent;
    transition: border-color 0.2s;
 }
@@ -585,9 +585,9 @@ button {
 }
 
 .form__field:focus {
-   padding-bottom: 6px;
+   padding-bottom: 0.25rem;
    /* font-weight: 700; */
-   border-width: 3px;
+   border-width: 1px;
    -webkit-border-image: linear-gradient(to right, #11998e, #38ef7d);
    -webkit-border-image-slice: 1;
    border-image: linear-gradient(to right, #11998e, #38ef7d);
@@ -595,6 +595,7 @@ button {
    border-top: 0;
    border-left: 0;
    border-right: 0;
+   transition: border 0.2s;
 }
 .form__field:focus ~ .form__label {
    position: absolute;
