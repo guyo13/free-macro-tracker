@@ -1666,6 +1666,16 @@ function FMTValidateRecipeObject(recipeObj, unitsChart) {
 
   recipe.nutritionalValue = FMTSumNutritionalValues(nutriValuesArr, unitsChart);
 
+  recipe.preparationSteps = [];
+  if (Array.isArray(recipeObj.preparationSteps)) {
+    for (let p=0; p<recipeObj.preparationSteps.length; p++) {
+      const step = recipeObj.preparationSteps[p];
+      if (!!step) {
+        recipe.preparationSteps.push(step.toString());
+      }
+    }
+  }
+
   result.recipe = recipe;
   return result;
 }
@@ -1910,7 +1920,7 @@ function FMTIterateRecipes(onsuccessFn, onerrorFn) {
   cursorRequest.onerror = onerrorFn;
   cursorRequest.onsuccess = onsuccessFn;
 }
-function FMTAddRecipe(recipeObj, unitsChart, onsuccessFn, onerrorFn) {
+function FMTAddRecipe(recipeObj, onsuccessFn, onerrorFn, unitsChart) {
     const _fnName = "FMTAddRecipe";
     unitsChart = unitsChart || fmtAppInstance.unitsChart;
     const result = FMTValidateRecipeObject(recipeObj, unitsChart);
@@ -1919,16 +1929,12 @@ function FMTAddRecipe(recipeObj, unitsChart, onsuccessFn, onerrorFn) {
         let date = new Date();
         recipe.lastModified = date.toISOString();
         recipe.tzMinutes = date.getTimezoneOffset();
-        if (isFunction(onerrorFn)) {
-          onerrorFn = function(e) { onerrorFn(e, recipe); };
-        }
-        if (isFunction(onsuccessFn)) {
-          onsuccessFn = function(e) { onsuccessFn(e, recipe); };
-        }
+        const _onerror = isFunction(onerrorFn) ? function(e) { onerrorFn(e, recipe); } : function(e) { console.debug(`[${_fnName}] - failed adding recipe object - ${JSON.stringify(recipe)}`); };
+        const _onsuccess = isFunction(onsuccessFn) ? function(e) { onsuccessFn(e, recipe); } : function(e) {console.debug(`[${_fnName}] - recipe object added successfully ${JSON.stringify(recipe)}`)};
         let recipeStore = getObjectStore(fmtAppGlobals.FMT_DB_RECIPES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
         let addRequest = recipeStore.add(recipe);
-        addRequest.onerror = onerrorFn || function(e) { console.debug(`[${_fnName}] - failed adding recipe object - ${JSON.stringify(recipe)}`); };
-        addRequest.onsuccess = onsuccessFn || function(e) {console.debug(`[${_fnName}] - recipe object added successfully ${JSON.stringify(recipe)}`)};
+        addRequest.onerror = _onerror;
+        addRequest.onsuccess = _onsuccess;
     }
     else {
         onerrorFn = onerrorFn || function() {console.debug(`[${_fnName}] - recipe object validation failed - ${JSON.stringify(recipeObj)}`);}
@@ -1945,16 +1951,12 @@ function FMTUpdateRecipe(recipeId, recipeObj, unitsChart, onsuccessFn, onerrorFn
         recipe.lastModified = date.toISOString();
         recipe.tzMinutes = date.getTimezoneOffset();
         recipe.recipe_id = recipeId;
-        if (isFunction(onerrorFn)) {
-          onerrorFn = function(e) { onerrorFn(e, recipe); };
-        }
-        if (isFunction(onsuccessFn)) {
-          onsuccessFn = function(e) { onsuccessFn(e, recipe); };
-        }
+        const _onerror = isFunction(onerrorFn) ? function(e) { onerrorFn(e, recipe); } : function(e) { console.debug(`[${_fnName}] - failed updating recipe object - ${JSON.stringify(recipe)}`); };
+        const _onsuccess = isFunction(onsuccessFn) ? function(e) { onsuccessFn(e, recipe); } : function(e) {console.debug(`[${_fnName}] - recipe object updated successfully ${JSON.stringify(recipe)}`)};
         let recipeStore = getObjectStore(fmtAppGlobals.FMT_DB_RECIPES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
         let putRequest = recipeStore.put(recipe);
-        addRequest.onerror = onerrorFn || function(e) { console.debug(`[${_fnName}] - failed updating recipe object - ${JSON.stringify(recipe)}`); };
-        addRequest.onsuccess = onsuccessFn || function(e) {console.debug(`[${_fnName}] - recipe object updated successfully ${JSON.stringify(recipe)}`)};
+        addRequest.onerror = _onerror;
+        addRequest.onsuccess = _onsuccess;
     }
     else {
         onerrorFn = onerrorFn || function() {console.debug(`[${_fnName}] - recipe object validation failed - ${JSON.stringify(recipeObj)}`);}
@@ -2716,28 +2718,29 @@ function FMTDisplayConsumableTable(baseID, qualifier, objectType, onsuccessFn, o
       default:
         return;
     }
-    let consumableTableBody = document.getElementById(`${baseID}-${qualifier}-table-body`);
+    const consumableTableBodyID = `${baseID}-${qualifier}-table-body`;
+    let consumableTableBody = document.getElementById(consumableTableBodyID);
     consumableTableBody.innerHTML = "";
 
-    if (fmtAppInstance.eventFunctions[baseID] == undefined) {
-        fmtAppInstance.eventFunctions[baseID] = {};
+    if (fmtAppInstance.eventFunctions[consumableTableBodyID] == undefined) {
+        fmtAppInstance.eventFunctions[consumableTableBodyID] = {};
     }
     //Clear previous Event Listeners (Javascript API is horrible. Why can't I get/remove all previous attached events?)
-    if (fmtAppInstance.eventFunctions[baseID].consumablesTableOnConsumableAdded != null) {
-        consumableTableBody.removeEventListener("onConsumableAdded", fmtAppInstance.eventFunctions[baseID].consumablesTableOnConsumableAdded);
+    if (fmtAppInstance.eventFunctions[consumableTableBodyID].consumablesTableOnConsumableAdded != null) {
+        consumableTableBody.removeEventListener("onConsumableAdded", fmtAppInstance.eventFunctions[consumableTableBodyID].consumablesTableOnConsumableAdded);
     }
-    if (fmtAppInstance.eventFunctions[baseID].consumablesTableOnConsumableDeleted != null) {
-        consumableTableBody.removeEventListener("onConsumableDeleted", fmtAppInstance.eventFunctions[baseID].consumablesTableOnConsumableDeleted);
+    if (fmtAppInstance.eventFunctions[consumableTableBodyID].consumablesTableOnConsumableDeleted != null) {
+        consumableTableBody.removeEventListener("onConsumableDeleted", fmtAppInstance.eventFunctions[consumableTableBodyID].consumablesTableOnConsumableDeleted);
     }
-    if (fmtAppInstance.eventFunctions[baseID].consumablesTableOnConsumableEdit != null) {
-        consumableTableBody.removeEventListener("onConsumableEdited", fmtAppInstance.eventFunctions[baseID].consumablesTableOnConsumableEdit);
+    if (fmtAppInstance.eventFunctions[consumableTableBodyID].consumablesTableOnConsumableEdit != null) {
+        consumableTableBody.removeEventListener("onConsumableEdited", fmtAppInstance.eventFunctions[consumableTableBodyID].consumablesTableOnConsumableEdit);
     }
 
-    fmtAppInstance.eventFunctions[baseID].consumablesTableOnConsumableAdded = function(event) {
+    fmtAppInstance.eventFunctions[consumableTableBodyID].consumablesTableOnConsumableAdded = function(event) {
         const newConsumableRow = FMTCreateConsumablesTableRowElement(event.consumableObj, idProp, nameProp, brandProp, eventListeners);
         consumableTableBody.appendChild(newConsumableRow);
     };
-    fmtAppInstance.eventFunctions[baseID].consumablesTableOnConsumableDeleted = function(event) {
+    fmtAppInstance.eventFunctions[consumableTableBodyID].consumablesTableOnConsumableDeleted = function(event) {
         const consumableRows = consumableTableBody.getElementsByClassName("fmt-consumable-table-row");
         for (let i=0; i<consumableRows.length; i++) {
             const tableRow = consumableRows[i];
@@ -2749,7 +2752,7 @@ function FMTDisplayConsumableTable(baseID, qualifier, objectType, onsuccessFn, o
         console.warn(`onConsumableDeleted fired on ${consumableTableBody.id} but no matching table row found. event:`);
         console.warn(event);
     };
-    fmtAppInstance.eventFunctions[baseID].consumablesTableOnConsumableEdit = function(event) {
+    fmtAppInstance.eventFunctions[consumableTableBodyID].consumablesTableOnConsumableEdit = function(event) {
         const consumableRows = consumableTableBody.getElementsByClassName("fmt-consumable-table-row");
         for (let i=0; i<consumableRows.length; i++) {
             const tableRow = consumableRows[i];
@@ -2761,9 +2764,9 @@ function FMTDisplayConsumableTable(baseID, qualifier, objectType, onsuccessFn, o
         consumableTableBody.appendChild(newConsumableRow);
     };
 
-    consumableTableBody.addEventListener("onConsumableAdded", fmtAppInstance.eventFunctions[baseID].consumablesTableOnConsumableAdded);
-    consumableTableBody.addEventListener("onConsumableDeleted", fmtAppInstance.eventFunctions[baseID].consumablesTableOnConsumableDeleted);
-    consumableTableBody.addEventListener("onConsumableEdited", fmtAppInstance.eventFunctions[baseID].consumablesTableOnConsumableEdit);
+    consumableTableBody.addEventListener("onConsumableAdded", fmtAppInstance.eventFunctions[consumableTableBodyID].consumablesTableOnConsumableAdded);
+    consumableTableBody.addEventListener("onConsumableDeleted", fmtAppInstance.eventFunctions[consumableTableBodyID].consumablesTableOnConsumableDeleted);
+    consumableTableBody.addEventListener("onConsumableEdited", fmtAppInstance.eventFunctions[consumableTableBodyID].consumablesTableOnConsumableEdit);
 
     dbFunc(function(e) {
         let cursor = e.target.result;
@@ -3243,6 +3246,13 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
       consumableObj.nutritionalValue.carbohydrates = document.getElementById(`${baseScreenID}-${qualifier}-carbohydrates`).value;
       consumableObj.nutritionalValue.fats = document.getElementById(`${baseScreenID}-${qualifier}-fats`).value;
       consumableObj.nutritionalValue.additionalNutrients = FMTUIGetAdditionalNutrientsFromScreen(baseScreenID, qualifier);
+    }
+    else {
+      const prepStepContainerDiv = document.getElementById(`${baseScreenID}-${qualifier}-preparation-steps`);
+      consumableObj.preparationSteps = FMTUIGetPreparationSteps(prepStepContainerDiv);
+      consumableObj.recipeDescription = document.getElementById(`${baseScreenID}-${qualifier}-description`).value;
+      consumableObj.videoUrl = document.getElementById(`${baseScreenID}-${qualifier}-video-url`).value;
+      consumableObj.website = document.getElementById(`${baseScreenID}-${qualifier}-website`).value;
     }
     switch(action) {
             //FIXME - add and edit only working for Food Item object.
@@ -3939,6 +3949,7 @@ function FMTUIAddIngredient(foodObj, ingredientsDiv, onDel, onEdit) {
   ingredientsDiv.insertBefore(col, lastElement);
 }
 function FMTUIRefreshPreparationStepNumbers(prepStepContainerDiv) {
+  if (prepStepContainerDiv == null) { return; }
   const exisitingSteps = prepStepContainerDiv.getElementsByClassName("fmt-recipe-step-cont");
   let j = 1;
   for (let i=0; i<exisitingSteps.length; i++) {
@@ -3949,6 +3960,19 @@ function FMTUIRefreshPreparationStepNumbers(prepStepContainerDiv) {
       j++;
     }
   }
+}
+function FMTUIGetPreparationSteps(prepStepContainerDiv) {
+  if (prepStepContainerDiv == null) { return; }
+  const exisitingSteps = prepStepContainerDiv.getElementsByClassName("fmt-recipe-step-cont");
+  const steps = [];
+  for (let i=0; i<exisitingSteps.length; i++) {
+    const step = exisitingSteps[i];
+    const textareas = step.getElementsByTagName("textarea");
+    if (textareas != null && textareas.length > 0) {
+      steps.push(textareas[0].value);
+    }
+  }
+  return steps;
 }
 function FMTUIAddPreparationStep(prepStepContainerDiv, scroll) {
   const exisitingSteps = prepStepContainerDiv.getElementsByClassName("fmt-recipe-step-cont");
@@ -4131,7 +4155,7 @@ var pageController = {
     closeDynamicScreen: function(dynamicScreenId) {
         if (fmtAppGlobals.dynamicScreenIds.indexOf(dynamicScreenId) < 0 ) {return;}
         if (!(dynamicScreenId in fmtAppInstance.pageState.activeDynamicScreens)) {
-            console.debug(`Dynamic screen ${dynamicScreenId} is already closed`);
+            console.debug(`Dynamic screen ${dynamicScreenId} is already closed`, new Error().stack);
             return;
         }
         $(`#${dynamicScreenId}`).hide();
@@ -4326,26 +4350,19 @@ var pageController = {
           pageController.openAddToRecipeDynamicScreen(mealName, ingredients);
         };
         const onSaveRecipeClick = function(e) {
+          //TODO save prep steps and other recipe specific stuff
           const recipeObj = FMTSaveConsumableItemScreen(screenID, "get-object", undefined, qualifier, objectType, undefined, undefined);
           recipeObj.ingredients = ingredients;
-          const _validate = FMTValidateRecipeObject(recipeObj);
-          const recipe = _validate.recipe;
-          if (recipe != null) {
-            //TODO fix "food" keyword
-            const consumablesTableBodyNode = !!consumablesTableBodyID ? document.getElementById(consumablesTableBodyID) : null;
-            const onsuccuess = function() {
-              if (!!consumablesTableBodyNode) {
-                  console.debug(`Firing onConsumableAdded event to ${consumablesTableBodyID}`);
-                  const event = new Event("onConsumableAdded");
-                  event.consumableObj = recipe;
-                  consumablesTableBodyNode.dispatchEvent(event);
-              }
-            };
-            FMTAddRecipe(recipe, onsuccess, pageController.closeAddRecipeDynamicScreen);
-          }
-          else {
-            console.error(_validate.error);
-          }
+          const consumablesTableBodyNode = !!consumablesTableBodyID ? document.getElementById(consumablesTableBodyID) : null;
+          const onsuccess = function(e, recipe) {
+            if (!!consumablesTableBodyNode) {
+                console.debug(`Firing onConsumableAdded event to ${consumablesTableBodyID}`);
+                const event = new Event("onConsumableAdded");
+                event.consumableObj = recipe;
+                consumablesTableBodyNode.dispatchEvent(event);
+            }
+          };
+          FMTAddRecipe(recipeObj, onsuccess, undefined, fmtAppInstance.unitsChart);
           pageController.closeAddRecipeDynamicScreen();
         };
         fmtAppInstance.addRecipeAddIngredientFn = onAddIngredientClick;
@@ -4739,15 +4756,18 @@ function prepareEventHandlers() {
         });
     $("#foods-add").click( (e) => {
       const addBtn = document.getElementById("foods-add");
-      const foodsTableBodyID = addBtn.getAttribute("consumables-table-body-id");
+      // let consumablesTableBodyID = addBtn.getAttribute("consumables-table-body-id");
+      let consumablesTableBodyID;
       const qualifier = addBtn.getAttribute("action");
       switch (qualifier) {
         case "recipe":
-          pageController.openAddRecipeDynamicScreen(foodsTableBodyID);
+          consumablesTableBodyID = "foods-recipe-table-body";
+          pageController.openAddRecipeDynamicScreen(consumablesTableBodyID);
         break;
         case "food":
         default:
-          pageController.openAddFoodDynamicScreen(foodsTableBodyID);
+          consumablesTableBodyID = "foods-food-table-body";
+          pageController.openAddFoodDynamicScreen(consumablesTableBodyID);
         break;
       }
     });
@@ -4755,12 +4775,6 @@ function prepareEventHandlers() {
       FMTToggleFoodMenu("foods", "food");
     });
     $("#foods-my-recipe-btn").click( (e) => {
-      //// TODO:
-
-             // const qualifier = "food";
-             // const objectType = "Food Item";
-             // FMTToggleFoodMenu(screenID, qualifier);
-             // FMTDisplayConsumableTable(screenID, qualifier, objectType, onsuccessFn, onerrorFn, events);
       FMTToggleFoodMenu("foods", "recipe");
     });
     $("#add-food-screen-cancel").click( (e) => {
@@ -5080,12 +5094,6 @@ function prepareEventHandlers() {
     });
     $("#add-to-meal-screen-my-recipe-btn").click( (e) => {
       FMTToggleFoodMenu("add-to-meal-screen", "recipe");
-      //// TODO:
-             //
-             // const qualifier = "food";
-             // const objectType = "Food Item";
-             // FMTToggleFoodMenu(screenID, qualifier);
-             // FMTDisplayConsumableTable(screenID, qualifier, objectType, onsuccessFn, onerrorFn, events);
     });
     $("#edit-meal-entry-screen-delete").click( (e) => {
         const alertsDivId = "edit-meal-entry-screen-alerts";
