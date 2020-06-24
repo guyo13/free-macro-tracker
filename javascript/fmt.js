@@ -244,7 +244,7 @@ function FMTSumAdditionalNutrients(additionalNutrientsSum, additionalNutrientsOb
       if (!isConvertible) {
         //Insert Non convertible unit of same name after the last index found or at end
         const insertIndex = idx.length < 1 ? (additionalNutrientsSum[category].length) : idx[idx.length - 1] + 1;
-        additionalNutrientsSum[category].splice(insertIndex, 0, addiNutriObj);
+        additionalNutrientsSum[category].splice(insertIndex, 0, Object.assign({}, addiNutriObj) );
       }
     });
   });
@@ -287,6 +287,16 @@ function FMTSumNutritionalValues(nutritionalValuesArray, unitsChart) {
   unitsChart = unitsChart || fmtAppInstance.unitsChart;
   const nutritionalValue = FMTCreateEmptyNutritionalValue(false);
   return _FMTSumNutritionalValues(nutritionalValue, nutritionalValuesArray, unitsChart);
+}
+function FMTSumIngredients(ingredients, unitsChart) {
+  unitsChart = unitsChart || fmtAppInstance.unitsChart;
+  const nutriValueArr = [];
+  if (Array.isArray(ingredients)) {
+    ingredients.forEach((item, i) => {
+      nutriValueArr.push(item.nutritionalValue);
+    });
+  }
+  return FMTSumNutritionalValues(nutriValueArr, unitsChart);
 }
 function FMTIsConvertible(referenceUnits, valueUnits) {
   //Takes two Unit Objects
@@ -2920,27 +2930,27 @@ function FMTUIPopulateNutritionalValue(baseScreenID, qualifier, nutritionalValue
     else {
       //Fill values only
       for (const category in additionalNutrients) {
-          const nutrientsList = additionalNutrients[category];
-          const normalizedCategory = category.replace(/ /g, "_");
-          for (const i in nutrientsList) {
-              const nutrient = nutrientsList[i];
-              if (nutrient.amount == 0) { continue; }
-              const nutrientNameNormalized = nutrient.name.replace(/ /g, "_");
-              const baseElementId = `${idBase}-addi-${normalizedCategory}-${nutrientNameNormalized}`;
-              const inputElementId = `${baseElementId}-input`;
-              const selectId = `${baseElementId}-unit-select`;
-              const baseElement = document.getElementById(baseElementId);
-              const inputElement = document.getElementById(inputElementId);
-              const select = document.getElementById(selectId);
-              if (inputElement) {
-                inputElement.value = nutrient.amount;
-                select.value = nutrient.unit;
-              }
-              else {
-                //TODO - Review if needed to Lazy Load inexisting nutrients/categories based on APP settings
-                console.warn(`[${_funcName}] - Consumable (${consumableItem}), could not find DOM element "${inputElementId}"`);
-              }
+        const nutrientsList = additionalNutrients[category];
+        const normalizedCategory = category.replace(/ /g, "_");
+        for (const i in nutrientsList) {
+          const nutrient = nutrientsList[i];
+          if (nutrient.amount == 0) { continue; }
+          const nutrientNameNormalized = nutrient.name.replace(/ /g, "_");
+          const baseElementId = `${idBase}-addi-${normalizedCategory}-${nutrientNameNormalized}`;
+          const inputElementId = `${baseElementId}-input`;
+          const selectId = `${baseElementId}-unit-select`;
+          const baseElement = document.getElementById(baseElementId);
+          const inputElement = document.getElementById(inputElementId);
+          const select = document.getElementById(selectId);
+          if (inputElement) {
+            inputElement.value = nutrient.amount;
+            select.value = nutrient.unit;
           }
+          else {
+            //TODO - Review if needed to Lazy Load inexisting nutrients/categories based on APP settings
+            console.warn(`[${_funcName}] - Consumable (${consumableItem}), could not find DOM element "${inputElementId}"`);
+          }
+        }
       }
     }
     //Iterate and manipulate fields as needed
@@ -2948,10 +2958,10 @@ function FMTUIPopulateNutritionalValue(baseScreenID, qualifier, nutritionalValue
     //Apply multiplier
     if (multiplier !== 1) {
       for (let k=0; k<addiNutrients.length; k++) {
-          const _field = addiNutrients[k];
-          if (isNumber(_field.value)) {
-            _field.value = Number(roundedToFixed(_field.value * multiplier, fmtAppInstance.nutrientRoundingPrecision) );
-          }
+        const _field = addiNutrients[k];
+        if (isNumber(_field.value)) {
+          _field.value = Number(roundedToFixed(_field.value * multiplier, fmtAppInstance.nutrientRoundingPrecision) );
+        }
       }
     }
   }
@@ -4073,6 +4083,9 @@ function FMTUIAddIngredientBtnClick(baseId, recipeBaseId, ingredientScreenCloseF
         console.debug(`Found ${idx.length} items matching for deletion, removing first`);
         ingredients.splice(idx[0], 1);
       }
+      const nutritionalValue = FMTSumIngredients(ingredients, fmtAppInstance.unitsChart);
+      FMTUIPopulateNutritionalValue(recipeBaseId, "recipe", nutritionalValue, 1,
+                                    true, true, false);
     };
     FMTUIAddIngredient(foodObj, ingredientsDiv, onDel, onEdit);
     ingredients.push(food);
@@ -4490,9 +4503,9 @@ var pageController = {
                               FMTUIAddIngredientBtnClick("view-food-screen", "add-recipe-screen",
                                                          pageController.closeViewFoodDynamicScreen, pageController.closeAddToRecipeDynamicScreen,
                                                          ingredients);
-                              const nutritionalValue = FMTSumNutritionalValues(ingredients, fmtAppInstance.unitsChart);
-                              FMTPopulateSavedValuesInConsumableItemScreen("add-recipe-screen", consumableItem, qualifier, objectType, multiplier,
-                                                                           readonly, focusDivId, currentServingValue, currentServingUnits, headingPrefix, createAdditionalNutrients, restrictNutrientUnit)
+                              const nutritionalValue = FMTSumIngredients(ingredients, fmtAppInstance.unitsChart);
+                              FMTUIPopulateNutritionalValue("add-recipe-screen", "recipe", nutritionalValue, 1,
+                                                            true, true, false);
                             };
                             fmtAppInstance.viewFoodAddIngredientFn = clickFn;
                             screenFunc.apply(null, args);
