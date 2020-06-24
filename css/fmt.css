@@ -44,10 +44,10 @@ button {
     overflow-y: auto;
     overflow-x: hidden;
 }
-.fmt-food-id-cell {}
-.fmt-food-name-cell {}
-.fmt-food-brand-cell {}
-.fmt-food-table-row {}
+.fmt-consumable-id-cell {}
+.fmt-consumable-name-cell {}
+.fmt-consumable-brand-cell {}
+.fmt-consumable-table-row {}
 .fmt-overlay {
     position: fixed;
     left: 0;
