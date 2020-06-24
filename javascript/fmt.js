@@ -2780,8 +2780,8 @@ function FMTDisplayConsumableTable(baseID, qualifier, objectType, onsuccessFn, o
                 onerrorFn );
 }
 //TODO add qualifier
-function FMTQueryFoodsTable(query, baseID) {
-    let tbody = document.getElementById(`${baseID}-food-table-body`);
+function FMTQueryConsumablesTable(baseID, qualifier, query) {
+    let tbody = document.getElementById(`${baseID}-${qualifier}-table-body`);
     let tableRows = tbody.getElementsByClassName("fmt-consumable-table-row");
     if (query === "") {
         for (let i=0; i < tableRows.length; i++) {
@@ -2793,13 +2793,13 @@ function FMTQueryFoodsTable(query, baseID) {
         query = query.toLowerCase();
         for (let i=0; i < tableRows.length; i++) {
             let row = tableRows[i];
-            let _fcell = row.getElementsByClassName("fmt-consumable-name-cell");
-            let _bcell = row.getElementsByClassName("fmt-consumable-brand-cell");
-            let foodName = "";
-            let foodBrand = "";
-            if (_fcell.length > 0) {foodName = _fcell[0].innerHTML.toLowerCase();}
-            if (_bcell.length > 0) {foodBrand = _bcell[0].innerHTML.toLowerCase();}
-            if (foodName.indexOf(query) > -1 || foodBrand.indexOf(query) > -1) {row.classList.remove("d-none");}
+            let _nameCell = row.getElementsByClassName("fmt-consumable-name-cell");
+            let _brandCell = row.getElementsByClassName("fmt-consumable-brand-cell");
+            let consumableName = "";
+            let consumableBrand = "";
+            if (_nameCell.length > 0) {consumableName = _nameCell[0].innerHTML.toLowerCase();}
+            if (_brandCell.length > 0) {consumableBrand = _brandCell[0].innerHTML.toLowerCase();}
+            if (consumableName.indexOf(query) > -1 || consumableBrand.indexOf(query) > -1) {row.classList.remove("d-none");}
             else {row.classList.add("d-none");}
         }
     }
@@ -5243,11 +5243,23 @@ function prepareEventHandlers() {
     //Search functions
     $("#foods-food-search").keyup( (e) => {
         let query = e.currentTarget.value;
-        FMTQueryFoodsTable(query, "foods");
+        FMTQueryConsumablesTable("foods", "food", query);
     });
     $("#add-to-meal-screen-food-search").keyup( (e) => {
         let query = e.currentTarget.value;
-        FMTQueryFoodsTable(query, "add-to-meal-screen");
+        FMTQueryConsumablesTable("add-to-meal-screen", "food", query);
+    });
+    $("#foods-recipe-search").keyup( (e) => {
+        let query = e.currentTarget.value;
+        FMTQueryConsumablesTable("foods", "recipe", query);
+    });
+    $("#add-to-meal-screen-recipe-search").keyup( (e) => {
+        let query = e.currentTarget.value;
+        FMTQueryConsumablesTable("add-to-meal-screen", "recipe", query);
+    });
+    $("#add-to-recipe-screen-food-search").keyup( (e) => {
+        let query = e.currentTarget.value;
+        FMTQueryConsumablesTable("add-to-recipe-screen", "food", query);
     });
     $(".fmt-prev-day-btn").click( (e) => { FMTPreviousDay(FMTOverviewLoadCurrentDay); } );
     $(".fmt-next-day-btn").click( (e) => { FMTNextDay(FMTOverviewLoadCurrentDay); } );
