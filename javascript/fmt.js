@@ -1930,7 +1930,10 @@ function FMTAddRecipe(recipeObj, onsuccessFn, onerrorFn, unitsChart) {
         recipe.lastModified = date.toISOString();
         recipe.tzMinutes = date.getTimezoneOffset();
         const _onerror = isFunction(onerrorFn) ? function(e) { onerrorFn(e, recipe); } : function(e) { console.debug(`[${_fnName}] - failed adding recipe object - ${JSON.stringify(recipe)}`); };
-        const _onsuccess = isFunction(onsuccessFn) ? function(e) { onsuccessFn(e, recipe); } : function(e) {console.debug(`[${_fnName}] - recipe object added successfully ${JSON.stringify(recipe)}`)};
+        const _onsuccess = isFunction(onsuccessFn) ? function(e) {
+          recipe.recipe_id = e.target.result;
+          onsuccessFn(e, recipe);
+        } : function(e) {console.debug(`[${_fnName}] - recipe object added successfully ${JSON.stringify(recipe)}`)};
         let recipeStore = getObjectStore(fmtAppGlobals.FMT_DB_RECIPES_STORE, fmtAppGlobals.FMT_DB_READWRITE);
         let addRequest = recipeStore.add(recipe);
         addRequest.onerror = _onerror;
@@ -2673,7 +2676,7 @@ function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj
     FMTCreateUnitSelectMenu(nutriBaseId, formGroupDiv, unitsChart, defaultUnit, readonly, undefined, unitFilterFn, true);
     return nutriBaseId;
 }
-function FMTCreateConsumablesTableRowElement(consumableObj, idProp, nameProp, brandProp, eventListeners) {
+function FMTCreateConsumablesTableRowElement(consumableObj, objectType, idProp, nameProp, brandProp, eventListeners) {
     let consumableRow = document.createElement("tr");
     consumableRow.setAttribute(idProp, consumableObj[idProp]);
     consumableRow.classList.add("fmt-consumable-table-row");
@@ -2681,8 +2684,10 @@ function FMTCreateConsumablesTableRowElement(consumableObj, idProp, nameProp, br
     const events = Object.keys(eventListeners);
     for (let k=0; k<events.length; k++) {
         const eventName = events[k];
-        //TODO pass objectType to event function!!
-        consumableRow.addEventListener(eventName, eventListeners[eventName]);
+        const _func = eventListeners[eventName];
+        if (isFunction(_func)) {
+          consumableRow.addEventListener(eventName, (e) => { _func(e, objectType); } );
+        }
     }
     return consumableRow;
 }
@@ -2720,6 +2725,10 @@ function FMTDisplayConsumableTable(baseID, qualifier, objectType, onsuccessFn, o
     }
     const consumableTableBodyID = `${baseID}-${qualifier}-table-body`;
     let consumableTableBody = document.getElementById(consumableTableBodyID);
+    if (consumableTableBody == null) {
+      console.warn(`Consumable table not found (${consumableTableBodyID}). Skipping`, new Error().stack);
+      return;
+    };
     consumableTableBody.innerHTML = "";
 
     if (fmtAppInstance.eventFunctions[consumableTableBodyID] == undefined) {
@@ -2737,7 +2746,7 @@ function FMTDisplayConsumableTable(baseID, qualifier, objectType, onsuccessFn, o
     }
 
     fmtAppInstance.eventFunctions[consumableTableBodyID].consumablesTableOnConsumableAdded = function(event) {
-        const newConsumableRow = FMTCreateConsumablesTableRowElement(event.consumableObj, idProp, nameProp, brandProp, eventListeners);
+        const newConsumableRow = FMTCreateConsumablesTableRowElement(event.consumableObj, objectType, idProp, nameProp, brandProp, eventListeners);
         consumableTableBody.appendChild(newConsumableRow);
     };
     fmtAppInstance.eventFunctions[consumableTableBodyID].consumablesTableOnConsumableDeleted = function(event) {
@@ -2760,7 +2769,7 @@ function FMTDisplayConsumableTable(baseID, qualifier, objectType, onsuccessFn, o
                 tableRow.parentNode.removeChild(tableRow);
             }
         }
-        const newConsumableRow = FMTCreateConsumablesTableRowElement(event.consumableObj, idProp, nameProp, brandProp, eventListeners);
+        const newConsumableRow = FMTCreateConsumablesTableRowElement(event.consumableObj, objectType, idProp, nameProp, brandProp, eventListeners);
         consumableTableBody.appendChild(newConsumableRow);
     };
 
@@ -2772,7 +2781,7 @@ function FMTDisplayConsumableTable(baseID, qualifier, objectType, onsuccessFn, o
         let cursor = e.target.result;
         if (cursor) {
             let record = cursor.value;
-            const consumableRow = FMTCreateConsumablesTableRowElement(record, idProp, nameProp, brandProp, eventListeners);
+            const consumableRow = FMTCreateConsumablesTableRowElement(record, objectType, idProp, nameProp, brandProp, eventListeners);
             consumableTableBody.appendChild(consumableRow);
             cursor.continue();
         }
@@ -2782,7 +2791,6 @@ function FMTDisplayConsumableTable(baseID, qualifier, objectType, onsuccessFn, o
     },
                 onerrorFn );
 }
-//TODO add qualifier
 function FMTQueryConsumablesTable(baseID, qualifier, query) {
     let tbody = document.getElementById(`${baseID}-${qualifier}-table-body`);
     let tableRows = tbody.getElementsByClassName("fmt-consumable-table-row");
@@ -2806,6 +2814,13 @@ function FMTQueryConsumablesTable(baseID, qualifier, query) {
             else {row.classList.add("d-none");}
         }
     }
+}
+function FMTUIInitConsumableMenu(baseID, toggleQualifier, onsuccessFn, onerrorFn, events) {
+  FMTToggleFoodMenu(baseID, toggleQualifier);
+  //Foods
+  FMTDisplayConsumableTable(baseID, "food", "Food Item", onsuccessFn, onerrorFn, events);
+  //Recipes
+  FMTDisplayConsumableTable(baseID, "recipe", "Recipe Item", onsuccessFn, onerrorFn, events);
 }
 function FMTPopulateAdditionalNutrientsInConsumableItemScreen(baseScreenID, readonly, qualifier) {
     if (!fmtAppInstance.additionalNutrients) { return false; }
@@ -4105,17 +4120,32 @@ var pageController = {
         };
         const foodsTableBodyID = "foods-food-table-body";
         document.getElementById("foods-add").setAttribute("consumables-table-body-id", foodsTableBodyID);
-        const events = {"click": function(e) {
-                            const foodId = Number(e.currentTarget.getAttribute("food_id"));
-                            pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, undefined, foodsTableBodyID, false);
-                            document.getElementById("foods-alerts").innerHTML = "";
+        const events = {"click": function(e, objectType) {
+                            let idProp, screenFunc, args;
+                            switch (objectType) {
+                              case "Food Item":
+                                idProp = "food_id";
+                                const foodId = Number(e.currentTarget.getAttribute(idProp));
+                                screenFunc = pageController.openViewFoodDynamicScreen;
+                                args = [foodId, 1, true, undefined, undefined, undefined, foodsTableBodyID, false];
+                                break;
+                              case "Recipe Item":
+                                idProp = "recipe_id";
+                                const recipeId = Number(e.currentTarget.getAttribute(idProp));
+                                //TODO
+                                screenFunc = console.debug;
+                                args = [recipeId];
+                                break;
+                              default:
+                                return;
                             }
+                            screenFunc.apply(null, args);
+                            document.getElementById("foods-alerts").innerHTML = "";
+                          }
                        };
         const baseID = "foods";
-        const qualifier = "food";
-        const objectType = "Food Item";
-        FMTToggleFoodMenu(baseID, qualifier);
-        FMTDisplayConsumableTable(baseID, qualifier, objectType, onsuccessFn, onerrorFn, events);
+        const toggleQualifier = "food";
+        FMTUIInitConsumableMenu(baseID, toggleQualifier, onsuccessFn, onerrorFn, events);
     },
     showSettings: function () {pageController.setTabActive("goto-settings");},
     showProfile: function () {
@@ -4404,22 +4434,29 @@ var pageController = {
             console.error(e);
         };
         const foodsTableBodyID = `${screenID}-food-table-body`;
-        const events = {"click": function(e) {
-                    const foodId = Number(e.currentTarget.getAttribute("food_id"));
-                    const addBtn = document.getElementById("view-food-screen-add");
-                    const clickFn = function() {
-                      FMTUIAddIngredientBtnClick("view-food-screen", "add-recipe-screen",
-                                                 pageController.closeViewFoodDynamicScreen, pageController.closeAddToRecipeDynamicScreen,
-                                                 ingredients);
-                    };
-                    fmtAppInstance.viewFoodAddIngredientFn = clickFn;
-                    pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, undefined, foodsTableBodyID, true);
-                    }
-               };
-       const qualifier = "food";
-       const objectType = "Food Item";
-       FMTToggleFoodMenu(screenID, qualifier);
-       FMTDisplayConsumableTable(screenID, qualifier, objectType, onsuccessFn, onerrorFn, events);
+        const events = {"click": function(e, objectType) {
+                            let idProp, screenFunc, args;
+                            switch (objectType) {
+                              case "Food Item":
+                                idProp = "food_id";
+                                const foodId = Number(e.currentTarget.getAttribute(idProp));
+                                screenFunc = pageController.openViewFoodDynamicScreen;
+                                args = [foodId, 1, true, undefined, undefined, undefined, foodsTableBodyID, true];
+                                break;
+                              default:
+                                return;
+                            }
+                            const clickFn = function() {
+                              FMTUIAddIngredientBtnClick("view-food-screen", "add-recipe-screen",
+                                                         pageController.closeViewFoodDynamicScreen, pageController.closeAddToRecipeDynamicScreen,
+                                                         ingredients);
+                            };
+                            fmtAppInstance.viewFoodAddIngredientFn = clickFn;
+                            screenFunc.apply(null, args);
+                          }
+                      };
+       const toggleQualifier = "food";
+       FMTUIInitConsumableMenu(screenID, toggleQualifier, onsuccessFn, onerrorFn, events);
     },
     closeAddToRecipeDynamicScreen: function() {
         pageController.closeDynamicScreen("add-to-recipe-screen");
@@ -4439,15 +4476,23 @@ var pageController = {
             console.error(e);
         };
         const foodsTableBodyID = `${screenID}-food-table-body`;
-        const events = {"click": function(e) {
-                    const foodId = Number(e.currentTarget.getAttribute("food_id"));
-                    pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, mealIdentifierObj, foodsTableBodyID, false);
+        const events = {"click": function(e, objectType) {
+                    let idProp, screenFunc, args;
+                    switch (objectType) {
+                      case "Food Item":
+                        idProp = "food_id";
+                        const foodId = Number(e.currentTarget.getAttribute(idProp));
+                        screenFunc = pageController.openViewFoodDynamicScreen;
+                        args = [foodId, 1, true, undefined, undefined, mealIdentifierObj, foodsTableBodyID, false];
+                        break;
+                      default:
+                        return;
                     }
+                    screenFunc.apply(null, args);
+                  }
                };
-       const qualifier = "food";
-       const objectType = "Food Item";
-       FMTToggleFoodMenu(screenID, qualifier);
-       FMTDisplayConsumableTable(screenID, qualifier, objectType, onsuccessFn, onerrorFn, events);
+       const toggleQualifier = "food";
+       FMTUIInitConsumableMenu(screenID, toggleQualifier, onsuccessFn, onerrorFn, events);
     },
     closeAddToMealDynamicScreen: function() {
         pageController.closeDynamicScreen("add-to-meal-screen");
