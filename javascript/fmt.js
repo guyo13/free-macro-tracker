@@ -4287,7 +4287,6 @@ var pageController = {
                               case "Recipe Item":
                                 idProp = "recipe_id";
                                 const recipeId = Number(e.currentTarget.getAttribute(idProp));
-                                //TODO
                                 screenFunc = pageController.openViewRecipeDynamicScreen;
                                 args = [recipeId, 1, true, undefined, undefined, undefined, recipesTableBodyID];
                                 break;
@@ -4720,6 +4719,7 @@ var pageController = {
             console.error(e);
         };
         const foodsTableBodyID = `${screenID}-food-table-body`;
+        const recipesTableBodyID = `${screenID}-recipe-table-body`;
         const events = {"click": function(e, objectType) {
                     let idProp, screenFunc, args;
                     switch (objectType) {
@@ -4728,6 +4728,12 @@ var pageController = {
                         const foodId = Number(e.currentTarget.getAttribute(idProp));
                         screenFunc = pageController.openViewFoodDynamicScreen;
                         args = [foodId, 1, true, undefined, undefined, mealIdentifierObj, foodsTableBodyID, false];
+                        break;
+                      case "Recipe Item":
+                        idProp = "recipe_id";
+                        const recipeId = Number(e.currentTarget.getAttribute(idProp));
+                        screenFunc = pageController.openViewRecipeDynamicScreen;
+                        args = [recipeId, 1, true, undefined, undefined, mealIdentifierObj, recipesTableBodyID];
                         break;
                       default:
                         return;
