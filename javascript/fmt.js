@@ -3161,8 +3161,15 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
         };
 
         consumableItem.ingredients.forEach((item, i) => {
-          const onEdit = () => {
-            pageController.openEditIngredientDynamicScreen(consumableItem, item, 1, true, undefined, undefined, onModified);
+          const onEdit = (col, input) => {
+            const onEdited = () => {
+              onModified();
+              input.value = `${item.foodName} ${item.referenceServing}/${item.units}`;
+              input.setAttribute("food_id", item.food_id);
+              input.setAttribute("referenceServing", item.referenceServing);
+              input.setAttribute("units", item.units);
+            };
+            pageController.openEditIngredientDynamicScreen(consumableItem, item, 1, true, undefined, undefined, onEdited);
           };
 
           const onDel = () => {
@@ -4106,7 +4113,7 @@ function FMTUIAddIngredient(foodObj, ingredientsDiv, onDel, onEdit) {
   editBtn.addEventListener("click", (e) => {
     //TODO - implement edit ingredient screen
     if (isFunction(onEdit)) {
-      onEdit();
+      onEdit(col, input);
     }
   });
   const delBtn = document.createElement("button");
@@ -4192,10 +4199,17 @@ function FMTUIAddIngredientBtnClick(baseId, recipeBaseId, ingredientScreenCloseF
       FMTUIPopulateNutritionalValue(recipeBaseId, "recipe", nutritionalValue, 1, true, true, false);
     }
 
-    const onEdit = () => {
+    const onEdit = (col, input) => {
       const _recipe = {};
       _recipe.ingredients = ingredients;
-      pageController.openEditIngredientDynamicScreen(_recipe, food, 1, true, undefined, undefined, onModified);
+      const onEdited = () => {
+        onModified();
+        input.value = `${food.foodName} ${food.referenceServing}/${food.units}`;
+        input.setAttribute("food_id", food.food_id);
+        input.setAttribute("referenceServing", food.referenceServing);
+        input.setAttribute("units", food.units);
+      };
+      pageController.openEditIngredientDynamicScreen(_recipe, food, 1, true, undefined, undefined, onEdited);
     };
 
     const onDel = () => {
