@@ -427,7 +427,6 @@
                 </div>
             </div>
             <div id="edit-food-screen-content" class="row justify-content-center fmt-max-height60">
-
               <div class="col-12 col-lg-8 mb-1">
                 <div class="form__group">
                   <input type="text" class="form__field fmt-input-field" placeholder="Item Name" id='edit-food-screen-food-name' required />
@@ -821,11 +820,121 @@
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-4 mb-1">
-                    <button id="view-recipe-screen-save" class="btn btn-outline-dark flex-fill" type="button">Add to Meal</button>
+                    <button id="view-recipe-screen-save" class="btn btn-outline-success flex-fill" type="button">Add to Meal</button>
                 </div>
                 <div class="w-100"></div>
                 <div class="input-group col-12 col-lg-4 mb-1">
                     <button id="view-recipe-screen-edit" class="btn btn-outline-dark flex-fill" type="button">Edit Recipe</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="edit-recipe-screen" class="fmt-dynamic-screen container-fluid">
+            <div id="edit-recipe-screen-alerts" class="row justify-content-center"></div>
+            <div class="d-flex justify-content-center mt-3">
+                <div class="d-flex col-12 col-lg-8 mb-1 justify-content-between">
+                    <div class="col-6 col-lg-7">
+                        <h4 id="edit-recipe-screen-heading" class="fmt-font-2">Edit Recipe</h4>
+                    </div>
+                    <div class="col-1 col-lg-1">
+                        <button id="edit-recipe-screen-cancel" class="fal fa-times btn fmt-text-btn1" type="button"></button>
+                    </div>
+                </div>
+            </div>
+            <div id="edit-recipe-screen-content" class="row justify-content-center fmt-max-height60">
+              <div class="col-12 col-lg-8 mb-1">
+                <div class="form__group">
+                  <input type="text" class="form__field fmt-w-inherit" placeholder="Recipe Name" id='edit-recipe-screen-recipe-name' required />
+                  <label for="edit-recipe-screen-recipe-name" class="form__label">Recipe Name</label>
+                </div>
+              </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="text" class="form__field fmt-w-inherit" placeholder="Creator" id='edit-recipe-screen-recipe-brand' required />
+                    <label for="edit-recipe-screen-recipe-brand" class="form__label">Creator</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group" id="edit-recipe-screen-recipe-serving">
+                    <input type="number" class="form__field" placeholder="Serving Size" id='edit-recipe-screen-recipe-serving-input' required />
+                    <label for="edit-recipe-screen-recipe-serving-input" class="form__label">Serving Size</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <textarea type="text" class="form__field fmt-w-inherit" placeholder="Description" id='edit-recipe-screen-recipe-description' required /></textarea>
+                    <label for="edit-recipe-screen-recipe-description" class="form__label">Description</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8 mt-1">
+                    <h4 class="fmt-font-2">Ingredients</h4>
+                </div>
+                <div id="edit-recipe-screen-recipe-ingredients" class="col-12 col-lg-8 mb-1">
+                  <button id="edit-recipe-screen-recipe-ingredients-add" class="fmt-input-field btn fmt-btn-outline-gray flex-fill fmt-btn-no-focus fmt-form-btn mt-2" type="button">Add Ingredient</button>
+                </div>
+                <div class="col-12 col-lg-8 mt-1">
+                    <h4 class="fmt-font-2">Preparation Steps</h4>
+                </div>
+                <div id="edit-recipe-screen-recipe-preparation-steps" class="col-12 col-lg-8 mb-1">
+                  <button id="edit-recipe-screen-recipe-preparation-steps-add" class="fmt-input-field btn fmt-btn-outline-gray flex-fill fmt-btn-no-focus fmt-form-btn mt-2" type="button">Add Step</button>
+                </div>
+                <div class="col-12 col-lg-8 mt-1">
+                    <h4 class="fmt-font-2">Social Media</h4>
+                </div>
+                  <div class="col-12 col-lg-8 mb-1">
+                    <div class="form__group">
+                      <input type="text" class="form__field fmt-w-inherit" placeholder="Video URL" id='edit-recipe-screen-recipe-video-url' required />
+                      <label for="edit-recipe-screen-recipe-video-url" class="form__label">Video Link</label>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-8 mb-1">
+                    <div class="form__group">
+                      <input type="text" class="form__field fmt-w-inherit" placeholder="Website Link" id='edit-recipe-screen-recipe-website' required />
+                      <label for="edit-recipe-screen-recipe-website" class="form__label">Website Link</label>
+                    </div>
+                  </div>
+                <div class="col-12 col-lg-8 mt-1">
+                    <h4 class="fmt-font-2">Nutritional Facts</h4>
+                </div>
+                <div class="col-12 col-lg-8">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-w-inherit" placeholder="Calories" id='edit-recipe-screen-recipe-calories' required readonly="true"/>
+                    <label for="edit-recipe-screen-recipe-calories" class="form__label">Calories</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-w-inherit" placeholder="Proteins" id='edit-recipe-screen-recipe-proteins' required readonly="true"/>
+                    <label for="edit-recipe-screen-recipe-proteins" class="form__label">Proteins</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-w-inherit" placeholder="Carbohydrates" id='edit-recipe-screen-recipe-carbohydrates' required readonly="true"/>
+                    <label for="edit-recipe-screen-recipe-carbohydrates" class="form__label">Carbohydrates</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-w-inherit" placeholder="Fats" id='edit-recipe-screen-recipe-fats' required readonly="true"/>
+                    <label for="edit-recipe-screen-recipe-fats" class="form__label">Fats</label>
+                  </div>
+                </div>
+                <div id="edit-recipe-screen-recipe-additional" class="d-none col-12 col-lg-8">
+                </div>
+            </div>
+            <div id="edit-recipe-screen-footer" class="row justify-content-center">
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <button id="edit-recipe-screen-more" class="btn btn-outline-dark flex-fill" type="button">Show More</button>
+                    <button id="edit-recipe-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Show Less</button>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <button id="edit-recipe-screen-delete" class="btn btn-danger flex-fill" type="button">Delete Recipe</button>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <button id="edit-recipe-screen-save" class="btn btn-outline-dark flex-fill" type="button">Save Recipe</button>
                 </div>
             </div>
         </div>
