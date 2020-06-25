@@ -477,14 +477,17 @@ function FMTGetConvertibleUnits(unitName, unitsChart) {
   }
   return result;
 }
-function removeChildren(elementId, className) {
-  const element = document.getElementById(elementId);
+function _removeChildren(element, className) {
   if (element) {
     const members = element.getElementsByClassName(className);
     while (members.length > 0) {
       element.removeChild(members[0]);
     }
   }
+}
+function removeChildren(elementId, className) {
+  const element = document.getElementById(elementId);
+  _removeChildren(element, className);
 }
 
 //Functions - DB
@@ -3090,6 +3093,24 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
             nameProp = "recipeName";
             brandProp = "recipeCreator";
             servingProp = "referenceServing";
+            document.getElementById(`${idBase}-description`).value = consumableItem.description || "";
+            document.getElementById(`${idBase}-video-url`).value = consumableItem.videoUrl || "";
+            document.getElementById(`${idBase}-website`).value = consumableItem.website || "";
+            const prepStepContainerDiv = document.getElementById(`${idBase}-preparation-steps`);
+            const ingredientsDiv = document.getElementById(`${idBase}-ingredients`);
+            _removeChildren(prepStepContainerDiv, "fmt-recipe-step-cont");
+            _removeChildren(ingredientsDiv, "fmt-recipe-ingredient-cont");
+            consumableItem.preparationSteps.forEach((item, i) => {
+              const col = FMTUICreateTextArea("textarea" ,`Step ${i+1}`, "Preparation Step", undefined, true,["fmt-recipe-step-cont"], ["fmt-textarea"]);
+              col.getElementsByTagName("textarea")[0].value = item;
+              const lastElement = prepStepContainerDiv.children[prepStepContainerDiv.children.length - 1];
+              prepStepContainerDiv.insertBefore(col, lastElement);
+            });
+            consumableItem.ingredients.forEach((item, i) => {
+              const col = FMTUICreateIngredient(item);
+              const lastElement = ingredientsDiv.children[ingredientsDiv.children.length - 1];
+              ingredientsDiv.insertBefore(col, lastElement);
+            });
             break;
     }
     document.getElementById(`${baseScreenID}-heading`).innerHTML = `${!!headingPrefix ? `${headingPrefix} - ` : ""}${consumableItem[nameProp]}`;
@@ -3975,6 +3996,15 @@ function FMTToggleFoodMenu(baseId, qualifier) {
   document.getElementById(`${baseId}-${qualifier}-search-cont`).classList.remove("d-none");
   document.getElementById(`${baseId}-${qualifier}-table-cont`).classList.remove("d-none");
 }
+function FMTUICreateIngredient(food) {
+  const col = FMTUICreateTextArea("input", undefined, undefined, undefined, true, ["fmt-recipe-ingredient-cont"], ["fmt-recipe-ingredient"]);
+  const input = col.getElementsByTagName("input")[0];
+  input.value = `${food.foodName} ${food.referenceServing}/${food.units}`;
+  input.setAttribute("food_id", food.food_id);
+  input.setAttribute("referenceServing", food.referenceServing);
+  input.setAttribute("units", food.units);
+  return col;
+}
 function FMTUIAddIngredient(foodObj, ingredientsDiv, onDel, onEdit) {
   const _funcName = "FMTUIAddIngredient";
   const _res = FMTValidateFoodObject(foodObj);
@@ -3983,12 +4013,9 @@ function FMTUIAddIngredient(foodObj, ingredientsDiv, onDel, onEdit) {
     return;
   }
   const food = _res.food;
-  const col = FMTUICreateTextArea("input", undefined, undefined, undefined, true, ["fmt-recipe-ingredient-cont"], ["fmt-recipe-ingredient"]);
+  food.food_id = foodObj.food_id;
+  const col = FMTUICreateIngredient(food);
   const input = col.getElementsByTagName("input")[0];
-  input.value = `${food.foodName} ${food.referenceServing}/${food.units}`;
-  input.setAttribute("food_id", foodObj.food_id);
-  input.setAttribute("referenceServing", food.referenceServing);
-  input.setAttribute("units", food.units);
   const editBtn = document.createElement("button");
   editBtn.classList.add("btn", "btn-secondary", "fal", "fa-pencil-alt", "mr-1");
   editBtn.addEventListener("click", (e) => {
