@@ -5018,7 +5018,6 @@ function prepareEventHandlers() {
         });
     $("#foods-add").click( (e) => {
       const addBtn = document.getElementById("foods-add");
-      // let consumablesTableBodyID = addBtn.getAttribute("consumables-table-body-id");
       let consumablesTableBodyID;
       const qualifier = addBtn.getAttribute("action");
       switch (qualifier) {
@@ -5296,15 +5295,17 @@ function prepareEventHandlers() {
     });
     $("#add-to-meal-screen-add").click( (e) => {
       const addBtn = document.getElementById("add-to-meal-screen-add");
-      const foodsTableBodyID = "add-to-meal-screen-food-table-body";
+      let consumablesTableBodyID;
       const qualifier = addBtn.getAttribute("action");
       switch (qualifier) {
         case "recipe":
-          pageController.openAddRecipeDynamicScreen(foodsTableBodyID);
+          consumablesTableBodyID = "add-to-meal-screen-recipe-table-body";
+          pageController.openAddRecipeDynamicScreen(consumablesTableBodyID);
         break;
         case "food":
         default:
-          pageController.openAddFoodDynamicScreen(foodsTableBodyID);
+          consumablesTableBodyID = "add-to-meal-screen-food-table-body";
+          pageController.openAddFoodDynamicScreen(consumablesTableBodyID);
         break;
       }
     });
