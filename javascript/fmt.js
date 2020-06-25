@@ -4357,6 +4357,80 @@ function FMTUIEditBtnClick(baseId, qualifier, objectType, event) {
   const mealIdentifier = validateMealIdentifierObjRes.mealIdentifier;
   screenFn(consumableId, consumablesTableBodyID, mealIdentifier);
 }
+function FMTUIDeleteConsumable(event, baseId, qualifier, objectType) {
+  if (fmtAppGlobals.inputScreensQualifiers.indexOf(qualifier) < 0 ) {
+    console.error(`Invalid qualifier ${qualifier}`);
+    return;
+  }
+  if (fmtAppGlobals.consumableTypes.indexOf(objectType) < 0 ) {
+    console.error(`Invalid Object Type ${objectType}`);
+    return;
+  }
+  let idProp, isValidIDFn, screenFns, deleteFn;
+  switch (objectType) {
+    case "Food Item":
+      idProp = "food_id";
+      isValidIDFn = FMTIsValidFoodId;
+      screenFns = [pageController.closeEditFoodDynamicScreen, pageController.closeViewFoodDynamicScreen];
+      deleteFn = FMTDeleteFood;
+      break;
+    case "Recipe Item":
+      idProp = "recipe_id";
+      isValidIDFn = FMTIsValidRecipeId;
+      screenFns = [pageController.closeEditRecipeDynamicScreen, pageController.closeViewRecipeDynamicScreen];
+      deleteFn = FMTDeleteRecipe;
+      break;
+    default:
+      return;
+  }
+  const editBtn = document.getElementById(`${baseId}-delete`);
+  let consumableId = editBtn.getAttribute(idProp);
+  if ( !isValidIDFn(consumableId) ) {
+      const msg = `Invalid ${objectType} ID (${consumableId}). Please reload`;
+      console.error(msg);
+      FMTShowAlert(`${baseId}-alerts`, "danger", msg, fmtAppGlobals.defaultAlertScroll);
+      return;
+  }
+  //FIXME - each one in their own function.
+  consumableId = Number(consumableId);
+  const msg = `Are you sure you would like to delete this ${objectType} ? (ID ${consumableId})`;
+  FMTShowPrompt(`${baseId}-alerts`, "warning", msg, fmtAppGlobals.defaultAlertScroll,
+                function(del) {
+      if (del) {
+          deleteFn(consumableId,
+                        function(e) {
+              const delBtn = document.getElementById(`${baseId}-delete`);
+              if (!!delBtn) {
+                  const consumablesTableBodyID = delBtn.getAttribute("consumables-table-body-id");
+                  const consumablesTableBodyNode = document.getElementById(consumablesTableBodyID);
+                  if (!!consumablesTableBodyNode) {
+                      console.debug(`Firing onConsumableDeleted event to ${consumablesTableBodyID}`);
+                      const event = new Event("onConsumableDeleted");
+                      event[idProp] = consumableId;
+                      consumablesTableBodyNode.dispatchEvent(event);
+                  }
+              }
+              screenFns.forEach((fn, i) => {
+                fn();
+              });
+              const msg = `Successfully deleted ${objectType}! (Food ID ${consumableId})`;
+              const alertDivID = pageController.getAlertDivId();
+              FMTShowAlert(alertDivID, "success", msg, fmtAppGlobals.defaultAlertScroll);
+          },
+                        function(e) {
+              screenFns.forEach((fn, i) => {
+                fn();
+              });
+              const msg = `Failed deleting ${objectType}! (Food ID ${consumableId})`;
+              const alertDivID = pageController.getAlertDivId();
+              FMTShowAlert(alertDivID, "success", msg, fmtAppGlobals.defaultAlertScroll);
+          });
+      }
+      else {
+          FMTShowAlert(`${baseId}-alerts`, "success", `${objectType} not deleted! (ID ${consumableId})`, fmtAppGlobals.defaultAlertScroll);
+      }
+  });
+}
 //Functions - State
 //Functions - State - Date
 function FMTToday() { fmtAppInstance.today = new Date(); }
@@ -4923,7 +4997,9 @@ var pageController = {
               };
               FMTUpdateRecipe(recipeId, recipe, onsuccess, undefined, fmtAppInstance.unitsChart);
             };
-            const onRecipeDeleteClick = () => {};
+            const onRecipeDeleteClick = (e) => {
+              FMTUIDeleteConsumable(e, screenID, qualifier, objectType);
+            };
             fmtAppInstance.editRecipeAddIngredientFn = onAddIngredientClick;
             fmtAppInstance.editRecipeSaveRecipeFn = onSaveRecipeClick;
             fmtAppInstance.editRecipeDeleteFn = onRecipeDeleteClick;
@@ -5499,50 +5575,7 @@ function prepareEventHandlers() {
         FMTSaveConsumableItemScreen("edit-food-screen", "edit", {"consumableId": foodId}, "food", "Food Item", true, onsuccessFn, onerrorFn);
     });
     $("#edit-food-screen-delete").click( (e) => {
-        let foodId = e.currentTarget.getAttribute("food_id");
-        if ( !FMTIsValidFoodId(foodId) ) {
-            const msg = `Invalid Food ID (${foodId}). Please reload`;
-            FMTShowAlert("edit-food-screen-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
-            return;
-        }
-        foodId = Number(foodId);
-        const msg = `Are you sure you would like to delete this Food ? (Food ID ${foodId})`;
-        FMTShowPrompt("edit-food-screen-alerts", "warning", msg, fmtAppGlobals.defaultAlertScroll,
-                      function(delFood) {
-            if (delFood) {
-                FMTDeleteFood(foodId,
-                              function(e) {
-                    const delBtn = document.getElementById("edit-food-screen-delete");
-                    if (!!delBtn) {
-                        const foodsTableBodyID = delBtn.getAttribute("consumables-table-body-id");
-                        const foodsTableBodyNode = document.getElementById(foodsTableBodyID);
-                        if (!!foodsTableBodyNode) {
-                            console.debug(`Firing onConsumableDeleted event to ${foodsTableBodyID}`);
-                            const event = new Event("onConsumableDeleted");
-                            event.food_id = foodId;
-                            foodsTableBodyNode.dispatchEvent(event);
-                        }
-                    }
-                    pageController.closeEditFoodDynamicScreen();
-                    const openScreens = pageController.updateZIndexes(true);
-                    const msg = `Successfully deleted Food! (Food ID ${foodId})`;
-                    pageController.closeViewFoodDynamicScreen();
-                    const alertDivID = pageController.getAlertDivId();
-                    FMTShowAlert(alertDivID, "success", msg, fmtAppGlobals.defaultAlertScroll);
-                },
-                              function(e) {
-                    pageController.closeEditFoodDynamicScreen();
-                    const openScreens = pageController.updateZIndexes(true);
-                    const msg = `Failed deleting Food! (Food ID ${foodId})`;
-                    pageController.closeViewFoodDynamicScreen();
-                    const alertDivID = pageController.getAlertDivId();
-                    FMTShowAlert(alertDivID, "success", msg, fmtAppGlobals.defaultAlertScroll);
-                });
-            }
-            else {
-                FMTShowAlert("edit-food-screen-alerts", "success", `Food not deleted! (Food ID ${foodId})`, fmtAppGlobals.defaultAlertScroll);
-            }
-        });
+      FMTUIDeleteConsumable(e, "edit-food-screen", "food", "Food Item");
     });
     $("#view-food-screen-food-serving-input").keyup(function(event) { FMTUpdateConsumableValuesOnServingChange(event, "view-food-screen", "food", "Food Item"); });
     $("#view-recipe-screen-recipe-serving-input").keyup(function(event) { FMTUpdateConsumableValuesOnServingChange(event, "view-recipe-screen", "recipe", "Recipe Item"); });
@@ -5615,7 +5648,7 @@ function prepareEventHandlers() {
     $("#edit-recipe-screen-less").click( (e) => { FMTConsumableItemScreenShowLess("edit-recipe-screen", "recipe"); } );
     $("#edit-recipe-screen-delete").click( (e) => {
       if (isFunction(fmtAppInstance.editRecipeDeleteFn)) {
-        fmtAppInstance.editRecipeDeleteFn();
+        fmtAppInstance.editRecipeDeleteFn(e);
       }
     });
     $("#edit-ingredient-screen-delete").click( (e) => {
