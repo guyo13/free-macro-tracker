@@ -3350,7 +3350,8 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
             pageFunction = pageController.openEditMealEntryDynamicScreen;
             break;
         case "Recipe Item":
-        //TODO
+          idProp = "recipe_id";
+          pageFunction = pageController.openViewRecipeDynamicScreen;
         break;
     }
     const alertsDivID = `${baseScreenID}-alerts`;
@@ -4568,7 +4569,6 @@ var pageController = {
         if (clear) {
             FMTClearViewConsumableItemScreen(screenID, qualifier, objectType);
             const eventListenersObj = { [`${screenID}-${qualifier}-serving-unit-select`] :
-            //TODO
                                         {"unitChanged": function(event) { FMTUpdateConsumableValuesOnServingChange(event, screenID, qualifier, objectType); }, }
                                      };
             const optionsObj = {"consumableId": recipeId, "eventListenersObj": eventListenersObj };
@@ -5199,6 +5199,7 @@ function prepareEventHandlers() {
         });
     });
     $("#view-food-screen-food-serving-input").keyup(function(event) { FMTUpdateConsumableValuesOnServingChange(event, "view-food-screen", "food", "Food Item"); });
+    $("#view-recipe-screen-recipe-serving-input").keyup(function(event) { FMTUpdateConsumableValuesOnServingChange(event, "view-recipe-screen", "recipe", "Recipe Item"); });
     $("#view-food-screen-more").click( (e) => { FMTConsumableItemScreenShowMore("view-food-screen", "food"); } );
     $("#view-food-screen-less").click( (e) => { FMTConsumableItemScreenShowLess("view-food-screen", "food"); } );
     $("#view-food-screen-cancel").click( (e) => { pageController.closeViewFoodDynamicScreen(); } );
