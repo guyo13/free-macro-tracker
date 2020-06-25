@@ -939,6 +939,79 @@
             </div>
         </div>
 
+        <div id="edit-ingredient-screen" class="fmt-dynamic-screen container-fluid">
+            <div id="edit-ingredient-screen-alerts" class="row justify-content-center"></div>
+            <div class="d-flex justify-content-center mt-3">
+                <div class="d-flex col-12 col-lg-8 mb-1 justify-content-between">
+                    <div class="">
+                        <h4 id="edit-ingredient-screen-heading" class="fmt-font-2">Edit Ingredient</h4>
+                    </div>
+                    <div class="col-1 col-lg-1">
+                        <button id="edit-ingredient-screen-cancel" class="fal fa-times btn fmt-text-btn1" type="button"></button>
+                    </div>
+                </div>
+            </div>
+            <div id="edit-ingredient-screen-content" class="row justify-content-center fmt-max-height60">
+              <div class="col-12 col-lg-8 mb-1">
+                <div class="form__group">
+                  <input type="text" class="form__field fmt-input-field" placeholder="Item Name" id='edit-ingredient-screen-ingredient-name' required readonly="true"/>
+                  <label for="edit-ingredient-screen-ingredient-name" class="form__label">Item Name</label>
+                </div>
+              </div>
+              <div class="col-12 col-lg-8 mb-1">
+                <div class="form__group">
+                  <input type="text" class="form__field fmt-input-field" placeholder="Item Brand" id='edit-ingredient-screen-ingredient-brand' required readonly="true"/>
+                  <label for="edit-ingredient-screen-ingredient-brand" class="form__label">Brand</label>
+                </div>
+              </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group" id="edit-ingredient-screen-ingredient-serving">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Serving Size" id='edit-ingredient-screen-ingredient-serving-input' required />
+                    <label for="edit-ingredient-screen-ingredient-serving-input" class="form__label">Serving</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8 mb-1">
+                    <h4 class="fmt-font-2">Nutritional Facts</h4>
+                </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Calories" id='edit-ingredient-screen-ingredient-calories' required readonly="true"/>
+                    <label for="edit-ingredient-screen-ingredient-calories" class="form__label">Calories</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Proteins" id='edit-ingredient-screen-ingredient-proteins' required readonly="true"/>
+                    <label for="edit-ingredient-screen-ingredient-proteins" class="form__label">Proteins</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Carbohydrates" id='edit-ingredient-screen-ingredient-carbohydrates' required readonly="true"/>
+                    <label for="edit-ingredient-screen-ingredient-carbohydrates" class="form__label">Carbohydrates</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Fats" id='edit-ingredient-screen-ingredient-fats' required readonly="true"/>
+                    <label for="edit-ingredient-screen-ingredient-fats" class="form__label">Fats</label>
+                  </div>
+                </div>
+                <div id="edit-ingredient-screen-ingredient-additional" class="d-none col-12 col-lg-8">
+                </div>
+            </div>
+            <div id="edit-ingredient-screen-footer" class="row justify-content-center">
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <button id="edit-ingredient-screen-more" class="btn btn-outline-dark flex-fill" type="button">Show More</button>
+                    <button id="edit-ingredient-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Show Less</button>
+                    <div class="w-100"></div>
+                    <button id="edit-ingredient-screen-delete" class="btn btn-danger flex-fill mt-3" type="button">Delete</button>
+                    <div class="w-100"></div>
+                    <button id="edit-ingredient-screen-save" class="btn btn-outline-primary flex-fill mt-3" type="button">Update</button>
+                </div>
+            </div>
+        </div>
+
         <div id="add-to-recipe-screen" class="fmt-dynamic-screen container-fluid">
             <div id="add-to-recipe-screen-alerts" class="row justify-content-center"></div>
             <div class="d-flex justify-content-center mt-3">

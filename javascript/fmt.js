@@ -29,6 +29,10 @@ fmtAppInstance.addRecipeAddIngredientFn = null;
 fmtAppInstance.addRecipeSaveRecipeFn = null;
 fmtAppInstance.editRecipeSaveRecipeFn = null;
 fmtAppInstance.editRecipeAddIngredientFn = null;
+fmtAppInstance.editRecipeDeleteFn = null;
+fmtAppInstance.editIngredientDeleteFn = null;
+fmtAppInstance.editIngredientUpdateFn = null;
+fmtAppInstance.editIngredientServingKeyupFn = null;
 //Instance - User defined metrics
 fmtAppInstance.unitsChart = null;
 fmtAppInstance.additionalNutrients = null;
@@ -87,7 +91,7 @@ fmtAppGlobals.FMT_DB_USER_GOALS_KP = ["profile_id", "year", "month", "day"];
 //Globals - Page
 fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-profile", "goto-settings"];
 fmtAppGlobals.dynamicScreenIds = ["add-food-screen", "edit-food-screen", "view-food-screen",
-                                  "add-recipe-screen", "view-recipe-screen", "edit-recipe-screen",
+                                  "add-recipe-screen", "view-recipe-screen", "edit-recipe-screen", "edit-ingredient-screen",
                                   "add-to-recipe-screen", "add-to-meal-screen", "edit-meal-entry-screen"];
 fmtAppGlobals.overlaysIds = ["fmt-app-load-overlay", "fmt-app-first-time-overlay", "fmt-app-nav-overlay"];
 fmtAppGlobals.consumableItemScreenStaticFieldsDescriptional = ["name", "brand"];
@@ -110,8 +114,8 @@ fmtAppGlobals.dateConstants.daySuffixes = {0: "th", 1: "st", 2: "nd", 3: "rd", 4
                                            5: "th", 6: "th", 7: "th", 8: "th", 9: "th"};
 //Globals - UI - Default
 fmtAppGlobals.defaultAlertScroll = {top: 0, left: 0, behavior: 'smooth'};
-fmtAppGlobals.inputScreensQualifiers = ["food", "consumable", "recipe"];
-fmtAppGlobals.consumableTypes = ["Food Item", "Meal Entry", "Recipe Item"];
+fmtAppGlobals.inputScreensQualifiers = ["food", "consumable", "recipe", "ingredient"];
+fmtAppGlobals.consumableTypes = ["Food Item", "Meal Entry", "Recipe Item", "Ingredient Item"];
 //Globals - Export
 var fmtAppExport;
 
@@ -3083,6 +3087,8 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
     let nameProp, brandProp, servingProp;
     switch (objectType) {
         case "Food Item":
+        //FIXME
+        case "Ingredient Item":
             nameProp = "foodName";
             brandProp = "foodBrand";
             servingProp = "referenceServing";
@@ -3149,8 +3155,16 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
       }
       else {
         //Create with delete and edit buttons
+        const onModified = () => {
+          consumableItem.nutritionalValue = FMTSumIngredients(consumableItem.ingredients, fmtAppInstance.unitsChart);
+          FMTUIPopulateNutritionalValue(baseScreenID, qualifier, consumableItem.nutritionalValue, 1, true, true, false);
+        };
+
         consumableItem.ingredients.forEach((item, i) => {
-          const onEdit = undefined;
+          const onEdit = () => {
+            pageController.openEditIngredientDynamicScreen(consumableItem, item, 1, true, undefined, undefined, onModified);
+          };
+
           const onDel = () => {
             const idx = indexesOfObjectMulti(consumableItem.ingredients, {"food_id": item.food_id,
                                                            "referenceServing": item.referenceServing,
@@ -3159,9 +3173,9 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
               console.debug(`Found ${idx.length} items matching for deletion, removing first`);
               consumableItem.ingredients.splice(idx[0], 1);
             }
-            consumableItem.nutritionalValue = FMTSumIngredients(consumableItem.ingredients, fmtAppInstance.unitsChart);
-            FMTUIPopulateNutritionalValue(baseScreenID, qualifier, consumableItem.nutritionalValue, 1, true, true, false);
+            onModified();
           };
+
           FMTUIAddIngredient(item, ingredientsDiv, onDel, onEdit);
         });
         //// Call this again because nutritional value is a derivative of ingredients and cannot be set manually
@@ -3207,9 +3221,23 @@ function FMTClearViewConsumableItemScreen(baseScreenID, qualifier, objectType) {
     }
     //Clear screen
     FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType);
+    let idProp;
+    switch(objectType) {
+      case "Food Item":
+      //FIXME when ingredient item will not nesecarrily be a food item
+      case "Ingredient Item":
+        idProp = "food_id";
+        break;
+      case "Meal Entry":
+        idProp = "consumable_id";
+        break;
+      case "Recipe Item":
+        idProp = "recipe_id";
+        break;
+    }
     //Clear Add to Meal/Update (save btn) properties present in this screen
     const saveBtn = document.getElementById(`${baseScreenID}-save`);
-    saveBtn.removeAttribute(`${qualifier}_id`);
+    saveBtn.removeAttribute(idProp);
     saveBtn.removeAttribute("meal_name");
     saveBtn.removeAttribute("meal_year");
     saveBtn.removeAttribute("meal_month");
@@ -3288,6 +3316,9 @@ function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
                 removeChildren(`${baseScreenID}-${qualifier}-preparation-steps`, "fmt-recipe-step-cont");
                 removeChildren(`${baseScreenID}-${qualifier}-ingredients`, "fmt-recipe-ingredient-cont");
                 break;
+            case "Ingredient Item":
+            //TODO
+              break;
         }
     }
 }
@@ -3324,6 +3355,8 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
     let consumableObj = {};
     switch (objectType) {
         case "Food Item":
+        //FIXME
+        case "Ingredient Item":
             nameProp = "foodName";
             brandProp = "foodBrand";
             servingProp = "referenceServing";
@@ -3396,7 +3429,7 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
             break;
     }
 }
-function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier, objectType) {
+function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier, objectType, consumableItem, ingredient) {
   //TODO add object ID validation function based on objectType
     let idProp, pageFunction;
     switch (objectType) {
@@ -3411,7 +3444,11 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
         case "Recipe Item":
           idProp = "recipe_id";
           pageFunction = pageController.openViewRecipeDynamicScreen;
-        break;
+          break;
+        case "Ingredient Item":
+          idProp = "food_id";
+          pageFunction = pageController.openEditIngredientDynamicScreen;
+          break;
     }
     const alertsDivID = `${baseScreenID}-alerts`;
     //TODO - review why do/don't I need this function to remove my alerts
@@ -3432,14 +3469,24 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
     else {
       multiplier = conversionRes.multiplier;
     }
-    let objectId = document.getElementById(`${baseScreenID}-save`).getAttribute(idProp);
-    if (!isNumber(objectId)) {
-        console.error(`${objectType} ID (${objectId}) is not valid on serving change`);
-        FMTShowAlert(alertsDivID, "danger", "Error while calculating nutritional value. Please reload", fmtAppGlobals.defaultAlertScroll);
+    let args;
+    // Ugly. FIXME
+    if (objectType === "Ingredient Item") {
+      ////onModified === undefined but will not override because clear === false
+      args = [consumableItem, ingredient, multiplier, false, servingValue, units, undefined];
     }
     else {
-        pageFunction(objectId, multiplier, false, servingValue, units);
+      let objectId = document.getElementById(`${baseScreenID}-save`).getAttribute(idProp);
+      if (!isNumber(objectId)) {
+          console.error(`${objectType} ID (${objectId}) is not valid on serving change`);
+          FMTShowAlert(alertsDivID, "danger", "Error while calculating nutritional value. Please reload", fmtAppGlobals.defaultAlertScroll);
+          return;
+      }
+      else {
+          args = [objectId, multiplier, false, servingValue, units];
+      }
     }
+    pageFunction.apply(null, args);
 }
 
 //Functions - UI - Overview
@@ -4139,8 +4186,18 @@ function FMTUIAddIngredientBtnClick(baseId, recipeBaseId, ingredientScreenCloseF
     ingredientScreenCloseFn();
     const baseIngredientsID = `${recipeBaseId}-recipe-ingredients`;
     const ingredientsDiv = document.getElementById(baseIngredientsID);
-    //TODO on edit
-    const onEdit = undefined;
+
+    const onModified = () => {
+      const nutritionalValue = FMTSumIngredients(ingredients, fmtAppInstance.unitsChart);
+      FMTUIPopulateNutritionalValue(recipeBaseId, "recipe", nutritionalValue, 1, true, true, false);
+    }
+
+    const onEdit = () => {
+      const _recipe = {};
+      _recipe.ingredients = ingredients;
+      pageController.openEditIngredientDynamicScreen(_recipe, food, 1, true, undefined, undefined, onModified);
+    };
+
     const onDel = () => {
       const idx = indexesOfObjectMulti(ingredients, {"food_id": foodId,
                                                      "referenceServing": food.referenceServing,
@@ -4149,10 +4206,9 @@ function FMTUIAddIngredientBtnClick(baseId, recipeBaseId, ingredientScreenCloseF
         console.debug(`Found ${idx.length} items matching for deletion, removing first`);
         ingredients.splice(idx[0], 1);
       }
-      const nutritionalValue = FMTSumIngredients(ingredients, fmtAppInstance.unitsChart);
-      FMTUIPopulateNutritionalValue(recipeBaseId, "recipe", nutritionalValue, 1,
-                                    true, true, false);
+      onModified();
     };
+
     FMTUIAddIngredient(foodObj, ingredientsDiv, onDel, onEdit);
     ingredients.push(food);
     //TODO - check what is better to leave it open or closed
@@ -4853,8 +4909,10 @@ var pageController = {
               };
               FMTUpdateRecipe(recipeId, recipe, onsuccess, undefined, fmtAppInstance.unitsChart);
             };
+            const onRecipeDeleteClick = () => {};
             fmtAppInstance.editRecipeAddIngredientFn = onAddIngredientClick;
             fmtAppInstance.editRecipeSaveRecipeFn = onSaveRecipeClick;
+            fmtAppInstance.editRecipeDeleteFn = onRecipeDeleteClick;
             FMTPopulateSavedValuesInConsumableItemScreen(screenID, recipe, qualifier, objectType, 1, false, null, undefined, undefined, "Editing", true, false);
             pageController.openDynamicScreen(screenID);
         },
@@ -4872,8 +4930,79 @@ var pageController = {
         const objectType = "Recipe Item";
         fmtAppInstance.editRecipeAddIngredientFn = null;
         fmtAppInstance.editRecipeSaveRecipeFn = null;
+        fmtAppInstance.editRecipeDeleteFn = null;
         pageController.closeDynamicScreen(screenID);
         FMTClearConsumableItemScreen(screenID, qualifier, objectType);
+    },
+    openEditIngredientDynamicScreen: function(consumableItem, ingredient, multiplier, clear, currentServingValue, currentServingUnits, onModified) {
+      //ingredient should refer a member of consumableItem.ingredients
+      const screenID = "edit-ingredient-screen";
+      const qualifier = "ingredient";
+      const objectType = "Ingredient Item";
+      multiplier = Number(multiplier);
+      if (clear !== false) { clear = clear || true; }
+      const saveBtn = document.getElementById(`${screenID}-save`);
+      const delBtn = document.getElementById(`${screenID}-delete`);
+      if (clear) {
+        const onServingChange = (event) => {
+          FMTUpdateConsumableValuesOnServingChange(event, screenID, qualifier, objectType, consumableItem, ingredient);
+        }
+        FMTClearConsumableItemScreen(screenID, qualifier, objectType);
+        const eventListenersObj = { [`${screenID}-${qualifier}-serving-unit-select`] :
+                                    {"unitChanged": onServingChange, }
+                                 };
+        const optionsObj = {"eventListenersObj": eventListenersObj };
+        const result = FMTPopulateConsumableItemScreen(screenID, optionsObj, qualifier, objectType, undefined, false);
+        if (result.error) {
+          FMTShowAlert(alertDivId, "error", result.error);
+        }
+        const deleteClickFn = () => {
+          const idx = indexesOfObjectMulti(consumableItem.ingredients, {"food_id": ingredient.food_id,
+                                                         "referenceServing": ingredient.referenceServing,
+                                                         "units": ingredient.units});
+          if (idx.length > 0) {
+            console.debug(`Found ${idx.length} ingredients matching for deletion, removing first`);
+            consumableItem.ingredients.splice(idx[0], 1);
+          }
+          if (isFunction(onModified)) {
+            onModified();
+          }
+          pageController.closeEditIngredientDynamicScreen();
+        };
+        const updateClickFn = () => {
+          const ingredientObj = FMTSaveConsumableItemScreen(screenID, "get-object", undefined, qualifier, objectType, true, undefined, undefined);
+          const _val = FMTValidateFoodObject(ingredientObj);
+          if (_val.error == null && _val.food != null) {
+            ingredient.referenceServing = _val.food.referenceServing;
+            ingredient.units = _val.food.units;
+            ingredient.nutritionalValue = _val.food.nutritionalValue;
+            if (isFunction(onModified)) {
+              onModified();
+            }
+          }
+          else {
+            console.error(_val.error);
+          }
+          pageController.closeEditIngredientDynamicScreen();
+        };
+        fmtAppInstance.editIngredientDeleteFn = deleteClickFn;
+        fmtAppInstance.editIngredientUpdateFn = updateClickFn;
+        fmtAppInstance.editIngredientServingKeyupFn = onServingChange;
+      }
+      FMTPopulateSavedValuesInConsumableItemScreen(screenID, ingredient, qualifier, objectType,
+                                                   multiplier, true, null, currentServingValue, currentServingUnits,
+                                                   "Editing Ingredient", true, true);
+      pageController.openDynamicScreen(screenID);
+    },
+    closeEditIngredientDynamicScreen: function() {
+      const screenID = "edit-ingredient-screen";
+      const qualifier = "ingredient";
+      const objectType = "Ingredient Item";
+      fmtAppInstance.editIngredientDeleteFn = null;
+      fmtAppInstance.editIngredientUpdateFn = null;
+      fmtAppInstance.editIngredientServingKeyupFn = null;
+      pageController.closeDynamicScreen(screenID);
+      FMTClearConsumableItemScreen(screenID, qualifier, objectType);
     },
     openAddToMealDynamicScreen: function(mealIdentifierObj) {
         const screenID = "add-to-meal-screen";
@@ -5403,6 +5532,11 @@ function prepareEventHandlers() {
     });
     $("#view-food-screen-food-serving-input").keyup(function(event) { FMTUpdateConsumableValuesOnServingChange(event, "view-food-screen", "food", "Food Item"); });
     $("#view-recipe-screen-recipe-serving-input").keyup(function(event) { FMTUpdateConsumableValuesOnServingChange(event, "view-recipe-screen", "recipe", "Recipe Item"); });
+    $("#edit-ingredient-screen-ingredient-serving-input").keyup(function(event) {
+      if (isFunction(fmtAppInstance.editIngredientServingKeyupFn)) {
+        fmtAppInstance.editIngredientServingKeyupFn(event);
+      }
+    });
     $("#view-food-screen-more").click( (e) => { FMTConsumableItemScreenShowMore("view-food-screen", "food"); } );
     $("#view-food-screen-less").click( (e) => { FMTConsumableItemScreenShowLess("view-food-screen", "food"); } );
     $("#view-food-screen-cancel").click( (e) => { pageController.closeViewFoodDynamicScreen(); } );
@@ -5453,9 +5587,7 @@ function prepareEventHandlers() {
         fmtAppInstance.editRecipeSaveRecipeFn();
       }
     });
-    $("#edit-recipe-screen-cancel").click( (e) => {
-      pageController.closeEditRecipeDynamicScreen();
-    });
+    $("#edit-recipe-screen-cancel").click( (e) => { pageController.closeEditRecipeDynamicScreen(); });
     $("#edit-recipe-screen-recipe-ingredients-add").click( (e) => {
       if (isFunction(fmtAppInstance.editRecipeAddIngredientFn)) {
         fmtAppInstance.editRecipeAddIngredientFn();
@@ -5467,6 +5599,24 @@ function prepareEventHandlers() {
     });
     $("#edit-recipe-screen-more").click( (e) => { FMTConsumableItemScreenShowMore("edit-recipe-screen", "recipe"); } );
     $("#edit-recipe-screen-less").click( (e) => { FMTConsumableItemScreenShowLess("edit-recipe-screen", "recipe"); } );
+    $("#edit-recipe-screen-delete").click( (e) => {
+      if (isFunction(fmtAppInstance.editRecipeDeleteFn)) {
+        fmtAppInstance.editRecipeDeleteFn();
+      }
+    });
+    $("#edit-ingredient-screen-delete").click( (e) => {
+      if (isFunction(fmtAppInstance.editIngredientDeleteFn)) {
+        fmtAppInstance.editIngredientDeleteFn();
+      }
+    });
+    $("#edit-ingredient-screen-save").click( (e) => {
+      if (isFunction(fmtAppInstance.editIngredientUpdateFn)) {
+        fmtAppInstance.editIngredientUpdateFn();
+      }
+    });
+    $("#edit-ingredient-screen-cancel").click( (e) => { pageController.closeEditIngredientDynamicScreen(); });
+    $("#edit-ingredient-screen-more").click( (e) => { FMTConsumableItemScreenShowMore("edit-ingredient-screen", "ingredient"); } );
+    $("#edit-ingredient-screen-less").click( (e) => { FMTConsumableItemScreenShowLess("edit-ingredient-screen", "ingredient"); } );
     $("#add-to-recipe-screen-cancel").click( (e) => {
       pageController.closeAddToRecipeDynamicScreen();
     });
