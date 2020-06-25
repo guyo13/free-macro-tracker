@@ -694,6 +694,142 @@
             </div>
         </div>
 
+        <div id="view-recipe-screen" class="fmt-dynamic-screen container-fluid">
+            <div id="view-recipe-screen-alerts" class="row justify-content-center"></div>
+            <div class="d-flex justify-content-center mt-3">
+                <div class="d-flex col-12 col-lg-8 mb-1 justify-content-between">
+                    <div class="col-6 col-lg-7">
+                        <h4 id="view-recipe-screen-heading" class="fmt-font-2">View Recipe</h4>
+                    </div>
+                    <div class="col-1 col-lg-1">
+                        <button id="view-recipe-screen-cancel" class="fal fa-times btn fmt-text-btn1" type="button"></button>
+                    </div>
+                </div>
+            </div>
+            <div id="view-recipe-screen-content" class="row justify-content-center fmt-max-height60">
+              <div id="view-recipe-screen-add-to-meal" class="row justify-content-center d-none">
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Meal Year" id='view-recipe-screen-meal-year' required />
+                    <label for="view-recipe-screen-meal-year" class="form__label">Year</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Meal Month" id='view-recipe-screen-meal-month' required />
+                    <label for="view-recipe-screen-meal-month" class="form__label">Month (1-12)</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Meal Day" id='view-recipe-screen-meal-day' required />
+                    <label for="view-recipe-screen-meal-day" class="form__label">Day (1-31)</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="text" class="form__field fmt-input-field" placeholder="Meal Name" id='view-recipe-screen-meal-name' required />
+                    <label for="view-recipe-screen-meal-name" class="form__label">Meal Name</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-lg-8 mb-1">
+                <div class="form__group">
+                  <input type="text" class="form__field fmt-w-inherit" placeholder="Recipe Name" id='view-recipe-screen-recipe-name' required />
+                  <label for="view-recipe-screen-recipe-name" class="form__label">Recipe Name</label>
+                </div>
+              </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="text" class="form__field fmt-w-inherit" placeholder="Creator" id='view-recipe-screen-recipe-brand' required />
+                    <label for="view-recipe-screen-recipe-brand" class="form__label">Creator</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group" id="view-recipe-screen-recipe-serving">
+                    <input type="number" class="form__field" placeholder="Serving Size" id='view-recipe-screen-recipe-serving-input' required />
+                    <label for="view-recipe-screen-recipe-serving-input" class="form__label">Serving Size</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <textarea type="text" class="form__field fmt-w-inherit" placeholder="Description" id='view-recipe-screen-recipe-description' required /></textarea>
+                    <label for="view-recipe-screen-recipe-description" class="form__label">Description</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8 mt-1">
+                    <h4 class="fmt-font-2">Ingredients</h4>
+                </div>
+                <div id="view-recipe-screen-recipe-ingredients" class="col-12 col-lg-8 mb-1">
+                  <button id="view-recipe-screen-recipe-ingredients-add" class="d-none" type="button">Add Ingredient</button>
+                </div>
+                <div class="col-12 col-lg-8 mt-1">
+                    <h4 class="fmt-font-2">Preparation Steps</h4>
+                </div>
+                <div id="view-recipe-screen-recipe-preparation-steps" class="col-12 col-lg-8 mb-1">
+                  <button id="view-recipe-screen-recipe-preparation-steps-add" class="d-none" type="button">Add Step</button>
+                </div>
+                <div class="col-12 col-lg-8 mt-1">
+                    <h4 class="fmt-font-2">Social Media</h4>
+                </div>
+                  <div class="col-12 col-lg-8 mb-1">
+                    <div class="form__group">
+                      <input type="text" class="form__field fmt-w-inherit" placeholder="Video URL" id='view-recipe-screen-recipe-video-url' required />
+                      <label for="view-recipe-screen-recipe-video-url" class="form__label">Video Link</label>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-8 mb-1">
+                    <div class="form__group">
+                      <input type="text" class="form__field fmt-w-inherit" placeholder="Website Link" id='view-recipe-screen-recipe-website' required />
+                      <label for="view-recipe-screen-recipe-website" class="form__label">Website Link</label>
+                    </div>
+                  </div>
+                <div class="col-12 col-lg-8 mt-1">
+                    <h4 class="fmt-font-2">Nutritional Facts</h4>
+                </div>
+                <div class="col-12 col-lg-8">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-w-inherit" placeholder="Calories" id='view-recipe-screen-recipe-calories' required readonly="true"/>
+                    <label for="view-recipe-screen-recipe-calories" class="form__label">Calories</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-w-inherit" placeholder="Proteins" id='view-recipe-screen-recipe-proteins' required readonly="true"/>
+                    <label for="view-recipe-screen-recipe-proteins" class="form__label">Proteins</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-w-inherit" placeholder="Carbohydrates" id='view-recipe-screen-recipe-carbohydrates' required readonly="true"/>
+                    <label for="view-recipe-screen-recipe-carbohydrates" class="form__label">Carbohydrates</label>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group">
+                    <input type="number" class="form__field fmt-w-inherit" placeholder="Fats" id='view-recipe-screen-recipe-fats' required readonly="true"/>
+                    <label for="view-recipe-screen-recipe-fats" class="form__label">Fats</label>
+                  </div>
+                </div>
+                <div id="view-recipe-screen-recipe-additional" class="d-none col-12 col-lg-8">
+                </div>
+            </div>
+            <div id="view-recipe-screen-footer" class="row justify-content-center">
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <button id="view-recipe-screen-more" class="btn btn-outline-dark flex-fill" type="button">Show More</button>
+                    <button id="view-recipe-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Show Less</button>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <button id="view-recipe-screen-save" class="btn btn-outline-dark flex-fill" type="button">Add to Meal</button>
+                </div>
+                <div class="w-100"></div>
+                <div class="input-group col-12 col-lg-4 mb-1">
+                    <button id="view-recipe-screen-edit" class="btn btn-outline-dark flex-fill" type="button">Edit Recipe</button>
+                </div>
+            </div>
+        </div>
+
         <div id="add-to-recipe-screen" class="fmt-dynamic-screen container-fluid">
             <div id="add-to-recipe-screen-alerts" class="row justify-content-center"></div>
             <div class="d-flex justify-content-center mt-3">

@@ -84,7 +84,9 @@ fmtAppGlobals.FMT_DB_USER_GOALS_KP = ["profile_id", "year", "month", "day"];
 
 //Globals - Page
 fmtAppGlobals.tabIds = ["goto-overview","goto-foods", "goto-profile", "goto-settings"];
-fmtAppGlobals.dynamicScreenIds = ["add-food-screen", "edit-food-screen", "view-food-screen", "add-recipe-screen", "add-to-recipe-screen", "add-to-meal-screen", "edit-meal-entry-screen"];
+fmtAppGlobals.dynamicScreenIds = ["add-food-screen", "edit-food-screen", "view-food-screen",
+                                  "add-recipe-screen", "view-recipe-screen",
+                                  "add-to-recipe-screen", "add-to-meal-screen", "edit-meal-entry-screen"];
 fmtAppGlobals.overlaysIds = ["fmt-app-load-overlay", "fmt-app-first-time-overlay", "fmt-app-nav-overlay"];
 fmtAppGlobals.consumableItemScreenStaticFieldsDescriptional = ["name", "brand"];
 fmtAppGlobals.consumableItemScreenStaticFieldsNutirtional = ["calories", "proteins", "carbohydrates", "fats"];
@@ -3257,7 +3259,7 @@ function FMTUIGetAdditionalNutrientsFromScreen(baseScreenID, qualifier) {
   }
   return screenAdditionalNutrients;
 }
-function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier, objectType, onsuccessFn, onerrorFn) {
+function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier, objectType, getNutritionalValue, onsuccessFn, onerrorFn) {
     const _funcName = "FMTSaveConsumableItemScreen"
     let nameProp, brandProp, servingProp;
     let consumableObj = {};
@@ -3298,9 +3300,7 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
       consumableObj.profile_id = updateBtn.getAttribute("profile_id");
       consumableObj.consumable_id = updateBtn.getAttribute("consumable_id");
     }
-    if (objectType !== "Recipe Item") {
-      //// Recipe Item's nutritional Value is calculated based on it's ingredients
-      //// which are saved in memory through references in the Recipe interaction
+    if (getNutritionalValue === true) {
       consumableObj.nutritionalValue = {};
       consumableObj.nutritionalValue.calories = document.getElementById(`${baseScreenID}-${qualifier}-calories`).value;
       consumableObj.nutritionalValue.proteins = document.getElementById(`${baseScreenID}-${qualifier}-proteins`).value;
@@ -3308,7 +3308,7 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
       consumableObj.nutritionalValue.fats = document.getElementById(`${baseScreenID}-${qualifier}-fats`).value;
       consumableObj.nutritionalValue.additionalNutrients = FMTUIGetAdditionalNutrientsFromScreen(baseScreenID, qualifier);
     }
-    else {
+    if (objectType === "Recipe Item") {
       const prepStepContainerDiv = document.getElementById(`${baseScreenID}-${qualifier}-preparation-steps`);
       consumableObj.preparationSteps = FMTUIGetPreparationSteps(prepStepContainerDiv);
       consumableObj.recipeDescription = document.getElementById(`${baseScreenID}-${qualifier}-description`).value;
@@ -4062,7 +4062,7 @@ function FMTUIAddIngredientBtnClick(baseId, recipeBaseId, ingredientScreenCloseF
   let foodId = addBtn.getAttribute("food_id");
   if (FMTIsValidFoodId(foodId)) {
     addBtn.removeAttribute("food_id");
-    const foodObj = FMTSaveConsumableItemScreen(baseId, "get-object", undefined, "food", "Food Item");
+    const foodObj = FMTSaveConsumableItemScreen(baseId, "get-object", undefined, "food", "Food Item", true, undefined, undefined);
     const _validate = FMTValidateFoodObject(foodObj);
     if (_validate.error != null || _validate.food == null) {
       console.error(`Error validating ingredient (ID ${foodId})`);
@@ -4095,6 +4095,83 @@ function FMTUIAddIngredientBtnClick(baseId, recipeBaseId, ingredientScreenCloseF
   else {
     console.error(`Invalid food Id ${foodId} on Add Ingredient`);
   }
+}
+function FMTUIAddtoMealBtnClick(baseId, qualifier, objectType) {
+  if (fmtAppGlobals.inputScreensQualifiers.indexOf(qualifier) < 0 ) {
+    console.error(`Invalid qualifier ${qualifier}`);
+    return;
+  }
+  if (fmtAppGlobals.consumableTypes.indexOf(objectType) < 0 ) {
+    console.error(`Invalid Object Type ${objectType}`);
+    return;
+  }
+  const addToMealBtn = document.getElementById(`${baseId}-save`);
+  const mealIdentifierObj = {};
+  mealIdentifierObj.meal_year = addToMealBtn.getAttribute("meal_year") || document.getElementById(`${baseId}-meal-year`).value;
+  mealIdentifierObj.meal_month = addToMealBtn.getAttribute("meal_month") || (Number(document.getElementById(`${baseId}-meal-month`).value) - 1);
+  mealIdentifierObj.meal_day = addToMealBtn.getAttribute("meal_day") || document.getElementById(`${baseId}-meal-day`).value;
+  mealIdentifierObj.meal_name = addToMealBtn.getAttribute("meal_name") || document.getElementById(`${baseId}-meal-name`).value;
+  mealIdentifierObj.profile_id = addToMealBtn.getAttribute("profile_id") || fmtAppInstance.currentProfileId;
+
+  if (!mealIdentifierObj.meal_year
+      || !mealIdentifierObj.meal_month
+      || !mealIdentifierObj.meal_day
+      || !mealIdentifierObj.meal_name) {
+      document.getElementById(`${baseId}-add-to-meal`).classList.remove("d-none");
+      FMTShowAlert(`${baseId}-alerts`, "primary", "Please enter the Year, Month and Day as well as the Meal Name into which to add");
+      return;
+  }
+  const validateMealIdentifierObjRes = FMTValidateMealIdentifier(mealIdentifierObj);
+  if (validateMealIdentifierObjRes.mealIdentifier == null || validateMealIdentifierObjRes.error != null) {
+      console.error(validateMealIdentifierObjRes.error);
+      FMTShowAlert(`${baseId}-alerts`, "danger", `Error - ${validateMealIdentifierObjRes.error}`);
+      return;
+  }
+  const mealIdentifier = validateMealIdentifierObjRes.mealIdentifier;
+  //Collect values from screen and insert to DB
+  //TODO get property names!!!
+  const consumableValues = FMTSaveConsumableItemScreen(baseId, "get-object", undefined , qualifier, objectType, true, undefined, undefined);
+  const mealEntryObj = {};
+  let idProp, nameProp, brandProp, closeFn;
+  switch (objectType) {
+    case "Food Item":
+      idProp = "food_id";
+      nameProp = "foodName";
+      brandProp = "foodBrand";
+      closeFn = pageController.closeViewFoodDynamicScreen;
+    break;
+    case "Recipe Item":
+      idProp = "recipe_id";
+      nameProp = "recipeName";
+      brandProp = "recipeCreator";
+      closeFn = pageController.closeViewRecipeDynamicScreen;
+    break;
+  }
+  mealEntryObj.profile_id = mealIdentifier.profile_id;
+  mealEntryObj.year = mealIdentifier.meal_year;
+  mealEntryObj.month = mealIdentifier.meal_month;
+  mealEntryObj.day = mealIdentifier.meal_day;
+  mealEntryObj.mealName = mealIdentifier.meal_name;
+  mealEntryObj.consumable_id = Number(addToMealBtn.getAttribute(idProp));
+  mealEntryObj.consumableName = consumableValues[nameProp];
+  mealEntryObj.consumableBrand = consumableValues[brandProp];
+  mealEntryObj.consumableType = objectType;
+  mealEntryObj.serving = consumableValues.referenceServing;
+  mealEntryObj.units = consumableValues.units;
+  mealEntryObj.nutritionalValue = consumableValues.nutritionalValue;
+  FMTAddMealEntry(mealEntryObj,
+                 function(e) {
+      console.debug("Successfully added meal entry");
+      console.log(mealEntryObj);
+      closeFn();
+      pageController.showOverview(false);
+  },
+                 function(e) {
+      const msg = "Failed adding meal entry";
+      console.error(msg);
+      console.error(mealEntryObj);
+      FMTShowAlert(`${baseId}-alerts`, "danger", msg);
+  });
 }
 //Functions - State
 //Functions - State - Date
@@ -4168,6 +4245,7 @@ var pageController = {
             console.error(e);
         };
         const foodsTableBodyID = "foods-food-table-body";
+        const recipesTableBodyID = "foods-recipe-table-body";
         document.getElementById("foods-add").setAttribute("consumables-table-body-id", foodsTableBodyID);
         const events = {"click": function(e, objectType) {
                             let idProp, screenFunc, args;
@@ -4182,8 +4260,8 @@ var pageController = {
                                 idProp = "recipe_id";
                                 const recipeId = Number(e.currentTarget.getAttribute(idProp));
                                 //TODO
-                                screenFunc = console.debug;
-                                args = [recipeId];
+                                screenFunc = pageController.openViewRecipeDynamicScreen;
+                                args = [recipeId, 1, true, undefined, undefined, undefined, recipesTableBodyID];
                                 break;
                               default:
                                 return;
@@ -4431,8 +4509,8 @@ var pageController = {
           pageController.openAddToRecipeDynamicScreen(mealName, ingredients);
         };
         const onSaveRecipeClick = function(e) {
-          //TODO save prep steps and other recipe specific stuff
-          const recipeObj = FMTSaveConsumableItemScreen(screenID, "get-object", undefined, qualifier, objectType, undefined, undefined);
+          //// getNutritionalValue == false because we have to calculate it here
+          const recipeObj = FMTSaveConsumableItemScreen(screenID, "get-object", undefined, qualifier, objectType, false, undefined, undefined);
           recipeObj.ingredients = ingredients;
           const consumablesTableBodyNode = !!consumablesTableBodyID ? document.getElementById(consumablesTableBodyID) : null;
           const onsuccess = function(e, recipe) {
@@ -4472,6 +4550,89 @@ var pageController = {
         if (!!saveBtn) {
             saveBtn.removeAttribute("consumables-table-body-id");
         }
+    },
+    openViewRecipeDynamicScreen: function(recipeId, multiplier, clear, currentServingValue, currentServingUnits, mealIdentifierObj, recipesTableBodyID) {
+        //Sync Tasks - Argument Validation, constants definition
+        if (!FMTIsValidRecipeId(recipeId) ) { console.error(`Invalid Recipe ID: ${recipeId}`); return; }
+        if (!isNumber(multiplier)) { console.error(`Invalid Multiplier: ${multiplier}`); return; }
+        recipeId = Number(recipeId);
+        multiplier = Number(multiplier);
+        if (clear !== false) { clear = clear || true; }
+        const alertDivId = pageController.getAlertDivId();
+        const screenID = "view-recipe-screen";
+        const qualifier = "recipe";
+        const objectType = "Recipe Item";
+        const addToMealBtn = document.getElementById(`${screenID}-save`);
+        const editRecipeBtn = document.getElementById(`${screenID}-edit`);
+        //Clear Screen if needed (Basically anytime except when updating values on serving change)
+        if (clear) {
+            FMTClearViewConsumableItemScreen(screenID, qualifier, objectType);
+            const eventListenersObj = { [`${screenID}-${qualifier}-serving-unit-select`] :
+            //TODO
+                                        {"unitChanged": function(event) { FMTUpdateConsumableValuesOnServingChange(event, screenID, qualifier, objectType); }, }
+                                     };
+            const optionsObj = {"consumableId": recipeId, "eventListenersObj": eventListenersObj };
+            const result = FMTPopulateConsumableItemScreen(screenID, optionsObj, qualifier, objectType, mealIdentifierObj, false);
+            const mealIdentifier = result.mealIdentifier;
+            if (!!recipesTableBodyID) {
+                editRecipeBtn.setAttribute("consumables-table-body-id", recipesTableBodyID);
+            }
+            if (result.error) {
+              FMTShowAlert(alertDivId, "error", result.error);
+            }
+            //Handle meal Identifier if it's valid
+            if (mealIdentifier) {
+              const mealNameInput = document.getElementById(`${screenID}-meal-name`);
+              if (!!mealIdentifier.meal_name) {
+                  mealNameInput.value = mealIdentifier.meal_name;
+              }
+              else {
+                  mealNameInput.value = "";
+                  document.getElementById(`${screenID}-add-to-meal`).classList.remove("d-none");
+              }
+              document.getElementById(`${screenID}-meal-year`).value = mealIdentifier.meal_year;
+              document.getElementById(`${screenID}-meal-month`).value = mealIdentifier.meal_month + 1;
+              document.getElementById(`${screenID}-meal-day`).value = mealIdentifier.meal_day;
+            }
+        }
+        //Async Tasks
+        FMTReadRecipe(recipeId,
+                    //OnSuccess
+                    function(e) {
+            // Load recipe from DB and validate it
+            const recipeObj = e.target.result;
+            if (!recipeObj) {
+                FMTShowAlert(alertDivId, "warning", `Couldn't find recipe item with ID (${recipeId})`);
+                return;
+            }
+            const validateResult = FMTValidateRecipeObject(recipeObj, fmtAppInstance.unitsChart);
+            if (validateResult.recipe == null || validateResult.error != null) {
+                FMTShowAlert(alertDivId, "Danger", `Error - Recipe item with ID (${recipeId}) failed validation - ${validateResult.error}`);
+                return;
+            }
+            const recipe = validateResult.recipe;
+            //Update and open Screen
+            FMTPopulateSavedValuesInConsumableItemScreen(screenID, recipe, qualifier, objectType, multiplier, true, `${screenID}-${qualifier}-serving-input`, currentServingValue, currentServingUnits, undefined, true, true);
+            pageController.openDynamicScreen(screenID);
+        },
+                    //OnError
+                    function(e) {
+            FMTShowAlert(alertDivId, "Danger", `Error reading recipe Item with ID (${recipeId})`);
+            console.error(e);
+            return;
+        },
+      );//End ReadRecipe
+    },
+    closeViewRecipeDynamicScreen: function() {
+      const screenID = "view-recipe-screen";
+      const qualifier = "recipe";
+      const objectType = "Recipe Item";
+      pageController.closeDynamicScreen(screenID);
+      FMTClearViewConsumableItemScreen(screenID, qualifier, objectType);
+      const editFoodBtn = document.getElementById(`${screenID}-edit`);
+      if (!!editFoodBtn) {
+          editFoodBtn.removeAttribute("consumables-table-body-id");
+      }
     },
     openAddToRecipeDynamicScreen: function(mealName, ingredients) {
         const screenID = "add-to-recipe-screen";
@@ -4939,7 +5100,7 @@ function prepareEventHandlers() {
             const alertDivID = pageController.getAlertDivId();
             FMTShowAlert(alertDivID, "success", msg);
         }
-        FMTSaveConsumableItemScreen("add-food-screen", "add", {}, "food", "Food Item", onsuccessFn, onerrorFn);
+        FMTSaveConsumableItemScreen("add-food-screen", "add", {}, "food", "Food Item", true, onsuccessFn, onerrorFn);
     });
     $("#edit-food-screen-cancel").click( (e) => {
         //TODO check for changes and prompt if needed
@@ -4990,7 +5151,7 @@ function prepareEventHandlers() {
             FMTShowAlert(alertDivID, "success", msg);
         }
 
-        FMTSaveConsumableItemScreen("edit-food-screen", "edit", {"consumableId": foodId}, "food", "Food Item", onsuccessFn, onerrorFn);
+        FMTSaveConsumableItemScreen("edit-food-screen", "edit", {"consumableId": foodId}, "food", "Food Item", true, onsuccessFn, onerrorFn);
     });
     $("#edit-food-screen-delete").click( (e) => {
         let foodId = e.currentTarget.getAttribute("food_id");
@@ -5071,58 +5232,7 @@ function prepareEventHandlers() {
         pageController.openEditFoodDynamicScreen(foodId, foodsTableBodyID, mealIdentifier);
     });
     $("#view-food-screen-save").click( (e) => {
-        const addToMealBtn = document.getElementById("view-food-screen-save");
-        const mealIdentifierObj = {};
-        mealIdentifierObj.meal_year = addToMealBtn.getAttribute("meal_year") || document.getElementById("view-food-screen-meal-year").value;
-        mealIdentifierObj.meal_month = addToMealBtn.getAttribute("meal_month") || (Number(document.getElementById("view-food-screen-meal-month").value) - 1);
-        mealIdentifierObj.meal_day = addToMealBtn.getAttribute("meal_day") || document.getElementById("view-food-screen-meal-day").value;
-        mealIdentifierObj.meal_name = addToMealBtn.getAttribute("meal_name") || document.getElementById("view-food-screen-meal-name").value;
-        mealIdentifierObj.profile_id = addToMealBtn.getAttribute("profile_id") || fmtAppInstance.currentProfileId;
-
-        if (!mealIdentifierObj.meal_year
-            || !mealIdentifierObj.meal_month
-            || !mealIdentifierObj.meal_day
-            || !mealIdentifierObj.meal_name) {
-            document.getElementById("view-food-screen-add-to-meal").classList.remove("d-none");
-            FMTShowAlert("view-food-screen-alerts", "primary", "Please enter the Year, Month and Day as well as the Meal Name into which to add");
-            return;
-        }
-        const validateMealIdentifierObjRes = FMTValidateMealIdentifier(mealIdentifierObj);
-        if (validateMealIdentifierObjRes.mealIdentifier == null || validateMealIdentifierObjRes.error != null) {
-            console.error(validateMealIdentifierObjRes.error);
-            FMTShowAlert("view-food-screen-alerts", "danger", `Error - ${validateMealIdentifierObjRes.error}`);
-            return;
-        }
-        const mealIdentifier = validateMealIdentifierObjRes.mealIdentifier;
-        //Collect values from screen and insert to DB
-        const consumableValues = FMTSaveConsumableItemScreen("view-food-screen", "get-object", undefined , "food", "Food Item");
-        const mealEntryObj = {};
-        mealEntryObj.profile_id = mealIdentifier.profile_id;
-        mealEntryObj.year = mealIdentifier.meal_year;
-        mealEntryObj.month = mealIdentifier.meal_month;
-        mealEntryObj.day = mealIdentifier.meal_day;
-        mealEntryObj.mealName = mealIdentifier.meal_name;
-        mealEntryObj.consumable_id = Number(addToMealBtn.getAttribute("food_id"));
-        mealEntryObj.consumableName = consumableValues.foodName;
-        mealEntryObj.consumableBrand = consumableValues.foodBrand;
-        mealEntryObj.consumableType = "Food Item";
-        mealEntryObj.serving = consumableValues.referenceServing;
-        mealEntryObj.units = consumableValues.units;
-        mealEntryObj.nutritionalValue = consumableValues.nutritionalValue;
-        FMTAddMealEntry(mealEntryObj,
-                       function(e) {
-            console.debug("Successfully added meal entry");
-            console.log(mealEntryObj);
-            pageController.closeViewFoodDynamicScreen();
-            pageController.showOverview(false);
-        },
-                       function(e) {
-            const msg = "Failed adding meal entry";
-            console.error(msg);
-            console.error(mealEntryObj);
-            FMTShowAlert("view-food-screen-alerts", "danger", msg);
-        });
-
+        FMTUIAddtoMealBtnClick("view-food-screen", "food", "Food Item");
     });
     $("#view-food-screen-add").click( (e) => {
       if (isFunction(fmtAppInstance.viewFoodAddIngredientFn)) {
@@ -5148,6 +5258,14 @@ function prepareEventHandlers() {
       if (isFunction(fmtAppInstance.addRecipeSaveRecipeFn)) {
         fmtAppInstance.addRecipeSaveRecipeFn();
       }
+    });
+    $("#view-recipe-screen-cancel").click( (e) => {
+      pageController.closeViewRecipeDynamicScreen();
+    });
+    $("#view-recipe-screen-more").click( (e) => { FMTConsumableItemScreenShowMore("view-recipe-screen", "recipe"); } );
+    $("#view-recipe-screen-less").click( (e) => { FMTConsumableItemScreenShowLess("view-recipe-screen", "recipe"); } );
+    $("#view-recipe-screen-save").click( (e) => {
+        FMTUIAddtoMealBtnClick("view-recipe-screen", "recipe", "Recipe Item");
     });
     $("#add-to-recipe-screen-cancel").click( (e) => {
       pageController.closeAddToRecipeDynamicScreen();
@@ -5248,7 +5366,7 @@ function prepareEventHandlers() {
             return;
         }
         entry_id = Number(entry_id);
-        const consumableValues = FMTSaveConsumableItemScreen(baseScreenID, "get-object", undefined , qualifier, objectType);
+        const consumableValues = FMTSaveConsumableItemScreen(baseScreenID, "get-object", undefined , qualifier, objectType, true, undefined, undefined);
         console.log(consumableValues);
         FMTUpdateMealEntry(entry_id, consumableValues,
                            function(e) {
