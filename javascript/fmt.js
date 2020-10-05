@@ -2206,6 +2206,11 @@ function FMTShowAlert(divId, alertLevel, msg, scrollOptions) {
     if (scrollOptions) {
         window.scroll(scrollOptions);
     }
+    setTimeout(() => {
+      let _ = document.getElementById(divId).getElementsByTagName("button");
+      if (_.length > 0)
+        _[0].click();
+    }, 5000);
     return;
 }
 function _FMTDropdownToggleValue(elem, text, attributes, skipEvent) {
