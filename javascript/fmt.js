@@ -4,7 +4,7 @@ var fmtAppInstance = {};
 fmtAppInstance.fmtDb = undefined;
 //Instance - Settings
 fmtAppInstance.displaySettings = {};
-fmtAppInstance.displaySettings.showConsumableIdColumn = true;
+fmtAppInstance.displaySettings.showConsumableIdColumn = false;
 fmtAppInstance.promptSettings = {};
 fmtAppInstance.promptSettings.promptOnUnsavedFood = true;
 fmtAppInstance.promptSettings.promptOnNoProfileCreated = true;
@@ -3497,8 +3497,9 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
 }
 
 //Functions - UI - Overview
-function FMTCreateMacroProgressBar(c, p, f, inPercent, className) {
+function FMTCreateMacroProgressBar(c, p, f, inPercent, className, addLabels) {
   className = className || "fmt-macros-dist-progress-bar";
+  addLabels = addLabels == undefined ? false : addLabels;
   const carbCalories = c * 4;
   const proteinCalories = p * 4;
   const fatCalories = f * 9;
@@ -3514,21 +3515,24 @@ function FMTCreateMacroProgressBar(c, p, f, inPercent, className) {
   carbProgress.setAttribute("aria-valuemin", 0);
   carbProgress.setAttribute("aria-valuemax", 100);
   carbProgress.style.width = `${carbPercent}%`;
-  carbProgress.innerHTML = `<span>${inPercent ? `${roundedToFixed(carbPercent, 0)}%`: c }</span>`;
 
   const proteinProgress = document.createElement("div");
   proteinProgress.classList.add("progress-bar", "bg-info");
   proteinProgress.setAttribute("aria-valuemin", 0);
   proteinProgress.setAttribute("aria-valuemax", 100);
   proteinProgress.style.width = `${proteinPercent}%`;
-  proteinProgress.innerHTML = `<span>${inPercent ? `${roundedToFixed(proteinPercent, 0)}%`: p }</span>`;
 
   const fatProgress = document.createElement("div");
   fatProgress.classList.add("progress-bar", "fmt-bg-orange");
   fatProgress.setAttribute("aria-valuemin", 0);
   fatProgress.setAttribute("aria-valuemax", 100);
   fatProgress.style.width = `${fatPercent}%`;
+
+if (addLabels) {
+  carbProgress.innerHTML = `<span>${inPercent ? `${roundedToFixed(carbPercent, 0)}%`: c }</span>`;
+  proteinProgress.innerHTML = `<span>${inPercent ? `${roundedToFixed(proteinPercent, 0)}%`: p }</span>`;
   fatProgress.innerHTML = `<span>${inPercent ? `${roundedToFixed(fatPercent, 0)}%`: f }</span>`;
+}
 
   progress.appendChild(carbProgress);
   progress.appendChild(proteinProgress);
@@ -3567,7 +3571,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
 
     //Meal Header
     const mNameSpan = document.createElement("span");
-    mNameSpan.classList.add("fmt-font-1", "float-left", "fmt-bold");
+    mNameSpan.classList.add("fmt-font-1", "float-left", "fmt-bold", "fmt-pad-1");
     mNameSpan.innerHTML = mealEntry.mealName;
     const mNameDiv = document.createElement("div");
     mNameDiv.classList.add("col");
@@ -3575,7 +3579,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
 
     const kCalSpan = document.createElement("span");
     kCalSpan.setAttribute("id", `overview-meal-${normalizedMealName}-calories-progress`);
-    kCalSpan.classList.add("fmt-font-1", "float-right", "fmt-bold");
+    kCalSpan.classList.add("fmt-font-1", "float-right", "fmt-pad-1");
     //First Set to 0 later update
     kCalSpan.innerHTML = "0";
     const kCalDiv = document.createElement("div");
@@ -3714,7 +3718,7 @@ function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
 
     const mealEntryDiv = document.createElement("div");
     const mealEntryId = `overview-meal-${mealEntry.entry_id}`;
-    mealEntryDiv.classList.add("fmt-meal-entry", "col", "row");
+    mealEntryDiv.classList.add("fmt-meal-entry", "col", "row", "justify-content-between");
     mealEntryDiv.setAttribute("id", mealEntryId);
     mealEntryDiv.setAttribute("entry_id", mealEntry.entry_id);
     mealEntryDiv.setAttribute("calories", mealEntry.nutritionalValue.calories);
@@ -3750,7 +3754,7 @@ function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
     consDetailsDiv.appendChild(consDetailsSpan);
 
     const consNutriValueDiv = document.createElement("div");
-    consNutriValueDiv.classList.add("col-6");
+    consNutriValueDiv.classList.add("col-4", "float-right");
     // const consNutriValueSpan = document.createElement("span");
     // consNutriValueSpan.classList.add("fmt-font-sm", "float-right");
     // consNutriValueSpan.innerHTML = `Carb:${roundedToFixed(mealEntry.nutritionalValue.carbohydrates)} Protein:${roundedToFixed(mealEntry.nutritionalValue.proteins)} Fat:${roundedToFixed(mealEntry.nutritionalValue.fats)}`;
@@ -3941,7 +3945,7 @@ function FMTLoadCurrentDayUserGoals(onsuccessFn, onerrorFn) {
             fmtAppInstance.currentDayUserGoals.day = fmtAppInstance.currentDay.getDate();
             FMTAddUserGoalEntry(fmtAppInstance.currentDayUserGoals);
           }
-          console.debug(msg , fmtAppInstance.currentDayUserGoals);
+          console.debug(`${msg} - ${JSON.stringify(fmtAppInstance.currentDayUserGoals)}`);
         }
       }
       cursor.continue();
@@ -3949,7 +3953,8 @@ function FMTLoadCurrentDayUserGoals(onsuccessFn, onerrorFn) {
     else {
       //Sync tasks
       if (!userGoalFound) {
-        if (fmtAppInstance.currentProfile) {
+        // If profile is created and macro split is initialized, copy goals from current split
+        if (fmtAppInstance.currentProfile && !jQuery.isEmptyObject(fmtAppInstance.currentProfile.macroSplit) ) {
             console.info("Couldn't find any matching user Goals. Creating one based on current Profile!");
             const userGoals = {};
             userGoals.macroSplit = fmtAppInstance.currentProfile.macroSplit;
@@ -5320,7 +5325,7 @@ function onDbSuccess(event) {
                 FMTLoadProfile(1,
                                //onloaded
                                function() {
-                    pageController.closeLoadingScreen();
+                    // pageController.closeLoadingScreen();
                     pageController.showOverview(true);
                     pageController.showNavOverlay();
                 },
@@ -5330,7 +5335,7 @@ function onDbSuccess(event) {
                     FMTToday();
                     fmtAppInstance.currentDay = fmtAppInstance.today;
                     pageController.showFirstTimeScreen();
-                    pageController.closeLoadingScreen();
+                    // pageController.closeLoadingScreen();
                     if (fmtAppInstance.firstTimeScreenAutomatic) {
                         setTimeout(() => {
                             document.getElementById("fmt-app-first-time-overlay").click();

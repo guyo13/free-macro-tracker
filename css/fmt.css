@@ -1,5 +1,6 @@
 :root {
     --fmt-light-gray: rgb(233, 236, 239); /*#e9ecef*/
+    --fmt-accent-gray: #d2d5d8;
     --fmt-purple: rgb(147, 56, 188); /*#9338bc;*/
     --fmt-lighter-green: rgb(40, 167, 69); /*#28a745*/
     --fmt-light-green: rgb(54, 157, 77);
@@ -40,7 +41,7 @@ button {
 }
 .fmt-table-height {}
 .fmt-max-height60 {
-    max-height: 65%;
+    height: 80%;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -105,17 +106,19 @@ button {
     width: 100%;
     z-index: 0;
     background-color: white;
-    /*100% of screen  - navbar height - factorXheading height*/
-    height: calc( 100% - 3rem - 1.55 * 1.8rem );
-    height: -webkit-calc( 100% - 2rem - 1.55 * 1.8rem );
+    /*100% of screen  - navbar height - 0.1rem*/
+    height: calc( 100% - 3.1rem  );
+    height: -webkit-calc( 100% - 3.1rem);
     overflow-y: auto;
 }
 .fmt-dynamic-screen {
     position: absolute;
     width: 100%;
     background-color: white;
-    height: calc( 100% - 3rem - 1.55 * 1.8rem );
-    height: -webkit-calc( 100% - 4rem - 1.55 * 1.8rem );
+    /* height: calc( 100% - 3rem - 1.55 * 1.8rem );
+    height: -webkit-calc( 100% - 4rem - 1.55 * 1.8rem ); */
+    height: calc( 100% - 3.1rem  );
+    height: -webkit-calc( 100% - 3.1rem);
     overflow-y: auto;
 }
 .fmt-mass-unit-btn {
@@ -141,21 +144,25 @@ button {
     overflow-y: auto;
 }
 .fmt-meal {
-    border-style: solid;
+    border-style: none;
     border-color: black;
     border-width: thin;
     border-bottom-style: none;
     background-color: black;
     border-radius: 2px;
+    margin-top: 0.7rem;
 }
 .fmt-meal-carbs {}
 .fmt-meal-proteins {}
 .fmt-meal-fats {}
 .fmt-meal-entry {
+  padding: 0;
     border-bottom-style: solid;
     border-bottom-width: thin;
     border-bottom-color: white;
-    background-color: var(--fmt-light-gray);
+    /* background-color: var(--fmt-light-gray); */
+    background-color: #eeeeee;
+
     transition-duration: 0.3s;
 }
 .fmt-meal-entry:hover {
@@ -171,7 +178,7 @@ button {
   height: auto;
 }
 .fmt-meal-header {
-    background-color: darkgray;
+    background-color: #cccccc;
 }
 .fmt-progress-bar-container{}
 .footer {
@@ -181,7 +188,10 @@ button {
   width: 100%;
   text-align: center;
 }
-
+.fmt-pad-1 {
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+}
 .debug {
     border-style: solid;
     border-color: red;
@@ -225,7 +235,7 @@ button {
     font-weight: bold;
 }
 .fmt-bold {
-    font-weight: bold;
+    font-weight: bold!important;
 }
 .fmt-font-color-violet {
     color: var(--fmt-purple);
@@ -240,7 +250,7 @@ button {
     color: var(--info);
 }
 .fmt-font-color-primary {
-    color: var(--primary);
+    color: var(--fmt-dark-green);
 }
 .fmt-btn-outline-success {
     color: var(--fmt-lighter-green);
@@ -267,7 +277,8 @@ button {
     border-style: none;
 }
 .fmt-btn-outline-gray {
-    background-color: var(--fmt-light-gray);
+    /* background-color: var(--fmt-accent-gray); */
+    background-color: #dddddd;
     color: black;
     border-bottom-width: thin;
     border-bottom-color: white;
@@ -312,7 +323,7 @@ button {
 }
 #fmt-app-first-time-overlay-msg {
     font-style: oblique;
-    text-decoration: underline white;
+    /* text-decoration: underline white; */
 }
 .fmt-loading-screen-logo {
     width: 5rem;
@@ -383,7 +394,8 @@ button {
   border-style: solid;
   border-width: 1px;
   border-radius: 0.25rem;
-  border-color: #11998e;
+  border-color: var(--fmt-dark-green);
+    /* border-color: #11998e; */
   display: flex;
   padding: 0;
 }
@@ -396,7 +408,8 @@ button {
   border-top-left-radius: 0.25rem;
   border-bottom-left-radius: 0.25rem;
   border-right-style: solid;
-  border-right-color: #11998e;
+  /* border-right-color: #11998e; */
+  border-right-color: var(--fmt-dark-green);
 }
 .fmt-tab-li-right {
   border-width: 1px;
@@ -405,11 +418,13 @@ button {
   border-left-style: none;
 }
 .fmt-tab-li-active {
-  background-color: #11998e;
+  background-color: var(--fmt-dark-green);
+  /* background-color: #11998e; */
   color: white;
 }
 .fmt-tab-ul li:hover {
-  background-color: #11998e;
+  /* background-color: #11998e; */
+  background-color:  var(--fmt-dark-green);
   color: white;
   transition: background 0.15s;
 }
@@ -531,7 +546,7 @@ input[type=number] {
     font-weight: 300;
 }
 .fmt-macros-dist-progress-bar {
-    height: 1rem;
+    height: 0.5rem;
 }
 .fmt-loading-screen-font-responsive {
     font-size: 4.5rem;
@@ -570,16 +585,16 @@ input[type=number] {
           font-size: 0.9rem;
       font-weight: 400;
   }
-  .fmt-font-2 {
+  /* .fmt-font-2 {
       font-size: 1.2rem;
       font-weight: 300;
-  }
+  } */
   .fmt-font-3 {
       font-size: 1.5rem;
       font-weight: 300;
   }
   .fmt-macros-dist-progress-bar {
-      height: 0.7rem;
+      height: 0.35rem;
   }
   .fmt-loading-screen-font-responsive {
       font-size: 3.2rem;
@@ -597,16 +612,16 @@ input[type=number] {
           font-size: 1rem;
       font-weight: 400;
   }
-  .fmt-font-2 {
+  /* .fmt-font-2 {
       font-size: 1.3rem;
       font-weight: 300;
-  }
+  } */
   .fmt-font-3 {
       font-size: 1.6rem;
       font-weight: 300;
   }
   .fmt-macros-dist-progress-bar {
-      height: 0.8rem;
+      height: 0.4rem;
   }
   .fmt-food-input-field {
       width: 100%;

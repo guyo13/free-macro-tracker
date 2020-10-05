@@ -15,10 +15,10 @@
     <link href="css/light.min.css" rel="stylesheet">
 </head>
 <body scroll="no">
-  <header id="fmt-heading">
+  <!-- <header id="fmt-heading">
     <span class="fmt-bold" href="#">Free</span>
     <span href="#">Macro Tracker</span>
-  </header>
+  </header> -->
     <div id="odin" class="fmt-allfather">
         <div id="overview" class="fmt-tab container-fluid">
             <div id="overview-alerts" class="row justify-content-center"></div>
@@ -44,13 +44,13 @@
                     <div class="w-100"></div>
                     <div class="fmt-progress-bar-container col-10 col-lg-8">
                         <div class="progress fmt-total-progress fmt-prog-sm">
-                            <div id="calories-progress-bar" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div id="calories-progress-bar" class="progress-bar fmt-bg-dark-green" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                     <div class="w-100"></div>
                     <div class="col-10 col-lg-8 fmt-center-text">
-                        <span id="overview-total-calories" class="fmt-font-1 fmt-bold fmt-font-color-primary d-none">0</span>
-                        <span id="overview-total-calories-verb" class="fmt-font-1 fmt-font-color-primary fmt-bold">0/0</span>
+                        <span id="overview-total-calories" class="fmt-font-1 fmt-font-color-primary d-none">0</span>
+                        <span id="overview-total-calories-verb" class="fmt-font-1 fmt-font-color-primary">0/0</span>
                     </div>
                 </div>
                 <div id="macroes-cont" class="mb-1 row justify-content-center mr-1 ml-1">
@@ -82,16 +82,16 @@
                     </div>
                     <div class="w-100"></div>
                     <div class="col-4 col-lg-2 fmt-center-text">
-                        <span id="overview-total-carbs" class="fmt-font-1 fmt-bold fmt-font-color-violet d-none">0</span>
-                        <span id="overview-total-carbs-verb" class="fmt-font-1 fmt-bold fmt-font-color-violet">0/0</span>
+                        <span id="overview-total-carbs" class="fmt-font-1  fmt-font-color-violet d-none">0</span>
+                        <span id="overview-total-carbs-verb" class="fmt-font-1 fmt-font-color-violet">0/0</span>
                     </div>
                     <div class="col-4 col-lg-2 fmt-center-text">
-                        <span id="overview-total-proteins" class="fmt-font-1 fmt-bold fmt-font-color-info d-none">0</span>
-                        <span id="overview-total-proteins-verb" class="fmt-font-1 fmt-bold fmt-font-color-info">0/0</span>
+                        <span id="overview-total-proteins" class="fmt-font-1 fmt-font-color-info d-none">0</span>
+                        <span id="overview-total-proteins-verb" class="fmt-font-1 fmt-font-color-info">0/0</span>
                     </div>
                     <div class="col-4 col-lg-2 fmt-center-text">
-                        <span id="overview-total-fats" class="fmt-font-1 fmt-bold fmt-font-color-orange d-none">0</span>
-                        <span id="overview-total-fats-verb" class="fmt-font-1 fmt-bold fmt-font-color-orange">0/0</span>
+                        <span id="overview-total-fats" class="fmt-font-1 fmt-font-color-orange d-none">0</span>
+                        <span id="overview-total-fats-verb" class="fmt-font-1 fmt-font-color-orange">0/0</span>
                     </div>
                 </div>
                 <div id="overview-meals-container" class="fmt-meals-container">
@@ -106,12 +106,12 @@
         <div id="foods" class="fmt-tab container-fluid">
             <div id="foods-alerts" class="row justify-content-center"></div>
             <div class="d-flex justify-content-center mt-3">
-                <div class="d-flex col-12 col-lg-8 mb-1 justify-content-between">
-                    <div class="col-6 col-lg-4">
+                <div class="d-flex col-12 col-lg-8 mb-1 justify-content-between" style="padding: 0;">
+                    <div class="col-10 col-lg-4" style="padding-left: 0;">
                         <h4 class="fmt-font-2">Foods and Recipes</h4>
                     </div>
-                    <div class="col-6 col-sm-2 d-flex">
-                        <button id="foods-add" action="food" class="fal fa-plus btn fmt-text-btn1 flex-fill fmt-btn-no-focus" type="button"></button>
+                    <div class="col-2 col-sm-1 d-flex" style="padding-right 0;">
+                        <button id="foods-add" action="food" class="fal fa-plus btn fmt-text-btn1 flex-fill fmt-btn-no-focus" type="button" style="color: var(--fmt-light-green);"></button>
                     </div>
                 </div>
             </div>
@@ -403,14 +403,13 @@
                 <div id="add-food-screen-food-additional" class="d-none col-12 col-lg-8">
                 </div>
             </div>
-            <div id="add-food-screen-footer" class="row justify-content-center">
-                <div class="input-group col-12 col-lg-4 mb-1">
+            <div id="add-food-screen-footer" class="row justify-content-center no-gutters align-items-end" >
+              <div class="input-group col-6 col-lg-4 mb-1">
+                  <button id="add-food-screen-save" class="btn btn-outline-primary flex-fill ml-1 mr-1" type="button">Save Food</button>
+              </div>
+                <div class="input-group col-6 col-lg-4 mb-1">
                     <button id="add-food-screen-more" class="btn btn-outline-dark flex-fill" type="button">Show More</button>
                     <button id="add-food-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Show Less</button>
-                </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-4 mb-1">
-                    <button id="add-food-screen-save" class="btn btn-outline-dark flex-fill" type="button">Save Food</button>
                 </div>
             </div>
         </div>
@@ -480,9 +479,9 @@
                     <button id="edit-food-screen-more" class="btn btn-outline-dark flex-fill" type="button">Show More</button>
                     <button id="edit-food-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Show Less</button>
                     <div class="w-100"></div>
-                    <button id="edit-food-screen-delete" class="btn btn-danger flex-fill mt-3" type="button">Delete</button>
-                    <div class="w-100"></div>
                     <button id="edit-food-screen-save" class="btn btn-outline-dark flex-fill mt-3" type="button">Save Food</button>
+                    <div class="w-100"></div>
+                    <button id="edit-food-screen-delete" class="btn btn-danger flex-fill mt-3" type="button">Delete</button>
                 </div>
             </div>
         </div>
@@ -1158,19 +1157,21 @@
                 <div id="edit-meal-entry-screen-consumable-additional" class="d-none col-12 col-lg-8">
                 </div>
             </div>
-            <div id="edit-meal-entry-screen-footer" class="row justify-content-center">
-                <div class="input-group col-12 col-lg-4 mb-1">
-                    <button id="edit-meal-entry-screen-more" class="btn btn-outline-dark flex-fill" type="button">Show More</button>
-                    <button id="edit-meal-entry-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Show Less</button>
-                    <div class="w-100"></div>
-                    <button id="edit-meal-entry-screen-delete" class="btn btn-danger flex-fill mt-2" type="button">Delete</button>
-                    <div class="w-100"></div>
-                    <button id="edit-meal-entry-screen-save" class="btn btn-outline-primary flex-fill mt-2" type="button">Update</button>
+            <div id="edit-meal-entry-screen-footer" class="row justify-content-center no-gutters">
+                <div class="input-group col-4 col-lg-4 mb-1">
+                  <button id="edit-meal-entry-screen-delete" class="btn btn-danger flex-fill" type="button">Delete</button>
+                </div>
+                <div class="input-group col-4 col-lg-4 mb-1">
+                    <button id="edit-meal-entry-screen-save" class="btn btn-outline-primary flex-fill ml-1 mr-1" type="button">Update</button>
+                </div>
+                <div class="input-group col-4 col-lg-4 mb-1">
+                    <button id="edit-meal-entry-screen-more" class="btn btn-outline-dark flex-fill" type="button">More</button>
+                    <button id="edit-meal-entry-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Less</button>
                 </div>
             </div>
         </div>
         <!--Overlays-->
-        <div id="fmt-app-load-overlay" class="fmt-overlay bg-white container-fluid">
+        <div id="fmt-app-load-overlay" class="fmt-overlay bg-white container-fluid d-none">
             <div id="fmt-app-load-overlay-content" class="row justify-content-center fmt-center-text fmt-loading-screen-position">
                 <div class="col-12">
                     <span class="fmt-bold fmt-loading-screen-font">Free</span>
@@ -1195,9 +1196,7 @@
                     <span id="fmt-app-first-time-overlay-welcome" class="fmt-loading-screen-font-responsive fmt-faded">Welcome.</span>
                 </div>
                 <div class="col-12 fmt-faded" id="fmt-app-first-time-overlay-msg">
-                    <span class="fmt-loading-screen-font-responsive-sm-1 ">Tap anywhere to</span>
-                    <div class="w-100"></div>
-                    <span class="fmt-loading-screen-font-responsive-sm-1 ">Create a new Profile!</span>
+                    <span class="fmt-loading-screen-font-responsive-sm-1 ">Tap to Create a new Profile</span>
                 </div>
             </div>
         </div>
