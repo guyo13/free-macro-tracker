@@ -84,7 +84,7 @@ button {
 #fmt-app-nav-overlay-content .active {}
 #fmt-app-nav-overlay-content .fmt-menu-font {
   font-size: 1.5rem;
-  color: dimgray;
+  color: #dddddd;
 }
 #fmt-heading {
   font-size: 1.8rem;
@@ -546,7 +546,7 @@ input[type=number] {
     font-weight: 300;
 }
 .fmt-macros-dist-progress-bar {
-    height: 0.5rem;
+    height: 0.4rem;
 }
 .fmt-loading-screen-font-responsive {
     font-size: 4.5rem;
@@ -594,7 +594,7 @@ input[type=number] {
       font-weight: 300;
   }
   .fmt-macros-dist-progress-bar {
-      height: 0.35rem;
+      height: 0.3rem;
   }
   .fmt-loading-screen-font-responsive {
       font-size: 3.2rem;
@@ -621,7 +621,7 @@ input[type=number] {
       font-weight: 300;
   }
   .fmt-macros-dist-progress-bar {
-      height: 0.4rem;
+      height: 0.25rem;
   }
   .fmt-food-input-field {
       width: 100%;

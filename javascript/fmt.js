@@ -2200,18 +2200,22 @@ function katchMcArdle(weightKg, bodyfatReal) {
 
 //Functions - UI - Generic
 function FMTShowAlert(divId, alertLevel, msg, scrollOptions) {
-    let alertDiv = document.getElementById(divId);
-    let alertElem = `<div class="alert alert-${alertLevel} col-11 col-lg-8 mb-1 alert-dismissible fade show" role="alert">${msg}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
-    alertDiv.innerHTML = alertElem;
-    if (scrollOptions) {
-        window.scroll(scrollOptions);
+  // Use Platform Interface if available
+    if (FMTPlatformInterface != null) {
+      FMTPlatformInterface.FMTShowAlert(msg, alertLevel);
+    } else {
+      let alertDiv = document.getElementById(divId);
+      let alertElem = `<div class="alert alert-${alertLevel} col-11 col-lg-8 mb-1 alert-dismissible fade show" role="alert">${msg}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
+      alertDiv.innerHTML = alertElem;
+      if (scrollOptions) {
+          window.scroll(scrollOptions);
+      }
+      setTimeout(() => {
+        let _ = document.getElementById(divId).getElementsByTagName("button");
+        if (_.length > 0)
+          _[0].click();
+      }, 5000);
     }
-    setTimeout(() => {
-      let _ = document.getElementById(divId).getElementsByTagName("button");
-      if (_.length > 0)
-        _[0].click();
-    }, 5000);
-    return;
 }
 function _FMTDropdownToggleValue(elem, text, attributes, skipEvent) {
   if (!!elem) {
@@ -3498,6 +3502,7 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
           args = [objectId, multiplier, false, servingValue, units];
       }
     }
+    // console.log(`FMTUpdateConsumableValuesOnServingChange, Args ${JSON.stringify(args)}`);
     pageFunction.apply(null, args);
 }
 
@@ -3643,27 +3648,27 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
 
     const carbSpanMd = document.createElement("span");
     const carbSpanSm = document.createElement("span");
-    carbSpanMd.classList.add("fmt-font-1", "d-none", "d-sm-block", "fmt-meal-carbs", "fmt-font-color-violet");
+    carbSpanMd.classList.add("fmt-font-1", "d-none", "d-sm-inline", "fmt-meal-carbs", "fmt-font-color-violet");
     carbSpanSm.classList.add("fmt-font-1", "d-sm-none", "fmt-meal-carbs", "fmt-font-color-violet");
-    carbSpanMd.innerHTML = "Carbohydrates";
-    carbSpanSm.innerHTML = "Carbs";
+    carbSpanMd.innerHTML = "Carbohydrates: ";
+    carbSpanSm.innerHTML = "Carbs: ";
     const mCarbsDiv = document.createElement("div");
-    mCarbsDiv.classList.add("col-3", "fmt-center-text");
+    mCarbsDiv.classList.add("col-4", "fmt-center-text", "pl-0", "pr-0");
     mCarbsDiv.appendChild(carbSpanMd);
     mCarbsDiv.appendChild(carbSpanSm);
 
     const proteinSpan = document.createElement("span");
     proteinSpan.classList.add("fmt-font-1", "fmt-meal-proteins", "fmt-font-color-info");
-    proteinSpan.innerHTML = "Proteins";
+    proteinSpan.innerHTML = "Proteins: ";
     const mProtDiv = document.createElement("div");
-    mProtDiv.classList.add("col-3", "fmt-center-text");
+    mProtDiv.classList.add("col-4", "fmt-center-text", "pl-0", "pr-0");
     mProtDiv.appendChild(proteinSpan);
 
     const fatsSpan = document.createElement("span");
     fatsSpan.classList.add("fmt-font-1", "fmt-meal-fats", "fmt-font-color-orange");
-    fatsSpan.innerHTML = "Fats";
+    fatsSpan.innerHTML = "Fats: ";
     const mFatsDiv = document.createElement("div");
-    mFatsDiv.classList.add("col-3", "fmt-center-text");
+    mFatsDiv.classList.add("col-4", "fmt-center-text", "pl-0", "pr-0");
     mFatsDiv.appendChild(fatsSpan);
 
     const w100 = document.createElement("div");
@@ -3694,14 +3699,19 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     mFatsProgDiv.classList.add("fmt-center-text",  "col-3", "ml-1", "mr-1");
     mFatsProgDiv.appendChild(mFatsProg);
 
+    // Values inline
+    mCarbsDiv.appendChild(mCarbsProg)
+    mProtDiv.appendChild(mProtProg)
+    mFatsDiv.appendChild(mFatsProg)
+
     mealFooterDiv.appendChild(mealFooterAddDiv);
     mealFooterDiv.appendChild(mCarbsDiv);
     mealFooterDiv.appendChild(mProtDiv);
     mealFooterDiv.appendChild(mFatsDiv);
-    mealFooterDiv.appendChild(w100);
-    mealFooterDiv.appendChild(mCarbsProgDiv);
-    mealFooterDiv.appendChild(mProtProgDiv);
-    mealFooterDiv.appendChild(mFatsProgDiv);
+    // mealFooterDiv.appendChild(w100);
+    // mealFooterDiv.appendChild(mCarbsProgDiv);
+    // mealFooterDiv.appendChild(mProtProgDiv);
+    // mealFooterDiv.appendChild(mFatsProgDiv);
 
     //Final Meal
     mealDiv.appendChild(mealHeaderDiv);
