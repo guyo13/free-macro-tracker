@@ -5,6 +5,9 @@
     --fmt-lighter-green: rgb(40, 167, 69); /*#28a745*/
     --fmt-light-green: rgb(54, 157, 77);
     --fmt-dark-green: rgb(42, 118, 59);
+    --fmt-light-gray: #cccccc;
+    --fmt-gainsboro: #dddddd;
+    --fmt-cultured: #eeeeee;
 }
 body {
   overflow: hidden;
@@ -66,8 +69,23 @@ button {
 .fmt-bg-light-green {
     background-color: var(--fmt-light-green);
 }
+.fmt-bg-gainsboro {
+  background-color: var(--fmt-gainsboro);
+}
+.fmt-bg-cultured {
+  background-color: var(--fmt-cultured);
+}
 .fmt-bg-transparent {
   opacity: 0;
+}
+.fmt-text-color-light-green {
+  color: var(--fmt-light-green);
+}
+.fmt-text-color-dark-green {
+  color: var(--fmt-dark-green);
+}
+.fmt-no-pad {
+  padding: 0;
 }
 #fmt-app-nav-overlay-content ul {
     list-style-type: none;
@@ -84,7 +102,7 @@ button {
 #fmt-app-nav-overlay-content .active {}
 #fmt-app-nav-overlay-content .fmt-menu-font {
   font-size: 1.5rem;
-  color: #dddddd;
+  color: var(--fmt-gainsboro);
 }
 #fmt-heading {
   font-size: 1.8rem;
@@ -160,8 +178,7 @@ button {
     border-bottom-style: solid;
     border-bottom-width: thin;
     border-bottom-color: white;
-    /* background-color: var(--fmt-light-gray); */
-    background-color: #eeeeee;
+    background-color: var(--fmt-cultured);
 
     transition-duration: 0.3s;
 }
@@ -178,7 +195,7 @@ button {
   height: auto;
 }
 .fmt-meal-header {
-    background-color: #cccccc;
+    background-color: var(--fmt-light-gray);
 }
 .fmt-progress-bar-container{}
 .footer {
@@ -271,14 +288,17 @@ button {
     color: var(--light);
     border-style: none;
 }
+.fmt-btn-outline-dark-green {
+    /* color: var(--fmt-dark-green); */
+    border-style: none;
+}
 .fmt-btn-outline-light:hover {
     color: #212529;
     background-color: var(--light);
     border-style: none;
 }
 .fmt-btn-outline-gray {
-    /* background-color: var(--fmt-accent-gray); */
-    background-color: #dddddd;
+    background-color: var(--fmt-gainsboro);
     color: black;
     border-bottom-width: thin;
     border-bottom-color: white;
@@ -445,6 +465,19 @@ button {
   font-size: 0.7rem!important;
   font-weight: bold;
 }
+.fmt-list-tile {
+  width: 100%;
+  cursor:pointer;
+  border-radius:0.25rem;
+}
+.fmt-list-tile-body {
+  text-align:left;
+  width:80%;
+}
+.fmt-list-tile-trailing {
+  width:15%;
+  text-align:right;
+}
 .form__group {
    position: relative;
    padding: 0.7rem 0 0;
@@ -536,6 +569,10 @@ input[type=number] {
 .fmt-font-1 {
     font-size: 1.2rem;
     font-weight: 300;
+}
+.fmt-font-1-5 {
+  font-size: 1.3rem;
+  font-weight: 300;
 }
 .fmt-font-2 {
     font-size: 1.5rem;

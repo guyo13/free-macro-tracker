@@ -106,12 +106,12 @@
         <div id="foods" class="fmt-tab container-fluid">
             <div id="foods-alerts" class="row justify-content-center"></div>
             <div class="d-flex justify-content-center mt-3">
-                <div class="d-flex col-12 col-lg-8 mb-1 justify-content-between" style="padding: 0;">
-                    <div class="col-10 col-lg-4" style="padding-left: 0;">
+                <div class="d-flex col-12 col-lg-8 mb-1 justify-content-between fmt-no-pad">
+                    <div class="col-10 col-lg-4 pl-0">
                         <h4 class="fmt-font-2">Foods and Recipes</h4>
                     </div>
-                    <div class="col-2 col-sm-1 d-flex" style="padding-right 0;">
-                        <button id="foods-add" action="food" class="fal fa-plus btn fmt-text-btn1 flex-fill fmt-btn-no-focus" type="button" style="color: var(--fmt-light-green);"></button>
+                    <div class="col-2 col-sm-1 d-flex pr-0">
+                        <button id="foods-add" action="food" class="fal fa-plus btn fmt-text-btn1 flex-fill fmt-btn-no-focus fmt-text-color-light-green" type="button"></button>
                     </div>
                 </div>
             </div>
@@ -149,7 +149,7 @@
         <div id="profile" class="fmt-tab container-fluid">
             <div id="profile-alerts" class="row justify-content-center"></div>
             <div id="bodily-details" class="row justify-content-center">
-                <div class="input-group col-12 col-lg-8 mb-1">
+                <div class="input-group col-12 col-lg-8 mb-1 mt-1">
                     <h4 class="fmt-font-2">Personal Details</h4>
                 </div>
                 <div class="w-100"></div>
@@ -311,25 +311,28 @@
         </div>
         <div id="settings" class="fmt-tab container-fluid">
             <div id="settings-alerts" class="row justify-content-center"></div>
-            <div class="d-flex justify-content-center mt-3">
-                <div class="d-flex col-12 col-lg-8 mb-1 justify-content-between">
-                    <div class="col-6 col-lg-7">
-                        <h4 class="fmt-font-2">Settings</h4>
-                    </div>
-                    <!-- <div class="col-1 col-lg-1">
-                         <button id="" class="btn btn-outline-dark fmt-text-btn1" type="button">&times;</button>
-                    </div> -->
-                </div>
+            <div class="row pt-1 pb-1 justify-content-center align-items-center fmt-bg-gainsboro">
+              <div class="col-12 col-lg-8 ml-1">
+                  <h4 class="fmt-font-2 mb-0">Settings</h4>
+              </div>
             </div>
-            <div id="settings-data-control" class="row justify-content-center mt-1 mb-1">
+            <div id="settings-data-control" class="row justify-content-center mt-4">
+                <div class="col-12 col-lg-8 mb-4">
+                  <h4 class="fmt-font-1-5 mb-0">Import and Export</h4>
+                </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <h4 class="fmt-font-2">Import and Export</h4>
+                  <div id="settings-data-control-export" class="fmt-list-tile fmt-bg-cultured">
+                    <span class="fmt-list-tile-body btn fmt-btn-outline-dark-green d-inline-block">Export Your Data
+                    </span>
+                    <span class="fal fa-download btn fmt-list-tile-trailing"></span>
+                  </div>
                 </div>
-                <div class="input-group col-12 col-lg-8 mb-1 mt-1">
-                  <button id="settings-data-control-export" type="button" class="form-control btn fmt-btn-success">Export Your Data</button>
-                </div>
-                <div class="input-group col-12 col-lg-8 mb-1 mt-1">
-                  <button id="settings-data-control-import" type="button" class="form-control btn fmt-btn-success">Import JSON</button>
+                <div class="col-12 col-lg-8 mb-1">
+                  <div id="settings-data-control-import" class="fmt-list-tile fmt-bg-cultured">
+                    <span class="fmt-list-tile-body btn fmt-btn-outline-dark-green d-inline-block">Import JSON
+                    </span>
+                    <span class="fal fa-file-upload btn fmt-list-tile-trailing"></span>
+                  </div>
                 </div>
                 <div id="settings-data-control-import-indiv" class="input-group col-12 col-lg-8 mb-1 d-none">
                   <div class="input-group mb-3 mt-3">
