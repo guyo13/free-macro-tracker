@@ -477,15 +477,17 @@
                 <div id="edit-food-screen-food-additional" class="d-none col-12 col-lg-8">
                 </div>
             </div>
-            <div id="edit-food-screen-footer" class="row justify-content-center">
-                <div class="input-group col-12 col-lg-4 mb-1">
-                    <button id="edit-food-screen-more" class="btn btn-outline-dark flex-fill" type="button">Show More</button>
-                    <button id="edit-food-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Show Less</button>
-                    <div class="w-100"></div>
-                    <button id="edit-food-screen-save" class="btn btn-outline-dark flex-fill mt-3" type="button">Save Food</button>
-                    <div class="w-100"></div>
-                    <button id="edit-food-screen-delete" class="btn btn-danger flex-fill mt-3" type="button">Delete</button>
-                </div>
+            <div id="edit-food-screen-footer" class="row justify-content-center no-gutters">
+              <div class="input-group col-4 mb-1">
+                <button id="edit-food-screen-delete" class="btn btn-danger flex-fill" type="button">Delete</button>
+              </div>
+              <div class="input-group col-4 mb-1">
+                <button id="edit-food-screen-save" class="btn btn-outline-primary flex-fill ml-1 mr-1" type="button">Save</button>
+              </div>
+              <div class="input-group col-4 mb-1">
+                <button id="edit-food-screen-more" class="btn btn-outline-dark flex-fill" type="button">More</button>
+                <button id="edit-food-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Less</button>
+              </div>
             </div>
         </div>
         <div id="view-food-screen" class="fmt-dynamic-screen container-fluid">
@@ -575,17 +577,20 @@
                 <div id="view-food-screen-food-additional" class="d-none col-12 col-lg-8">
                 </div>
             </div>
-            <div id="view-food-screen-footer" class="row justify-content-center">
-                <div class="input-group col-12 col-lg-4 mb-1">
-                    <button id="view-food-screen-more" class="btn btn-outline-dark flex-fill" type="button">Show More</button>
-                    <button id="view-food-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Show Less</button>
-                    <div class="w-100"></div>
-                    <button id="view-food-screen-edit" class="btn btn-outline-dark flex-fill mt-3" type="button">Edit</button>
-                    <div class="w-100"></div>
-                    <button id="view-food-screen-save" class="btn btn-outline-success flex-fill mt-3" type="button">Add to Meal</button>
-                    <div class="w-100"></div>
-                    <button id="view-food-screen-add" class="btn btn-outline-success flex-fill mt-3 d-none" type="button">Add Ingredient</button>
-                </div>
+            <div id="view-food-screen-footer" class="row justify-content-center no-gutters">
+              <div class="input-group col-4 mb-1">
+                <button id="view-food-screen-edit" class="btn btn-outline-dark flex-fill" type="button">Edit</button>
+              </div>
+              <div class="input-group col-4 mb-1">
+                <button id="view-food-screen-save" class="btn btn-outline-success flex-fill ml-1 mr-1" type="button">Add to Meal</button>
+                <!--Add Ingredient-->
+                <button id="view-food-screen-add" class="btn btn-outline-success flex-fill ml-1 mr-1 d-none" type="button">Add</button>
+              </div>
+              <div class="input-group col-4 mb-1">
+                <button id="view-food-screen-more" class="btn btn-outline-dark flex-fill" type="button">More</button>
+                <button id="view-food-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Less</button>
+              </div>
+
             </div>
         </div>
 
@@ -683,15 +688,14 @@
                 <div id="add-recipe-screen-recipe-additional" class="d-none col-12 col-lg-8">
                 </div>
             </div>
-            <div id="add-recipe-screen-footer" class="row justify-content-center">
-                <div class="input-group col-12 col-lg-4 mb-1">
-                    <button id="add-recipe-screen-more" class="btn btn-outline-dark flex-fill" type="button">Show More</button>
-                    <button id="add-recipe-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Show Less</button>
-                </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-4 mb-1">
-                    <button id="add-recipe-screen-save" class="btn btn-outline-dark flex-fill" type="button">Save Recipe</button>
-                </div>
+            <div id="add-recipe-screen-footer" class="row justify-content-center no-gutters">
+              <div class="input-group col-6 col-lg-4 mb-1">
+                <button id="add-recipe-screen-save" class="btn btn-outline-primary flex-fill mr-1" type="button">Save Recipe</button>
+              </div>
+              <div class="input-group col-6 col-lg-4 mb-1">
+                <button id="add-recipe-screen-more" class="btn btn-outline-dark flex-fill" type="button">Show More</button>
+                <button id="add-recipe-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Show Less</button>
+              </div>
             </div>
         </div>
 
@@ -815,19 +819,17 @@
                 <div id="view-recipe-screen-recipe-additional" class="d-none col-12 col-lg-8">
                 </div>
             </div>
-            <div id="view-recipe-screen-footer" class="row justify-content-center">
-                <div class="input-group col-12 col-lg-4 mb-1">
-                    <button id="view-recipe-screen-more" class="btn btn-outline-dark flex-fill" type="button">Show More</button>
-                    <button id="view-recipe-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Show Less</button>
-                </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-4 mb-1">
-                    <button id="view-recipe-screen-save" class="btn btn-outline-success flex-fill" type="button">Add to Meal</button>
-                </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-4 mb-1">
-                    <button id="view-recipe-screen-edit" class="btn btn-outline-dark flex-fill" type="button">Edit Recipe</button>
-                </div>
+            <div id="view-recipe-screen-footer" class="row justify-content-center no-gutters">
+              <div class="input-group col-4 mb-1">
+                <button id="view-recipe-screen-edit" class="btn btn-outline-dark flex-fill" type="button">Edit Recipe</button>
+              </div>
+              <div class="input-group col-4 mb-1">
+                <button id="view-recipe-screen-save" class="btn btn-outline-success flex-fill ml-1 mr-1" type="button">Add to Meal</button>
+              </div>
+              <div class="input-group col-4 mb-1">
+                <button id="view-recipe-screen-more" class="btn btn-outline-dark flex-fill" type="button">More</button>
+                <button id="view-recipe-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Less</button>
+              </div>
             </div>
         </div>
 
@@ -925,19 +927,17 @@
                 <div id="edit-recipe-screen-recipe-additional" class="d-none col-12 col-lg-8">
                 </div>
             </div>
-            <div id="edit-recipe-screen-footer" class="row justify-content-center">
-                <div class="input-group col-12 col-lg-4 mb-1">
-                    <button id="edit-recipe-screen-more" class="btn btn-outline-dark flex-fill" type="button">Show More</button>
-                    <button id="edit-recipe-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Show Less</button>
-                </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-4 mb-1">
-                    <button id="edit-recipe-screen-delete" class="btn btn-danger flex-fill" type="button">Delete Recipe</button>
-                </div>
-                <div class="w-100"></div>
-                <div class="input-group col-12 col-lg-4 mb-1">
-                    <button id="edit-recipe-screen-save" class="btn btn-outline-dark flex-fill" type="button">Save Recipe</button>
-                </div>
+            <div id="edit-recipe-screen-footer" class="row justify-content-center no-gutters">
+              <div class="input-group col-4 mb-1">
+                <button id="edit-recipe-screen-delete" class="btn btn-danger flex-fill" type="button">Delete Recipe</button>
+              </div>
+              <div class="input-group col-4 mb-1">
+                <button id="edit-recipe-screen-save" class="btn btn-outline-primary flex-fill ml-1 mr-1" type="button">Update</button>
+              </div>
+              <div class="input-group col-4 mb-1">
+                <button id="edit-recipe-screen-more" class="btn btn-outline-dark flex-fill" type="button">More</button>
+                <button id="edit-recipe-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Less</button>
+              </div>
             </div>
         </div>
 
@@ -1002,15 +1002,17 @@
                 <div id="edit-ingredient-screen-ingredient-additional" class="d-none col-12 col-lg-8">
                 </div>
             </div>
-            <div id="edit-ingredient-screen-footer" class="row justify-content-center">
-                <div class="input-group col-12 col-lg-4 mb-1">
-                    <button id="edit-ingredient-screen-more" class="btn btn-outline-dark flex-fill" type="button">Show More</button>
-                    <button id="edit-ingredient-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Show Less</button>
-                    <div class="w-100"></div>
-                    <button id="edit-ingredient-screen-delete" class="btn btn-danger flex-fill mt-3" type="button">Delete</button>
-                    <div class="w-100"></div>
-                    <button id="edit-ingredient-screen-save" class="btn btn-outline-primary flex-fill mt-3" type="button">Update</button>
-                </div>
+            <div id="edit-ingredient-screen-footer" class="row justify-content-center no-gutters">
+              <div class="input-group col-4 mb-1">
+                <button id="edit-ingredient-screen-delete" class="btn btn-danger flex-fill" type="button">Delete</button>
+              </div>
+              <div class="input-group col-4 mb-1">
+                <button id="edit-ingredient-screen-save" class="btn btn-outline-primary flex-fill ml-1 mr-1" type="button">Update</button>
+              </div>
+              <div class="input-group col-4 mb-1">
+                <button id="edit-ingredient-screen-more" class="btn btn-outline-dark flex-fill" type="button">More</button>
+                <button id="edit-ingredient-screen-less" class="btn btn-outline-dark flex-fill d-none" type="button">Less</button>
+              </div>
             </div>
         </div>
 
