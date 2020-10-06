@@ -4181,7 +4181,7 @@ function FMTUIAddPreparationStep(prepStepContainerDiv, scroll) {
   const col = FMTUICreateTextArea("textarea" ,`Step ${nextStepNum}`, "Preparation Step", undefined, false, ["fmt-recipe-step-cont"], ["fmt-textarea"]);
   const textarea = col.getElementsByTagName("textarea")[0];
   const delBtn = document.createElement("button");
-  delBtn.classList.add("btn", "btn-danger", "fal", "fa-trash-alt");
+  delBtn.classList.add("btn", "btn-danger", "fal", "fa-trash-alt", "ml-2", "mb-3");
   delBtn.addEventListener("click", (e) => {
     prepStepContainerDiv.removeChild(col);
     FMTUIRefreshPreparationStepNumbers(prepStepContainerDiv);
