@@ -121,6 +121,9 @@ var fmtAppExport;
 
 //Functions
 //Functions - Generic
+function hasPlatformInterface() {
+  return typeof FMTPlatformInterface !== 'undefined';
+}
 function isFunction(fn) {
   return (typeof fn === 'function');
 }
@@ -2201,7 +2204,7 @@ function katchMcArdle(weightKg, bodyfatReal) {
 //Functions - UI - Generic
 function FMTShowAlert(divId, alertLevel, msg, scrollOptions) {
   // Use Platform Interface if available
-    if (FMTPlatformInterface != null) {
+    if (hasPlatformInterface()) {
       FMTPlatformInterface.FMTShowAlert(msg, alertLevel);
     } else {
       let alertDiv = document.getElementById(divId);
@@ -2216,6 +2219,14 @@ function FMTShowAlert(divId, alertLevel, msg, scrollOptions) {
           _[0].click();
       }, 5000);
     }
+}
+// Shows a Snackbar on mobile platform or Alert on web
+function FMTShowAlertBar(msg, divId, alertLevel) {
+  if (hasPlatformInterface()) {
+    FMTPlatformInterface.FMTShowAlertBar(msg);
+  } else {
+    FMTShowAlert(divId, alertLevel, msg);
+  }
 }
 function _FMTDropdownToggleValue(elem, text, attributes, skipEvent) {
   if (!!elem) {
@@ -3495,7 +3506,7 @@ function FMTUpdateConsumableValuesOnServingChange(event, baseScreenID, qualifier
       let objectId = document.getElementById(`${baseScreenID}-save`).getAttribute(idProp);
       if (!isNumber(objectId)) {
           console.error(`${objectType} ID (${objectId}) is not valid on serving change`);
-          FMTShowAlert(alertsDivID, "danger", "Error while calculating nutritional value. Please reload", fmtAppGlobals.defaultAlertScroll);
+          FMTShowAlertBar("Error while calculating nutritional value. Please reload", alertsDivID, "danger");
           return;
       }
       else {
@@ -3992,7 +4003,7 @@ function FMTLoadCurrentDayUserGoals(onsuccessFn, onerrorFn) {
   let onOpenUserGoalsCursorErrorFn  = function() {
     const msg = `Failed loading Current Day - ${fmtAppInstance.currentDay.getFullYear()}-${fmtAppInstance.currentDay.getMonth()}-${fmtAppInstance.currentDay.getDate()}`;
     console.error(msg);
-    FMTShowAlert("overview-alerts", "danger", `${msg}\nPlease reload Free Macro Tracker!`, fmtAppGlobals.defaultAlertScroll);
+    FMTShowAlertBar( `${msg}\nPlease reload Free Macro Tracker!`, "overview-alerts", "danger");
   };
   FMTQueryUserGoalsByProfileAndDate(fmtAppInstance.currentProfileId,
                                     fmtAppInstance.currentDay.getFullYear(),
@@ -4326,7 +4337,7 @@ function FMTUIAddtoMealBtnClick(baseId, qualifier, objectType, event) {
       const msg = "Failed adding meal entry";
       console.error(msg);
       console.error(mealEntryObj);
-      FMTShowAlert(`${baseId}-alerts`, "danger", msg);
+      FMTShowAlertBar(msg, `${baseId}-alerts`, "danger");
   });
 }
 function FMTUIEditBtnClick(baseId, qualifier, objectType, event) {
@@ -4358,7 +4369,8 @@ function FMTUIEditBtnClick(baseId, qualifier, objectType, event) {
   if ( !isValidIDFn(consumableId) ) {
       const msg = `Invalid ${objectType} ID (${consumableId}). Please reload`;
       console.error(msg);
-      FMTShowAlert(`${baseId}-alerts`, "danger", msg, fmtAppGlobals.defaultAlertScroll);
+      FMTShowAlertBar(msg, `${baseId}-alerts`, "danger");
+      // FMTShowAlert(`${baseId}-alerts`, "danger", msg, fmtAppGlobals.defaultAlertScroll);
       return;
   }
   let consumablesTableBodyID;
@@ -4408,7 +4420,8 @@ function FMTUIDeleteConsumable(event, baseId, qualifier, objectType) {
   if ( !isValidIDFn(consumableId) ) {
       const msg = `Invalid ${objectType} ID (${consumableId}). Please reload`;
       console.error(msg);
-      FMTShowAlert(`${baseId}-alerts`, "danger", msg, fmtAppGlobals.defaultAlertScroll);
+      // FMTShowAlert(`${baseId}-alerts`, "danger", msg, fmtAppGlobals.defaultAlertScroll);
+      FMTShowAlertBar(msg, `${baseId}-alerts`, "danger");
       return;
   }
   //FIXME - each one in their own function.
@@ -4433,21 +4446,21 @@ function FMTUIDeleteConsumable(event, baseId, qualifier, objectType) {
               screenFns.forEach((fn, i) => {
                 fn();
               });
-              const msg = `Successfully deleted ${objectType}! (Food ID ${consumableId})`;
+              const msg = `Successfully deleted ${objectType}!`;
               const alertDivID = pageController.getAlertDivId();
-              FMTShowAlert(alertDivID, "success", msg, fmtAppGlobals.defaultAlertScroll);
+              FMTShowAlertBar(msg, alertDivID, "success");
           },
                         function(e) {
               screenFns.forEach((fn, i) => {
                 fn();
               });
-              const msg = `Failed deleting ${objectType}! (Food ID ${consumableId})`;
+              const msg = `Failed deleting ${objectType}!`;
               const alertDivID = pageController.getAlertDivId();
-              FMTShowAlert(alertDivID, "success", msg, fmtAppGlobals.defaultAlertScroll);
+              FMTShowAlertBar(msg, alertDivID, "danger");
           });
       }
       else {
-          FMTShowAlert(`${baseId}-alerts`, "success", `${objectType} not deleted! (ID ${consumableId})`, fmtAppGlobals.defaultAlertScroll);
+          FMTShowAlertBar(`${objectType} not deleted!`, `${baseId}-alerts`, "success");
       }
   });
 }
@@ -4519,8 +4532,8 @@ var pageController = {
             console.debug("[showFoods] - Foods loaded successfully");
         };
         let onerrorFn = function(e) {
-            FMTShowAlert("foods-alerts", "danger", "Failed loading food", fmtAppGlobals.defaultAlertScroll);
             console.error(e);
+            FMTShowAlertBar("Failed loading food", "foods-alerts", "danger");
         };
         const foodsTableBodyID = "foods-food-table-body";
         const recipesTableBodyID = "foods-recipe-table-body";
@@ -4648,12 +4661,12 @@ var pageController = {
             const foodObj = e.target.result;
             //Validate Object from Database
             if (!foodObj) {
-                FMTShowAlert(alertDivId, "warning", `Couldn't find Food item with ID (${foodId})`);
+                console.warn(`Couldn't find Food item with ID (${foodId})`);
                 return;
             }
             const validateResult = FMTValidateFoodObject(foodObj, fmtAppInstance.unitsChart);
             if (validateResult.food == null || validateResult.error != null) {
-                FMTShowAlert(alertDivId, "Danger", `Error - Food item with ID (${foodId}) failed validation - ${validateResult.error}`);
+                console.error(`Error - Food item with ID (${foodId}) failed validation - ${validateResult.error}`);
                 return;
             }
             //Load values and open screen
@@ -4663,7 +4676,7 @@ var pageController = {
         },
                     //OnError
                     function(e) {
-            FMTShowAlert(alertDivId, "Danger", `Error reading Food Item with ID (${foodId})`);
+            FMTShowAlertBar("Error reading Food data", alertDivId, "danger");
             console.error(e);
             return;
         },
@@ -4703,7 +4716,7 @@ var pageController = {
                 editFoodBtn.setAttribute("consumables-table-body-id", foodsTableBodyID);
             }
             if (result.error) {
-              FMTShowAlert(alertDivId, "error", result.error);
+              console.error(result.error);
             }
             //Handle meal Identifier if it's valid
             if (mealIdentifier) {
@@ -4740,12 +4753,12 @@ var pageController = {
             // Load food from DB and validate it
             const foodObj = e.target.result;
             if (!foodObj) {
-                FMTShowAlert(alertDivId, "warning", `Couldn't find Food item with ID (${foodId})`);
+                console.error(`Couldn't find Food item with ID (${foodId})`);
                 return;
             }
             const validateResult = FMTValidateFoodObject(foodObj, fmtAppInstance.unitsChart);
             if (validateResult.food == null || validateResult.error != null) {
-                FMTShowAlert(alertDivId, "Danger", `Error - Food item with ID (${foodId}) failed validation - ${validateResult.error}`);
+                console.error(`Error - Food item with ID (${foodId}) failed validation - ${validateResult.error}`);
                 return;
             }
             const food = validateResult.food;
@@ -4755,7 +4768,6 @@ var pageController = {
         },
                     //OnError
                     function(e) {
-            FMTShowAlert(alertDivId, "Danger", `Error reading Food Item with ID (${foodId})`);
             console.error(e);
             return;
         },
@@ -4854,7 +4866,7 @@ var pageController = {
                 editRecipeBtn.setAttribute("consumables-table-body-id", recipesTableBodyID);
             }
             if (result.error) {
-              FMTShowAlert(alertDivId, "error", result.error);
+              console.error(result.error);
             }
             //Handle meal Identifier if it's valid
             if (mealIdentifier) {
@@ -4878,12 +4890,12 @@ var pageController = {
             // Load recipe from DB and validate it
             const recipeObj = e.target.result;
             if (!recipeObj) {
-                FMTShowAlert(alertDivId, "warning", `Couldn't find recipe item with ID (${recipeId})`);
+                console.error(`Couldn't find recipe item with ID (${recipeId})`);
                 return;
             }
             const validateResult = FMTValidateRecipeObject(recipeObj, fmtAppInstance.unitsChart);
             if (validateResult.recipe == null || validateResult.error != null) {
-                FMTShowAlert(alertDivId, "Danger", `Error - Recipe item with ID (${recipeId}) failed validation - ${validateResult.error}`);
+                console.error( `Error - Recipe item with ID (${recipeId}) failed validation - ${validateResult.error}`);
                 return;
             }
             const recipe = validateResult.recipe;
@@ -4893,7 +4905,6 @@ var pageController = {
         },
                     //OnError
                     function(e) {
-            FMTShowAlert(alertDivId, "Danger", `Error reading recipe Item with ID (${recipeId})`);
             console.error(e);
             return;
         },
@@ -4920,7 +4931,7 @@ var pageController = {
             console.debug("[openAddToMealDynamicScreen] - Foods loaded successfully");
         };
         let onerrorFn = function(e) {
-            FMTShowAlert(`${screenID}-alerts`, "danger", "Failed loading foods", fmtAppGlobals.defaultAlertScroll);
+            FMTShowAlertBar("Failed loading foods", `${screenID}-alerts`, "danger");
             console.error(e);
         };
         const foodsTableBodyID = `${screenID}-food-table-body`;
@@ -4980,12 +4991,12 @@ var pageController = {
             const recipeObj = e.target.result;
             //Validate Object from Database
             if (!recipeObj) {
-                FMTShowAlert(alertDivId, "warning", `Couldn't find Recipe item with ID (${recipeId})`);
+                console.error(`Couldn't find Recipe item with ID (${recipeId})`);
                 return;
             }
             const validateResult = FMTValidateRecipeObject(recipeObj, fmtAppInstance.unitsChart);
             if (validateResult.recipe == null || validateResult.error != null) {
-                FMTShowAlert(alertDivId, "Danger", `Error - Recipe item with ID (${recipeId}) failed validation - ${validateResult.error}`);
+                console.error(`Error - Recipe item with ID (${recipeId}) failed validation - ${validateResult.error}`);
                 return;
             }
             //Load values, create handlers and open screen
@@ -5028,7 +5039,6 @@ var pageController = {
         },
                     //OnError
                     function(e) {
-            FMTShowAlert(alertDivId, "Danger", `Error reading Recipe Item with ID (${recipeId})`);
             console.error(e);
             return;
         },
@@ -5064,7 +5074,7 @@ var pageController = {
         const optionsObj = {"eventListenersObj": eventListenersObj };
         const result = FMTPopulateConsumableItemScreen(screenID, optionsObj, qualifier, objectType, undefined, false);
         if (result.error) {
-          FMTShowAlert(alertDivId, "error", result.error);
+          console.error(result.error);
         }
         const deleteClickFn = () => {
           const idx = indexesOfObjectMulti(consumableItem.ingredients, {"food_id": ingredient.food_id,
@@ -5124,7 +5134,7 @@ var pageController = {
             console.debug("[openAddToMealDynamicScreen] - Foods loaded successfully");
         };
         let onerrorFn = function(e) {
-            FMTShowAlert(`${screenID}-alerts`, "danger", "Failed loading food", fmtAppGlobals.defaultAlertScroll);
+            // FMTShowAlert(`${screenID}-alerts`, "danger", "Failed loading food", fmtAppGlobals.defaultAlertScroll);
             console.error(e);
         };
         const foodsTableBodyID = `${screenID}-food-table-body`;
@@ -5176,12 +5186,14 @@ var pageController = {
             //Load Meal Entry from DB and validate it
             const mealEntryObj = e.target.result;
             if (!mealEntryObj) {
-                FMTShowAlert(alertDivId, "warning", `Couldn't find meal entry with ID (${entry_id})`);
+                // FMTShowAlert(alertDivId, "warning", `Couldn't find meal entry with ID (${entry_id})`);
+                console.error(`Couldn't find meal entry with ID (${entry_id})`);
                 return;
             }
             const validateResult = FMTValidateMealEntry(mealEntryObj);
             if (validateResult.mealEntry == null || validateResult.error != null) {
-                FMTShowAlert(alertDivId, "Danger", `Error - Meal entry with ID (${entry_id}) failed validation - ${validateResult.error}`);
+                // FMTShowAlert(alertDivId, "Danger", `Error - Meal entry with ID (${entry_id}) failed validation - ${validateResult.error}`);
+                console.error(`Error - Meal entry with ID (${entry_id}) failed validation - ${validateResult.error}`);
                 return;
             }
             //Clear if requested (if arrived from overview. if on serving value change no.)
@@ -5207,7 +5219,7 @@ var pageController = {
         },
                          //OnError
                         function(e) {
-            FMTShowAlert(alertDivId, "Danger", `Error reading Meal entry with ID (${entry_id})`);
+            // FMTShowAlert(alertDivId, "Danger", `Error reading Meal entry with ID (${entry_id})`);
             console.error(e);
             return;
         });//End ReadMealEntry
@@ -5447,7 +5459,10 @@ function prepareEventHandlers() {
             console.debug(`Profile ${fmtAppInstance.currentProfileId} updated successfully`);
             FMTDisplayProfile(fmtAppInstance.currentProfileId)
         };
-        let onerrorFn = function(msg) { FMTShowAlert("profile-alerts", "danger", msg || "Error!", fmtAppGlobals.defaultAlertScroll); };
+        let onerrorFn = function(msg) {
+          // FMTShowAlert("profile-alerts", "danger", msg || "Error!", fmtAppGlobals.defaultAlertScroll);
+          console.error(msg || "Error!");
+        };
         FMTUpdateProfileForm(fmtAppInstance.currentProfileId, onsuccessFn, onerrorFn);
         });
     $("#save-profile-macro").click( (e) => {
@@ -5455,7 +5470,10 @@ function prepareEventHandlers() {
             console.debug(`Profile ${fmtAppInstance.currentProfileId} updated successfully`);
             FMTDisplayProfile(fmtAppInstance.currentProfileId)
         };
-        let onerrorFn = function(msg) { FMTShowAlert("profile-alerts", "danger", msg || "Error!", fmtAppGlobals.defaultAlertScroll); };
+        let onerrorFn = function(msg) {
+          // FMTShowAlert("profile-alerts", "danger", msg || "Error!", fmtAppGlobals.defaultAlertScroll);
+          console.error(msg || "Error!");
+        };
         FMTUpdateMacroesForm(fmtAppInstance.currentProfileId, onsuccessFn, onerrorFn);
         });
     $("#foods-add").click( (e) => {
@@ -5520,7 +5538,7 @@ function prepareEventHandlers() {
         onerrorFn = function(err) {
             const msg = `Failed adding food - ${err}`;
             console.error(msg);
-            FMTShowAlert(`add-food-screen-alerts`, "danger", msg, fmtAppGlobals.defaultAlertScroll);
+            FMTShowAlertBar(msg, `add-food-screen-alerts`, "danger");
         }
         onsuccessFn = function(ev, food) {
             const foodId = ev.target.result;
@@ -5539,7 +5557,7 @@ function prepareEventHandlers() {
             }
             pageController.closeAddFoodDynamicScreen();
             const alertDivID = pageController.getAlertDivId();
-            FMTShowAlert(alertDivID, "success", msg);
+            FMTShowAlertBar(msg, alertDivID, "success");
         }
         FMTSaveConsumableItemScreen("add-food-screen", "add", {}, "food", "Food Item", true, onsuccessFn, onerrorFn);
     });
@@ -5557,7 +5575,7 @@ function prepareEventHandlers() {
         onerrorFn = function(err) {
             const msg = `Failed editing food - ${err}`;
             console.error(msg);
-            FMTShowAlert(`edit-food-screen-alerts`, "danger", msg, fmtAppGlobals.defaultAlertScroll);
+            FMTShowAlertBar(msg, `edit-food-screen-alerts`, "danger");
         }
 
         onsuccessFn = function(ev, food) {
@@ -5589,7 +5607,7 @@ function prepareEventHandlers() {
             pageController.closeEditFoodDynamicScreen();
             pageController.openViewFoodDynamicScreen(foodId, 1, true, undefined, undefined, mealIdentifier, undefined, undefined);
             const alertDivID = pageController.getAlertDivId();
-            FMTShowAlert(alertDivID, "success", msg);
+            FMTShowAlertBar(msg, alertDivID, "success");
         }
 
         FMTSaveConsumableItemScreen("edit-food-screen", "edit", {"consumableId": foodId}, "food", "Food Item", true, onsuccessFn, onerrorFn);
@@ -5739,7 +5757,8 @@ function prepareEventHandlers() {
         let entry_id = delBtn.getAttribute("entry_id");
         if (!FMTIsValidEntryId(entry_id) ) {
             const msg = `Invalid Entry ID (${entry_id}). Please reload`;
-            FMTShowAlert(alertsDivId, "danger", msg, fmtAppGlobals.defaultAlertScroll);
+            console.error(msg);
+            // FMTShowAlert(alertsDivId, "danger", msg, fmtAppGlobals.defaultAlertScroll);
             return;
         }
         entry_id = Number(entry_id);
@@ -5751,24 +5770,24 @@ function prepareEventHandlers() {
                               function(e) {
                     pageController.closeEditMealEntryDynamicScreen();
                     const openScreens = pageController.updateZIndexes(true);
-                    const msg = `Successfully deleted Entry! (Entry ID ${entry_id})`;
+                    const msg = `Successfully deleted Entry!`;
                     if (openScreens.length < 1 && fmtAppInstance.pageState.activeTab === "overview") {
                         pageController.showOverview();
-                        FMTShowAlert("overview-alerts", "success", msg, fmtAppGlobals.defaultAlertScroll);
+                        FMTShowAlertBar(msg, "overview-alerts", "success");
                     }
                 },
                               function(e) {
                     pageController.closeEditMealEntryDynamicScreen();
                     const openScreens = pageController.updateZIndexes(true);
-                    const msg = `Failed deleting Entry! (Entry ID ${entry_id})`;
+                    const msg = `Failed deleting Entry!`;
                     if (openScreens.length < 1 && fmtAppInstance.pageState.activeTab === "foods") {
                         pageController.showOverview();
-                        FMTShowAlert("overview-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
+                        FMTShowAlertBar(msg, "overview-alerts", "danger");
                     }
                 });
             }
             else {
-                FMTShowAlert(alertsDivId, "success", `Entry not deleted! (Entry ID ${entry_id})`, fmtAppGlobals.defaultAlertScroll);
+                FMTShowAlertBar(`Entry not deleted!`, alertsDivId, "success");
             }
         });
     });
@@ -5780,7 +5799,8 @@ function prepareEventHandlers() {
         const updateBtn = document.getElementById(`${baseScreenID}-save`);
         let entry_id = updateBtn.getAttribute("entry_id");
         if (!FMTIsValidEntryId(entry_id) ) {
-            const msg = `Invalid Entry ID (${entry_id}). Please reload`;
+            const msg = `Invalid Meal Entry. Please reload`;
+            console.error(msg);
             FMTShowAlert(alertsDivId, "danger", msg, fmtAppGlobals.defaultAlertScroll);
             return;
         }
@@ -5789,17 +5809,17 @@ function prepareEventHandlers() {
         console.log(consumableValues);
         FMTUpdateMealEntry(entry_id, consumableValues,
                            function(e) {
-            const msg = `Successfully updated Meal Entry (ID - ${entry_id})`;
+            const msg = `Successfully updated Meal Entry`;
             pageController.closeEditMealEntryDynamicScreen();
             pageController.showOverview();
-            FMTShowAlert("overview-alerts", "success", msg, fmtAppGlobals.defaultAlertScroll);
+            FMTShowAlertBar(msg, "overview-alerts", "success");
         },
                            function(e) {
             console.error(e);
-            const msg = `Failed updating Meal Entry (ID - ${entry_id})`;
+            const msg = `Failed updating Meal Entry`;
             pageController.closeEditMealEntryDynamicScreen();
             pageController.showOverview();
-            FMTShowAlert("overview-alerts", "danger", msg, fmtAppGlobals.defaultAlertScroll);
+            FMTShowAlertBar(msg, "overview-alerts", "danger");
         });
     });
     $("#overview-total-calories").click( (e) => {
