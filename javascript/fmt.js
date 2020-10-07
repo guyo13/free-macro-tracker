@@ -672,6 +672,14 @@ function FMTStringifyRemoveNewlines(k, v) {
   }
   else return v;
 }
+function FMTExportToJSON(data, onsuccessFn, stringifyReplacerFn, filename) {
+  if (hasPlatformInterface()) {
+    const stringified = JSON.stringify(data, stringifyReplacerFn);
+    FMTPlatformInterface.FMTExportData(stringified, filename);
+  } else {
+    FMTExportToJSONBlob(data, onsuccessFn, stringifyReplacerFn)
+  }
+}
 function FMTExportToJSONBlob(data, onsuccessFn, stringifyReplacerFn) {
   if (fmtAppExport != null) {
      window.URL.revokeObjectURL(fmtAppExport);
@@ -903,6 +911,15 @@ function FMTDataToStructuredJSON(exportFn) {
 }
 
 //Functions - DB - Import
+function FMTImportData(jsonString) {
+  try {
+    FMTImportFromStructuredJSON(jsonString);
+  } catch (err) {
+    console.error(err);
+    FMTShowAlert("settings-alerts", "danger", "Error while importing. Data is corrupted!");
+  }
+}
+
 function FMTImportRecordsSeq(recordsObj, indexes, objectStoreName, successIterFn, errIterFn, importMethod, isVerbose) {
   //Success and Error iter functions get as arguments - (event, recordsObj, indexes, objectStoreName, successIterFn, errIterFn, importMethod, isVerbose)
   importMethod = importMethod || "put";
@@ -1009,6 +1026,7 @@ function FMTImportFromStructuredJSON(jsonString, jsonParseReviverFn, onEnd, excl
                             //onNoProfile
                             function() {
                   console.warn("No user Profile could be loaded after Import");
+                  FMTShowAlert("settings-alerts", "success", "Data Imported Successfully. But no user profile found.");
               });
           });
       });
@@ -5872,16 +5890,23 @@ function prepareEventHandlers() {
       const d = new Date();
       const fileName = `FMT_Data_export_${d.getFullYear()}_${d.getMonth()}_${d.getDate()}`;
       FMTDataToStructuredJSON(function(records) {
-        FMTExportToJSONBlob(records, function() {
+        FMTExportToJSON(records, function() {
           const link = document.createElement('a');
           link.setAttribute('download', fileName);
           link.href = fmtAppExport;
       		link.click();
-        });
+        }, null, fileName);
       });
     });
     $("#settings-data-control-import").click( (e) => {
-      document.getElementById("settings-data-control-import-indiv").classList.remove("d-none");
+      if (hasPlatformInterface()) {
+        // This initiates the import process on the platform
+        // When the user proceeds with selecting file, the platform will fire
+        // [FMTImportData]
+        FMTPlatformInterface.FMTImportData();
+      } else {
+        document.getElementById("settings-data-control-import-indiv").classList.remove("d-none");
+      }
     } );
     $("#settings-data-control-import-file").change( (e) => {
       const fileList = document.getElementById("settings-data-control-import-file").files;
