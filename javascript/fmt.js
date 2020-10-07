@@ -36,6 +36,8 @@ fmtAppInstance.editIngredientServingKeyupFn = null;
 //Instance - User defined metrics
 fmtAppInstance.unitsChart = null;
 fmtAppInstance.additionalNutrients = null;
+//Instance - Platform specific objects
+fmtAppInstance.userPromptPlatformCallback = null;
 //Globals
 var fmtAppGlobals = {};
 //Globals - Links
@@ -2268,6 +2270,13 @@ function FMTShowPrompt(divId, alertLevel, msg, scrollOptions, oncompleteFn) {
   /*oncompleteFn - User defined functions that takes a boolean based on if user
   * clicked "Yes" or "No"
   */
+  if (hasPlatformInterface()) {
+    fmtAppInstance.userPromptPlatformCallback = function(res) {
+      oncompleteFn(res);
+      fmtAppInstance.userPromptPlatformCallback = null;
+    };
+    FMTPlatformInterface.FMTShowPrompt(msg, alertLevel);
+  } else {
     let alertDiv = document.getElementById(divId);
     let alertElem = `<div class="alert alert-${alertLevel} alert-dismissible fade show row col-11 col-lg-8" role="alert">
     <div class="col">
@@ -2287,7 +2296,7 @@ function FMTShowPrompt(divId, alertLevel, msg, scrollOptions, oncompleteFn) {
         $(`#__${divId}__yes`).click(function() {oncompleteFn(true);});
         $(`#__${divId}__no`).click(function() {oncompleteFn(false);});
     }
-    return;
+  }
 }
 function FMTUICreateTextArea(type, labelText, placeholder, id, readonly, containerClasses, textareaClasses) {
   switch (type) {
@@ -4444,7 +4453,7 @@ function FMTUIDeleteConsumable(event, baseId, qualifier, objectType) {
   }
   //FIXME - each one in their own function.
   consumableId = Number(consumableId);
-  const msg = `Are you sure you would like to delete this ${objectType} ? (ID ${consumableId})`;
+  const msg = `Are you sure you would like to delete this ${objectType}?`;
   FMTShowPrompt(`${baseId}-alerts`, "warning", msg, fmtAppGlobals.defaultAlertScroll,
                 function(del) {
       if (del) {
@@ -5474,23 +5483,31 @@ function prepareEventHandlers() {
     });
     $("#save-profile-details").click( (e) => {
         let onsuccessFn = function(ev) {
+          let msg = "Profile updated successfully!";
             console.debug(`Profile ${fmtAppInstance.currentProfileId} updated successfully`);
             FMTDisplayProfile(fmtAppInstance.currentProfileId)
+            FMTShowAlertBar(msg, "profile-alerts", "success");
         };
         let onerrorFn = function(msg) {
           // FMTShowAlert("profile-alerts", "danger", msg || "Error!", fmtAppGlobals.defaultAlertScroll);
+          let _msg = "Error updating profile";
           console.error(msg || "Error!");
+          FMTShowAlertBar(_msg, "profile-alerts", "danger");
         };
         FMTUpdateProfileForm(fmtAppInstance.currentProfileId, onsuccessFn, onerrorFn);
         });
     $("#save-profile-macro").click( (e) => {
         let onsuccessFn = function(ev) {
+            let msg = "Macro split updated successfully!";
             console.debug(`Profile ${fmtAppInstance.currentProfileId} updated successfully`);
             FMTDisplayProfile(fmtAppInstance.currentProfileId)
+            FMTShowAlertBar(msg, "profile-alerts", "success");
         };
         let onerrorFn = function(msg) {
           // FMTShowAlert("profile-alerts", "danger", msg || "Error!", fmtAppGlobals.defaultAlertScroll);
+          let _msg = "Error updating macro split";
           console.error(msg || "Error!");
+          FMTShowAlertBar(_msg, "profile-alerts", "danger");
         };
         FMTUpdateMacroesForm(fmtAppInstance.currentProfileId, onsuccessFn, onerrorFn);
         });
@@ -5780,7 +5797,7 @@ function prepareEventHandlers() {
             return;
         }
         entry_id = Number(entry_id);
-        const msg = `Are you sure you would like to delete this Entry ? (Entry ID ${entry_id})`;
+        const msg = `Are you sure you would like to delete this Entry?`;
         FMTShowPrompt(alertsDivId, "warning", msg, fmtAppGlobals.defaultAlertScroll,
                       function(delEntry) {
             if (delEntry) {
