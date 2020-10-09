@@ -5370,6 +5370,13 @@ function FMTLoadProfile(profile_id, onloadedFn, onNoProfileFn) {
                 }
    );
 }
+// Called when the app has finished loading.
+// Notifies the platform when finished loading.
+function onAppFinishedLoading() {
+  if (hasPlatformInterface()) {
+    FMTPlatformInterface.FMTFinishedLoading();
+  }
+}
 function onDbSuccess(event) {
     fmtAppInstance.fmtDb = event.target.result;
     setTimeout(function() {
@@ -5382,6 +5389,7 @@ function onDbSuccess(event) {
                     // pageController.closeLoadingScreen();
                     pageController.showOverview(true);
                     pageController.showNavOverlay();
+                    onAppFinishedLoading();
                 },
                               //onNoProfile
                               function() {
@@ -5389,6 +5397,7 @@ function onDbSuccess(event) {
                     FMTToday();
                     fmtAppInstance.currentDay = fmtAppInstance.today;
                     pageController.showFirstTimeScreen();
+                    onAppFinishedLoading();
                     // pageController.closeLoadingScreen();
                     if (fmtAppInstance.firstTimeScreenAutomatic) {
                         setTimeout(() => {
