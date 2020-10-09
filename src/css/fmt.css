@@ -604,6 +604,12 @@ input[type=number] {
 .fmt-input-field {
     width: 50%;
 }
+.fmt-input-field-select {
+    width: 50%;
+}
+.fmt-input-field-select-sm {
+    width: 40%;
+}
 .fmt-textarea {
     width: 85%;
     resize: both;
@@ -667,7 +673,10 @@ input[type=number] {
       width: 100%;
   }
   .fmt-input-field {
-      width: 45%;
+      width: 90%;
+  }
+  .fmt-input-field-select {
+      width: 60%;
   }
   .form__group {
       width: 100%;

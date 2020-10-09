@@ -5279,26 +5279,18 @@ var pageController = {
     },
     showFirstTimeScreen: function() {
         const overlay = document.getElementById("fmt-app-first-time-overlay");
-        const welcome = document.getElementById("fmt-app-first-time-overlay-welcome");
         const msg = document.getElementById("fmt-app-first-time-overlay-msg");
         overlay.classList.remove("d-none");
         overlay.style.zIndex = fmtAppGlobals.maxDynamicScreens + 2;
-        welcome.classList.add("fmt-fadein");
-        welcome.classList.remove("fmt-faded");
-        setTimeout(function() {
-            msg.classList.remove("fmt-faded");
-            msg.classList.add("fmt-fadein");
-        }, 1050);
+        msg.classList.remove("fmt-faded");
+        msg.classList.add("fmt-fadein");
     },
     closeFirstTimeScreen: function() {
         const overlay = document.getElementById("fmt-app-first-time-overlay");
-        const welcome = document.getElementById("fmt-app-first-time-overlay-welcome");
         const msg = document.getElementById("fmt-app-first-time-overlay-msg");
         overlay.classList.add("d-none");
         overlay.style.zIndex = -2;
-        welcome.classList.remove("fmt-fadein");
         msg.classList.remove("fmt-fadein");
-        welcome.classList.remove("fmt-faded");
         msg.classList.remove("fmt-faded");
     },
     showNavOverlay: function() {
