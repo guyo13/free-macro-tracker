@@ -2,3 +2,6 @@ TODO
 tests/test_server/venv/
 tests/test_server/__pycache__/
 tests/test_server/*.pyc
+firebase.json
+.firebaserc
+.firebase/
