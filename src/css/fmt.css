@@ -685,3 +685,6 @@ input[type=number] {
     width: 100%;
   }
 }
+select, input, textarea {
+  font-size: 16px !important;
+}

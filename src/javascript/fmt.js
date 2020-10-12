@@ -36,8 +36,53 @@ fmtAppInstance.editIngredientServingKeyupFn = null;
 //Instance - User defined metrics
 fmtAppInstance.unitsChart = null;
 fmtAppInstance.additionalNutrients = null;
-//Instance - Platform specific objects
-fmtAppInstance.userPromptPlatformCallback = null;
+//Platform Interface
+var platformInterface = {}
+platformInterface.hasPlatformInterface = false;
+platformInterface.platform = null;
+platformInterface.userPromptPlatformCallback = null;
+platformInterface.FMTShowAlert = function(msg, level) {
+  if (platformInterface.platform == "Android") {
+    FMTPlatformInterface.FMTShowAlert(msg, level);
+  } else if (platformInterface.platform == "IOS") {
+    window.webkit.messageHandlers.FMTShowAlert.postMessage({"msg": msg, "level": level});
+  }
+};
+platformInterface.FMTShowAlertBar = function(msg) {
+  if (platformInterface.platform == "Android") {
+    FMTPlatformInterface.FMTShowAlertBar(msg);
+  } else if (platformInterface.platform == "IOS") {
+    window.webkit.messageHandlers.FMTShowAlertBar.postMessage({"msg": msg});
+  }
+};
+platformInterface.FMTExportData = function(data, filename) {
+  if (platformInterface.platform == "Android") {
+    FMTPlatformInterface.FMTExportData(data, filename);
+  } else if (platformInterface.platform == "IOS") {
+    window.webkit.messageHandlers.FMTExportData.postMessage({"data": data, "filename": filename});
+  }
+};
+platformInterface.FMTImportData = function() {
+  if (platformInterface.platform == "Android") {
+    FMTPlatformInterface.FMTImportData();
+  } else if (platformInterface.platform == "IOS") {
+    window.webkit.messageHandlers.FMTImportData.postMessage("");
+  }
+};
+platformInterface.FMTFinishedLoading = function() {
+  if (platformInterface.platform == "Android") {
+    FMTPlatformInterface.FMTFinishedLoading();
+  } else if (platformInterface.platform == "IOS") {
+    window.webkit.messageHandlers.FMTFinishedLoading.postMessage("");
+  }
+};
+platformInterface.FMTShowPrompt = function(msg, level) {
+  if (platformInterface.platform == "Android") {
+    FMTPlatformInterface.FMTShowPrompt(msg, level);
+  } else if (platformInterface.platform == "IOS") {
+    window.webkit.messageHandlers.FMTShowPrompt.postMessage({"msg": msg, "level": level});
+  }
+};
 //Globals
 var fmtAppGlobals = {};
 //Globals - Links
@@ -123,8 +168,12 @@ var fmtAppExport;
 
 //Functions
 //Functions - Generic
-function hasPlatformInterface() {
+function hasAndroidPlatformInterface() {
   return typeof FMTPlatformInterface !== 'undefined';
+}
+function hasIOSPlatformInterface() {
+  return (typeof window.webkit !== 'undefined' &&
+          typeof window.webkit.messageHandlers !== 'undefined');
 }
 function isFunction(fn) {
   return (typeof fn === 'function');
@@ -675,9 +724,9 @@ function FMTStringifyRemoveNewlines(k, v) {
   else return v;
 }
 function FMTExportToJSON(data, onsuccessFn, stringifyReplacerFn, filename) {
-  if (hasPlatformInterface()) {
+  if (platformInterface.hasPlatformInterface) {
     const stringified = JSON.stringify(data, stringifyReplacerFn);
-    FMTPlatformInterface.FMTExportData(stringified, filename);
+    platformInterface.FMTExportData(stringified, filename);
   } else {
     FMTExportToJSONBlob(data, onsuccessFn, stringifyReplacerFn)
   }
@@ -2224,8 +2273,8 @@ function katchMcArdle(weightKg, bodyfatReal) {
 //Functions - UI - Generic
 function FMTShowAlert(divId, alertLevel, msg, scrollOptions) {
   // Use Platform Interface if available
-    if (hasPlatformInterface()) {
-      FMTPlatformInterface.FMTShowAlert(msg, alertLevel);
+    if (platformInterface.hasPlatformInterface) {
+      platformInterface.FMTShowAlert(msg, alertLevel);
     } else {
       let alertDiv = document.getElementById(divId);
       let alertElem = `<div class="alert alert-${alertLevel} col-11 col-lg-8 mb-1 alert-dismissible fade show" role="alert">${msg}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
@@ -2242,8 +2291,8 @@ function FMTShowAlert(divId, alertLevel, msg, scrollOptions) {
 }
 // Shows a Snackbar on mobile platform or Alert on web
 function FMTShowAlertBar(msg, divId, alertLevel) {
-  if (hasPlatformInterface()) {
-    FMTPlatformInterface.FMTShowAlertBar(msg);
+  if (platformInterface.hasPlatformInterface) {
+    platformInterface.FMTShowAlertBar(msg);
   } else {
     FMTShowAlert(divId, alertLevel, msg);
   }
@@ -2270,12 +2319,12 @@ function FMTShowPrompt(divId, alertLevel, msg, scrollOptions, oncompleteFn) {
   /*oncompleteFn - User defined functions that takes a boolean based on if user
   * clicked "Yes" or "No"
   */
-  if (hasPlatformInterface()) {
-    fmtAppInstance.userPromptPlatformCallback = function(res) {
+  if (platformInterface.hasPlatformInterface) {
+    platformInterface.userPromptPlatformCallback = function(res) {
       oncompleteFn(res);
-      fmtAppInstance.userPromptPlatformCallback = null;
+      platformInterface.userPromptPlatformCallback = null;
     };
-    FMTPlatformInterface.FMTShowPrompt(msg, alertLevel);
+    platformInterface.FMTShowPrompt(msg, alertLevel);
   } else {
     let alertDiv = document.getElementById(divId);
     let alertElem = `<div class="alert alert-${alertLevel} alert-dismissible fade show row col-11 col-lg-8" role="alert">
@@ -5365,8 +5414,18 @@ function FMTLoadProfile(profile_id, onloadedFn, onNoProfileFn) {
 // Called when the app has finished loading.
 // Notifies the platform when finished loading.
 function onAppFinishedLoading() {
-  if (hasPlatformInterface()) {
-    FMTPlatformInterface.FMTFinishedLoading();
+  if (hasAndroidPlatformInterface()) {
+    console.log("Android platform interface detected!");
+    platformInterface.hasPlatformInterface = true;
+    platformInterface.platform = "Android";
+    platformInterface.FMTFinishedLoading();
+  } else if (hasIOSPlatformInterface()) {
+    console.log("IOS platform interface detected!");
+    platformInterface.hasPlatformInterface = true;
+    platformInterface.platform = "IOS";
+    platformInterface.FMTFinishedLoading();
+  } else {
+    console.log("Runing without platform interface");
   }
 }
 function onDbSuccess(event) {
@@ -5917,11 +5976,11 @@ function prepareEventHandlers() {
       });
     });
     $("#settings-data-control-import").click( (e) => {
-      if (hasPlatformInterface()) {
+      if (platformInterface.hasPlatformInterface) {
         // This initiates the import process on the platform
         // When the user proceeds with selecting file, the platform will fire
         // [FMTImportData]
-        FMTPlatformInterface.FMTImportData();
+        platformInterface.FMTImportData();
       } else {
         document.getElementById("settings-data-control-import-indiv").classList.remove("d-none");
       }
