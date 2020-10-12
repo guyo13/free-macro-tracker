@@ -688,3 +688,10 @@ input[type=number] {
 select, input, textarea {
   font-size: 16px !important;
 }
+#overview-date-prev {
+  cursor: pointer;
+}
+
+#overview-date-next {
+  cursor: pointer;
+}

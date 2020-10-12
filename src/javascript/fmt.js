@@ -6029,8 +6029,8 @@ function prepareEventHandlers() {
         let query = e.currentTarget.value;
         FMTQueryConsumablesTable("add-to-recipe-screen", "food", query);
     });
-    $(".fmt-prev-day-btn").click( (e) => { FMTPreviousDay(FMTOverviewLoadCurrentDay); } );
-    $(".fmt-next-day-btn").click( (e) => { FMTNextDay(FMTOverviewLoadCurrentDay); } );
+    $("#overview-date-prev").click( (e) => { FMTPreviousDay(FMTOverviewLoadCurrentDay); } );
+    $("#overview-date-next").click( (e) => { FMTNextDay(FMTOverviewLoadCurrentDay); } );
 }
 function startIndexedDB() {
   //Check if IndexedDB supported
