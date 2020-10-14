@@ -87,6 +87,19 @@ button {
 .fmt-no-pad {
   padding: 0;
 }
+.fmt-nav-item-container {
+  height: inherit;
+}
+.fmt-nav-item-container-active{
+  height: inherit;
+  -webkit-box-shadow: 0px -4px 0px white;
+  -moz-box-shadow: 0px -4px 0px white;
+  box-shadow: 0px -4px 0px white inset;
+  transition: box-shadow .1s ease-in-out;
+}
+.fmt-nav-icon {
+  vertical-align: bottom;
+}
 #fmt-app-nav-overlay-content ul {
     list-style-type: none;
     margin: 0;
@@ -99,7 +112,6 @@ button {
     color: black;
     text-decoration: none;
 }
-#fmt-app-nav-overlay-content .active {}
 #fmt-app-nav-overlay-content .fmt-menu-font {
   font-size: 1.5rem;
   color: var(--fmt-gainsboro);

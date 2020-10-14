@@ -5,3 +5,4 @@ tests/test_server/*.pyc
 firebase.json
 .firebaserc
 .firebase/
+.DS_Store

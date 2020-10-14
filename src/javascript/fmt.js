@@ -4577,7 +4577,7 @@ var pageController = {
     hideAllTabs: function () {
             for (const i in fmtAppGlobals.tabIds) {
             let s = "#" + fmtAppGlobals.tabIds[i];
-            $(s).removeClass("active");
+            $(s).removeClass("fmt-nav-item-container-active");
             let areaToHideName = "#" + fmtAppGlobals.tabIds[i].split("-")[1];
             $(areaToHideName).hide();
         }
@@ -4586,7 +4586,7 @@ var pageController = {
         if (fmtAppGlobals.tabIds.indexOf(tabName) < 0 ) {return;}
         pageController.hideAllTabs();
         let active = "#" + tabName;
-        $(active).addClass("active");
+        $(active).addClass("fmt-nav-item-container-active");
         let tabId = tabName.split("-")[1];
         let areaName = "#" + tabId;
         $(areaName).show();
