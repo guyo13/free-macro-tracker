@@ -8,6 +8,8 @@
     --fmt-light-gray: #cccccc;
     --fmt-gainsboro: #dddddd;
     --fmt-cultured: #eeeeee;
+    --fmt-orange: #f56a79;
+    /* also possible #b61a1a */
 }
 body {
   overflow: hidden;
@@ -273,7 +275,7 @@ button {
     color: var(--warning);
 }
 .fmt-font-color-orange {
-    color: var(--orange);
+    color: var(--fmt-orange);
 }
 .fmt-font-color-info {
     color: var(--info);
@@ -323,7 +325,7 @@ button {
     background-color: var(--fmt-purple);
 }
 .fmt-bg-orange {
-    background-color: var(--orange);
+    background-color: var(--fmt-orange);
 }
 .fmt-bg-dark-green {
     background-color: var(--fmt-dark-green);
