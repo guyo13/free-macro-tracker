@@ -699,6 +699,28 @@ input[type=number] {
     width: 100%;
   }
 }
+.fmt-carousel-indicators {
+  /* background-color: rgba(15,15,15,0.3); */
+  margin-bottom: 0;
+}
+.fmt-carousel-indicators li {
+  border-radius: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: var(--fmt-light-green);
+}
+.fmt-carousel-control {
+  background-image: unset;
+  color: black;
+}
+.carousel-inner {
+  /* Disable for now- crazy!!!*/
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.full-height {
+  height: 100%;
+}
 select, input, textarea {
   font-size: 16px !important;
 }

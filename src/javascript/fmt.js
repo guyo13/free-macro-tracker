@@ -6031,6 +6031,18 @@ function prepareEventHandlers() {
     });
     $("#overview-date-prev").click( (e) => { FMTPreviousDay(FMTOverviewLoadCurrentDay); } );
     $("#overview-date-next").click( (e) => { FMTNextDay(FMTOverviewLoadCurrentDay); } );
+    $(".carousel #profile-carousel").carousel({
+      interval: false,
+      wrap: false
+    });
+    $("#profile-carousel").on("swiped-left", (e) => {
+      $(".carousel").carousel('prev');
+    });
+    $("#profile-carousel").on("swiped-right", (e) => {
+      $(".carousel").carousel('next');
+    });
+    // Workaround for weird Boostrap carousel behavior...
+    document.getElementById("profile-first-indicator").click();
 }
 function startIndexedDB() {
   //Check if IndexedDB supported
