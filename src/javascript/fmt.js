@@ -163,6 +163,10 @@ fmtAppGlobals.dateConstants.daySuffixes = {0: "th", 1: "st", 2: "nd", 3: "rd", 4
 fmtAppGlobals.defaultAlertScroll = {top: 0, left: 0, behavior: 'smooth'};
 fmtAppGlobals.inputScreensQualifiers = ["food", "consumable", "recipe", "ingredient"];
 fmtAppGlobals.consumableTypes = ["Food Item", "Meal Entry", "Recipe Item", "Ingredient Item"];
+fmtAppGlobals.strings = {
+  "tdeeTooltip": "Total daily calories burned including exercise.",
+  "bmrTooltip": "Basal Metabloic Rate. Daily calories burned without any activity."
+};
 //Globals - Export
 var fmtAppExport;
 
@@ -2616,9 +2620,11 @@ function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
 function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
     FMTReadProfile(profileId,
                 function(e) {
+                  // On Success
                     let profile = e.target.result;
                     console.debug(`Loaded Profile: ${JSON.stringify(profile)}`);
                     if (profile === undefined) {
+                        document.getElementById("profile-goto-macros").innerHTML = "Plan Diet";
                         return;
                     }
                     if (profile.name) {document.getElementById("profile-name").value = profile.name;}
@@ -2643,9 +2649,9 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
                     document.getElementById("profile-bmr").setAttribute("value", bmr);
                     document.getElementById("profile-bmr").innerHTML = `${bmr} Kcal/Day`;
                     document.getElementById("profile-tdee").setAttribute("value", tdee);
-                    document.getElementById("profile-tdee").innerHTML = `${tdee} Kcal/day`;
+                    document.getElementById("profile-tdee").innerHTML = `${tdee} Kcal/Day*`;
                     document.getElementById("profile-formula").setAttribute("value", profile.formula);
-                    document.getElementById("profile-formula").innerHTML = profile.formula;
+                    document.getElementById("profile-formula").innerHTML = `* According to ${profile.formula} formula`;
                     let macroSplit = profile.macroSplit;
                     if (macroSplit !== null) {
                         document.getElementById("profile-daily-calories").value = macroSplit.Calories || "";
@@ -2670,10 +2676,18 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
                         _e.currentTarget = fSelect;
                         FMTProfileSelectMacroUnits(_e, "fat", "profile-macro-fat", "profile-macro-fat-result", "profile-daily-calories");
                         FMTProfileStorePreviousSelection(_e);
+                        if (macroSplit.Calories != undefined) {
+                          document.getElementById("profile-goto-macros").innerHTML = "Edit Diet";
+                        }
                     }
                     if (onsuccessFn) {onsuccessFn();}
                 },
-                onerrorFn || function (e) {console.error(`Failed getting Profile id ${profileId}`);}
+                function(ev) {
+                  // On Error
+                  document.getElementById("profile-goto-macros").innerHTML = "Plan Diet";
+                  onerrorFn = isFunction(onerrorFn) ? onerrorFn : function (e) {console.error(`Failed getting Profile id ${profileId}`);};
+                  onerrorFn(ev);
+                }
                );
 }
 
@@ -5547,6 +5561,7 @@ function prepareEventHandlers() {
             console.debug(`Profile ${fmtAppInstance.currentProfileId} updated successfully`);
             FMTDisplayProfile(fmtAppInstance.currentProfileId)
             FMTShowAlertBar(msg, "profile-alerts", "success");
+            document.getElementById("profile-mid-indicator").click();
         };
         let onerrorFn = function(msg) {
           // FMTShowAlert("profile-alerts", "danger", msg || "Error!", fmtAppGlobals.defaultAlertScroll);
@@ -6043,6 +6058,20 @@ function prepareEventHandlers() {
     });
     // Workaround for weird Boostrap carousel behavior...
     document.getElementById("profile-first-indicator").click();
+    $('[data-toggle="tooltip"]').tooltip();
+    $("#profile-tdee-tooltip").on("shown.bs.tooltip", (e) => {
+      setTimeout(() => {
+        $("#profile-tdee-tooltip").tooltip('hide');
+      }, 3000);
+    });
+    $("#profile-bmr-tooltip").on("shown.bs.tooltip", (e) => {
+      setTimeout(() => {
+        $("#profile-bmr-tooltip").tooltip('hide');
+      }, 3000);
+    });
+    $("#profile-goto-macros").click( (e) => {
+      document.getElementById("profile-last-indicator").click();
+    });
 }
 function startIndexedDB() {
   //Check if IndexedDB supported

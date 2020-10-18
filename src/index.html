@@ -234,31 +234,40 @@
                 </div>
                 <div class="carousel-item">
                   <div id="energy-data" class="row justify-content-center mb-4">
-                    <div class="row justify-content-between col-12 col-lg-8 mt-3">
-                      <div class="col-6 col-lg-4 pl-0">
+                    <div class="row justify-content-between col-12 col-lg-8 mt-3 mb-3">
+                      <div class="col-8 col-lg-6 pl-0">
                           <h4 class="fmt-font-2">Energy Requirements</h4>
                       </div>
-                      <div class="col-6 col-lg-3 pr-0">
-                          <!-- <button id="" class="btn btn-outline-primary flex-fill" type="button">To Macro Split</button> -->
+                      <div class="col-4 col-lg-2 pr-0">
+                        <button id="profile-goto-macros" type="button" class="btn btn-outline-primary float-right">Plan Diet</button>
                       </div>
                     </div>
-                      <div class="col-12 col-lg-8 mb-1">
-                        <div class="form__group">
-                          <input id="profile-bmr" type="text" class="form__field fmt-input-field" required readonly="true"/>
-                          <label for="profile-bmr" class="form__label">BMR</label>
+                    <div class="w-100"></div>
+                      <div class="col-12 col-lg-4 mb-3">
+                        <div class="card">
+                          <div class="card-header fmt-bg-dark-green d-flex fmt-center-text">
+                            <h2 class="fmt-font-white-bold" style="margin: 0;flex:10;">Total Daily</h2>
+                            <i id="profile-tdee-tooltip" class="fal fa-info-circle fmt-font-white-bold" style="flex:1;align-self: center;" data-toggle="tooltip" data-trigger="hover click" title="Total daily calories burned including exercise." data-container="body"></i>
+                          </div>
+                          <div class="card-body fmt-center-text">
+                            <h2 id="profile-tdee" style="margin: 0;"></h2>
+                          </div>
                         </div>
                       </div>
-                      <div class="col-12 col-lg-8 mb-1">
-                        <div class="form__group">
-                          <input id="profile-tdee" type="text" class="form__field fmt-input-field" required readonly="true"/>
-                          <label for="profile-tdee" class="form__label">TDEE</label>
+                      <div class="col-12 col-lg-4 mb-3">
+                        <div class="card">
+                          <div class="card-header fmt-bg-dark-green d-flex fmt-center-text">
+                            <h2 class="fmt-font-white-bold" style="margin: 0;flex:10;">BMR</h2>
+                            <i id="profile-bmr-tooltip" class="fal fa-info-circle fmt-font-white-bold" style="flex:1;align-self: center;" data-toggle="tooltip" data-trigger="hover click" title="Basal Metabloic Rate. Daily calories burned without any activity." data-container="body"></i>
+                          </div>
+                          <div class="card-body fmt-center-text">
+                            <h2 id="profile-bmr" style="margin: 0;"></h2>
+                          </div>
                         </div>
                       </div>
+                      <div class="w-100"></div>
                       <div class="col-12 col-lg-8 mb-1">
-                        <div class="form__group">
-                          <input id="profile-formula" type="text" class="form__field fmt-input-field" required readonly="true"/>
-                          <label for="profile-formula" class="form__label">Formula Used</label>
-                        </div>
+                        <span id="profile-formula" class="fmt-font-1"></span>
                       </div>
                   </div>
                 </div>
@@ -319,8 +328,8 @@
               </div>
               <ol class="carousel-indicators fmt-carousel-indicators">
                 <li id="profile-first-indicator" data-target="#profile-carousel" data-slide-to="0" class="active"></li>
-                <li data-target="#profile-carousel" data-slide-to="1" class="mr-3 ml-3"></li>
-                <li data-target="#profile-carousel" data-slide-to="2"></li>
+                <li id="profile-mid-indicator" data-target="#profile-carousel" data-slide-to="1" class="mr-3 ml-3"></li>
+                <li id="profile-last-indicator" data-target="#profile-carousel" data-slide-to="2"></li>
               </ol>
               <a class="d-none d-lg-flex carousel-control-prev" href="#profile-carousel" role="button" data-slide="prev">
                 <span class="carousel-control-prev-icon fal fa-chevron-left fmt-carousel-control" aria-hidden="true"></span>
