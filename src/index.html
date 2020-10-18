@@ -282,45 +282,48 @@
                       </div>
                     </div>
                       <div class="col-12 col-lg-8 mb-1">
-                        <div class="form__group">
-                          <input id="profile-daily-calories" type="number" class="form__field fmt-input-field" placeholder="Calories" required />
+                        <div class="form__group d-flex">
+                          <input id="profile-daily-calories" type="number" class="form__field" style="flex:1" placeholder="Calories" required />
                           <label for="profile-daily-calories" class="form__label">Calories</label>
                         </div>
                       </div>
                       <div class="col-12 col-lg-8 mb-1">
-                        <div class="form__group">
-                          <input id="profile-macro-protein" type="number" class="form__field fmt-input-field-select-sm" placeholder="Protein" required />
+                        <div class="form__group fmt-macro-form-container">
+                          <input id="profile-macro-protein" type="number" class="form__field fmt-macro-form-input" placeholder="Protein" required />
                           <label for="profile-macro-protein" class="form__label">Protein</label>
-                          <select id="profile-macro-protein-units-select" name="profile-macro-protein-units-select" class="custom-select fmt-select-sm fmt-center-text">
+                          <select id="profile-macro-protein-units-select" name="profile-macro-protein-units-select" class="custom-select fmt-center-text fmt-macro-form-select">
                             <option value="%" selected="selected">%</option>
                             <option value="g">g</option>
                             <option value="kCal">kCal</option>
                           </select>
-                          <span id="profile-macro-protein-result" class="form__field fmt-w-20 fmt-label-sm"></span>
+                          <span id="profile-macro-protein-result" class="form__field fmt-label-sm fmt-macro-form-extra"></span>
+                          <button id="" class="btn btn-outline-primary fmt-macro-form-btn">Fill</button>
                         </div>
                       </div>
                       <div class="col-12 col-lg-8 mb-1">
-                        <div class="form__group">
-                          <input id="profile-macro-carb" type="number" class="form__field fmt-input-field-select-sm" placeholder="Carbs" required />
+                        <div class="form__group fmt-macro-form-container">
+                          <input id="profile-macro-carb" type="number" class="form__field fmt-macro-form-input" placeholder="Carbs" required />
                           <label for="profile-macro-carb" class="form__label">Carbs</label>
-                          <select id="profile-macro-carb-units-select" name="profile-macro-carb-units-select" class="custom-select fmt-select-sm fmt-center-text">
+                          <select id="profile-macro-carb-units-select" name="profile-macro-carb-units-select" class="custom-select fmt-macro-form-select fmt-center-text">
                             <option value="%" selected="selected">%</option>
                             <option value="g">g</option>
                             <option value="kCal">kCal</option>
                           </select>
-                          <span id="profile-macro-carb-result" class="form__field fmt-w-20 fmt-label-sm"></span>
+                          <span id="profile-macro-carb-result" class="form__field fmt-macro-form-extra fmt-label-sm"></span>
+                          <button id="" class="btn btn-outline-primary fmt-macro-form-btn">Fill</button>
                         </div>
                       </div>
                       <div class="col-12 col-lg-8 mb-1">
-                        <div class="form__group">
-                          <input id="profile-macro-fat" type="number" class="form__field fmt-input-field-select-sm" placeholder="Fat" required />
+                        <div class="form__group fmt-macro-form-container">
+                          <input id="profile-macro-fat" type="number" class="form__field fmt-macro-form-input" placeholder="Fat" required />
                           <label for="profile-macro-fat" class="form__label">Fat</label>
-                          <select id="profile-macro-fat-units-select" name="profile-macro-fat-units-select" class="custom-select fmt-select-sm fmt-center-text">
+                          <select id="profile-macro-fat-units-select" name="profile-macro-fat-units-select" class="custom-select fmt-macro-form-select fmt-center-text">
                             <option value="%" selected="selected">%</option>
                             <option value="g">g</option>
                             <option value="kCal">kCal</option>
                           </select>
-                          <span id="profile-macro-fat-result" class="form__field fmt-w-20 fmt-label-sm"></span>
+                          <span id="profile-macro-fat-result" class="form__field fmt-macro-form-extra fmt-label-sm"></span>
+                          <button id="" class="btn btn-outline-primary fmt-macro-form-btn">Fill</button>
                         </div>
                       </div>
                   </div>
