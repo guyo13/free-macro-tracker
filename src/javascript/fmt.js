@@ -13,6 +13,7 @@ fmtAppInstance.defaultRoundingPrecision = 1;
 fmtAppInstance.nutrientRoundingPrecision = 4;
 fmtAppInstance.allowForeignNutrients = true;
 fmtAppInstance.mealEntryMacroBarInPercent = false;
+fmtAppInstance.macroAutoFill = "carb";
 //TODO - Default meals
 fmtAppInstance.defaultMeals = ["Breakfast", "Early Snack", "Lunch", "Late Snack", "Dinner"];
 //Instance - State - Page
@@ -2581,7 +2582,9 @@ function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
 
 }
 function FMTFillMacro(baseID, nutrient, calories) {
-  // TODO
+  // Fills the macro specified by [nutrient] into macro form field
+  // DOM structure idefntified by [baseID] and based on [calories]
+  // Returns the converted values for [nutrient]
   if (calories <= 0) {
     console.warn("Calories must be greater than 0 to fill macroes");
     return;
@@ -2614,6 +2617,7 @@ function FMTFillMacro(baseID, nutrient, calories) {
       percentProtein = diff >= 0 ? diff : 0;
       proteins = FMTConvertMacro("protein", "%", percentProtein, calories);
       FMTSetProfileMacroValue(proteinUnit, proteinInput, resultsDiv, proteins);
+      return proteins;
       break;
     case "carb":
       fats = FMTConvertMacro("fat", fatUnit, fat, calories);
@@ -2624,6 +2628,7 @@ function FMTFillMacro(baseID, nutrient, calories) {
       percentCarb = diff >= 0 ? diff : 0;
       carbs = FMTConvertMacro("carb", "%", percentCarb, calories);
       FMTSetProfileMacroValue(carbUnit, carbInput, resultsDiv, carbs);
+      return carbs;
       break;
     case "fat":
       carbs = FMTConvertMacro("carb", carbUnit, carb, calories);
@@ -2634,6 +2639,7 @@ function FMTFillMacro(baseID, nutrient, calories) {
       percentFat = diff >= 0 ? diff : 0;
       fats = FMTConvertMacro("fat", "%", percentFat, calories);
       FMTSetProfileMacroValue(fatUnit, fatInput, resultsDiv, fats);
+      return fats;
       break;
     default:
       console.warn(`Unknown nutrient ${nutrient}`);
@@ -2642,7 +2648,7 @@ function FMTFillMacro(baseID, nutrient, calories) {
 function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
     if (isNaN(profileId)) {
         const msg = `Invalid profile_id ${profileId}`;
-        onerrorFn = onerrorFn || function(e) { console.error(msg); }
+        onerrorFn = isFunction(errorFn) ? errorFn : function(e) { console.error(msg); }
         return onerrorFn(msg);
     }
     document.getElementById("profile-alerts").innerHTML = "";
@@ -2654,10 +2660,20 @@ function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
     const cSelect = document.getElementById("profile-macro-carb-units-select");
     const fSelect = document.getElementById("profile-macro-fat-units-select");
     macroSplit.Calories = document.getElementById("profile-daily-calories").value;
+    // FIXME - allow saving macroes in grams or kcal
     macroSplit.Protein = FMTConvertMacro("protein", pSelect.value, proteinVal, macroSplit.Calories)["%"];
     macroSplit.Carbohydrate = FMTConvertMacro("carbohydrate", cSelect.value, carbVal, macroSplit.Calories)["%"];
     macroSplit.Fat = FMTConvertMacro("fat", fSelect.value, fatVal, macroSplit.Calories)["%"];
-    FMTReadProfile(profileId,
+    let sum = macroSplit.Protein + macroSplit.Carbohydrate + macroSplit.Fat;
+    if ( sum != 100) {
+      // Autofill based on settings
+      // TODO - prompt user ?
+      const conv = FMTFillMacro("profile-macro", fmtAppInstance.macroAutoFill, macroSplit.Calories);
+      // FIXME - Allow user to select different default macro
+      macroSplit.Carbohydrate = conv["%"];
+    }
+    let readAndUpdateOperation = () => {
+      FMTReadProfile(profileId,
                 function(e) {
                     let profile = e.target.result;
                     console.debug(profile);
@@ -2675,7 +2691,7 @@ function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
                                              if (!!userGoals) {
                                                userGoals.macroSplit = profile.macroSplit;
                                                FMTUpdateUserGoalEntry(userGoals.profile_id, userGoals.year, userGoals.month, userGoals.day, userGoals, onsuccessFn);
-                                             } else { if (onsuccessFn) onsuccessFn(event, updatedProfile); }
+                                             } else { if (isFunction(onsuccessFn)) onsuccessFn(event, updatedProfile); }
                                            },
                                            function(err) {
                                              console.error(`Failed reading User Goals for ${fmtAppInstance.today}`);
@@ -2685,6 +2701,8 @@ function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
                 },
                 onerrorFn
                );
+             };
+    readAndUpdateOperation();
 }
 function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
     FMTReadProfile(profileId,
@@ -2721,6 +2739,14 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
                     document.getElementById("profile-formula").setAttribute("value", profile.formula);
                     document.getElementById("profile-formula").innerHTML = `* According to ${profile.formula} formula`;
                     // Set Macro fields
+                    let macroSplit = profile.macroSplit;
+                    if (macroSplit !== null) {
+                      // Set saved macro split
+                        document.getElementById("profile-daily-calories").value = macroSplit.Calories || "";
+                        document.getElementById("profile-macro-protein").value = macroSplit.Protein || "";
+                        document.getElementById("profile-macro-carb").value = macroSplit.Carbohydrate || "";
+                        document.getElementById("profile-macro-fat").value = macroSplit.Fat || "";
+                    }
                     const pSelect = document.getElementById("profile-macro-protein-units-select");
                     const cSelect = document.getElementById("profile-macro-carb-units-select");
                     const fSelect = document.getElementById("profile-macro-fat-units-select");
@@ -2739,14 +2765,6 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
                     _e.currentTarget = fSelect;
                     FMTProfileSelectMacroUnits(_e, "fat", "profile-macro-fat", "profile-macro-fat-result", "profile-daily-calories");
                     FMTProfileStorePreviousSelection(_e);
-                    let macroSplit = profile.macroSplit;
-                    if (macroSplit !== null) {
-                      // Set saved macro split
-                        document.getElementById("profile-daily-calories").value = macroSplit.Calories || "";
-                        document.getElementById("profile-macro-protein").value = macroSplit.Protein || "";
-                        document.getElementById("profile-macro-carb").value = macroSplit.Carbohydrate || "";
-                        document.getElementById("profile-macro-fat").value = macroSplit.Fat || "";
-                    }
                     if (onsuccessFn) {onsuccessFn();}
                 },
                 function(ev) {
