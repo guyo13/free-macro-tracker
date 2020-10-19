@@ -239,7 +239,7 @@
                           <h4 class="fmt-font-2">Energy Requirements</h4>
                       </div>
                       <div class="col-4 col-lg-2 pr-0">
-                        <button id="profile-goto-macros" type="button" class="btn btn-outline-primary float-right">Plan Diet</button>
+                        <button id="profile-goto-macros" type="button" class="btn btn-outline-primary float-right">My Diet</button>
                       </div>
                     </div>
                     <div class="w-100"></div>
@@ -1234,11 +1234,19 @@
                 <div id="fmt-app-load-overlay-alerts" class="row justify-content-center d-none"></div>
             </div>
         </div>
-        <div id="fmt-app-first-time-overlay" class="d-none fmt-overlay fmt-bg-dark-green container-fluid">
-            <div class="row justify-content-center fmt-center-text fmt-loading-screen-position">
-                <div class="col-12 fmt-faded" id="fmt-app-first-time-overlay-msg">
-                    <span class="fmt-loading-screen-font-responsive-sm-1 ">Tap to Create a new Profile</span>
+        <div id="fmt-app-first-time-overlay" class="d-none fmt-overlay container-fluid">
+            <div id="fmt-app-first-time-overlay-msg" class="row justify-content-center fmt-center-text">
+              <div class="fmt-column">
+                <div class="mb-2">
+                    <span class="">Welcome to Free Macro Tracker.</span>
                 </div>
+                <div class="mb-2">
+                    <span class="">To get started, let's create your profile.</span>
+                </div>
+                <div class="mt-2">
+                    <button id="fmt-app-first-time-create" class="btn btn-outline-primary" type="button">Create My Profile</button>
+                </div>
+              </div>
             </div>
         </div>
         <div id="fmt-app-nav-overlay" class=" container-fluid">

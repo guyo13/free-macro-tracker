@@ -355,10 +355,6 @@ button {
     border-color: white;
     border-radius: 1rem;
 }
-#fmt-app-first-time-overlay-msg {
-    font-style: oblique;
-    /* text-decoration: underline white; */
-}
 .fmt-loading-screen-logo {
     width: 5rem;
     height: 5rem;
@@ -604,11 +600,6 @@ input[type=number] {
     color: var(--fmt-dark-green);;
     letter-spacing: -0.2rem;
 }
-.fmt-loading-screen-font-responsive-sm-1 {
-    font-size: 3.5rem;
-    color: white;
-    letter-spacing: -0.2rem;
-}
 .fmt-food-input-field {
     width: 50%;
 }
@@ -655,9 +646,6 @@ input[type=number] {
   }
   .fmt-loading-screen-font-responsive {
       font-size: 3.2rem;
-  }
-  .fmt-loading-screen-font-responsive-sm-1 {
-      font-size: 2.5rem;
   }
 }
 @media screen and (max-width: 768px) {
@@ -744,6 +732,17 @@ select, input, textarea {
   flex-basis: 30%;
 }
 .fmt-macro-form-btn {}
+.fmt-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* height: 100%; */
+  height: calc( 100% - 3rem  );
+  height: -webkit-calc( 100% - 3rem);
+}
+#fmt-app-first-time-overlay-msg {
+  height: 100%;
+}
 #overview-date-prev {
   cursor: pointer;
 }

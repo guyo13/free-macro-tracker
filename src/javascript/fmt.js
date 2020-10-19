@@ -2624,7 +2624,6 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
                     let profile = e.target.result;
                     console.debug(`Loaded Profile: ${JSON.stringify(profile)}`);
                     if (profile === undefined) {
-                        document.getElementById("profile-goto-macros").innerHTML = "Plan Diet";
                         return;
                     }
                     if (profile.name) {document.getElementById("profile-name").value = profile.name;}
@@ -2676,15 +2675,11 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
                         _e.currentTarget = fSelect;
                         FMTProfileSelectMacroUnits(_e, "fat", "profile-macro-fat", "profile-macro-fat-result", "profile-daily-calories");
                         FMTProfileStorePreviousSelection(_e);
-                        if (macroSplit.Calories != undefined) {
-                          document.getElementById("profile-goto-macros").innerHTML = "Edit Diet";
-                        }
                     }
                     if (onsuccessFn) {onsuccessFn();}
                 },
                 function(ev) {
                   // On Error
-                  document.getElementById("profile-goto-macros").innerHTML = "Plan Diet";
                   onerrorFn = isFunction(onerrorFn) ? onerrorFn : function (e) {console.error(`Failed getting Profile id ${profileId}`);};
                   onerrorFn(ev);
                 }
@@ -5466,7 +5461,7 @@ function onDbSuccess(event) {
                     // pageController.closeLoadingScreen();
                     if (fmtAppInstance.firstTimeScreenAutomatic) {
                         setTimeout(() => {
-                            document.getElementById("fmt-app-first-time-overlay").click();
+                            document.getElementById("fmt-app-first-time-create").click();
                             pageController.showProfile();
                         }, 3000);
                     }
@@ -5974,7 +5969,7 @@ function prepareEventHandlers() {
     $("#edit-meal-entry-screen-less").click( (e) => {
         FMTConsumableItemScreenShowLess("edit-meal-entry-screen", "consumable");
     });
-    $("#fmt-app-first-time-overlay").click( () => {
+    $("#fmt-app-first-time-create").click( () => {
         pageController.closeFirstTimeScreen();
         pageController.showProfile();
     });
