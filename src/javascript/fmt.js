@@ -2470,8 +2470,45 @@ function FMTProfileSelectSex(sex, divId) {
   DOMSex.value = sex;
   DOMSex.setAttribute("sex", sex);
 }
+function FMTSetProfileMacroValue(unit, macroValueDiv, convertedValueDiv, convertedValues) {
+  // Sets the value and alternate values in the relevant Macro row
+  const gram = convertedValues["g"];
+  const percent = convertedValues["%"];
+  const kcal = convertedValues["kCal"];
+  switch(unit) {
+    case "%":
+      macroValueDiv.value = percent;
+      if (gram) {
+        convertedValueDiv.innerHTML = `${gram}g`;
+      }
+      if (kcal) {
+        convertedValueDiv.innerHTML += `/${kcal}kCal`;
+      }
+    break;
+    case "g":
+      macroValueDiv.value = gram;
+      if (kcal) {
+        convertedValueDiv.innerHTML = `${kcal}kCal`;
+      }
+      if (percent) {
+        convertedValueDiv.innerHTML += `/${percent}%`;
+      }
+    break;
+    case "kCal":
+      macroValueDiv.value = kcal;
+      if (gram) {
+        convertedValueDiv.innerHTML = `${gram}g`;
+      }
+      if (percent) {
+        convertedValueDiv.innerHTML += `/${percent}%`;
+      }
+    break;
+  }
+}
 function FMTProfileSelectMacroUnits(e, macroName, macroValueDivId, convertedValueDivId, caloriesDivId) {
-  /*"e" is jQuery Event*/
+  /* "e" is jQuery Event, or an object containing a currentTarget
+  ** key with value being the DOM element of the Unit select element
+  */
   const newUnit = e.currentTarget.value;
   const prevUnit = e.currentTarget.getAttribute("previous");
   const macroValueDiv = document.getElementById(macroValueDivId);
@@ -2492,45 +2529,18 @@ function FMTProfileSelectMacroUnits(e, macroName, macroValueDivId, convertedValu
   }
   const calories = isNumber(caloriesDiv.value) ? Number(caloriesDiv.value) : 0;
   const value = isNumber(macroValueDiv.value) ? Number(macroValueDiv.value) : NaN;
-  if (isNaN(value)) {
+  if (macroValueDiv.value == undefined || macroValueDiv.value == "") {
+    convertedValueDiv.innerHTML = "";
+    return;
+  }
+  else if (isNaN(value)) {
     convertedValueDiv.innerHTML = "";
     macroValueDiv.innerHTML = "";
     console.error(`Macro value is not a valid number`);
     return;
   }
   const convert = FMTConvertMacro(macroName, prevUnit, value, calories);
-  const gram = convert["g"];
-  const percent = convert["%"];
-  const kcal = convert["kCal"];
-  switch(newUnit) {
-    case "%":
-      macroValueDiv.value = percent;
-      if (gram) {
-        convertedValueDiv.innerHTML = `${gram}g`;
-      }
-      if (kcal) {
-        convertedValueDiv.innerHTML += `/${kcal}kCal`;
-      }
-    break;
-    case "g":
-      macroValueDiv.value = gram;
-      if (percent) {
-        convertedValueDiv.innerHTML = `${percent}%`;
-      }
-      if (kcal) {
-        convertedValueDiv.innerHTML += `/${kcal}kCal`;
-      }
-    break;
-    case "kCal":
-      macroValueDiv.value = kcal;
-      if (gram) {
-        convertedValueDiv.innerHTML = `${gram}g`;
-      }
-      if (percent) {
-        convertedValueDiv.innerHTML += `/${percent}%`;
-      }
-    break;
-  }
+  FMTSetProfileMacroValue(newUnit, macroValueDiv, convertedValueDiv, convert);
 }
 function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
     if (isNaN(profileId)) {
@@ -2569,6 +2579,65 @@ function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
                 onerrorFn
                );
 
+}
+function FMTFillMacro(baseID, nutrient, calories) {
+  // TODO
+  if (calories <= 0) {
+    console.warn("Calories must be greater than 0 to fill macroes");
+    return;
+  }
+  let fatInput = document.getElementById(`${baseID}-fat`);
+  let carbInput = document.getElementById(`${baseID}-carb`);
+  let proteinInput = document.getElementById(`${baseID}-protein`);
+  if (!(fatInput && carbInput && proteinInput)) {
+    console.warn(`Couldn't find all required macroes inputs. Skipping.`);
+    return;
+  }
+  let fat = isNumber(fatInput.value) ? Number(fatInput.value) : 0;
+  let carb = isNumber(carbInput.value) ? Number(carbInput.value) : 0;
+  let protein = isNumber(proteinInput.value) ? Number(proteinInput.value) : 0;
+  let fatUnit = document.getElementById(`${baseID}-fat-units-select`).value;
+  let carbUnit = document.getElementById(`${baseID}-carb-units-select`).value;
+  let proteinUnit = document.getElementById(`${baseID}-protein-units-select`).value;
+
+  let fats, carbs, proteins;
+  let percentFat, percentCarb, percentProtein;
+  let diff;
+  let resultsDiv = document.getElementById(`${baseID}-${nutrient}-result`);
+  switch (nutrient) {
+    case "protein":
+      fats = FMTConvertMacro("fat", fatUnit, fat, calories);
+      percentFat = fats["%"];
+      carbs = FMTConvertMacro("carb", carbUnit, carb, calories);
+      percentCarb = carbs["%"];
+      diff = 100 - percentCarb - percentFat;
+      percentProtein = diff >= 0 ? diff : 0;
+      proteins = FMTConvertMacro("protein", "%", percentProtein, calories);
+      FMTSetProfileMacroValue(proteinUnit, proteinInput, resultsDiv, proteins);
+      break;
+    case "carb":
+      fats = FMTConvertMacro("fat", fatUnit, fat, calories);
+      percentFat = fats["%"];
+      proteins = FMTConvertMacro("protein", proteinUnit, protein, calories);
+      percentProtein = proteins["%"];
+      diff = 100 - percentProtein - percentFat;
+      percentCarb = diff >= 0 ? diff : 0;
+      carbs = FMTConvertMacro("carb", "%", percentCarb, calories);
+      FMTSetProfileMacroValue(carbUnit, carbInput, resultsDiv, carbs);
+      break;
+    case "fat":
+      carbs = FMTConvertMacro("carb", carbUnit, carb, calories);
+      percentCarb = carbs["%"];
+      proteins = FMTConvertMacro("protein", proteinUnit, protein, calories);
+      percentProtein = proteins["%"];
+      diff = 100 - percentProtein - percentCarb;
+      percentFat = diff >= 0 ? diff : 0;
+      fats = FMTConvertMacro("fat", "%", percentFat, calories);
+      FMTSetProfileMacroValue(fatUnit, fatInput, resultsDiv, fats);
+      break;
+    default:
+      console.warn(`Unknown nutrient ${nutrient}`);
+  }
 }
 function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
     if (isNaN(profileId)) {
@@ -2651,30 +2720,32 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
                     document.getElementById("profile-tdee").innerHTML = `${tdee} Kcal/Day*`;
                     document.getElementById("profile-formula").setAttribute("value", profile.formula);
                     document.getElementById("profile-formula").innerHTML = `* According to ${profile.formula} formula`;
+                    // Set Macro fields
+                    const pSelect = document.getElementById("profile-macro-protein-units-select");
+                    const cSelect = document.getElementById("profile-macro-carb-units-select");
+                    const fSelect = document.getElementById("profile-macro-fat-units-select");
+                    pSelect.value = "%";
+                    cSelect.value = "%";
+                    fSelect.value = "%";
+                    pSelect.setAttribute("previous", "%");
+                    cSelect.setAttribute("previous", "%");
+                    fSelect.setAttribute("previous", "%");
+                    let _e = { "currentTarget" : pSelect};
+                    FMTProfileSelectMacroUnits(_e, "protein", "profile-macro-protein", "profile-macro-protein-result", "profile-daily-calories");
+                    FMTProfileStorePreviousSelection(_e);
+                    _e.currentTarget = cSelect;
+                    FMTProfileSelectMacroUnits(_e, "carbohydrate", "profile-macro-carb", "profile-macro-carb-result", "profile-daily-calories");
+                    FMTProfileStorePreviousSelection(_e);
+                    _e.currentTarget = fSelect;
+                    FMTProfileSelectMacroUnits(_e, "fat", "profile-macro-fat", "profile-macro-fat-result", "profile-daily-calories");
+                    FMTProfileStorePreviousSelection(_e);
                     let macroSplit = profile.macroSplit;
                     if (macroSplit !== null) {
+                      // Set saved macro split
                         document.getElementById("profile-daily-calories").value = macroSplit.Calories || "";
                         document.getElementById("profile-macro-protein").value = macroSplit.Protein || "";
                         document.getElementById("profile-macro-carb").value = macroSplit.Carbohydrate || "";
                         document.getElementById("profile-macro-fat").value = macroSplit.Fat || "";
-                        const pSelect = document.getElementById("profile-macro-protein-units-select");
-                        const cSelect = document.getElementById("profile-macro-carb-units-select");
-                        const fSelect = document.getElementById("profile-macro-fat-units-select");
-                        pSelect.value = "%";
-                        cSelect.value = "%";
-                        fSelect.value = "%";
-                        pSelect.setAttribute("previous", "%");
-                        cSelect.setAttribute("previous", "%");
-                        fSelect.setAttribute("previous", "%");
-                        let _e = { "currentTarget" : pSelect};
-                        FMTProfileSelectMacroUnits(_e, "protein", "profile-macro-protein", "profile-macro-protein-result", "profile-daily-calories");
-                        FMTProfileStorePreviousSelection(_e);
-                        _e.currentTarget = cSelect;
-                        FMTProfileSelectMacroUnits(_e, "carbohydrate", "profile-macro-carb", "profile-macro-carb-result", "profile-daily-calories");
-                        FMTProfileStorePreviousSelection(_e);
-                        _e.currentTarget = fSelect;
-                        FMTProfileSelectMacroUnits(_e, "fat", "profile-macro-fat", "profile-macro-fat-result", "profile-daily-calories");
-                        FMTProfileStorePreviousSelection(_e);
                     }
                     if (onsuccessFn) {onsuccessFn();}
                 },
@@ -5528,18 +5599,24 @@ function prepareEventHandlers() {
       if (isNumber(e.currentTarget.value) && !e.currentTarget.value.endsWith(".") ) {
         const _e = { "currentTarget": document.getElementById("profile-macro-protein-units-select") };
         FMTProfileSelectMacroUnits(_e, "protein", "profile-macro-protein", "profile-macro-protein-result", "profile-daily-calories");
+      } else if (e.currentTarget.value == undefined || e.currentTarget.value == "") {
+        document.getElementById("profile-macro-protein-result").innerHTML = "";
       }
     });
     $("#profile-macro-carb").keyup( (e) => {
       if (isNumber(e.currentTarget.value) && !e.currentTarget.value.endsWith(".")) {
         const _e = { "currentTarget": document.getElementById("profile-macro-carb-units-select") };
         FMTProfileSelectMacroUnits(_e, "carbohydrate", "profile-macro-carb", "profile-macro-carb-result", "profile-daily-calories");
+      } else if (e.currentTarget.value == undefined || e.currentTarget.value == "") {
+        document.getElementById("profile-macro-carb-result").innerHTML = "";
       }
     });
     $("#profile-macro-fat").keyup( (e) => {
       if (isNumber(e.currentTarget.value) && !e.currentTarget.value.endsWith(".")) {
         const _e = { "currentTarget": document.getElementById("profile-macro-fat-units-select") };
         FMTProfileSelectMacroUnits(_e, "fat", "profile-macro-fat", "profile-macro-fat-result", "profile-daily-calories");
+      } else if (e.currentTarget.value == undefined || e.currentTarget.value == "") {
+        document.getElementById("profile-macro-fat-result").innerHTML = "";
       }
     });
     $("#profile-daily-calories").keyup( (e) => {
@@ -5550,6 +5627,40 @@ function prepareEventHandlers() {
       _e.currentTarget = document.getElementById("profile-macro-fat-units-select");
       FMTProfileSelectMacroUnits(_e, "fat", "profile-macro-fat", "profile-macro-fat-result", "profile-daily-calories");
     });
+    $("#profile-macro-protein-fill").click((e) => {
+      let baseID = "profile-macro";
+      let nutrient = "protein";
+      let caloriesDiv = document.getElementById("profile-daily-calories");
+      if (!caloriesDiv || !(isNumber(caloriesDiv.value) && Number(caloriesDiv.value) > 0) ) {
+        FMTShowAlertBar("Calories must be set to fill macro", "profile-alerts", "primary");
+        return;
+      }
+      let calories = Number(caloriesDiv.value);
+      FMTFillMacro(baseID, nutrient, calories);
+    });
+    $("#profile-macro-carb-fill").click((e) => {
+      let baseID = "profile-macro";
+      let nutrient = "carb";
+      let caloriesDiv = document.getElementById("profile-daily-calories");
+      if (!caloriesDiv || !(isNumber(caloriesDiv.value) && Number(caloriesDiv.value) > 0) ) {
+        FMTShowAlertBar("Calories must be set to fill macro", "profile-alerts", "primary");
+        return;
+      }
+      let calories = Number(caloriesDiv.value);
+      FMTFillMacro(baseID, nutrient, calories);
+    });
+    $("#profile-macro-fat-fill").click((e) => {
+      let baseID = "profile-macro";
+      let nutrient = "fat";
+      let caloriesDiv = document.getElementById("profile-daily-calories");
+      if (!caloriesDiv || !(isNumber(caloriesDiv.value) && Number(caloriesDiv.value) > 0) ) {
+        FMTShowAlertBar("Calories must be set to fill macro", "profile-alerts", "primary");
+        return;
+      }
+      let calories = Number(caloriesDiv.value);
+      FMTFillMacro(baseID, nutrient, calories);
+    });
+
     $("#save-profile-details").click( (e) => {
         let onsuccessFn = function(ev) {
           let msg = "Profile updated successfully!";

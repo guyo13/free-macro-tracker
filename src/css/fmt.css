@@ -730,6 +730,7 @@ select, input, textarea {
   margin-right: 1rem;
   align-self: center;
   flex-basis: 30%;
+  border: none;
 }
 .fmt-macro-form-btn {}
 .fmt-column {
