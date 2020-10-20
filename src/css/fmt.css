@@ -63,7 +63,9 @@ button {
     z-index: 3000;
     overflow: hidden;
 }
-.fmt-add-nutri {}
+.fmt-add-nutri {
+  flex: 4;
+}
 .fmt-unit-igroup {}
 .fmt-bg-light {
     background-color: var(--fmt-light-gray);
@@ -244,10 +246,8 @@ button {
     padding-right: 1rem;
 }
 .fmt-select {
-  width: 30%!important;
+  flex: 3;
   box-shadow: none!important;
-  font-size: 0.6rem;
-  font-weight: bold;
 }
 .fmt-select:focus {
   border-color: #11998e!important;
@@ -567,7 +567,6 @@ input[type=number] {
   -o-appearance:none;
    appearance:none;
    pointer-events: none;
-   margin-bottom: 0.5rem;
 }
 .fmt-select-noexpand::-ms-expand {
   display: none;
@@ -607,7 +606,7 @@ input[type=number] {
     width: 50%;
 }
 .fmt-input-field {
-    flex: 2;
+    flex: 4;
 }
 .fmt-input-field-select {
     width: 50%;
@@ -675,7 +674,7 @@ input[type=number] {
       width: 100%;
   }
   .fmt-input-field {
-      flex: 2;
+      flex: 4;
   }
   .fmt-input-field-select {
       width: 60%;

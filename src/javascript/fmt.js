@@ -2855,9 +2855,9 @@ function FMTCreateAdditionalNutrientWithUnitsInput(baseID, targetDivID, nutriObj
 
     //Containers
     const columnContainerDiv = document.createElement("div");
-    columnContainerDiv.classList.add("col-12", "col-lg-8", "mb-1");
+    columnContainerDiv.classList.add("mb-1");
     const formGroupDiv = document.createElement("div");
-    formGroupDiv.classList.add("form__group");
+    formGroupDiv.classList.add("form__group", "d-flex",);
     formGroupDiv.setAttribute("id", nutriBaseId);
 
     //Input
