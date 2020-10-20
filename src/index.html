@@ -161,14 +161,14 @@
                         </div>
                       </div>
                       <div class="col-12 col-lg-8 mb-1">
-                        <div class="form__group">
+                        <div class="form__group d-flex">
                           <input type="input" class="form__field fmt-input-field" placeholder="Name" id='profile-name'/>
                           <label for="profile-name" class="form__label">Name (Optional)</label>
                         </div>
                       </div>
                       <div class="col-12 col-lg-8 mb-1">
-                        <div class="form__group">
-                          <input type="number" class="form__field fmt-input-field-select" placeholder="Body-Weight" id='profile-weight' required />
+                        <div class="form__group d-flex">
+                          <input type="number" class="form__field fmt-input-field" placeholder="Body-Weight" id='profile-weight' required />
                           <label for="profile-weight" class="form__label">Weight</label>
                           <select id="profile-weight-units" name="profile-weight-units" class="custom-select fmt-select  fmt-center-text">
                             <option value="Kg">Kg</option>
@@ -177,8 +177,8 @@
                         </div>
                       </div>
                       <div class="col-12 col-lg-8 mb-1">
-                        <div class="form__group">
-                          <input type="number" class="form__field fmt-input-field-select" placeholder="Height" id='profile-height' required />
+                        <div class="form__group d-flex">
+                          <input type="number" class="form__field fmt-input-field" placeholder="Height" id='profile-height' required />
                           <label for="profile-height" class="form__label">Height</label>
                           <select id="profile-height-units" name="profile-height-units" class="custom-select fmt-select fmt-center-text">
                             <option value="Cm">Cm</option>
@@ -187,20 +187,20 @@
                         </div>
                       </div>
                       <div class="col-12 col-lg-8 mb-1">
-                          <div class="form__group">
+                          <div class="form__group d-flex">
                             <input id="profile-age" type="number" class="form__field fmt-input-field" placeholder="Age" required />
                             <label for="profile-age" class="form__label">Age</label>
                           </div>
                       </div>
                       <div class="col-12 col-lg-8 mb-1">
-                          <div class="form__group">
+                          <div class="form__group d-flex">
                             <input id="profile-bodyfat" type="number" class="form__field fmt-input-field" placeholder="(Optional)"/>
                             <label for="profile-bodyfat" class="form__label">Body Fat % (Optional)</label>
                           </div>
                       </div>
                       <div class="col-12 col-lg-8 mb-1">
-                          <div class="form__group">
-                            <input id="profile-sex" type="text" class="form__field fmt-input-field-select" placeholder="Sex" required readonly="true"/>
+                          <div class="form__group d-flex">
+                            <input id="profile-sex" type="text" class="form__field fmt-input-field" placeholder="Sex" required readonly="true"/>
                             <label for="profile-sex" class="form__label">Sex</label>
                             <select id="profile-sex-select" name="profile-sex-select" class="custom-select fmt-select fmt-center-text">
                               <option value="" selected="selected">Select</option>
@@ -210,8 +210,8 @@
                           </div>
                       </div>
                       <div class="col-12 col-lg-8 mb-1">
-                          <div class="form__group">
-                            <input id="profile-active-level" type="text" class="form__field fmt-input-field-select" placeholder="Activity Level" required readonly="true"/>
+                          <div class="form__group d-flex">
+                            <input id="profile-active-level" type="text" class="form__field fmt-input-field" placeholder="Activity Level" required readonly="true"/>
                             <label for="profile-active-level" class="form__label">Activity Level</label>
                             <select id="profile-activity-select" name="profile-activity-select" class="custom-select fmt-select fmt-center-text">
                               <option value="" selected="selected">Select</option>
@@ -225,7 +225,7 @@
                           </div>
                       </div>
                       <div class="col-12 col-lg-8 mb-1">
-                        <div class="form__group">
+                        <div class="form__group d-flex">
                           <input id="profile-activity-mult" type="text" class="form__field fmt-input-field" required readonly="true"/>
                           <label for="profile-activity-mult" class="form__label">Activity Level Multiplier</label>
                         </div>
@@ -394,20 +394,20 @@
             </div>
             <div id="add-food-screen-content" class="row justify-content-center fmt-max-height60">
               <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group">
+                <div class="form__group d-flex">
                   <input type="text" class="form__field fmt-input-field" placeholder="Item Name" id='add-food-screen-food-name' required />
                   <label for="add-food-screen-food-name" class="form__label">Item Name</label>
                 </div>
               </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="text" class="form__field fmt-input-field" placeholder="Item Brand" id='add-food-screen-food-brand' required />
                     <label for="add-food-screen-food-brand" class="form__label">Brand</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group" id="add-food-screen-food-serving">
-                    <input type="number" class="form__field fmt-input-field-select" placeholder="Serving Size" id='add-food-screen-food-serving-input' required />
+                  <div class="form__group d-flex" id="add-food-screen-food-serving">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Serving Size" id='add-food-screen-food-serving-input' required />
                     <label for="add-food-screen-food-serving-input" class="form__label">Serving</label>
                   </div>
                 </div>
@@ -415,25 +415,25 @@
                     <h4 class="fmt-font-2">Nutritional Facts</h4>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Calories" id='add-food-screen-food-calories' required />
                     <label for="add-food-screen-food-calories" class="form__label">Calories</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Proteins" id='add-food-screen-food-proteins' required />
                     <label for="add-food-screen-food-proteins" class="form__label">Proteins</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Carbohydrates" id='add-food-screen-food-carbohydrates' required />
                     <label for="add-food-screen-food-carbohydrates" class="form__label">Carbohydrates</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Fats" id='add-food-screen-food-fats' required />
                     <label for="add-food-screen-food-fats" class="form__label">Fats</label>
                   </div>
@@ -465,20 +465,20 @@
             </div>
             <div id="edit-food-screen-content" class="row justify-content-center fmt-max-height60">
               <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group">
+                <div class="form__group d-flex">
                   <input type="text" class="form__field fmt-input-field" placeholder="Item Name" id='edit-food-screen-food-name' required />
                   <label for="edit-food-screen-food-name" class="form__label">Item Name</label>
                 </div>
               </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="text" class="form__field fmt-input-field" placeholder="Item Brand" id='edit-food-screen-food-brand' required />
                     <label for="edit-food-screen-food-brand" class="form__label">Brand</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group" id="edit-food-screen-food-serving">
-                    <input type="number" class="form__field fmt-input-field-select" placeholder="Serving Size" id='edit-food-screen-food-serving-input' required />
+                  <div class="form__group d-flex" id="edit-food-screen-food-serving">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Serving Size" id='edit-food-screen-food-serving-input' required />
                     <label for="edit-food-screen-food-serving-input" class="form__label">Serving</label>
                   </div>
                 </div>
@@ -486,25 +486,25 @@
                     <h4 class="fmt-font-2">Nutritional Facts</h4>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Calories" id='edit-food-screen-food-calories' required />
                     <label for="edit-food-screen-food-calories" class="form__label">Calories</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Proteins" id='edit-food-screen-food-proteins' required />
                     <label for="edit-food-screen-food-proteins" class="form__label">Proteins</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Carbohydrates" id='edit-food-screen-food-carbohydrates' required />
                     <label for="edit-food-screen-food-carbohydrates" class="form__label">Carbohydrates</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Fats" id='edit-food-screen-food-fats' required />
                     <label for="edit-food-screen-food-fats" class="form__label">Fats</label>
                   </div>
@@ -539,25 +539,25 @@
             </div>
             <div id="view-food-screen-add-to-meal" class="row justify-content-center d-none">
               <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group">
+                <div class="form__group d-flex">
                   <input type="number" class="form__field fmt-input-field" placeholder="Meal Year" id='view-food-screen-meal-year' required />
                   <label for="view-food-screen-meal-year" class="form__label">Year</label>
                 </div>
               </div>
               <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group">
+                <div class="form__group d-flex">
                   <input type="number" class="form__field fmt-input-field" placeholder="Meal Month" id='view-food-screen-meal-month' required />
                   <label for="view-food-screen-meal-month" class="form__label">Month (1-12)</label>
                 </div>
               </div>
               <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group">
+                <div class="form__group d-flex">
                   <input type="number" class="form__field fmt-input-field" placeholder="Meal Day" id='view-food-screen-meal-day' required />
                   <label for="view-food-screen-meal-day" class="form__label">Day (1-31)</label>
                 </div>
               </div>
               <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group">
+                <div class="form__group d-flex">
                   <input type="text" class="form__field fmt-input-field" placeholder="Meal Name" id='view-food-screen-meal-name' required />
                   <label for="view-food-screen-meal-name" class="form__label">Meal Name</label>
                 </div>
@@ -565,20 +565,20 @@
             </div>
             <div id="view-food-screen-content" class="row justify-content-center fmt-max-height60">
               <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group">
+                <div class="form__group d-flex">
                   <input type="text" class="form__field fmt-input-field" placeholder="Item Name" id='view-food-screen-food-name' required />
                   <label for="view-food-screen-food-name" class="form__label">Item Name</label>
                 </div>
               </div>
               <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group">
+                <div class="form__group d-flex">
                   <input type="text" class="form__field fmt-input-field" placeholder="Item Brand" id='view-food-screen-food-brand' required />
                   <label for="view-food-screen-food-brand" class="form__label">Brand</label>
                 </div>
               </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group" id="view-food-screen-food-serving">
-                    <input type="number" class="form__field fmt-input-field-select" placeholder="Serving Size" id='view-food-screen-food-serving-input' required />
+                  <div class="form__group d-flex" id="view-food-screen-food-serving">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Serving Size" id='view-food-screen-food-serving-input' required />
                     <label for="view-food-screen-food-serving-input" class="form__label">Serving</label>
                   </div>
                 </div>
@@ -586,25 +586,25 @@
                     <h4 class="fmt-font-2">Nutritional Facts</h4>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Calories" id='view-food-screen-food-calories' required />
                     <label for="view-food-screen-food-calories" class="form__label">Calories</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Proteins" id='view-food-screen-food-proteins' required />
                     <label for="view-food-screen-food-proteins" class="form__label">Proteins</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Carbohydrates" id='view-food-screen-food-carbohydrates' required />
                     <label for="view-food-screen-food-carbohydrates" class="form__label">Carbohydrates</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Fats" id='view-food-screen-food-fats' required />
                     <label for="view-food-screen-food-fats" class="form__label">Fats</label>
                   </div>
@@ -644,26 +644,26 @@
             </div>
             <div id="add-recipe-screen-content" class="row justify-content-center fmt-max-height60">
               <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group">
-                  <input type="text" class="form__field fmt-w-inherit" placeholder="Recipe Name" id='add-recipe-screen-recipe-name' required />
+                <div class="form__group d-flex">
+                  <input type="text" class="form__field fmt-input-field" placeholder="Recipe Name" id='add-recipe-screen-recipe-name' required />
                   <label for="add-recipe-screen-recipe-name" class="form__label">Recipe Name</label>
                 </div>
               </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
-                    <input type="text" class="form__field fmt-w-inherit" placeholder="Creator" id='add-recipe-screen-recipe-brand' required />
+                  <div class="form__group d-flex">
+                    <input type="text" class="form__field fmt-input-field" placeholder="Creator" id='add-recipe-screen-recipe-brand' required />
                     <label for="add-recipe-screen-recipe-brand" class="form__label">Creator (Optional)</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group" id="add-recipe-screen-recipe-serving">
+                  <div class="form__group d-flex" id="add-recipe-screen-recipe-serving">
                     <input type="number" class="form__field fmt-input-field-select" placeholder="Serving Size" id='add-recipe-screen-recipe-serving-input' required />
                     <label for="add-recipe-screen-recipe-serving-input" class="form__label">Serving Size</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
-                    <textarea type="text" class="form__field fmt-w-inherit" placeholder="Description" id='add-recipe-screen-recipe-description' required /></textarea>
+                  <div class="form__group d-flex">
+                    <textarea type="text" class="form__field fmt-input-field" placeholder="Description" id='add-recipe-screen-recipe-description' required /></textarea>
                     <label for="add-recipe-screen-recipe-description" class="form__label">Description</label>
                   </div>
                 </div>
@@ -683,14 +683,14 @@
                     <h4 class="fmt-font-2">Social Media</h4>
                 </div>
                   <div class="col-12 col-lg-8 mb-1">
-                    <div class="form__group">
-                      <input type="text" class="form__field fmt-w-inherit" placeholder="Video URL" id='add-recipe-screen-recipe-video-url' required />
+                    <div class="form__group d-flex">
+                      <input type="text" class="form__field fmt-input-field" placeholder="Video URL" id='add-recipe-screen-recipe-video-url' required />
                       <label for="add-recipe-screen-recipe-video-url" class="form__label">Video Link</label>
                     </div>
                   </div>
                   <div class="col-12 col-lg-8 mb-1">
-                    <div class="form__group">
-                      <input type="text" class="form__field fmt-w-inherit" placeholder="Website Link" id='add-recipe-screen-recipe-website' required />
+                    <div class="form__group d-flex">
+                      <input type="text" class="form__field fmt-input-field" placeholder="Website Link" id='add-recipe-screen-recipe-website' required />
                       <label for="add-recipe-screen-recipe-website" class="form__label">Website Link</label>
                     </div>
                   </div>
@@ -698,26 +698,26 @@
                     <h4 class="fmt-font-2">Nutritional Facts</h4>
                 </div>
                 <div class="col-12 col-lg-8">
-                  <div class="form__group">
-                    <input type="number" class="form__field fmt-w-inherit" placeholder="Calories" id='add-recipe-screen-recipe-calories' required readonly="true"/>
+                  <div class="form__group d-flex">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Calories" id='add-recipe-screen-recipe-calories' required readonly="true"/>
                     <label for="add-recipe-screen-recipe-calories" class="form__label">Calories</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8">
-                  <div class="form__group">
-                    <input type="number" class="form__field fmt-w-inherit" placeholder="Proteins" id='add-recipe-screen-recipe-proteins' required readonly="true"/>
+                  <div class="form__group d-flex">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Proteins" id='add-recipe-screen-recipe-proteins' required readonly="true"/>
                     <label for="add-recipe-screen-recipe-proteins" class="form__label">Proteins</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8">
-                  <div class="form__group">
-                    <input type="number" class="form__field fmt-w-inherit" placeholder="Carbohydrates" id='add-recipe-screen-recipe-carbohydrates' required readonly="true"/>
+                  <div class="form__group d-flex">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Carbohydrates" id='add-recipe-screen-recipe-carbohydrates' required readonly="true"/>
                     <label for="add-recipe-screen-recipe-carbohydrates" class="form__label">Carbohydrates</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
-                    <input type="number" class="form__field fmt-w-inherit" placeholder="Fats" id='add-recipe-screen-recipe-fats' required readonly="true"/>
+                  <div class="form__group d-flex">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Fats" id='add-recipe-screen-recipe-fats' required readonly="true"/>
                     <label for="add-recipe-screen-recipe-fats" class="form__label">Fats</label>
                   </div>
                 </div>
@@ -750,51 +750,51 @@
             <div id="view-recipe-screen-content" class="row justify-content-center fmt-max-height60">
               <div id="view-recipe-screen-add-to-meal" class="row justify-content-center d-none">
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Meal Year" id='view-recipe-screen-meal-year' required />
                     <label for="view-recipe-screen-meal-year" class="form__label">Year</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Meal Month" id='view-recipe-screen-meal-month' required />
                     <label for="view-recipe-screen-meal-month" class="form__label">Month (1-12)</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Meal Day" id='view-recipe-screen-meal-day' required />
                     <label for="view-recipe-screen-meal-day" class="form__label">Day (1-31)</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="text" class="form__field fmt-input-field" placeholder="Meal Name" id='view-recipe-screen-meal-name' required />
                     <label for="view-recipe-screen-meal-name" class="form__label">Meal Name</label>
                   </div>
                 </div>
               </div>
               <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group">
-                  <input type="text" class="form__field fmt-w-inherit" placeholder="Recipe Name" id='view-recipe-screen-recipe-name' required />
+                <div class="form__group d-flex">
+                  <input type="text" class="form__field fmt-input-field" placeholder="Recipe Name" id='view-recipe-screen-recipe-name' required />
                   <label for="view-recipe-screen-recipe-name" class="form__label">Recipe Name</label>
                 </div>
               </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
-                    <input type="text" class="form__field fmt-w-inherit" placeholder="Creator" id='view-recipe-screen-recipe-brand' required />
+                  <div class="form__group d-flex">
+                    <input type="text" class="form__field fmt-input-field" placeholder="Creator" id='view-recipe-screen-recipe-brand' required />
                     <label for="view-recipe-screen-recipe-brand" class="form__label">Creator</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group" id="view-recipe-screen-recipe-serving">
-                    <input type="number" class="form__field fmt-input-field-select" placeholder="Serving Size" id='view-recipe-screen-recipe-serving-input' required />
+                  <div class="form__group d-flex" id="view-recipe-screen-recipe-serving">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Serving Size" id='view-recipe-screen-recipe-serving-input' required />
                     <label for="view-recipe-screen-recipe-serving-input" class="form__label">Serving Size</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
-                    <textarea type="text" class="form__field fmt-w-inherit" placeholder="Description" id='view-recipe-screen-recipe-description' required readonly="true" /></textarea>
+                  <div class="form__group d-flex">
+                    <textarea type="text" class="form__field fmt-input-field" placeholder="Description" id='view-recipe-screen-recipe-description' required readonly="true" /></textarea>
                     <label for="view-recipe-screen-recipe-description" class="form__label">Description</label>
                   </div>
                 </div>
@@ -814,14 +814,14 @@
                     <h4 class="fmt-font-2">Social Media</h4>
                 </div>
                   <div class="col-12 col-lg-8 mb-1">
-                    <div class="form__group">
-                      <input type="text" class="form__field fmt-w-inherit" placeholder="Video URL" id='view-recipe-screen-recipe-video-url' required readonly="true" />
+                    <div class="form__group d-flex">
+                      <input type="text" class="form__field fmt-input-field" placeholder="Video URL" id='view-recipe-screen-recipe-video-url' required readonly="true" />
                       <label for="view-recipe-screen-recipe-video-url" class="form__label">Video Link</label>
                     </div>
                   </div>
                   <div class="col-12 col-lg-8 mb-1">
-                    <div class="form__group">
-                      <input type="text" class="form__field fmt-w-inherit" placeholder="Website Link" id='view-recipe-screen-recipe-website' required readonly="true" />
+                    <div class="form__group d-flex">
+                      <input type="text" class="form__field fmt-input-field" placeholder="Website Link" id='view-recipe-screen-recipe-website' required readonly="true" />
                       <label for="view-recipe-screen-recipe-website" class="form__label">Website Link</label>
                     </div>
                   </div>
@@ -829,26 +829,26 @@
                     <h4 class="fmt-font-2">Nutritional Facts</h4>
                 </div>
                 <div class="col-12 col-lg-8">
-                  <div class="form__group">
-                    <input type="number" class="form__field fmt-w-inherit" placeholder="Calories" id='view-recipe-screen-recipe-calories' required readonly="true"/>
+                  <div class="form__group d-flex">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Calories" id='view-recipe-screen-recipe-calories' required readonly="true"/>
                     <label for="view-recipe-screen-recipe-calories" class="form__label">Calories</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8">
-                  <div class="form__group">
-                    <input type="number" class="form__field fmt-w-inherit" placeholder="Proteins" id='view-recipe-screen-recipe-proteins' required readonly="true"/>
+                  <div class="form__group d-flex">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Proteins" id='view-recipe-screen-recipe-proteins' required readonly="true"/>
                     <label for="view-recipe-screen-recipe-proteins" class="form__label">Proteins</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8">
-                  <div class="form__group">
-                    <input type="number" class="form__field fmt-w-inherit" placeholder="Carbohydrates" id='view-recipe-screen-recipe-carbohydrates' required readonly="true"/>
+                  <div class="form__group d-flex">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Carbohydrates" id='view-recipe-screen-recipe-carbohydrates' required readonly="true"/>
                     <label for="view-recipe-screen-recipe-carbohydrates" class="form__label">Carbohydrates</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
-                    <input type="number" class="form__field fmt-w-inherit" placeholder="Fats" id='view-recipe-screen-recipe-fats' required readonly="true"/>
+                  <div class="form__group d-flex">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Fats" id='view-recipe-screen-recipe-fats' required readonly="true"/>
                     <label for="view-recipe-screen-recipe-fats" class="form__label">Fats</label>
                   </div>
                 </div>
@@ -884,26 +884,26 @@
             </div>
             <div id="edit-recipe-screen-content" class="row justify-content-center fmt-max-height60">
               <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group">
-                  <input type="text" class="form__field fmt-w-inherit" placeholder="Recipe Name" id='edit-recipe-screen-recipe-name' required />
+                <div class="form__group d-flex">
+                  <input type="text" class="form__field fmt-input-field" placeholder="Recipe Name" id='edit-recipe-screen-recipe-name' required />
                   <label for="edit-recipe-screen-recipe-name" class="form__label">Recipe Name</label>
                 </div>
               </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
-                    <input type="text" class="form__field fmt-w-inherit" placeholder="Creator" id='edit-recipe-screen-recipe-brand' required />
+                  <div class="form__group d-flex">
+                    <input type="text" class="form__field fmt-input-field" placeholder="Creator" id='edit-recipe-screen-recipe-brand' required />
                     <label for="edit-recipe-screen-recipe-brand" class="form__label">Creator</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group" id="edit-recipe-screen-recipe-serving">
-                    <input type="number" class="form__field fmt-input-field-select" placeholder="Serving Size" id='edit-recipe-screen-recipe-serving-input' required />
+                  <div class="form__group d-flex" id="edit-recipe-screen-recipe-serving">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Serving Size" id='edit-recipe-screen-recipe-serving-input' required />
                     <label for="edit-recipe-screen-recipe-serving-input" class="form__label">Serving Size</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
-                    <textarea type="text" class="form__field fmt-w-inherit" placeholder="Description" id='edit-recipe-screen-recipe-description' required /></textarea>
+                  <div class="form__group d-flex">
+                    <textarea type="text" class="form__field fmt-input-field" placeholder="Description" id='edit-recipe-screen-recipe-description' required /></textarea>
                     <label for="edit-recipe-screen-recipe-description" class="form__label">Description</label>
                   </div>
                 </div>
@@ -911,26 +911,26 @@
                     <h4 class="fmt-font-2">Ingredients</h4>
                 </div>
                 <div id="edit-recipe-screen-recipe-ingredients" class="col-12 col-lg-8 mb-1">
-                  <button id="edit-recipe-screen-recipe-ingredients-add" class="fmt-input-field btn fmt-btn-outline-gray flex-fill fmt-btn-no-focus fmt-form-btn mt-2" type="button">Add Ingredient</button>
+                  <button id="edit-recipe-screen-recipe-ingredients-add" class="btn fmt-btn-outline-gray fmt-btn-no-focus fmt-form-btn mt-2" type="button">Add Ingredient</button>
                 </div>
                 <div class="col-12 col-lg-8 mt-1">
                     <h4 class="fmt-font-2">Preparation Steps</h4>
                 </div>
                 <div id="edit-recipe-screen-recipe-preparation-steps" class="col-12 col-lg-8 mb-1">
-                  <button id="edit-recipe-screen-recipe-preparation-steps-add" class="fmt-input-field btn fmt-btn-outline-gray flex-fill fmt-btn-no-focus fmt-form-btn mt-2" type="button">Add Step</button>
+                  <button id="edit-recipe-screen-recipe-preparation-steps-add" class="btn fmt-btn-outline-gray fmt-btn-no-focus fmt-form-btn mt-2" type="button">Add Step</button>
                 </div>
                 <div class="col-12 col-lg-8 mt-1">
                     <h4 class="fmt-font-2">Social Media</h4>
                 </div>
                   <div class="col-12 col-lg-8 mb-1">
-                    <div class="form__group">
-                      <input type="text" class="form__field fmt-w-inherit" placeholder="Video URL" id='edit-recipe-screen-recipe-video-url' required />
+                    <div class="form__group d-flex">
+                      <input type="text" class="form__field fmt-input-field" placeholder="Video URL" id='edit-recipe-screen-recipe-video-url' required />
                       <label for="edit-recipe-screen-recipe-video-url" class="form__label">Video Link</label>
                     </div>
                   </div>
                   <div class="col-12 col-lg-8 mb-1">
-                    <div class="form__group">
-                      <input type="text" class="form__field fmt-w-inherit" placeholder="Website Link" id='edit-recipe-screen-recipe-website' required />
+                    <div class="form__group d-flex">
+                      <input type="text" class="form__field fmt-input-field" placeholder="Website Link" id='edit-recipe-screen-recipe-website' required />
                       <label for="edit-recipe-screen-recipe-website" class="form__label">Website Link</label>
                     </div>
                   </div>
@@ -938,26 +938,26 @@
                     <h4 class="fmt-font-2">Nutritional Facts</h4>
                 </div>
                 <div class="col-12 col-lg-8">
-                  <div class="form__group">
-                    <input type="number" class="form__field fmt-w-inherit" placeholder="Calories" id='edit-recipe-screen-recipe-calories' required readonly="true"/>
+                  <div class="form__group d-flex">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Calories" id='edit-recipe-screen-recipe-calories' required readonly="true"/>
                     <label for="edit-recipe-screen-recipe-calories" class="form__label">Calories</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8">
-                  <div class="form__group">
-                    <input type="number" class="form__field fmt-w-inherit" placeholder="Proteins" id='edit-recipe-screen-recipe-proteins' required readonly="true"/>
+                  <div class="form__group d-flex">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Proteins" id='edit-recipe-screen-recipe-proteins' required readonly="true"/>
                     <label for="edit-recipe-screen-recipe-proteins" class="form__label">Proteins</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8">
-                  <div class="form__group">
-                    <input type="number" class="form__field fmt-w-inherit" placeholder="Carbohydrates" id='edit-recipe-screen-recipe-carbohydrates' required readonly="true"/>
+                  <div class="form__group d-flex">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Carbohydrates" id='edit-recipe-screen-recipe-carbohydrates' required readonly="true"/>
                     <label for="edit-recipe-screen-recipe-carbohydrates" class="form__label">Carbohydrates</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
-                    <input type="number" class="form__field fmt-w-inherit" placeholder="Fats" id='edit-recipe-screen-recipe-fats' required readonly="true"/>
+                  <div class="form__group d-flex">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Fats" id='edit-recipe-screen-recipe-fats' required readonly="true"/>
                     <label for="edit-recipe-screen-recipe-fats" class="form__label">Fats</label>
                   </div>
                 </div>
@@ -992,20 +992,20 @@
             </div>
             <div id="edit-ingredient-screen-content" class="row justify-content-center fmt-max-height60">
               <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group">
+                <div class="form__group d-flex">
                   <input type="text" class="form__field fmt-input-field" placeholder="Item Name" id='edit-ingredient-screen-ingredient-name' required readonly="true"/>
                   <label for="edit-ingredient-screen-ingredient-name" class="form__label">Item Name</label>
                 </div>
               </div>
               <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group">
+                <div class="form__group d-flex">
                   <input type="text" class="form__field fmt-input-field" placeholder="Item Brand" id='edit-ingredient-screen-ingredient-brand' required readonly="true"/>
                   <label for="edit-ingredient-screen-ingredient-brand" class="form__label">Brand</label>
                 </div>
               </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group" id="edit-ingredient-screen-ingredient-serving">
-                    <input type="number" class="form__field fmt-input-field-select" placeholder="Serving Size" id='edit-ingredient-screen-ingredient-serving-input' required />
+                  <div class="form__group d-flex" id="edit-ingredient-screen-ingredient-serving">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Serving Size" id='edit-ingredient-screen-ingredient-serving-input' required />
                     <label for="edit-ingredient-screen-ingredient-serving-input" class="form__label">Serving</label>
                   </div>
                 </div>
@@ -1013,25 +1013,25 @@
                     <h4 class="fmt-font-2">Nutritional Facts</h4>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Calories" id='edit-ingredient-screen-ingredient-calories' required readonly="true"/>
                     <label for="edit-ingredient-screen-ingredient-calories" class="form__label">Calories</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Proteins" id='edit-ingredient-screen-ingredient-proteins' required readonly="true"/>
                     <label for="edit-ingredient-screen-ingredient-proteins" class="form__label">Proteins</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Carbohydrates" id='edit-ingredient-screen-ingredient-carbohydrates' required readonly="true"/>
                     <label for="edit-ingredient-screen-ingredient-carbohydrates" class="form__label">Carbohydrates</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Fats" id='edit-ingredient-screen-ingredient-fats' required readonly="true"/>
                     <label for="edit-ingredient-screen-ingredient-fats" class="form__label">Fats</label>
                   </div>
@@ -1148,26 +1148,26 @@
             </div>
             <div id="edit-meal-entry-screen-content" class="row justify-content-center fmt-max-height60">
             <div class="col-12 col-lg-8 mb-1">
-              <div class="form__group">
+              <div class="form__group d-flex">
                 <input type="text" class="form__field fmt-input-field" placeholder="Consumable Name" id='edit-meal-entry-screen-consumable-name' required readonly="true" />
                 <label for="edit-meal-entry-screen-consumable-name" class="form__label">Name</label>
               </div>
             </div>
             <div class="col-12 col-lg-8 mb-1">
-              <div class="form__group">
+              <div class="form__group d-flex">
                 <input type="text" class="form__field fmt-input-field" placeholder="Consumable Brand" id='edit-meal-entry-screen-consumable-brand' required readonly="true" />
                 <label for="edit-meal-entry-screen-consumable-brand" class="form__label">Brand</label>
               </div>
             </div>
             <div class="col-12 col-lg-8 mb-1">
-              <div class="form__group">
+              <div class="form__group d-flex">
                 <input type="text" class="form__field fmt-input-field" placeholder="Consumable Type" id='edit-meal-entry-screen-consumable-type' required readonly="true" />
                 <label for="edit-meal-entry-screen-consumable-type" class="form__label">Type</label>
               </div>
             </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group" id="edit-meal-entry-screen-consumable-serving">
-                    <input type="number" class="form__field fmt-input-field-select" placeholder="Serving Size" id='edit-meal-entry-screen-consumable-serving-input' required />
+                  <div class="form__group d-flex" id="edit-meal-entry-screen-consumable-serving">
+                    <input type="number" class="form__field fmt-input-field" placeholder="Serving Size" id='edit-meal-entry-screen-consumable-serving-input' required />
                     <label for="edit-meal-entry-screen-consumable-serving-input" class="form__label">Serving</label>
                   </div>
                 </div>
@@ -1175,25 +1175,25 @@
                     <h4 class="fmt-font-2">Nutritional Facts</h4>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Calories" id='edit-meal-entry-screen-consumable-calories' required />
                     <label for="edit-meal-entry-screen-consumable-calories" class="form__label">Calories</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Proteins" id='edit-meal-entry-screen-consumable-proteins' required />
                     <label for="edit-meal-entry-screen-consumable-proteins" class="form__label">Proteins</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Carbohydrates" id='edit-meal-entry-screen-consumable-carbohydrates' required />
                     <label for="edit-meal-entry-screen-consumable-carbohydrates" class="form__label">Carbohydrates</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group">
+                  <div class="form__group d-flex">
                     <input type="number" class="form__field fmt-input-field" placeholder="Fats" id='edit-meal-entry-screen-consumable-fats' required />
                     <label for="edit-meal-entry-screen-consumable-fats" class="form__label">Fats</label>
                   </div>

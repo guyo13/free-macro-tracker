@@ -469,7 +469,7 @@ button {
 .fmt-recipe-step-cont {}
 .fmt-recipe-ingredient-cont {}
 .fmt-recipe-ingredient {
-  width: 70%;
+  flex: 2;
 }
 .fmt-label-sm {
   font-size: 0.7rem!important;
@@ -607,7 +607,7 @@ input[type=number] {
     width: 50%;
 }
 .fmt-input-field {
-    width: 50%;
+    flex: 2;
 }
 .fmt-input-field-select {
     width: 50%;
@@ -616,7 +616,7 @@ input[type=number] {
     width: 25%;
 }
 .fmt-textarea {
-    width: 85%;
+    flex: 2;
     resize: both;
 }
 .fmt-form-btn {
@@ -675,7 +675,7 @@ input[type=number] {
       width: 100%;
   }
   .fmt-input-field {
-      width: 90%;
+      flex: 2;
   }
   .fmt-input-field-select {
       width: 60%;
@@ -740,6 +740,10 @@ select, input, textarea {
   /* height: 100%; */
   height: calc( 100% - 3rem  );
   height: -webkit-calc( 100% - 3rem);
+}
+.fmt-align-end {
+  align-items: flex-end;
+  align-content: flex-end;
 }
 #fmt-app-first-time-overlay-msg {
   height: 100%;

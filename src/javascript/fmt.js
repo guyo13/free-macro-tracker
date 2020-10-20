@@ -2361,14 +2361,14 @@ function FMTUICreateTextArea(type, labelText, placeholder, id, readonly, contain
       return;
   }
   const column = document.createElement("div");
-  column.classList.add("col-12", "col-lg-8");
+  // column.classList.add("col-12", "col-lg-8");
   if (Array.isArray(containerClasses)) {
     containerClasses.forEach((cls, i) => {
       column.classList.add(cls);
     });
   }
   const form = document.createElement("div");
-  form.classList.add("form__group");
+  form.classList.add("form__group", "d-flex", "fmt-align-end");
   const textarea = document.createElement(type);
   textarea.classList.add("form__field");
   textarea.setAttribute("type", "text");
@@ -4366,7 +4366,7 @@ function FMTUIAddPreparationStep(prepStepContainerDiv, scroll) {
   const col = FMTUICreateTextArea("textarea" ,`Step ${nextStepNum}`, "Preparation Step", undefined, false, ["fmt-recipe-step-cont"], ["fmt-textarea"]);
   const textarea = col.getElementsByTagName("textarea")[0];
   const delBtn = document.createElement("button");
-  delBtn.classList.add("btn", "btn-danger", "fal", "fa-trash-alt", "ml-2", "mb-3");
+  delBtn.classList.add("btn", "btn-danger", "fal", "fa-trash-alt", "ml-2");
   delBtn.addEventListener("click", (e) => {
     prepStepContainerDiv.removeChild(col);
     FMTUIRefreshPreparationStepNumbers(prepStepContainerDiv);
