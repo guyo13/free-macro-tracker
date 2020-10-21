@@ -744,6 +744,21 @@ select, input, textarea {
   align-items: flex-end;
   align-content: flex-end;
 }
+.fmt-align-start {
+  align-items: flex-start;
+  align-content: flex-start;
+}
+.fmt-align-center {
+  align-items: center;
+  align-content: center;
+}
+.fmt-space-between {
+  justify-content: space-between;
+}
+.fmt-flex-column {
+  display: flex;
+  flex-direction: column;
+}
 #fmt-app-first-time-overlay-msg {
   height: 100%;
 }

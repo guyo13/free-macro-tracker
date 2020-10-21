@@ -220,6 +220,9 @@ function isSameDay(d1, d2) {
             && d1.getMonth() === d2.getMonth()
             && d1.getDate() === d2.getDate());
 }
+function isInput(elem) {
+  return elem.tagName.toLowerCase() == "input";
+}
 function roundedToFixed(_float, _digits, asNumber){
     if (_digits == null) { _digits = fmtAppInstance.defaultRoundingPrecision; }
     let rounded = Math.pow(10, _digits);
@@ -3097,10 +3100,25 @@ function FMTUIPopulateMacroes(baseScreenID, qualifier, nutritionalValue, multipl
     return;
   }
   const idBase = `${baseScreenID}-${qualifier}`;
-  document.getElementById(`${idBase}-calories`).value      = Number(roundedToFixed(nutritionalValue.calories * multiplier));
-  document.getElementById(`${idBase}-proteins`).value      = Number(roundedToFixed(nutritionalValue.proteins * multiplier));
-  document.getElementById(`${idBase}-carbohydrates`).value = Number(roundedToFixed(nutritionalValue.carbohydrates * multiplier));
-  document.getElementById(`${idBase}-fats`).value          = Number(roundedToFixed(nutritionalValue.fats * multiplier));
+  const caloriesValue = Number(roundedToFixed(nutritionalValue.calories * multiplier));
+  const carbsValue = Number(roundedToFixed(nutritionalValue.carbohydrates * multiplier));
+  const proteinValue = Number(roundedToFixed(nutritionalValue.proteins * multiplier));
+  const fatValue = Number(roundedToFixed(nutritionalValue.fats * multiplier));
+  const _calories = document.getElementById(`${idBase}-calories`);
+  const _carbs = document.getElementById(`${idBase}-carbohydrates`);
+  const _proteins = document.getElementById(`${idBase}-proteins`);
+  const _fats = document.getElementById(`${idBase}-fats`);
+  _calories.value = caloriesValue;
+  _carbs.value = carbsValue;
+  _proteins.value = proteinValue;
+  _fats.value = fatValue;
+  /* When Macroes are not inputs */
+  if (!isInput(_calories)) {
+    _calories.innerHTML = caloriesValue;
+    _carbs.innerHTML = carbsValue;
+    _proteins.innerHTML = proteinValue;
+    _fats.innerHTML = fatValue;
+  }
   const readonlyFields = fmtAppGlobals.consumableItemScreenStaticFieldsNutirtional;
   if (readonly) {
     for (const j in readonlyFields) {
@@ -3467,12 +3485,22 @@ function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
     if (_heading) {
       _heading.innerHTML = "";
     }
+    const _calories = document.getElementById(`${baseScreenID}-${qualifier}-calories`);
+    const _proteins = document.getElementById(`${baseScreenID}-${qualifier}-proteins`);
+    const _carbs = document.getElementById(`${baseScreenID}-${qualifier}-carbohydrates`);
+    const _fats = document.getElementById(`${baseScreenID}-${qualifier}-fats`);
     document.getElementById(`${baseScreenID}-${qualifier}-name`).value = "";
     document.getElementById(`${baseScreenID}-${qualifier}-brand`).value = "";
-    document.getElementById(`${baseScreenID}-${qualifier}-calories`).value = "";
-    document.getElementById(`${baseScreenID}-${qualifier}-proteins`).value = "";
-    document.getElementById(`${baseScreenID}-${qualifier}-carbohydrates`).value = "";
-    document.getElementById(`${baseScreenID}-${qualifier}-fats`).value = "";
+    _calories.value = "";
+    _proteins.value = "";
+    _carbs.value = "";
+    _fats.value = "";
+    if (!isInput(_calories)) {
+      _calories.innerHTML = "";
+      _proteins.innerHTML = "";
+      _carbs.innerHTML = "";
+      _fats.innerHTML = "";
+    }
     document.getElementById(`${baseScreenID}-${qualifier}-serving-input`).value = "";
     document.getElementById(`${baseScreenID}-${qualifier}-additional`).innerHTML = "";
     FMTConsumableItemScreenShowLess(baseScreenID, qualifier);
@@ -3595,10 +3623,14 @@ function FMTSaveConsumableItemScreen(baseScreenID, action, optionsObj, qualifier
     }
     if (getNutritionalValue === true) {
       consumableObj.nutritionalValue = {};
-      consumableObj.nutritionalValue.calories = document.getElementById(`${baseScreenID}-${qualifier}-calories`).value;
-      consumableObj.nutritionalValue.proteins = document.getElementById(`${baseScreenID}-${qualifier}-proteins`).value;
-      consumableObj.nutritionalValue.carbohydrates = document.getElementById(`${baseScreenID}-${qualifier}-carbohydrates`).value;
-      consumableObj.nutritionalValue.fats = document.getElementById(`${baseScreenID}-${qualifier}-fats`).value;
+      const _calories = document.getElementById(`${baseScreenID}-${qualifier}-calories`);
+      const _carbs = document.getElementById(`${baseScreenID}-${qualifier}-carbohydrates`);
+      const _proteins = document.getElementById(`${baseScreenID}-${qualifier}-proteins`);
+      const _fats = document.getElementById(`${baseScreenID}-${qualifier}-fats`);
+      consumableObj.nutritionalValue.calories = isInput(_calories) ? _calories.value : _calories.innerHTML;
+      consumableObj.nutritionalValue.carbohydrates = isInput(_carbs) ? _carbs.value : _carbs.innerHTML;
+      consumableObj.nutritionalValue.proteins = isInput(_proteins) ? _proteins.value : _proteins.innerHTML;
+      consumableObj.nutritionalValue.fats = isInput(_fats) ? _fats.value : _fats.innerHTML;
       consumableObj.nutritionalValue.additionalNutrients = FMTUIGetAdditionalNutrientsFromScreen(baseScreenID, qualifier);
     }
     if (objectType === "Recipe Item") {
