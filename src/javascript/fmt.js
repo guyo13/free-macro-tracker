@@ -3316,11 +3316,11 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
             servingProp = "referenceServing";
             break;
     }
-    //// Set Naming properties
+    // Set Naming properties
     document.getElementById(`${baseScreenID}-heading`).innerHTML = `${!!headingPrefix ? `${headingPrefix} - ` : ""}${consumableItem[nameProp]}`;
     document.getElementById(`${idBase}-name`).value = consumableItem[nameProp];
     document.getElementById(`${idBase}-brand`).value = consumableItem[brandProp] || "";
-    //// Set Serving properties
+    // Set Serving properties
     if (!isNumber(currentServingValue) || !(currentServingUnits in fmtAppInstance.unitsChart)) {
         const servInElem = document.getElementById(`${idBase}-serving-input`);
         servInElem.value = consumableItem[servingProp];
@@ -3353,10 +3353,10 @@ function FMTPopulateSavedValuesInConsumableItemScreen(baseScreenID, consumableIt
       _removeChildren(prepStepContainerDiv, "fmt-recipe-step-cont");
       _removeChildren(ingredientsDiv, "fmt-recipe-ingredient-cont");
       consumableItem.preparationSteps.forEach((item, i) => {
-        const col = FMTUICreateTextArea("textarea" ,`Step ${i+1}`, "Preparation Step", undefined, readonly,["fmt-recipe-step-cont"], ["fmt-textarea"]);
+        const col = FMTUICreateTextArea("textarea" ,`Step ${i+1}`, "Preparation Step", undefined, readonly, ["fmt-recipe-step-cont"], ["fmt-textarea"]);
         col.getElementsByTagName("textarea")[0].value = item;
-        const lastElement = prepStepContainerDiv.children[prepStepContainerDiv.children.length - 1];
-        prepStepContainerDiv.insertBefore(col, lastElement);
+        const addStepDelBtn = !readonly;
+        FMTUIAddPreparationStep(prepStepContainerDiv, false, addStepDelBtn, col);
       });
       if (readonly) {
         consumableItem.ingredients.forEach((item, i) => {
@@ -4392,18 +4392,26 @@ function FMTUIGetPreparationSteps(prepStepContainerDiv) {
   }
   return steps;
 }
-function FMTUIAddPreparationStep(prepStepContainerDiv, scroll) {
+function FMTUIAddPreparationStep(prepStepContainerDiv, scroll, addStepDelBtn, column) {
+  addStepDelBtn = addStepDelBtn == undefined ? true : addStepDelBtn;
   const exisitingSteps = prepStepContainerDiv.getElementsByClassName("fmt-recipe-step-cont");
   const nextStepNum = exisitingSteps.length + 1;
-  const col = FMTUICreateTextArea("textarea" ,`Step ${nextStepNum}`, "Preparation Step", undefined, false, ["fmt-recipe-step-cont"], ["fmt-textarea"]);
+  let col;
+  if (column == undefined) {
+    col = FMTUICreateTextArea("textarea" ,`Step ${nextStepNum}`, "Preparation Step", undefined, false, ["fmt-recipe-step-cont"], ["fmt-textarea"]);
+  } else {
+    col = column;
+  }
   const textarea = col.getElementsByTagName("textarea")[0];
-  const delBtn = document.createElement("button");
-  delBtn.classList.add("btn", "btn-danger", "fal", "fa-trash-alt", "ml-2");
-  delBtn.addEventListener("click", (e) => {
-    prepStepContainerDiv.removeChild(col);
-    FMTUIRefreshPreparationStepNumbers(prepStepContainerDiv);
-  });
-  textarea.parentNode.insertAdjacentElement('beforeend', delBtn);
+  if (addStepDelBtn) {
+    const delBtn = document.createElement("button");
+    delBtn.classList.add("btn", "btn-danger", "fal", "fa-trash-alt", "ml-2");
+    delBtn.addEventListener("click", (e) => {
+      prepStepContainerDiv.removeChild(col);
+      FMTUIRefreshPreparationStepNumbers(prepStepContainerDiv);
+    });
+    textarea.parentNode.insertAdjacentElement('beforeend', delBtn);
+  }
   const lastElement = prepStepContainerDiv.children[prepStepContainerDiv.children.length - 1];
   prepStepContainerDiv.insertBefore(col, lastElement);
   if (scroll === true) {
