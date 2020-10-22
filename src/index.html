@@ -2,7 +2,7 @@
  <!-- Copyright (c) 2020, Guy Or Please see the AUTHORS file for details.
  All rights reserved. Use of this source code is governed by a GNU GPL
  license that can be found in the LICENSE file. -->
- 
+
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -568,6 +568,26 @@
               </div>
             </div>
             <div id="view-food-screen-content" class="row justify-content-center fmt-max-height60 fmt-align-start">
+              <div class="col-12 col-lg-8 mb-1">
+                <div class="form__group d-flex fmt-align-start fmt-space-between">
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-primary">
+                    <span>Calories</span>
+                    <span id='view-food-screen-food-calories'></span>
+                  </div>
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-violet">
+                    <span>Carbs</span>
+                    <span id='view-food-screen-food-carbohydrates'></span>
+                  </div>
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-info">
+                    <span>Proteins</span>
+                    <span id='view-food-screen-food-proteins'></span>
+                  </div>
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-orange">
+                    <span>Fats</span>
+                    <span id='view-food-screen-food-fats'></span>
+                  </div>
+                </div>
+              </div>
               <div class="col-12 col-lg-8 mb-1 d-none">
                 <div class="form__group d-flex">
                   <input type="text" class="form__field fmt-input-field" placeholder="Item Name" id='view-food-screen-food-name' required />
@@ -587,27 +607,7 @@
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                    <h4 class="fmt-font-2">Nutritional Facts</h4>
-                </div>
-                <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group d-flex fmt-align-start fmt-space-between">
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-primary">
-                      <span>Calories</span>
-                      <span id='view-food-screen-food-calories'></span>
-                    </div>
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-violet">
-                      <span>Carbs</span>
-                      <span id='view-food-screen-food-carbohydrates'></span>
-                    </div>
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-info">
-                      <span>Proteins</span>
-                      <span id='view-food-screen-food-proteins'></span>
-                    </div>
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-orange">
-                      <span>Fats</span>
-                      <span id='view-food-screen-food-fats'></span>
-                    </div>
-                  </div>
+                    <h4 class="fmt-font-2">Micronutrients</h4>
                 </div>
                 <div id="view-food-screen-food-additional" class="d-none col-12 col-lg-8">
                 </div>
@@ -643,6 +643,26 @@
                 </div>
             </div>
             <div id="add-recipe-screen-content" class="row justify-content-center fmt-max-height60 fmt-align-start">
+              <div class="col-12 col-lg-8 mb-1">
+                <div class="form__group d-flex fmt-align-start fmt-space-between">
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-primary">
+                    <span>Calories</span>
+                    <span id='add-recipe-screen-recipe-calories'></span>
+                  </div>
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-violet">
+                    <span>Carbs</span>
+                    <span id='add-recipe-screen-recipe-carbohydrates'></span>
+                  </div>
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-info">
+                    <span>Proteins</span>
+                    <span id='add-recipe-screen-recipe-proteins'></span>
+                  </div>
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-orange">
+                    <span>Fats</span>
+                    <span id='add-recipe-screen-recipe-fats'></span>
+                  </div>
+                </div>
+              </div>
               <div class="col-12 col-lg-8 mb-1">
                 <div class="form__group d-flex">
                   <input type="text" class="form__field fmt-input-field" placeholder="Recipe Name" id='add-recipe-screen-recipe-name' required />
@@ -695,28 +715,7 @@
                     </div>
                   </div>
                 <div class="col-12 col-lg-8 mt-1">
-                    <h4 class="fmt-font-2">Nutritional Facts</h4>
-                </div>
-
-                <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group d-flex fmt-align-start fmt-space-between">
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-primary">
-                      <span>Calories</span>
-                      <span id='add-recipe-screen-recipe-calories'></span>
-                    </div>
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-violet">
-                      <span>Carbs</span>
-                      <span id='add-recipe-screen-recipe-carbohydrates'></span>
-                    </div>
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-info">
-                      <span>Proteins</span>
-                      <span id='add-recipe-screen-recipe-proteins'></span>
-                    </div>
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-orange">
-                      <span>Fats</span>
-                      <span id='add-recipe-screen-recipe-fats'></span>
-                    </div>
-                  </div>
+                    <h4 class="fmt-font-2">Micronutrients</h4>
                 </div>
                 <div id="add-recipe-screen-recipe-additional" class="d-none col-12 col-lg-8">
                 </div>
@@ -745,6 +744,26 @@
                 </div>
             </div>
             <div id="view-recipe-screen-content" class="row justify-content-center fmt-max-height60 fmt-align-start">
+              <div class="col-12 col-lg-8 mb-1">
+                <div class="form__group d-flex fmt-align-start fmt-space-between">
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-primary">
+                    <span>Calories</span>
+                    <span id='view-recipe-screen-recipe-calories'></span>
+                  </div>
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-violet">
+                    <span>Carbs</span>
+                    <span id='view-recipe-screen-recipe-carbohydrates'></span>
+                  </div>
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-info">
+                    <span>Proteins</span>
+                    <span id='view-recipe-screen-recipe-proteins'></span>
+                  </div>
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-orange">
+                    <span>Fats</span>
+                    <span id='view-recipe-screen-recipe-fats'></span>
+                  </div>
+                </div>
+              </div>
               <div id="view-recipe-screen-add-to-meal" class="row justify-content-center d-none">
                 <div class="col-12 col-lg-8 mb-1">
                   <div class="form__group d-flex">
@@ -823,27 +842,7 @@
                     </div>
                   </div>
                 <div class="col-12 col-lg-8 mt-1">
-                    <h4 class="fmt-font-2">Nutritional Facts</h4>
-                </div>
-                <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group d-flex fmt-align-start fmt-space-between">
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-primary">
-                      <span>Calories</span>
-                      <span id='view-recipe-screen-recipe-calories'></span>
-                    </div>
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-violet">
-                      <span>Carbs</span>
-                      <span id='view-recipe-screen-recipe-carbohydrates'></span>
-                    </div>
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-info">
-                      <span>Proteins</span>
-                      <span id='view-recipe-screen-recipe-proteins'></span>
-                    </div>
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-orange">
-                      <span>Fats</span>
-                      <span id='view-recipe-screen-recipe-fats'></span>
-                    </div>
-                  </div>
+                    <h4 class="fmt-font-2">Micronutrients</h4>
                 </div>
                 <div id="view-recipe-screen-recipe-additional" class="d-none col-12 col-lg-8">
                 </div>
@@ -876,6 +875,26 @@
                 </div>
             </div>
             <div id="edit-recipe-screen-content" class="row justify-content-center fmt-max-height60 fmt-align-start">
+              <div class="col-12 col-lg-8 mb-1">
+                <div class="form__group d-flex fmt-align-start fmt-space-between">
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-primary">
+                    <span>Calories</span>
+                    <span id='edit-recipe-screen-recipe-calories'></span>
+                  </div>
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-violet">
+                    <span>Carbs</span>
+                    <span id='edit-recipe-screen-recipe-carbohydrates'></span>
+                  </div>
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-info">
+                    <span>Proteins</span>
+                    <span id='edit-recipe-screen-recipe-proteins'></span>
+                  </div>
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-orange">
+                    <span>Fats</span>
+                    <span id='edit-recipe-screen-recipe-fats'></span>
+                  </div>
+                </div>
+              </div>
               <div class="col-12 col-lg-8 mb-1">
                 <div class="form__group d-flex">
                   <input type="text" class="form__field fmt-input-field" placeholder="Recipe Name" id='edit-recipe-screen-recipe-name' required />
@@ -929,26 +948,6 @@
                   </div>
                 <div class="col-12 col-lg-8 mt-1">
                     <h4 class="fmt-font-2">Nutritional Facts</h4>
-                </div>
-                <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group d-flex fmt-align-start fmt-space-between">
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-primary">
-                      <span>Calories</span>
-                      <span id='edit-recipe-screen-recipe-calories'></span>
-                    </div>
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-violet">
-                      <span>Carbs</span>
-                      <span id='edit-recipe-screen-recipe-carbohydrates'></span>
-                    </div>
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-info">
-                      <span>Proteins</span>
-                      <span id='edit-recipe-screen-recipe-proteins'></span>
-                    </div>
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-orange">
-                      <span>Fats</span>
-                      <span id='edit-recipe-screen-recipe-fats'></span>
-                    </div>
-                  </div>
                 </div>
                 <div id="edit-recipe-screen-recipe-additional" class="d-none col-12 col-lg-8">
                 </div>
@@ -1136,6 +1135,26 @@
                 </div>
             </div>
             <div id="edit-meal-entry-screen-content" class="row justify-content-center fmt-max-height60 fmt-align-start">
+              <div class="col-12 col-lg-8 mb-1">
+                <div class="form__group d-flex fmt-align-start fmt-space-between">
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-primary">
+                    <span>Calories</span>
+                    <span id='edit-meal-entry-screen-consumable-calories'></span>
+                  </div>
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-violet">
+                    <span>Carbs</span>
+                    <span id='edit-meal-entry-screen-consumable-carbohydrates'></span>
+                  </div>
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-info">
+                    <span>Proteins</span>
+                    <span id='edit-meal-entry-screen-consumable-proteins'></span>
+                  </div>
+                  <div class="fmt-flex-column fmt-align-center fmt-font-color-orange">
+                    <span>Fats</span>
+                    <span id='edit-meal-entry-screen-consumable-fats'></span>
+                  </div>
+                </div>
+              </div>
             <div class="col-12 col-lg-8 mb-1">
               <div class="form__group d-flex">
                 <input type="text" class="form__field fmt-input-field" placeholder="Consumable Name" id='edit-meal-entry-screen-consumable-name' required readonly="true" />
@@ -1161,28 +1180,7 @@
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
-                    <h4 class="fmt-font-2">Nutritional Facts</h4>
-                </div>
-
-                <div class="col-12 col-lg-8 mb-1">
-                  <div class="form__group d-flex fmt-align-start fmt-space-between">
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-primary">
-                      <span>Calories</span>
-                      <span id='edit-meal-entry-screen-consumable-calories'></span>
-                    </div>
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-violet">
-                      <span>Carbs</span>
-                      <span id='edit-meal-entry-screen-consumable-carbohydrates'></span>
-                    </div>
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-info">
-                      <span>Proteins</span>
-                      <span id='edit-meal-entry-screen-consumable-proteins'></span>
-                    </div>
-                    <div class="fmt-flex-column fmt-align-center fmt-font-color-orange">
-                      <span>Fats</span>
-                      <span id='edit-meal-entry-screen-consumable-fats'></span>
-                    </div>
-                  </div>
+                    <h4 class="fmt-font-2">Micronutrients</h4>
                 </div>
                 <div id="edit-meal-entry-screen-consumable-additional" class="d-none col-12 col-lg-8">
                 </div>
