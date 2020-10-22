@@ -738,10 +738,12 @@ select, input, textarea {
 .fmt-column {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   /* height: 100%; */
   height: calc( 100% - 3rem  );
   height: -webkit-calc( 100% - 3rem);
+}
+.fmt-content-center {
+  justify-content: center;
 }
 .fmt-align-end {
   align-items: flex-end;
