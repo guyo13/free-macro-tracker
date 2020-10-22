@@ -3418,8 +3418,8 @@ function FMTConsumableItemScreenShowMore(baseScreenID, qualifier) {
     $(`#${baseScreenID}-more`).hide();
     $(`#${baseScreenID}-less`).removeClass("d-none");
     $(`#${baseScreenID}-less`).show();
-    $(`#${baseScreenID}-${qualifier}-additional`).removeClass("d-none");
-    $(`#${baseScreenID}-${qualifier}-additional`).show();
+    $(`#${baseScreenID}-${qualifier}-microes`).removeClass("d-none");
+    $(`#${baseScreenID}-${qualifier}-microes`).show();
 }
 function FMTConsumableItemScreenShowLess(baseScreenID, qualifier) {
     qualifier = qualifier || "food";
@@ -3428,9 +3428,9 @@ function FMTConsumableItemScreenShowLess(baseScreenID, qualifier) {
         $(`#${baseScreenID}-less`).addClass("d-none");
     }
     $(`#${baseScreenID}-more`).show();
-    $(`#${baseScreenID}-${qualifier}-additional`).hide();
-        if (!$(`#${baseScreenID}-${qualifier}-additional`).hasClass("d-none")) {
-        $(`#${baseScreenID}-${qualifier}-additional`).addClass("d-none");
+    $(`#${baseScreenID}-${qualifier}-microes`).hide();
+        if (!$(`#${baseScreenID}-${qualifier}-microes`).hasClass("d-none")) {
+        $(`#${baseScreenID}-${qualifier}-microes`).addClass("d-none");
     }
 }
 function FMTClearViewConsumableItemScreen(baseScreenID, qualifier, objectType) {

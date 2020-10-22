@@ -177,6 +177,9 @@ button {
 .fmt-left-text {
     text-align: left;
 }
+.fmt-right-text {
+    text-align: right;
+}
 .fmt-meals-container {
     overflow-y: auto;
 }
@@ -738,7 +741,8 @@ select, input, textarea {
 .fmt-column {
   display: flex;
   flex-direction: column;
-  /* height: 100%; */
+}
+.fmt-page-height {
   height: calc( 100% - 3rem  );
   height: -webkit-calc( 100% - 3rem);
 }
@@ -763,6 +767,75 @@ select, input, textarea {
 .fmt-flex-column {
   display: flex;
   flex-direction: column;
+}
+.fmt-flex-1 {
+  flex: 1;
+}
+.fmt-flex-2 {
+  flex: 2;
+}
+.fmt-flex-3 {
+  flex: 3;
+}
+.fmt-flex-4 {
+  flex: 4;
+}
+.fmt-flex-5 {
+  flex: 5;
+}
+.fmt-flex-6 {
+  flex: 6;
+}
+.fmt-flex-7 {
+  flex: 7;
+}
+.fmt-flex-8 {
+  flex: 8;
+}
+.fmt-flex-9 {
+  flex: 9;
+}
+.fmt-flex-10 {
+  flex: 10;
+}
+.fmt-flex-11 {
+  flex: 11;
+}
+.fmt-flex-12 {
+  flex: 12;
+}
+.fmt-flex-13 {
+  flex: 13;
+}
+.fmt-flex-14 {
+  flex: 14;
+}
+.fmt-flex-15 {
+  flex: 15;
+}
+.fmt-flex-16 {
+  flex: 16;
+}
+.fmt-flex-17 {
+  flex: 17;
+}
+.fmt-flex-18 {
+  flex: 18;
+}
+.fmt-flex-19 {
+  flex: 19;
+}
+.fmt-flex-20 {
+  flex: 20;
+}
+.fmt-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fmt-screen-content {
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 #fmt-app-first-time-overlay-msg {
   height: 100%;
