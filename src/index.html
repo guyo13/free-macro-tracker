@@ -1044,6 +1044,26 @@
               <!-- Content -->
               <div id="edit-ingredient-screen-content" class="row justify-content-center fmt-screen-content fmt-align-start fmt-flex-11">
                 <div class="col-12 col-lg-8 mb-1">
+                  <div class="form__group d-flex fmt-align-start fmt-space-between">
+                    <div class="fmt-flex-column fmt-align-center fmt-font-color-primary">
+                      <span>Calories</span>
+                      <span id='edit-ingredient-screen-ingredient-calories'></span>
+                    </div>
+                    <div class="fmt-flex-column fmt-align-center fmt-font-color-violet">
+                      <span>Carbs</span>
+                      <span id='edit-ingredient-screen-ingredient-carbohydrates'></span>
+                    </div>
+                    <div class="fmt-flex-column fmt-align-center fmt-font-color-info">
+                      <span>Proteins</span>
+                      <span id='edit-ingredient-screen-ingredient-proteins'></span>
+                    </div>
+                    <div class="fmt-flex-column fmt-align-center fmt-font-color-orange">
+                      <span>Fats</span>
+                      <span id='edit-ingredient-screen-ingredient-fats'></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-8 mb-1">
                   <div class="form__group d-flex">
                     <input type="text" class="form__field fmt-input-field" placeholder="Item Name" id='edit-ingredient-screen-ingredient-name' required readonly="true"/>
                     <label for="edit-ingredient-screen-ingredient-name" class="form__label">Item Name</label>
@@ -1059,33 +1079,6 @@
                     <div class="form__group d-flex" id="edit-ingredient-screen-ingredient-serving">
                       <input type="number" class="form__field fmt-input-field" placeholder="Serving Size" id='edit-ingredient-screen-ingredient-serving-input' required />
                       <label for="edit-ingredient-screen-ingredient-serving-input" class="form__label">Serving</label>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-8 mb-1">
-                      <h4 class="fmt-font-2">Nutritional Facts</h4>
-                  </div>
-                  <div class="col-12 col-lg-8 mb-1">
-                    <div class="form__group d-flex">
-                      <input type="number" class="form__field fmt-input-field" placeholder="Calories" id='edit-ingredient-screen-ingredient-calories' required readonly="true"/>
-                      <label for="edit-ingredient-screen-ingredient-calories" class="form__label">Calories</label>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-8 mb-1">
-                    <div class="form__group d-flex">
-                      <input type="number" class="form__field fmt-input-field" placeholder="Proteins" id='edit-ingredient-screen-ingredient-proteins' required readonly="true"/>
-                      <label for="edit-ingredient-screen-ingredient-proteins" class="form__label">Proteins</label>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-8 mb-1">
-                    <div class="form__group d-flex">
-                      <input type="number" class="form__field fmt-input-field" placeholder="Carbohydrates" id='edit-ingredient-screen-ingredient-carbohydrates' required readonly="true"/>
-                      <label for="edit-ingredient-screen-ingredient-carbohydrates" class="form__label">Carbohydrates</label>
-                    </div>
-                  </div>
-                  <div class="col-12 col-lg-8 mb-1">
-                    <div class="form__group d-flex">
-                      <input type="number" class="form__field fmt-input-field" placeholder="Fats" id='edit-ingredient-screen-ingredient-fats' required readonly="true"/>
-                      <label for="edit-ingredient-screen-ingredient-fats" class="form__label">Fats</label>
                     </div>
                   </div>
                   <div id="edit-ingredient-screen-ingredient-microes" class="col-12 col-lg-8 fmt-no-pad d-none mt-1">
