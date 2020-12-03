@@ -6240,6 +6240,12 @@ function prepareEventHandlers() {
     $("#profile-goto-macros").click( (e) => {
       document.getElementById("profile-last-indicator").click();
     });
+    $("#profile-carousel-previous-chevron").click( (e) => {
+      $(".carousel").carousel('prev');
+    });
+    $("#profile-carousel-next-chevron").click( (e) => {
+      $(".carousel").carousel('next');
+    });
 }
 function startIndexedDB() {
   //Check if IndexedDB supported

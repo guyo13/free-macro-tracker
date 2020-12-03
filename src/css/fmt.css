@@ -847,3 +847,6 @@ select, input, textarea {
 #overview-date-next {
   cursor: pointer;
 }
+.fmt-pointer {
+  cursor: pointer;
+}
