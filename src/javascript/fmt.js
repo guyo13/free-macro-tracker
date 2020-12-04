@@ -4716,6 +4716,14 @@ var pageController = {
             return false;
         }
     },
+    setSkipProfile: function() {
+      if (this.hasLocalStorage()) {
+        window.localStorage.setItem("profileCreationSkippedByUser", true);
+      }
+    },
+    isProfileCreationSkippedByUser: function() {
+      return this.hasLocalStorage() && window.localStorage.getItem("profileCreationSkippedByUser") == "true";
+    },
     hideAllTabs: function () {
             for (const i in fmtAppGlobals.tabIds) {
             let s = "#" + fmtAppGlobals.tabIds[i];
@@ -5587,6 +5595,13 @@ function onDbSuccess(event) {
                               //onNoProfile
                               function() {
                     console.warn("No user Profile could be loaded");
+                    // If profile creation skipped by user then load normally
+                    if (pageController.isProfileCreationSkippedByUser()) {
+                      pageController.showOverview(true);
+                      pageController.showNavOverlay();
+                      onAppFinishedLoading();
+                      return;
+                    }
                     FMTToday();
                     fmtAppInstance.currentDay = fmtAppInstance.today;
                     pageController.showFirstTimeScreen();
@@ -6145,6 +6160,11 @@ function prepareEventHandlers() {
     $("#fmt-app-first-time-create").click( () => {
         pageController.closeFirstTimeScreen();
         pageController.showProfile();
+    });
+    $("#fmt-app-first-time-skip").click( () => {
+        pageController.closeFirstTimeScreen();
+        pageController.showOverview();
+        pageController.setSkipProfile();
     });
     $("#settings-data-control-export").click( (e) => {
       const d = new Date();
