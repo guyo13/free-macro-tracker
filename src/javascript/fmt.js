@@ -5479,6 +5479,9 @@ var pageController = {
     showFirstTimeScreen: function() {
         const overlay = document.getElementById("fmt-app-first-time-overlay");
         const msg = document.getElementById("fmt-app-first-time-overlay-msg");
+        const titleSpan = document.getElementById("fmt-app-first-time-overlay-text-1");
+        const appName = hasIOSPlatformInterface() ? "Open" : "Free";
+        titleSpan.innerHTML = `Welcome to ${appName} Macro Tracker.`;
         overlay.classList.remove("d-none");
         overlay.style.zIndex = fmtAppGlobals.maxDynamicScreens + 2;
         msg.classList.remove("fmt-faded");
