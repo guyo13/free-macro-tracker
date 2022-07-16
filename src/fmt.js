@@ -6272,7 +6272,10 @@ function prepareEventHandlers() {
 }
 function startIndexedDB() {
   //Check if IndexedDB supported
-  window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+  Object.defineProperty(window, 'indexedDB', {
+    value: window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB
+  });
+
   if (!window.indexedDB) {
       document.getElementById("page-title").innerHTML += '<div class="alert alert-danger col-12" role="alert">IndexedDB is not supported on this browser. Can\'t use app!</div>';
       return;
@@ -6298,7 +6301,7 @@ function askPersistentStorage() {
   });
 }
 //Main
-$(document).ready(function() {
+export default function startApp() {
     pageController.hideAllTabs();
     pageController.closeDynamicScreens();
     if (typeof Array.isArray === 'undefined') {
@@ -6323,5 +6326,4 @@ $(document).ready(function() {
       fmtAppInstance.isStoragePersistent = false;
       startIndexedDB();
     }
-
-});
+}

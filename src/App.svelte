@@ -1,33 +1,15 @@
- <!DOCTYPE html>
- <!-- Copyright (c) 2020, Guy Or Please see the AUTHORS file for details.
- All rights reserved. Use of this source code is governed by a GNU GPL
- license that can be found in the LICENSE file. -->
+<script>
+import { onMount } from 'svelte';
 
-<html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <meta name="theme-color" content="#2a763b">
-    <meta name="msapplication-navbutton-color" content="#2a763b">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name = "viewport" content = "width = device-width">
-    <title>Free Macro Tracker</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/fmt.css" rel="stylesheet">
-    <link href="css/fontawesome.min.css" rel="stylesheet">
-    <link href="css/light.min.css" rel="stylesheet">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-</head>
-<body scroll="no">
-  <!-- <header id="fmt-heading">
-    <span class="fmt-bold" href="#">Free</span>
-    <span href="#">Macro Tracker</span>
-  </header> -->
-    <div id="odin" class="fmt-allfather">
+	import startApp from  './fmt';
+	export let name;
+	onMount(() => {
+		startApp();
+	});
+</script>
+
+<main>
+	<div id="odin" class="fmt-allfather">
         <div id="overview" class="fmt-tab container-fluid">
             <div id="overview-alerts" class="row justify-content-center"></div>
             <div id="overview-container" class="">
@@ -724,7 +706,7 @@
                   </div>
                   <div class="col-12 col-lg-8 mb-1">
                     <div class="form__group d-flex">
-                      <textarea type="text" class="form__field fmt-input-field" placeholder="Description" id='add-recipe-screen-recipe-description' required /></textarea>
+                      <textarea type="text" class="form__field fmt-input-field" placeholder="Description" id='add-recipe-screen-recipe-description' required />
                       <label for="add-recipe-screen-recipe-description" class="form__label">Description</label>
                     </div>
                   </div>
@@ -860,7 +842,7 @@
                   </div>
                   <div class="col-12 col-lg-8 mb-1">
                     <div class="form__group d-flex">
-                      <textarea type="text" class="form__field fmt-input-field" placeholder="Description" id='view-recipe-screen-recipe-description' required readonly="true" /></textarea>
+                      <textarea type="text" class="form__field fmt-input-field" placeholder="Description" id='view-recipe-screen-recipe-description' required readonly="true" />
                       <label for="view-recipe-screen-recipe-description" class="form__label">Description</label>
                     </div>
                   </div>
@@ -974,7 +956,7 @@
                   </div>
                   <div class="col-12 col-lg-8 mb-1">
                     <div class="form__group d-flex">
-                      <textarea type="text" class="form__field fmt-input-field" placeholder="Description" id='edit-recipe-screen-recipe-description' required /></textarea>
+                      <textarea type="text" class="form__field fmt-input-field" placeholder="Description" id='edit-recipe-screen-recipe-description' required />
                       <label for="edit-recipe-screen-recipe-description" class="form__label">Description</label>
                     </div>
                   </div>
@@ -1337,9 +1319,7 @@
             </div>
         </div>
     </div><!--Ragnarok-->
-    <!--JavaScript-->
-    <script src="javascript/jquery-3.4.1.min.js"></script>
-    <script src="javascript/bootstrap.bundle.min.js"></script>
-    <script src="javascript/fmt.js"></script>
-</body>
-</html>
+</main>
+
+<style>
+</style>

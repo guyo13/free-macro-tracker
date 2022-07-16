@@ -1,0 +1,17 @@
+{
+  "name": "free-macro-tracker",
+  "version": "1.0.0",
+  "devDependencies": {
+    "css-loader": "^5.0.1",
+    "mini-css-extract-plugin": "^2.6.1",
+    "svelte": "^3.49.0",
+    "svelte-loader": "^3.0.0",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.9.3"
+  },
+  "scripts": {
+    "build": "webpack --node-env production",
+    "dev": "webpack serve"
+  }
+}

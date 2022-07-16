@@ -6,3 +6,5 @@ firebase.json
 .firebaserc
 .firebase/
 .DS_Store
+node_modules
+public/build/*
