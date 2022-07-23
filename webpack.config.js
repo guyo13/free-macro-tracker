@@ -1,4 +1,5 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const path = require('path');
 
 const mode = process.env.NODE_ENV || 'development';
@@ -51,20 +52,14 @@ module.exports = {
 					fullySpecified: false
 				}
 			},
-			// {
-			// 	test: /\.(woff|woff2|eot|ttf|otf)$/i,
-			// 	type: 'asset/resource',
-			// 	generator: {
-			// 		filename: 'webfonts/[hash][ext][query]'
-			// 	  }
-			// },
 		]
 	},
 	mode,
 	plugins: [
 		new MiniCssExtractPlugin({
 			filename: '[name].css'
-		})
+		}),
+		new ESLintPlugin(),
 	],
 	devtool: prod ? false : 'source-map',
 	devServer: {
