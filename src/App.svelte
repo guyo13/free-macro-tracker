@@ -2,7 +2,6 @@
 import { onMount } from 'svelte';
 
 	import startApp from  './fmt';
-	export let name;
 	onMount(() => {
 		startApp();
 	});
