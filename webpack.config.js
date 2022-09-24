@@ -1,6 +1,7 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const path = require('path');
+const sveltePreprocess = require('svelte-preprocess');
 
 const mode = process.env.NODE_ENV || 'development';
 const prod = mode === 'production';
@@ -8,14 +9,14 @@ console.log('mode', mode);
 module.exports = {
 	entry: {
 		'app':  {
-			import: ['./src/main.js'],
+			import: ['./src/main.ts'],
 		},
 	},
 	resolve: {
 		alias: {
 			svelte: path.dirname(require.resolve('svelte/package.json'))
 		},
-		extensions: ['.mjs', '.js', '.svelte'],
+		extensions: ['.mjs', '.js', '.ts', '.svelte'],
 		mainFields: ['svelte', 'browser', 'module', 'main']
 	},
 	output: {
@@ -26,6 +27,11 @@ module.exports = {
 	module: {
 		rules: [
 			{
+				test: /\.ts/,
+				loader: 'ts-loader',
+				exclude: /node_modules/
+			},
+			{
 				test: /\.svelte$/,
 				use: {
 					loader: 'svelte-loader',
@@ -34,7 +40,8 @@ module.exports = {
 							dev: !prod
 						},
 						emitCss: prod,
-						hotReload: !prod
+						hotReload: !prod,
+						preprocess: sveltePreprocess({ sourceMap: !prod })
 					}
 				}
 			},

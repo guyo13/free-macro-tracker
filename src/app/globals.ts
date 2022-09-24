@@ -1,4 +1,4 @@
-export const fmtAppGlobals = {};
+export const fmtAppGlobals: any = {};
 //Globals - Links
 fmtAppGlobals.projectURL = "https://github.com/guyo13/free-macro-tracker";
 //Globals - DB
