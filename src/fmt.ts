@@ -2,10 +2,7 @@
 // All rights reserved. Use of this source code is governed by a GNU GPL
 // license that can be found in the LICENSE file.
 
-import {
-  BASE_ADDITIONAL_NUTRIENTS_V1,
-  BASE_UNIT_CHART_V1,
-} from "./data/migrations";
+import { MIGRATIONS_V1, prepareDBv1 } from "./data/migrations";
 import {
   fmtAppGlobals,
   DEFAULT_ROUNDING_PRECISION,
@@ -280,71 +277,6 @@ function removeChildren(elementId, className) {
 }
 
 //Functions - DB
-function prepareDBv1() {
-  console.debug("Preparing DB...");
-  if (!fmtAppInstance.fmtDb) {
-    console.error("fmt DB null reference");
-    return;
-  }
-  //Create Meal Entries objectStore
-  let fmtMealEntriesStore = fmtAppInstance.fmtDb.createObjectStore(
-    fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE,
-    { keyPath: fmtAppGlobals.FMT_DB_MEAL_ENTRIES_KP, autoIncrement: true }
-  );
-  createIndexes(fmtMealEntriesStore, fmtAppGlobals.FMT_DB_MEAL_ENTRIES_INDEXES);
-
-  //Create Foods objectStore
-  let fmtFoodsStore = fmtAppInstance.fmtDb.createObjectStore(
-    fmtAppGlobals.FMT_DB_FOODS_STORE,
-    { keyPath: fmtAppGlobals.FMT_DB_FOODS_KP, autoIncrement: true }
-  );
-  createIndexes(fmtFoodsStore, fmtAppGlobals.FMT_DB_FOODS_INDEXES);
-
-  //Create Recipes objectStore
-  let fmtRecipesStore = fmtAppInstance.fmtDb.createObjectStore(
-    fmtAppGlobals.FMT_DB_RECIPES_STORE,
-    { keyPath: fmtAppGlobals.FMT_DB_RECIPES_KP, autoIncrement: true }
-  );
-  createIndexes(fmtRecipesStore, fmtAppGlobals.FMT_DB_RECIPES_INDEXES);
-
-  //Create Profiles objectStore
-  let fmtProfilesStore = fmtAppInstance.fmtDb.createObjectStore(
-    fmtAppGlobals.FMT_DB_PROFILES_STORE,
-    { keyPath: fmtAppGlobals.FMT_DB_PROFILES_KP, autoIncrement: false }
-  );
-
-  //Create Units objectStore and populate default entries
-  let fmtUnitsStore = fmtAppInstance.fmtDb.createObjectStore(
-    fmtAppGlobals.FMT_DB_UNITS_STORE,
-    { keyPath: fmtAppGlobals.FMT_DB_UNITS_KP, autoIncrement: false }
-  );
-  for (const unit of BASE_UNIT_CHART_V1) {
-    console.debug(`Adding Unit entry: ${JSON.stringify(unit)}`);
-    fmtUnitsStore.add(unit);
-  }
-
-  //Create Nutrients objectStore and populate default entries
-  let fmtNutrientsStore = fmtAppInstance.fmtDb.createObjectStore(
-    fmtAppGlobals.FMT_DB_NUTRIENTS_STORE,
-    { keyPath: fmtAppGlobals.FMT_DB_NUTRIENTS_KP, autoIncrement: false }
-  );
-  for (const nutrient of BASE_ADDITIONAL_NUTRIENTS_V1) {
-    console.debug(
-      `Inserting Additional Nutrient entry: ${JSON.stringify(nutrient)}`
-    );
-    fmtNutrientsStore.add(nutrient);
-  }
-  //Create User Settings objectStore
-  let fmtUserSettingsStore = fmtAppInstance.fmtDb.createObjectStore(
-    fmtAppGlobals.FMT_DB_USER_SETTINGS_STORE,
-    { keyPath: fmtAppGlobals.FMT_DB_USER_SETTINGS_KP, autoIncrement: false }
-  );
-  //Create User Goals objectStore
-  let fmtUserGoalsStore = fmtAppInstance.fmtDb.createObjectStore(
-    fmtAppGlobals.FMT_DB_USER_GOALS_STORE,
-    { keyPath: fmtAppGlobals.FMT_DB_USER_GOALS_KP, autoIncrement: false }
-  );
-}
 function getObjectStore(store_name, mode) {
   if (!fmtAppInstance.fmtDb) {
     console.error("fmt DB null reference");
@@ -353,18 +285,7 @@ function getObjectStore(store_name, mode) {
   var tx = fmtAppInstance.fmtDb.transaction(store_name, mode);
   return tx.objectStore(store_name);
 }
-function createIndexes(objectStore, indexesObj) {
-  for (const indexName in indexesObj) {
-    try {
-      const indexKp = indexesObj[indexName].kp;
-      const indexOptions = indexesObj[indexName].options;
-      objectStore.createIndex(indexName, indexKp, indexOptions);
-    } catch (error) {
-      console.error(error);
-      console.log(indexesObj);
-    }
-  }
-}
+
 function getIndex(store_name, indexName) {
   const objectStore = getObjectStore(store_name, fmtAppGlobals.FMT_DB_READONLY);
   const index = objectStore.index(indexName);
@@ -7551,7 +7472,7 @@ function onUpgradeNeeded(event) {
   fmtAppInstance.fmtDb = event.target.result;
   switch (fmtAppInstance.fmtDb.version) {
     case 1:
-      prepareDBv1();
+      prepareDBv1(fmtAppInstance.fmtDb);
       break;
     default:
       break;

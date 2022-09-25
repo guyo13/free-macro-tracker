@@ -7,42 +7,20 @@ fmtAppGlobals.FMT_DB_READWRITE = "readwrite";
 fmtAppGlobals.FMT_DB_CURSOR_DIRS = ["next", "nextunique", "prev", "prevunique"];
 //Globals - DB - Meal Entries Store constants
 fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE = "fmt_meal_entries";
-fmtAppGlobals.FMT_DB_MEAL_ENTRIES_KP = "entry_id";
-fmtAppGlobals.FMT_DB_MEAL_ENTRIES_INDEXES = {
-  profile_id_date_index: {
-    kp: ["profile_id", "year", "month", "day"],
-    options: { unique: false },
-  },
-};
 //Globals - DB - Foods Store constants
 fmtAppGlobals.FMT_DB_FOODS_STORE = "fmt_foods";
-fmtAppGlobals.FMT_DB_FOODS_KP = "food_id";
-fmtAppGlobals.FMT_DB_FOODS_INDEXES = {
-  food_name_index: { kp: "foodName", options: { unique: false } },
-  food_brand_index: { kp: "foodBrand", options: { unique: false } },
-};
-
 //Globals - DB - Recipes Store constants
 fmtAppGlobals.FMT_DB_RECIPES_STORE = "fmt_recipes";
-fmtAppGlobals.FMT_DB_RECIPES_KP = "recipe_id";
-fmtAppGlobals.FMT_DB_RECIPES_INDEXES = {
-  recipe_name_index: { kp: "recipeName", options: { unique: false } },
-};
 //Globals - DB - Profile Store constants
 fmtAppGlobals.FMT_DB_PROFILES_STORE = "fmt_profiles";
-fmtAppGlobals.FMT_DB_PROFILES_KP = "profile_id";
 //Globals - DB - Units Store constants
 fmtAppGlobals.FMT_DB_UNITS_STORE = "fmt_units";
-fmtAppGlobals.FMT_DB_UNITS_KP = "name";
 //Globals - DB - Nutrients Store constants
 fmtAppGlobals.FMT_DB_NUTRIENTS_STORE = "fmt_nutrients";
-fmtAppGlobals.FMT_DB_NUTRIENTS_KP = ["category", "name"];
 //Globals - DB - User Settings Store
 fmtAppGlobals.FMT_DB_USER_SETTINGS_STORE = "fmt_user_settings";
-fmtAppGlobals.FMT_DB_USER_SETTINGS_KP = "profile_id";
 //Globals - DB - User Goals Store
 fmtAppGlobals.FMT_DB_USER_GOALS_STORE = "fmt_user_goals";
-fmtAppGlobals.FMT_DB_USER_GOALS_KP = ["profile_id", "year", "month", "day"];
 
 //Globals - Page
 fmtAppGlobals.tabIds = [
