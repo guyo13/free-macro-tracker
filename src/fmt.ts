@@ -4766,20 +4766,20 @@ function FMTCreateMacroProgressBar(c, p, f, inPercent, className, addLabels) {
 
   const carbProgress = document.createElement("div");
   carbProgress.classList.add("progress-bar", "fmt-bg-violet");
-  carbProgress.setAttribute("aria-valuemin", 0);
-  carbProgress.setAttribute("aria-valuemax", 100);
+  carbProgress.setAttribute("aria-valuemin", "0");
+  carbProgress.setAttribute("aria-valuemax", "100");
   carbProgress.style.width = `${carbPercent}%`;
 
   const proteinProgress = document.createElement("div");
   proteinProgress.classList.add("progress-bar", "bg-info");
-  proteinProgress.setAttribute("aria-valuemin", 0);
-  proteinProgress.setAttribute("aria-valuemax", 100);
+  proteinProgress.setAttribute("aria-valuemin", "0");
+  proteinProgress.setAttribute("aria-valuemax", "100");
   proteinProgress.style.width = `${proteinPercent}%`;
 
   const fatProgress = document.createElement("div");
   fatProgress.classList.add("progress-bar", "fmt-bg-orange");
-  fatProgress.setAttribute("aria-valuemin", 0);
-  fatProgress.setAttribute("aria-valuemax", 100);
+  fatProgress.setAttribute("aria-valuemin", "0");
+  fatProgress.setAttribute("aria-valuemax", "100");
   fatProgress.style.width = `${fatPercent}%`;
 
   if (addLabels) {
