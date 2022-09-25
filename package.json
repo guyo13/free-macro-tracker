@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "devDependencies": {
     "@tsconfig/svelte": "^3.0.0",
+    "@types/jquery": "^3.5.14",
     "@types/node": "^18.7.18",
     "css-loader": "^5.0.1",
     "eslint": "^8.23.1",

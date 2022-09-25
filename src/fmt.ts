@@ -1,7 +1,6 @@
 // Copyright (c) 2020, Guy Or Please see the AUTHORS file for details.
 // All rights reserved. Use of this source code is governed by a GNU GPL
 // license that can be found in the LICENSE file.
-/* global $:false, jQuery:false */
 
 import {
   BASE_ADDITIONAL_NUTRIENTS_V1,
@@ -847,7 +846,7 @@ function FMTImportTables(dbTables, jsonData, verbose) {
       break;
     default:
       if (verbose === true) {
-        console.warning(
+        console.warn(
           `Unrecognized DB Table name ${dbTableName} in import data. ignoring`
         );
       }
@@ -863,11 +862,11 @@ function FMTImportFromStructuredJSON(
   onEnd,
   excludeTables
 ) {
+  let jsonData = JSON.parse(jsonString, jsonParseReviverFn);
+  let dbTables = Object.keys(jsonData);
   if (Array.isArray(excludeTables)) {
     dbTables = dbTables.filter((table) => excludeTables.indexOf(table) < 0);
   }
-  let jsonData = JSON.parse(jsonString, jsonParseReviverFn);
-  let dbTables = Object.keys(jsonData);
   const endCondition = function () {
     return dbTables.length < 1;
   };
@@ -5231,11 +5230,13 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
     const dailyFats =
       ((profile.macroSplit.Fat / 100) * profile.macroSplit.Calories) / 9;
 
-    const calPercent = roundedToFixed(
-      (totalNutriValue.calories / profile.macroSplit.Calories) * 100,
-      DEFAULT_ROUNDING_PRECISION
+    const calPercent = Number(
+      roundedToFixed(
+        (totalNutriValue.calories / profile.macroSplit.Calories) * 100,
+        DEFAULT_ROUNDING_PRECISION
+      )
     );
-    calProgBar.setAttribute("aria-valuenow", calPercent);
+    calProgBar.setAttribute("aria-valuenow", calPercent.toString());
     calProgBar.style.width = `${calPercent >= 100 ? 100 : calPercent}%`;
     if (calPercent > 100) {
       calProgBar.classList.add("bg-danger");
@@ -5247,11 +5248,13 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
       0
     )}/${roundedToFixed(profile.macroSplit.Calories, 0)}kCal`;
 
-    const carbPercent = roundedToFixed(
-      (totalNutriValue.carbohydrates / dailyCarbs) * 100,
-      DEFAULT_ROUNDING_PRECISION
+    const carbPercent = Number(
+      roundedToFixed(
+        (totalNutriValue.carbohydrates / dailyCarbs) * 100,
+        DEFAULT_ROUNDING_PRECISION
+      )
     );
-    carbProgBar.setAttribute("aria-valuenow", carbPercent);
+    carbProgBar.setAttribute("aria-valuenow", carbPercent.toString());
     carbProgBar.style.width = `${carbPercent >= 100 ? 100 : carbPercent}%`;
     if (carbPercent > 100) {
       carbProgBar.classList.add("bg-danger");
@@ -5263,11 +5266,13 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
       0
     )}/${roundedToFixed(dailyCarbs, 0)}g`;
 
-    const proteinPercent = roundedToFixed(
-      (totalNutriValue.proteins / dailyProtein) * 100,
-      DEFAULT_ROUNDING_PRECISION
+    const proteinPercent = Number(
+      roundedToFixed(
+        (totalNutriValue.proteins / dailyProtein) * 100,
+        DEFAULT_ROUNDING_PRECISION
+      )
     );
-    proteinProgBar.setAttribute("aria-valuenow", proteinPercent);
+    proteinProgBar.setAttribute("aria-valuenow", proteinPercent.toString());
     proteinProgBar.style.width = `${
       proteinPercent >= 100 ? 100 : proteinPercent
     }%`;
@@ -5281,11 +5286,13 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
       0
     )}/${roundedToFixed(dailyProtein, 0)}g`;
 
-    const fatPercent = roundedToFixed(
-      (totalNutriValue.fats / dailyFats) * 100,
-      DEFAULT_ROUNDING_PRECISION
+    const fatPercent = Number(
+      roundedToFixed(
+        (totalNutriValue.fats / dailyFats) * 100,
+        DEFAULT_ROUNDING_PRECISION
+      )
     );
-    fatProgBar.setAttribute("aria-valuenow", fatPercent);
+    fatProgBar.setAttribute("aria-valuenow", fatPercent.toString());
     fatProgBar.style.width = `${fatPercent >= 100 ? 100 : fatPercent}%`;
     if (fatPercent > 100) {
       fatProgBar.classList.add("bg-danger");
@@ -6252,7 +6259,7 @@ var pageController = {
     document.getElementById("profile-alerts").innerHTML = "";
     FMTDisplayProfile(fmtAppInstance.currentProfileId);
   },
-  updateZIndexes: function (reverse) {
+  updateZIndexes: function (reverse: boolean = false) {
     let sortedScreenNames = Object.keys(
       fmtAppInstance.pageState.activeDynamicScreens
     ).sort(function (a, b) {
@@ -7374,7 +7381,7 @@ var pageController = {
     loadingScreen.classList.add("fmt-fadeout");
     setTimeout(() => {
       loadingScreen.classList.add("d-none", "fmt-faded");
-      loadingScreen.style.zIndex = -3;
+      loadingScreen.style.zIndex = "-3";
     }, 1000);
   },
   showFirstTimeScreen: function () {
@@ -7395,7 +7402,7 @@ var pageController = {
     const overlay = document.getElementById("fmt-app-first-time-overlay");
     const msg = document.getElementById("fmt-app-first-time-overlay-msg");
     overlay.classList.add("d-none");
-    overlay.style.zIndex = -2;
+    overlay.style.zIndex = "-2";
     msg.classList.remove("fmt-fadein");
     msg.classList.remove("fmt-faded");
   },
@@ -7407,7 +7414,7 @@ var pageController = {
   closeNavOverlay: function () {
     const navOverlay = document.getElementById("fmt-app-nav-overlay");
     navOverlay.classList.add("d-none");
-    navOverlay.style.zIndex = -1;
+    navOverlay.style.zIndex = "-1";
   },
 };
 
@@ -8545,11 +8552,6 @@ function askPersistentStorage() {
 export default function startApp() {
   pageController.hideAllTabs();
   pageController.closeDynamicScreens();
-  if (typeof Array.isArray === "undefined") {
-    Array.isArray = function (obj) {
-      return Object.prototype.toString.call(obj) === "[object Array]";
-    };
-  }
   try {
     navigator.storage.persisted().then((isPersisted) => {
       if (isPersisted) {
