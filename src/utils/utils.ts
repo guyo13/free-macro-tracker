@@ -12,9 +12,11 @@ export function isPercent(num: any) {
     return false;
   }
 }
+
 export function isString(s: any) {
   return typeof s === "string";
 }
+
 export function isNumber(input: any) {
   if (input === "" || isNaN(input) || input == null) {
     return false;
@@ -22,6 +24,7 @@ export function isNumber(input: any) {
     return true;
   }
 }
+
 export function isDate(date: any) {
   return (
     date &&
