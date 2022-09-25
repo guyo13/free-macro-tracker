@@ -38,6 +38,7 @@ import type {
 } from "./app/nutrient";
 
 import { format as formatDate } from "date-fns";
+import { IDBTransactionModes } from "idb_wrapper.js";
 
 const platformInterface = new FMTPlatform();
 //Instance
@@ -287,7 +288,7 @@ function getObjectStore(store_name, mode) {
 }
 
 function getIndex(store_name, indexName) {
-  const objectStore = getObjectStore(store_name, fmtAppGlobals.FMT_DB_READONLY);
+  const objectStore = getObjectStore(store_name, IDBTransactionModes.Readonly);
   const index = objectStore.index(indexName);
   return index;
 }
@@ -629,7 +630,7 @@ function FMTImportRecordsSeq(
   if (!Array.isArray(indexes) || indexes.length < 1) return;
   const objectStore = getObjectStore(
     objectStoreName,
-    fmtAppGlobals.FMT_DB_READWRITE
+    IDBTransactionModes.Readwrite
   );
   if (!objectStore) return;
   const idx = indexes[0];
@@ -1620,7 +1621,7 @@ function FMTAddMealEntry(mealEntryObj, onsuccessFn, onerrorFn) {
   mealEntry.tzMinutes = date.getTimezoneOffset();
   let mealEntriesStore = getObjectStore(
     fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE,
-    fmtAppGlobals.FMT_DB_READWRITE
+    IDBTransactionModes.Readwrite
   );
   let addRequest = mealEntriesStore.add(mealEntry);
   addRequest.onerror = onerrorFn;
@@ -1643,7 +1644,7 @@ function FMTUpdateMealEntry(entry_id, mealEntryObj, onsuccessFn, onerrorFn) {
   mealEntry.tzMinutes = date.getTimezoneOffset();
   let mealEntriesStore = getObjectStore(
     fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE,
-    fmtAppGlobals.FMT_DB_READWRITE
+    IDBTransactionModes.Readwrite
   );
   let updateRequest = mealEntriesStore.put(mealEntry);
   updateRequest.onerror = onerrorFn;
@@ -1652,7 +1653,7 @@ function FMTUpdateMealEntry(entry_id, mealEntryObj, onsuccessFn, onerrorFn) {
 function FMTRemoveMealEntry(entry_id, onsuccessFn, onerrorFn) {
   let mealEntriesStore = getObjectStore(
     fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE,
-    fmtAppGlobals.FMT_DB_READWRITE
+    IDBTransactionModes.Readwrite
   );
   let deleteRequest = mealEntriesStore.delete(entry_id);
   deleteRequest.onerror = onerrorFn;
@@ -1759,7 +1760,7 @@ function FMTReadMealEntry(entry_id, onsuccessFn, onerrorFn) {
     };
   const mealEntriesStore = getObjectStore(
     fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE,
-    fmtAppGlobals.FMT_DB_READONLY
+    IDBTransactionModes.Readonly
   );
   const getRequest = mealEntriesStore.get(entry_id);
   getRequest.onerror = onerrorFn;
@@ -1779,7 +1780,7 @@ function FMTReadProfile(profileId, onsuccessFn, onerrorFn) {
   }
   let profileStore = getObjectStore(
     fmtAppGlobals.FMT_DB_PROFILES_STORE,
-    fmtAppGlobals.FMT_DB_READONLY
+    IDBTransactionModes.Readonly
   );
   let getRequest = profileStore.get(profileId);
   getRequest.onerror =
@@ -1792,7 +1793,7 @@ function FMTReadProfile(profileId, onsuccessFn, onerrorFn) {
 function FMTReadAllProfiles(onsuccessFn, onerrorFn) {
   let profileStore = getObjectStore(
     fmtAppGlobals.FMT_DB_PROFILES_STORE,
-    fmtAppGlobals.FMT_DB_READONLY
+    IDBTransactionModes.Readonly
   );
   let getRequest = profileStore.getAll();
   getRequest.onerror = onerrorFn;
@@ -1814,7 +1815,7 @@ function FMTAddProfile(profileObj, onsuccessFn, onerrorFn) {
   profile.tzMinutes = date.getTimezoneOffset();
   let profileStore = getObjectStore(
     fmtAppGlobals.FMT_DB_PROFILES_STORE,
-    fmtAppGlobals.FMT_DB_READWRITE
+    IDBTransactionModes.Readwrite
   );
   let addRequest = profileStore.add(profile);
   addRequest.onerror =
@@ -1845,7 +1846,7 @@ function FMTUpdateProfile(profileId, profileObj, onsuccessFn, onerrorFn) {
   profile.tzMinutes = date.getTimezoneOffset();
   let profileStore = getObjectStore(
     fmtAppGlobals.FMT_DB_PROFILES_STORE,
-    fmtAppGlobals.FMT_DB_READWRITE
+    IDBTransactionModes.Readwrite
   );
   let updateRequest = profileStore.put(profile);
   updateRequest.onerror =
@@ -1865,7 +1866,7 @@ function FMTUpdateProfile(profileId, profileObj, onsuccessFn, onerrorFn) {
 function FMTDeleteProfile(profileId, onsuccessFn, onerrorFn) {
   let profileStore = getObjectStore(
     fmtAppGlobals.FMT_DB_PROFILES_STORE,
-    fmtAppGlobals.FMT_DB_READWRITE
+    IDBTransactionModes.Readwrite
   );
   let delRequest = profileStore.delete(profileId);
   delRequest.onerror =
@@ -1884,7 +1885,7 @@ function FMTDeleteProfile(profileId, onsuccessFn, onerrorFn) {
 function FMTReadFood(foodId, onsuccessFn, onerrorFn) {
   let foodStore = getObjectStore(
     fmtAppGlobals.FMT_DB_FOODS_STORE,
-    fmtAppGlobals.FMT_DB_READONLY
+    IDBTransactionModes.Readonly
   );
   let getRequest = foodStore.get(foodId);
   getRequest.onerror = onerrorFn;
@@ -1893,7 +1894,7 @@ function FMTReadFood(foodId, onsuccessFn, onerrorFn) {
 function FMTReadAllFoods(onsuccessFn, onerrorFn) {
   let foodStore = getObjectStore(
     fmtAppGlobals.FMT_DB_FOODS_STORE,
-    fmtAppGlobals.FMT_DB_READONLY
+    IDBTransactionModes.Readonly
   );
   let getRequest = foodStore.getAll();
   getRequest.onerror = onerrorFn;
@@ -1908,7 +1909,7 @@ function FMTIterateFoods(onsuccessFn, onerrorFn) {
     };
   let foodStore = getObjectStore(
     fmtAppGlobals.FMT_DB_FOODS_STORE,
-    fmtAppGlobals.FMT_DB_READONLY
+    IDBTransactionModes.Readonly
   );
   let getRequest = foodStore.openCursor();
   getRequest.onerror = onerrorFn;
@@ -1925,7 +1926,7 @@ function FMTAddFood(foodObj, unitsChart, onsuccessFn, onerrorFn) {
     food.tzMinutes = date.getTimezoneOffset();
     let foodStore = getObjectStore(
       fmtAppGlobals.FMT_DB_FOODS_STORE,
-      fmtAppGlobals.FMT_DB_READWRITE
+      IDBTransactionModes.Readwrite
     );
     let addRequest = foodStore.add(food);
     addRequest.onerror =
@@ -1971,7 +1972,7 @@ function FMTUpdateFood(foodId, foodObj, unitsChart, onsuccessFn, onerrorFn) {
     food.food_id = foodId;
     let foodStore = getObjectStore(
       fmtAppGlobals.FMT_DB_FOODS_STORE,
-      fmtAppGlobals.FMT_DB_READWRITE
+      IDBTransactionModes.Readwrite
     );
     let addRequest = foodStore.put(food);
     addRequest.onerror =
@@ -2009,7 +2010,7 @@ function FMTDeleteFood(foodId, onsuccessFn, onerrorFn) {
   const _fnName = "FMTDeleteFood";
   let foodStore = getObjectStore(
     fmtAppGlobals.FMT_DB_FOODS_STORE,
-    fmtAppGlobals.FMT_DB_READWRITE
+    IDBTransactionModes.Readwrite
   );
   let delRequest = foodStore.delete(foodId);
   delRequest.onerror =
@@ -2036,7 +2037,7 @@ function FMTDeleteFood(foodId, onsuccessFn, onerrorFn) {
 function FMTReadRecipe(recipeId, onsuccessFn, onerrorFn) {
   let recipeStore = getObjectStore(
     fmtAppGlobals.FMT_DB_RECIPES_STORE,
-    fmtAppGlobals.FMT_DB_READONLY
+    IDBTransactionModes.Readonly
   );
   let getRequest = recipeStore.get(recipeId);
   getRequest.onerror = onerrorFn;
@@ -2045,7 +2046,7 @@ function FMTReadRecipe(recipeId, onsuccessFn, onerrorFn) {
 function FMTReadAllRecipes(onsuccessFn, onerrorFn) {
   let recipeStore = getObjectStore(
     fmtAppGlobals.FMT_DB_RECIPES_STORE,
-    fmtAppGlobals.FMT_DB_READONLY
+    IDBTransactionModes.Readonly
   );
   let getRequest = recipeStore.getAll();
   getRequest.onerror = onerrorFn;
@@ -2054,7 +2055,7 @@ function FMTReadAllRecipes(onsuccessFn, onerrorFn) {
 function FMTIterateRecipes(onsuccessFn, onerrorFn) {
   let recipeStore = getObjectStore(
     fmtAppGlobals.FMT_DB_RECIPES_STORE,
-    fmtAppGlobals.FMT_DB_READONLY
+    IDBTransactionModes.Readonly
   );
   let cursorRequest = recipeStore.openCursor();
   cursorRequest.onerror = onerrorFn;
@@ -2094,7 +2095,7 @@ function FMTAddRecipe(recipeObj, onsuccessFn, onerrorFn, unitsChart) {
         };
     let recipeStore = getObjectStore(
       fmtAppGlobals.FMT_DB_RECIPES_STORE,
-      fmtAppGlobals.FMT_DB_READWRITE
+      IDBTransactionModes.Readwrite
     );
     let addRequest = recipeStore.add(recipe);
     addRequest.onerror = _onerror;
@@ -2152,7 +2153,7 @@ function FMTUpdateRecipe(
         };
     let recipeStore = getObjectStore(
       fmtAppGlobals.FMT_DB_RECIPES_STORE,
-      fmtAppGlobals.FMT_DB_READWRITE
+      IDBTransactionModes.Readwrite
     );
     let putRequest = recipeStore.put(recipe);
     putRequest.onerror = _onerror;
@@ -2174,7 +2175,7 @@ function FMTDeleteRecipe(recipeId, onsuccessFn, onerrorFn) {
   const _fnName = "FMTDeleteRecipe";
   let recipeStore = getObjectStore(
     fmtAppGlobals.FMT_DB_RECIPES_STORE,
-    fmtAppGlobals.FMT_DB_READWRITE
+    IDBTransactionModes.Readwrite
   );
   let delRequest = recipeStore.delete(recipeId);
   delRequest.onerror =
@@ -2208,7 +2209,7 @@ function FMTAddNutrient(nutrientObj, onsuccessFn, onerrorFn) {
   }
   let nutrientStore = getObjectStore(
     fmtAppGlobals.FMT_DB_NUTRIENTS_STORE,
-    fmtAppGlobals.FMT_DB_READWRITE
+    IDBTransactionModes.Readwrite
   );
   let addRequest = nutrientStore.add(nutrient);
   addRequest.onsuccess =
@@ -2232,7 +2233,7 @@ function FMTUpdateNutrient(nutrientObj, onsuccessFn, onerrorFn) {
   }
   let nutrientStore = getObjectStore(
     fmtAppGlobals.FMT_DB_NUTRIENTS_STORE,
-    fmtAppGlobals.FMT_DB_READWRITE
+    IDBTransactionModes.Readwrite
   );
   let addRequest = nutrientStore.put(nutrient);
   addRequest.onsuccess =
@@ -2249,7 +2250,7 @@ function FMTUpdateNutrient(nutrientObj, onsuccessFn, onerrorFn) {
 function FMTReadNutrient(nutrientCat, nutrientName, onsuccessFn, onerrorFn) {
   let nutrientStore = getObjectStore(
     fmtAppGlobals.FMT_DB_NUTRIENTS_STORE,
-    fmtAppGlobals.FMT_DB_READONLY
+    IDBTransactionModes.Readonly
   );
   let readRequest = nutrientStore.get([nutrientCat, nutrientName]);
   readRequest.onsuccess =
@@ -2266,7 +2267,7 @@ function FMTReadNutrient(nutrientCat, nutrientName, onsuccessFn, onerrorFn) {
 function FMTReadAllNutrients(onsuccessFn, onerrorFn) {
   let nutrientStore = getObjectStore(
     fmtAppGlobals.FMT_DB_NUTRIENTS_STORE,
-    fmtAppGlobals.FMT_DB_READONLY
+    IDBTransactionModes.Readonly
   );
   let readRequest = nutrientStore.getAll();
   readRequest.onsuccess =
@@ -2284,7 +2285,7 @@ function FMTIterateNutrients(onsuccessFn, onerrorFn) {
   /*onsuccessFn must implement success function accessing the cursor*/
   let nutrientStore = getObjectStore(
     fmtAppGlobals.FMT_DB_NUTRIENTS_STORE,
-    fmtAppGlobals.FMT_DB_READONLY
+    IDBTransactionModes.Readonly
   );
   let readRequest = nutrientStore.openCursor();
   readRequest.onsuccess =
@@ -2301,7 +2302,7 @@ function FMTIterateNutrients(onsuccessFn, onerrorFn) {
 function FMTDeleteNutrient(nutrientCat, nutrientName, onsuccessFn, onerrorFn) {
   let nutrientStore = getObjectStore(
     fmtAppGlobals.FMT_DB_NUTRIENTS_STORE,
-    fmtAppGlobals.FMT_DB_READWRITE
+    IDBTransactionModes.Readwrite
   );
   let deleteRequest = nutrientStore.delete([nutrientCat, nutrientName]);
   deleteRequest.onsuccess =
@@ -2327,7 +2328,7 @@ function FMTAddUnit(unitObj, onsuccessFn, onerrorFn) {
   }
   let unitStore = getObjectStore(
     fmtAppGlobals.FMT_DB_UNITS_STORE,
-    fmtAppGlobals.FMT_DB_READWRITE
+    IDBTransactionModes.Readwrite
   );
   let addRequest = unitStore.add(unit);
   addRequest.onsuccess =
@@ -2345,7 +2346,7 @@ function FMTUpdateUnit(unitObj, onsuccessFn, onerrorFn) {
   }
   let unitStore = getObjectStore(
     fmtAppGlobals.FMT_DB_UNITS_STORE,
-    fmtAppGlobals.FMT_DB_READWRITE
+    IDBTransactionModes.Readwrite
   );
   let addRequest = unitStore.put(unit);
   addRequest.onsuccess =
@@ -2356,7 +2357,7 @@ function FMTUpdateUnit(unitObj, onsuccessFn, onerrorFn) {
 function FMTReadUnit(unitName, onsuccessFn, onerrorFn) {
   let unitStore = getObjectStore(
     fmtAppGlobals.FMT_DB_UNITS_STORE,
-    fmtAppGlobals.FMT_DB_READONLY
+    IDBTransactionModes.Readonly
   );
   let readRequest = unitStore.get(unitName);
   readRequest.onsuccess =
@@ -2367,7 +2368,7 @@ function FMTReadUnit(unitName, onsuccessFn, onerrorFn) {
 function FMTReadAllUnits(onsuccessFn, onerrorFn) {
   let unitStore = getObjectStore(
     fmtAppGlobals.FMT_DB_UNITS_STORE,
-    fmtAppGlobals.FMT_DB_READONLY
+    IDBTransactionModes.Readonly
   );
   let readRequest = unitStore.getAll();
   readRequest.onsuccess =
@@ -2377,7 +2378,7 @@ function FMTReadAllUnits(onsuccessFn, onerrorFn) {
 function FMTIterateUnits(onsuccessFn, onerrorFn) {
   let unitStore = getObjectStore(
     fmtAppGlobals.FMT_DB_UNITS_STORE,
-    fmtAppGlobals.FMT_DB_READONLY
+    IDBTransactionModes.Readonly
   );
   let readRequest = unitStore.openCursor();
   readRequest.onsuccess =
@@ -2387,7 +2388,7 @@ function FMTIterateUnits(onsuccessFn, onerrorFn) {
 function FMTDeleteUnit(unitName, onsuccessFn, onerrorFn) {
   let unitStore = getObjectStore(
     fmtAppGlobals.FMT_DB_UNITS_STORE,
-    fmtAppGlobals.FMT_DB_READWRITE
+    IDBTransactionModes.Readwrite
   );
   let deleteRequest = unitStore.delete(unitName);
   deleteRequest.onsuccess =
@@ -2409,7 +2410,7 @@ function FMTAddUserGoalEntry(userGoalsObj, onsuccessFn, onerrorFn) {
   }
   const userGoalsStore = getObjectStore(
     fmtAppGlobals.FMT_DB_USER_GOALS_STORE,
-    fmtAppGlobals.FMT_DB_READWRITE
+    IDBTransactionModes.Readwrite
   );
   const addRequest = userGoalsStore.add(userGoalsValidate.userGoals);
   addRequest.onsuccess = onsuccessFn;
@@ -2444,7 +2445,7 @@ function FMTUpdateUserGoalEntry(
   }
   const userGoalsStore = getObjectStore(
     fmtAppGlobals.FMT_DB_USER_GOALS_STORE,
-    fmtAppGlobals.FMT_DB_READWRITE
+    IDBTransactionModes.Readwrite
   );
   const putRequest = userGoalsStore.put(userGoalsValidate.userGoals);
   putRequest.onsuccess = onsuccessFn;
@@ -2460,7 +2461,7 @@ function FMTReadUserGoalEntry(
 ) {
   const userGoalsStore = getObjectStore(
     fmtAppGlobals.FMT_DB_USER_GOALS_STORE,
-    fmtAppGlobals.FMT_DB_READONLY
+    IDBTransactionModes.Readonly
   );
   const getRequest = userGoalsStore.get([profile_id, year, month, day]);
   getRequest.onsuccess = onsuccessFn;
@@ -2535,7 +2536,7 @@ function FMTQueryUserGoalsByProfileAndDate(
     };
   const userGoalsStore = getObjectStore(
     fmtAppGlobals.FMT_DB_USER_GOALS_STORE,
-    fmtAppGlobals.FMT_DB_READONLY
+    IDBTransactionModes.Readonly
   );
   const cursorRequest = userGoalsStore.openCursor(keyRange, options.direction);
   cursorRequest.onerror = onerrorFn;
