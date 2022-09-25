@@ -23,7 +23,11 @@ import {
   BASE_ADDITIONAL_NUTRIENTS_V1,
   BASE_UNIT_CHART_V1,
 } from "./data/migrations";
-import { areUnitsConvertible, convertUnitsByName } from "./app/units";
+import {
+  areUnitsConvertible,
+  convertUnitsByName,
+  findConvertibleUnitsByName,
+} from "./app/units";
 import { calculateConsumableRatio } from "./app/calculations";
 
 var platformInterface = new FMTPlatform();
@@ -281,24 +285,6 @@ function FMTSumIngredients(ingredients, unitsChart) {
   return FMTSumNutritionalValues(nutriValueArr, unitsChart);
 }
 
-function FMTGetConvertibleUnits(unitName, unitsChart) {
-  const result = {};
-  result.convertibleUnits = {};
-  if (unitName in unitsChart) {
-    const unit = unitsChart[unitName];
-    for (const uName in unitsChart) {
-      const targetUnit = unitsChart[uName];
-      const _isConv = areUnitsConvertible(unit, targetUnit);
-      if (_isConv.isConvertible === true) {
-        result.convertibleUnits[uName] = targetUnit;
-      }
-    }
-  } else {
-    result.error = `${unitName} is not a recognized Unit`;
-    console.error(result.error);
-  }
-  return result;
-}
 function _removeChildren(element, className) {
   if (element) {
     const members = element.getElementsByClassName(className);
@@ -3773,14 +3759,13 @@ function FMTUICreateAdditionalNutrientsFromObj(
         prefix = nutrient.unit;
       }
       if (restrictNutrientUnit) {
-        const convertibleUnits = FMTGetConvertibleUnits(
+        const convertibleUnits = findConvertibleUnitsByName(
           nutrient.unit,
           unitsChart
         );
-        const convertibleUnitsArray =
-          convertibleUnits.error == null
-            ? Object.keys(convertibleUnits.convertibleUnits)
-            : [nutrient.unit];
+        const convertibleUnitsArray = !convertibleUnits.error
+          ? convertibleUnits.convertibleUnits.map((unit) => unit.name)
+          : [nutrient.unit];
         unitFilterFn = function (unitName) {
           if (convertibleUnitsArray.indexOf(unitName) >= 0) return true;
         };

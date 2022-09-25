@@ -4,6 +4,8 @@ export enum UnitType {
   Arbitrary = "arbitrary",
 }
 
+export type UnitChart = { [key: string]: Unit };
+
 export interface Unit {
   readonly name: string;
   readonly description: string;
@@ -18,11 +20,14 @@ export interface UnitsConvertibleResult {
 }
 
 export interface UnitsConvertionResult extends UnitsConvertibleResult {
-  unitMultiplier?: number;
   error?: string;
+  unitMultiplier?: number;
 }
 
-export type UnitChart = { [key: string]: Unit };
+export interface ConvertibleUnitsResult {
+  error?: string;
+  convertibleUnits?: Unit[];
+}
 
 // TODO - Simplify logic
 export function areUnitsConvertible(
@@ -118,4 +123,25 @@ export function convertUnitsByName(
     };
   }
   return convertUnits(targetUnit, originUnit);
+}
+
+export function findConvertibleUnits(
+  inputUnit: Unit,
+  unitsChart: UnitChart
+): ConvertibleUnitsResult {
+  const convertibleUnits = Object.values(unitsChart).filter(
+    (targetUnit) => areUnitsConvertible(inputUnit, targetUnit).isConvertible
+  );
+  return { convertibleUnits };
+}
+
+export function findConvertibleUnitsByName(
+  unitName: string,
+  unitsChart: UnitChart
+): ConvertibleUnitsResult {
+  const unit = unitsChart[unitName];
+  if (!unit) {
+    return { error: `Unit '${unitName}' not in unitsChart` };
+  }
+  return findConvertibleUnits(unit, unitsChart);
 }
