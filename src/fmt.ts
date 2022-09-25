@@ -3,14 +3,20 @@
 // license that can be found in the LICENSE file.
 /* global $:false, jQuery:false */
 
-import { FMTAndroidPlatform, FMTPlatformType } from "./app/platform";
-import type {
-  AdditionalNutrients,
-  NutrientData,
-  NutritionalValue,
-} from "./app/nutrient";
-import { fmtAppGlobals } from "./app/globals";
-import FMTPlatform from "./app/platform";
+import {
+  BASE_ADDITIONAL_NUTRIENTS_V1,
+  BASE_UNIT_CHART_V1,
+} from "./data/migrations";
+import {
+  fmtAppGlobals,
+  DEFAULT_ROUNDING_PRECISION,
+  NUTRIENT_ROUNDING_PRECISION,
+} from "./app/globals";
+import {
+  default as FMTPlatform,
+  FMTAndroidPlatform,
+  FMTPlatformType,
+} from "./app/platform";
 import {
   isDate,
   isSameDay,
@@ -18,21 +24,23 @@ import {
   isNumber,
   isPercent,
   isString,
+  roundedToFixed,
 } from "./app/utils";
-import {
-  BASE_ADDITIONAL_NUTRIENTS_V1,
-  BASE_UNIT_CHART_V1,
-} from "./data/migrations";
 import {
   areUnitsConvertible,
   convertUnitsByName,
   findConvertibleUnitsByName,
 } from "./app/units";
 import { calculateConsumableRatio } from "./app/calculations";
+import type {
+  AdditionalNutrients,
+  NutrientData,
+  NutritionalValue,
+} from "./app/nutrient";
 
-var platformInterface = new FMTPlatform();
+const platformInterface = new FMTPlatform();
 //Instance
-var fmtAppInstance: any = {};
+const fmtAppInstance: any = {};
 //Instance - Db
 fmtAppInstance.fmtDb = undefined;
 //Instance - Settings
@@ -42,8 +50,6 @@ fmtAppInstance.promptSettings = {};
 fmtAppInstance.promptSettings.promptOnUnsavedFood = true;
 fmtAppInstance.promptSettings.promptOnNoProfileCreated = true;
 fmtAppInstance.firstTimeScreenAutomatic = false;
-fmtAppInstance.defaultRoundingPrecision = 1;
-fmtAppInstance.nutrientRoundingPrecision = 4;
 fmtAppInstance.allowForeignNutrients = true;
 fmtAppInstance.mealEntryMacroBarInPercent = false;
 fmtAppInstance.macroAutoFill = "carb";
@@ -107,18 +113,6 @@ function appendChildren(DOMElement, childrenArray) {
 
 function isInput(elem) {
   return elem.tagName.toLowerCase() == "input";
-}
-function roundedToFixed(_float, _digits, asNumber) {
-  if (_digits == null) {
-    _digits = fmtAppInstance.defaultRoundingPrecision;
-  }
-  let rounded = Math.pow(10, _digits);
-  const result = (Math.round(_float * rounded) / rounded).toFixed(_digits);
-  if (asNumber === true) {
-    return Number(result);
-  } else {
-    return result;
-  }
 }
 function taskWaitUntil(onendFn, endconditionFn, intervalMs) {
   intervalMs = intervalMs || 50;
@@ -2815,11 +2809,7 @@ function FMTConvertMacro(macroName, unit, value, calories) {
     switch (unit) {
       case "%":
         if (isPercent(value)) {
-          percent = roundedToFixed(
-            value,
-            fmtAppInstance.defaultRoundingPrecision,
-            true
-          );
+          percent = Number(roundedToFixed(value, DEFAULT_ROUNDING_PRECISION));
           if (calories) {
             kcal = (calories * percent) / 100;
             gram = kcal / factor;
@@ -2832,10 +2822,8 @@ function FMTConvertMacro(macroName, unit, value, calories) {
         gram = Math.round(value);
         kcal = gram * factor;
         if (!!calories && calories > 0) {
-          percent = roundedToFixed(
-            (kcal / calories) * 100,
-            fmtAppInstance.defaultRoundingPrecision,
-            true
+          percent = Number(
+            roundedToFixed((kcal / calories) * 100, DEFAULT_ROUNDING_PRECISION)
           );
         }
         kcal = Math.round(kcal);
@@ -2844,10 +2832,8 @@ function FMTConvertMacro(macroName, unit, value, calories) {
         kcal = Math.round(value);
         gram = Math.round(kcal / factor);
         if (!!calories && calories > 0) {
-          percent = roundedToFixed(
-            (kcal / calories) * 100,
-            fmtAppInstance.defaultRoundingPrecision,
-            true
+          percent = Number(
+            roundedToFixed((kcal / calories) * 100, DEFAULT_ROUNDING_PRECISION)
           );
         }
         break;
@@ -3837,15 +3823,29 @@ function FMTUIPopulateMacroes(
   }
   const idBase = `${baseScreenID}-${qualifier}`;
   const caloriesValue = Number(
-    roundedToFixed(nutritionalValue.calories * multiplier)
+    roundedToFixed(
+      nutritionalValue.calories * multiplier,
+      DEFAULT_ROUNDING_PRECISION
+    )
   );
   const carbsValue = Number(
-    roundedToFixed(nutritionalValue.carbohydrates * multiplier)
+    roundedToFixed(
+      nutritionalValue.carbohydrates * multiplier,
+      DEFAULT_ROUNDING_PRECISION
+    )
   );
   const proteinValue = Number(
-    roundedToFixed(nutritionalValue.proteins * multiplier)
+    roundedToFixed(
+      nutritionalValue.proteins * multiplier,
+      DEFAULT_ROUNDING_PRECISION
+    )
   );
-  const fatValue = Number(roundedToFixed(nutritionalValue.fats * multiplier));
+  const fatValue = Number(
+    roundedToFixed(
+      nutritionalValue.fats * multiplier,
+      DEFAULT_ROUNDING_PRECISION
+    )
+  );
   const _calories = document.getElementById(`${idBase}-calories`);
   const _carbs = document.getElementById(`${idBase}-carbohydrates`);
   const _proteins = document.getElementById(`${idBase}-proteins`);
@@ -3958,7 +3958,7 @@ function FMTUIPopulateNutritionalValue(
           _field.value = Number(
             roundedToFixed(
               _field.value * multiplier,
-              fmtAppInstance.nutrientRoundingPrecision
+              NUTRIENT_ROUNDING_PRECISION
             )
           );
         }
@@ -5149,9 +5149,18 @@ function FMTOverviewUpdateMealProgress(targetID) {
   );
   const fatProgSpan = document.getElementById(`${targetID}-fat-progress`);
   calProgSpan.innerHTML = `${roundedToFixed(totalNutriValue.calories, 0)}kCal`;
-  carbProgSpan.innerHTML = roundedToFixed(totalNutriValue.carbohydrates);
-  proteinProgSpan.innerHTML = roundedToFixed(totalNutriValue.proteins);
-  fatProgSpan.innerHTML = roundedToFixed(totalNutriValue.fats);
+  carbProgSpan.innerHTML = roundedToFixed(
+    totalNutriValue.carbohydrates,
+    DEFAULT_ROUNDING_PRECISION
+  );
+  proteinProgSpan.innerHTML = roundedToFixed(
+    totalNutriValue.proteins,
+    DEFAULT_ROUNDING_PRECISION
+  );
+  fatProgSpan.innerHTML = roundedToFixed(
+    totalNutriValue.fats,
+    DEFAULT_ROUNDING_PRECISION
+  );
 }
 function FMTOverviewUpdateTotalProgress(sourceID) {
   const mealsContainerDiv = document.getElementById(sourceID);
@@ -5223,7 +5232,8 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
       ((profile.macroSplit.Fat / 100) * profile.macroSplit.Calories) / 9;
 
     const calPercent = roundedToFixed(
-      (totalNutriValue.calories / profile.macroSplit.Calories) * 100
+      (totalNutriValue.calories / profile.macroSplit.Calories) * 100,
+      DEFAULT_ROUNDING_PRECISION
     );
     calProgBar.setAttribute("aria-valuenow", calPercent);
     calProgBar.style.width = `${calPercent >= 100 ? 100 : calPercent}%`;
@@ -5238,7 +5248,8 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
     )}/${roundedToFixed(profile.macroSplit.Calories, 0)}kCal`;
 
     const carbPercent = roundedToFixed(
-      (totalNutriValue.carbohydrates / dailyCarbs) * 100
+      (totalNutriValue.carbohydrates / dailyCarbs) * 100,
+      DEFAULT_ROUNDING_PRECISION
     );
     carbProgBar.setAttribute("aria-valuenow", carbPercent);
     carbProgBar.style.width = `${carbPercent >= 100 ? 100 : carbPercent}%`;
@@ -5253,7 +5264,8 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
     )}/${roundedToFixed(dailyCarbs, 0)}g`;
 
     const proteinPercent = roundedToFixed(
-      (totalNutriValue.proteins / dailyProtein) * 100
+      (totalNutriValue.proteins / dailyProtein) * 100,
+      DEFAULT_ROUNDING_PRECISION
     );
     proteinProgBar.setAttribute("aria-valuenow", proteinPercent);
     proteinProgBar.style.width = `${
@@ -5269,7 +5281,10 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
       0
     )}/${roundedToFixed(dailyProtein, 0)}g`;
 
-    const fatPercent = roundedToFixed((totalNutriValue.fats / dailyFats) * 100);
+    const fatPercent = roundedToFixed(
+      (totalNutriValue.fats / dailyFats) * 100,
+      DEFAULT_ROUNDING_PRECISION
+    );
     fatProgBar.setAttribute("aria-valuenow", fatPercent);
     fatProgBar.style.width = `${fatPercent >= 100 ? 100 : fatPercent}%`;
     if (fatPercent > 100) {

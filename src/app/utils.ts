@@ -37,3 +37,11 @@ export function isSameDay(d1: Date, d2: Date) {
     d1.getDate() === d2.getDate()
   );
 }
+
+export function roundedToFixed(
+  realNumber: number,
+  decimalDigits: number
+): string {
+  let rounded = Math.pow(10, decimalDigits);
+  return (Math.round(realNumber * rounded) / rounded).toFixed(decimalDigits);
+}
