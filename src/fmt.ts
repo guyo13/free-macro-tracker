@@ -19,6 +19,10 @@ import {
   isPercent,
   isString,
 } from "./app/utils";
+import {
+  BASE_ADDITIONAL_NUTRIENTS_V1,
+  BASE_UNIT_CHART_V1,
+} from "./data/migrations";
 
 var platformInterface = new FMTPlatform();
 //Instance
@@ -477,222 +481,6 @@ function prepareDBv1() {
     console.error("fmt DB null reference");
     return;
   }
-  const baseUnitsChart = [
-    {
-      name: "oz",
-      value_in_grams: 28.34952,
-      description: "Ounce",
-      type: "mass",
-      value_in_ml: 0,
-    },
-    {
-      name: "lb",
-      value_in_grams: 453.5924,
-      description: "Pound",
-      type: "mass",
-      value_in_ml: 0,
-    },
-    {
-      name: "st",
-      value_in_grams: 6350.293,
-      description: "Stone",
-      type: "mass",
-      value_in_ml: 0,
-    },
-    {
-      name: "mcg",
-      value_in_grams: 0.000001,
-      description: "Microgram",
-      type: "mass",
-      value_in_ml: 0,
-    },
-    {
-      name: "mg",
-      value_in_grams: 0.001,
-      description: "Milligram",
-      type: "mass",
-      value_in_ml: 0,
-    },
-    {
-      name: "g",
-      value_in_grams: 1,
-      description: "Gram",
-      type: "mass",
-      value_in_ml: 0,
-    },
-    {
-      name: "kg",
-      value_in_grams: 1000,
-      description: "Kilogram",
-      type: "mass",
-      value_in_ml: 0,
-    },
-    {
-      name: "ml",
-      value_in_grams: 0,
-      description: "Millilitre",
-      type: "volume",
-      value_in_ml: 1,
-    },
-    {
-      name: "l",
-      value_in_grams: 0,
-      description: "Litre",
-      type: "volume",
-      value_in_ml: 1000,
-    },
-    {
-      name: "tsp",
-      value_in_grams: 0,
-      description: "Metric teaspoon",
-      type: "volume",
-      value_in_ml: 5,
-    },
-    {
-      name: "tbsp",
-      value_in_grams: 0,
-      description: "Metric tablespoon",
-      type: "volume",
-      value_in_ml: 15,
-    },
-    {
-      name: "fl_oz",
-      value_in_grams: 0,
-      description: "Fluid Ounce",
-      type: "volume",
-      value_in_ml: 28.41306,
-    },
-    {
-      name: "cup",
-      value_in_grams: 0,
-      description: "Metric Cup",
-      type: "volume",
-      value_in_ml: 250,
-    },
-    {
-      name: "us_cup",
-      value_in_grams: 0,
-      description: "US Cup",
-      type: "volume",
-      value_in_ml: 240,
-    },
-    {
-      name: "serving",
-      value_in_grams: 0,
-      description: "Serving",
-      type: "arbitrary",
-      value_in_ml: 0,
-    },
-  ];
-  const baseAdditionalNutrients = [
-    {
-      name: "Sugars",
-      category: "Carbohydrates",
-      default_unit: "g",
-      help: "Total Sugars",
-    },
-    { name: "Fiber", category: "Carbohydrates", default_unit: "g" },
-    {
-      name: "Starch",
-      category: "Carbohydrates",
-      default_unit: "g",
-      help: "Total Starch",
-    },
-    { name: "Glucose", category: "Carbohydrates", default_unit: "g" },
-    { name: "Sucrose", category: "Carbohydrates", default_unit: "g" },
-    { name: "Ribose", category: "Carbohydrates", default_unit: "g" },
-    { name: "Amylose", category: "Carbohydrates", default_unit: "g" },
-    { name: "Amylopectin", category: "Carbohydrates", default_unit: "g" },
-    { name: "Maltose", category: "Carbohydrates", default_unit: "g" },
-    { name: "Galactose", category: "Carbohydrates", default_unit: "g" },
-    { name: "Fructose", category: "Carbohydrates", default_unit: "g" },
-    { name: "Lactose", category: "Carbohydrates", default_unit: "g" },
-    {
-      name: "Saturated Fats",
-      category: "Fats",
-      default_unit: "g",
-      help: "Total",
-    },
-    {
-      name: "Monounsaturated Fats",
-      category: "Fats",
-      default_unit: "g",
-      help: "Total",
-    },
-    {
-      name: "Polyunsaturated Fats",
-      category: "Fats",
-      default_unit: "g",
-      help: "Total",
-    },
-    { name: "Omega-3", category: "Fats", default_unit: "g" },
-    { name: "Omega-6", category: "Fats", default_unit: "g" },
-    { name: "Trans Fats", category: "Fats", default_unit: "g" },
-    { name: "Cholesterol", category: "Sterols", default_unit: "mg" },
-    { name: "Calcium", category: "Minerals", default_unit: "mg" },
-    { name: "Sodium", category: "Minerals", default_unit: "mg" },
-    { name: "Potassium", category: "Minerals", default_unit: "mg" },
-    { name: "Phosphorus", category: "Minerals", default_unit: "mg" },
-    { name: "Magnesium", category: "Minerals", default_unit: "mg" },
-    { name: "Chloride", category: "Minerals", default_unit: "mg" },
-    { name: "Sulfur", category: "Minerals", default_unit: "mg" },
-    { name: "Vitamin A", category: "Vitamins", default_unit: "mcg" },
-    { name: "Vitamin C", category: "Vitamins", default_unit: "mg" },
-    { name: "Vitamin E", category: "Vitamins", default_unit: "mcg" },
-    { name: "Vitamin K", category: "Vitamins", default_unit: "mcg" },
-    { name: "Vitamin D", category: "Vitamins", default_unit: "mcg" },
-    { name: "Vitamin B1", category: "Vitamins", default_unit: "mcg" },
-    { name: "Vitamin B2", category: "Vitamins", default_unit: "mcg" },
-    { name: "Vitamin B3", category: "Vitamins", default_unit: "mcg" },
-    { name: "Vitamin B5", category: "Vitamins", default_unit: "mcg" },
-    { name: "Vitamin B6", category: "Vitamins", default_unit: "mcg" },
-    { name: "Vitamin B7", category: "Vitamins", default_unit: "mcg" },
-    { name: "Vitamin B9", category: "Vitamins", default_unit: "mcg" },
-    { name: "Vitamin B12", category: "Vitamins", default_unit: "mcg" },
-    { name: "Choline", category: "Vitamins", default_unit: "mcg" },
-    { name: "Iron", category: "Trace Minerals", default_unit: "mg" },
-    { name: "Zinc", category: "Trace Minerals", default_unit: "mg" },
-    { name: "Selenium", category: "Trace Minerals", default_unit: "mcg" },
-    { name: "Iodine", category: "Trace Minerals", default_unit: "mcg" },
-    { name: "Copper", category: "Trace Minerals", default_unit: "mg" },
-    { name: "Manganese", category: "Trace Minerals", default_unit: "mg" },
-    { name: "Fluoride", category: "Trace Minerals", default_unit: "mcg" },
-    { name: "Cobalt", category: "Trace Minerals", default_unit: "mcg" },
-    { name: "Molybdenum", category: "Trace Minerals", default_unit: "mcg" },
-    { name: "Alanine", category: "Amino Acids", default_unit: "mg" },
-    { name: "Arginine", category: "Amino Acids", default_unit: "mg" },
-    {
-      name: "Aspartic acid",
-      category: "Amino Acids",
-      default_unit: "mg",
-      help: "Aspartate",
-    },
-    { name: "Asparagine", category: "Amino Acids", default_unit: "mg" },
-    { name: "Cysteine", category: "Amino Acids", default_unit: "mg" },
-    {
-      name: "Glutamic acid",
-      category: "Amino Acids",
-      default_unit: "mg",
-      help: "Glutamate",
-    },
-    { name: "Glutamine", category: "Amino Acids", default_unit: "mg" },
-    { name: "Glycine", category: "Amino Acids", default_unit: "mg" },
-    { name: "Histidine", category: "Amino Acids", default_unit: "mg" },
-    { name: "Isoleucine", category: "Amino Acids", default_unit: "mg" },
-    { name: "Leucine", category: "Amino Acids", default_unit: "mg" },
-    { name: "Lysine", category: "Amino Acids", default_unit: "mg" },
-    { name: "Methionine", category: "Amino Acids", default_unit: "mg" },
-    { name: "Phenylalanine", category: "Amino Acids", default_unit: "mg" },
-    { name: "Proline", category: "Amino Acids", default_unit: "mg" },
-    { name: "Serine", category: "Amino Acids", default_unit: "mg" },
-    { name: "Threonine", category: "Amino Acids", default_unit: "mg" },
-    { name: "Tryptophan", category: "Amino Acids", default_unit: "mg" },
-    { name: "Tyrosine", category: "Amino Acids", default_unit: "mg" },
-    { name: "Valine", category: "Amino Acids", default_unit: "mg" },
-    { name: "Water", category: "Other", default_unit: "g" },
-    { name: "Ash", category: "Other", default_unit: "g" },
-    { name: "Alcohol", category: "Other", default_unit: "g" },
-  ];
   //Create Meal Entries objectStore
   let fmtMealEntriesStore = fmtAppInstance.fmtDb.createObjectStore(
     fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE,
@@ -725,9 +513,9 @@ function prepareDBv1() {
     fmtAppGlobals.FMT_DB_UNITS_STORE,
     { keyPath: fmtAppGlobals.FMT_DB_UNITS_KP, autoIncrement: false }
   );
-  for (let i in baseUnitsChart) {
-    console.debug(`Adding Unit entry: ${JSON.stringify(baseUnitsChart[i])}`);
-    fmtUnitsStore.add(baseUnitsChart[i]);
+  for (const unit of BASE_UNIT_CHART_V1) {
+    console.debug(`Adding Unit entry: ${JSON.stringify(unit)}`);
+    fmtUnitsStore.add(unit);
   }
 
   //Create Nutrients objectStore and populate default entries
@@ -735,12 +523,11 @@ function prepareDBv1() {
     fmtAppGlobals.FMT_DB_NUTRIENTS_STORE,
     { keyPath: fmtAppGlobals.FMT_DB_NUTRIENTS_KP, autoIncrement: false }
   );
-  for (let i in baseAdditionalNutrients) {
-    let nutri = baseAdditionalNutrients[i];
+  for (const nutrient of BASE_ADDITIONAL_NUTRIENTS_V1) {
     console.debug(
-      `Inserting Additional Nutrient entry: ${JSON.stringify(nutri)}`
+      `Inserting Additional Nutrient entry: ${JSON.stringify(nutrient)}`
     );
-    fmtNutrientsStore.add(nutri);
+    fmtNutrientsStore.add(nutrient);
   }
   //Create User Settings objectStore
   let fmtUserSettingsStore = fmtAppInstance.fmtDb.createObjectStore(
