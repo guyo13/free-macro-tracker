@@ -3,13 +3,12 @@
 // license that can be found in the LICENSE file.
 /* global $:false, jQuery:false */
 
-import {
-  FMTAndroidPlatform,
-  FMTPlatformType,
-  type AdditionalNutrients,
-  type Nutrient,
-  type NutritionalValue,
-} from "./app/types";
+import { FMTAndroidPlatform, FMTPlatformType } from "./app/types";
+import type {
+  AdditionalNutrients,
+  NutrientData,
+  NutritionalValue,
+} from "./app/nutrient";
 import { fmtAppGlobals } from "./app/globals";
 import FMTPlatform from "./app/platform";
 import {
