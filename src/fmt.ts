@@ -12,7 +12,14 @@ import {
 } from "./app/types";
 import { fmtAppGlobals } from "./app/globals";
 import FMTPlatform from "./app/platform";
-import { isDate, isFunction, isNumber, isPercent, isString } from "./app/utils";
+import {
+  isDate,
+  isSameDay,
+  isFunction,
+  isNumber,
+  isPercent,
+  isString,
+} from "./app/utils";
 
 var platformInterface = new FMTPlatform();
 //Instance
@@ -89,13 +96,6 @@ function appendChildren(DOMElement, childrenArray) {
   }
 }
 
-function isSameDay(d1, d2) {
-  return (
-    d1.getFullYear() === d2.getFullYear() &&
-    d1.getMonth() === d2.getMonth() &&
-    d1.getDate() === d2.getDate()
-  );
-}
 function isInput(elem) {
   return elem.tagName.toLowerCase() == "input";
 }
