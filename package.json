@@ -25,6 +25,7 @@
     "dev": "webpack serve"
   },
   "dependencies": {
+    "date-fns": "^2.29.3",
     "idb_wrapper.js": "^1.0.0"
   }
 }

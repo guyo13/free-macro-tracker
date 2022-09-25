@@ -12,6 +12,7 @@ import {
   NUTRIENT_ROUNDING_PRECISION,
   FMT_DB_NAME,
   FMT_DB_VER,
+  OVERVIEW_DATE_FORMAT,
 } from "./app/globals";
 import {
   default as FMTPlatform,
@@ -38,6 +39,8 @@ import type {
   NutrientData,
   NutritionalValue,
 } from "./app/nutrient";
+
+import { format as formatDate } from "date-fns";
 
 const platformInterface = new FMTPlatform();
 //Instance
@@ -89,23 +92,6 @@ var fmtAppExport;
 
 //Functions
 //Functions - Generic
-
-function getDateString(d) {
-  if (!d) {
-    return "";
-  }
-  try {
-    let dateString = `${
-      fmtAppGlobals.dateConstants.monthNames[d.getMonth()]
-    } ${d.getDate()}${
-      fmtAppGlobals.dateConstants.daySuffixes[d.getDate() % 10]
-    } ${d.getFullYear()}`;
-    return dateString;
-  } catch (error) {
-    console.error(error);
-    return "";
-  }
-}
 function appendChildren(DOMElement, childrenArray) {
   for (let k = 0; k < childrenArray.length; k++) {
     DOMElement.appendChild(childrenArray[k]);
@@ -5519,12 +5505,12 @@ function FMTOverviewLoadMealEntries(onsuccessFn, onerrorFn) {
 function FMTOverviewLoadCurrentDay(onsuccessFn, onerrorFn) {
   //Handle dates
   FMTToday();
-  const cYear = fmtAppInstance.today.getFullYear();
-  const cMonth = fmtAppInstance.today.getMonth();
-  const cDay = fmtAppInstance.today.getDate();
+  const thisYear = fmtAppInstance.today.getFullYear();
+  const thisMonth = fmtAppInstance.today.getMonth();
+  const thisDay = fmtAppInstance.today.getDate();
 
-  const tomorrow = new Date(cYear, cMonth, cDay + 1);
-  const yesterday = new Date(cYear, cMonth, cDay - 1);
+  const tomorrow = new Date(thisYear, thisMonth, thisDay + 1);
+  const yesterday = new Date(thisYear, thisMonth, thisDay - 1);
 
   if (isSameDay(fmtAppInstance.currentDay, fmtAppInstance.today)) {
     FMTOverviewSetDateStrings("Today");
@@ -5533,7 +5519,9 @@ function FMTOverviewLoadCurrentDay(onsuccessFn, onerrorFn) {
   } else if (isSameDay(fmtAppInstance.currentDay, tomorrow)) {
     FMTOverviewSetDateStrings("Tomorrow");
   } else {
-    FMTOverviewSetDateStrings(getDateString(fmtAppInstance.currentDay));
+    FMTOverviewSetDateStrings(
+      formatDate(fmtAppInstance.currentDay, OVERVIEW_DATE_FORMAT)
+    );
   }
 
   if (

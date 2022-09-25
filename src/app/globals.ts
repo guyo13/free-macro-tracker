@@ -102,33 +102,6 @@ fmtAppGlobals.activityLevelsMultipliers = {
 fmtAppGlobals.supportedMacroUnits = ["kCal", "%", "g"];
 fmtAppGlobals.macroNames = ["protein", "carbohydrate", "fat"];
 fmtAppGlobals.supportedUnitTypes = ["mass", "volume", "arbitrary"];
-fmtAppGlobals.dateConstants = {};
-fmtAppGlobals.dateConstants.monthNames = {
-  0: "Jan",
-  1: "Feb",
-  2: "Mar",
-  3: "Apr",
-  4: "May",
-  5: "Jun",
-  6: "Jul",
-  7: "Aug",
-  8: "Sep",
-  9: "Oct",
-  10: "Nov",
-  11: "Dec",
-};
-fmtAppGlobals.dateConstants.daySuffixes = {
-  0: "th",
-  1: "st",
-  2: "nd",
-  3: "rd",
-  4: "th",
-  5: "th",
-  6: "th",
-  7: "th",
-  8: "th",
-  9: "th",
-};
 //Globals - UI - Default
 fmtAppGlobals.defaultAlertScroll = { top: 0, left: 0, behavior: "smooth" };
 fmtAppGlobals.inputScreensQualifiers = [
@@ -153,3 +126,4 @@ export const DEFAULT_ROUNDING_PRECISION = 1;
 export const NUTRIENT_ROUNDING_PRECISION = 4;
 export const FMT_DB_NAME = "fmt";
 export const FMT_DB_VER = 1;
+export const OVERVIEW_DATE_FORMAT = "MMM do yyyy";
