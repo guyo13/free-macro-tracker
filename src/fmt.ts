@@ -3,9 +3,16 @@
 // license that can be found in the LICENSE file.
 /* global $:false, jQuery:false */
 
-import { FMTAndroidPlatform } from "./app/types";
+import {
+  FMTAndroidPlatform,
+  FMTPlatformType,
+  type AdditionalNutrients,
+  type Nutrient,
+  type NutritionalValue,
+} from "./app/types";
 import { fmtAppGlobals } from "./app/globals";
 import FMTPlatform from "./app/platform";
+import { isDate, isFunction, isNumber, isPercent, isString } from "./app/utils";
 
 var platformInterface = new FMTPlatform();
 //Instance
@@ -59,32 +66,7 @@ var fmtAppExport;
 
 //Functions
 //Functions - Generic
-function hasAndroidPlatformInterface() {
-  return typeof FMTAndroidPlatform !== "undefined";
-}
-function hasIOSPlatformInterface() {
-  return (
-    typeof window.webkit !== "undefined" &&
-    typeof window.webkit.messageHandlers !== "undefined"
-  );
-}
-function isFunction(fn) {
-  return typeof fn === "function";
-}
-function isPercent(num) {
-  if (!isNaN(num)) {
-    if (num >= 0 && num <= 100) {
-      return true;
-    } else {
-      return false;
-    }
-  } else {
-    return false;
-  }
-}
-function isString(s) {
-  return typeof s === "string";
-}
+
 function getDateString(d) {
   if (!d) {
     return "";
@@ -106,20 +88,7 @@ function appendChildren(DOMElement, childrenArray) {
     DOMElement.appendChild(childrenArray[k]);
   }
 }
-function isNumber(input) {
-  if (input === "" || isNaN(input) || input == null) {
-    return false;
-  } else {
-    return true;
-  }
-}
-function isDate(date) {
-  return (
-    date &&
-    Object.prototype.toString.call(date) === "[object Date]" &&
-    !isNaN(date)
-  );
-}
+
 function isSameDay(d1, d2) {
   return (
     d1.getFullYear() === d2.getFullYear() &&
@@ -171,34 +140,30 @@ function getOnEndRemoveFirstFromArrayAndExec(globalArray, elem, fn) {
     }
   };
 }
-function FMTCreateEmptyAdditionalNutrients(additional) {
-  additional = additional || fmtAppInstance.additionalNutrients;
-  const additionalNutrients = {};
+function FMTCreateEmptyAdditionalNutrients(): AdditionalNutrients {
+  const additional = fmtAppInstance.additionalNutrients;
+  const additionalNutrients: AdditionalNutrients = {};
   for (const category in additional) {
-    additionalNutrients[category] = [];
-    additional[category].forEach((nutriObj) => {
-      const nutrient = {};
-      nutrient.name = nutriObj.name;
-      nutrient.amount = 0;
-      nutrient.unit = nutriObj.default_unit;
-      additionalNutrients[category].push(nutrient);
-    });
+    additionalNutrients[category] = additional[category].map((nutriObj) => ({
+      name: nutriObj.name,
+      amount: 0,
+      unit: nutriObj.default_unit,
+    }));
   }
   return additionalNutrients;
 }
-function FMTCreateEmptyNutritionalValue(withAdditionalNutrients) {
-  const nutritionalValue = {};
-  nutritionalValue.calories = 0;
-  nutritionalValue.proteins = 0;
-  nutritionalValue.carbohydrates = 0;
-  nutritionalValue.fats = 0;
-  if (withAdditionalNutrients === true) {
-    nutritionalValue.additionalNutrients = FMTCreateEmptyAdditionalNutrients(
-      fmtAppInstance.additionalNutrients
-    );
-  } else {
-    nutritionalValue.additionalNutrients = {};
-  }
+function FMTCreateEmptyNutritionalValue(
+  withAdditionalNutrients: boolean
+): NutritionalValue {
+  const nutritionalValue = {
+    calories: 0,
+    proteins: 0,
+    carbohydrates: 0,
+    fats: 0,
+    additionalNutrients: withAdditionalNutrients
+      ? FMTCreateEmptyAdditionalNutrients()
+      : {},
+  };
   return nutritionalValue;
 }
 function FMTSumAdditionalNutrients(
@@ -7793,7 +7758,8 @@ var pageController = {
     const titleSpan = document.getElementById(
       "fmt-app-first-time-overlay-text-1"
     );
-    const appName = hasIOSPlatformInterface() ? "Open" : "Free";
+    const appName =
+      platformInterface.platform === FMTPlatformType.IOS ? "Open" : "Free";
     titleSpan.innerHTML = `Welcome to ${appName} Macro Tracker.`;
     overlay.classList.remove("d-none");
     overlay.style.zIndex = fmtAppGlobals.maxDynamicScreens + 2;

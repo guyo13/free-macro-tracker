@@ -22,6 +22,24 @@ export interface FMTiOSInterface {
   FMTShowPrompt: WebkitMessageHandler;
 }
 
+export interface Nutrient {
+  name: string;
+  amount: number;
+  unit: string;
+}
+
+export interface NutritionalValue {
+  calories: number;
+  proteins: number;
+  carbohydrates: number;
+  fats: number;
+  additionalNutrients: AdditionalNutrients;
+}
+
+export type AdditionalNutrients = {
+  [key: string]: Array<Nutrient>;
+};
+
 export enum FMTPlatformType {
   Android = "Android",
   IOS = "IOS",
