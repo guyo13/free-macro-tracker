@@ -3,21 +3,13 @@ export const fmtAppGlobals: any = {};
 fmtAppGlobals.projectURL = "https://github.com/guyo13/free-macro-tracker";
 //Globals - DB
 fmtAppGlobals.FMT_DB_CURSOR_DIRS = ["next", "nextunique", "prev", "prevunique"];
-//Globals - DB - Meal Entries Store constants
 fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE = "fmt_meal_entries";
-//Globals - DB - Foods Store constants
 fmtAppGlobals.FMT_DB_FOODS_STORE = "fmt_foods";
-//Globals - DB - Recipes Store constants
 fmtAppGlobals.FMT_DB_RECIPES_STORE = "fmt_recipes";
-//Globals - DB - Profile Store constants
 fmtAppGlobals.FMT_DB_PROFILES_STORE = "fmt_profiles";
-//Globals - DB - Units Store constants
 fmtAppGlobals.FMT_DB_UNITS_STORE = "fmt_units";
-//Globals - DB - Nutrients Store constants
 fmtAppGlobals.FMT_DB_NUTRIENTS_STORE = "fmt_nutrients";
-//Globals - DB - User Settings Store
 fmtAppGlobals.FMT_DB_USER_SETTINGS_STORE = "fmt_user_settings";
-//Globals - DB - User Goals Store
 fmtAppGlobals.FMT_DB_USER_GOALS_STORE = "fmt_user_goals";
 
 //Globals - Page
