@@ -23,6 +23,7 @@ import {
   BASE_ADDITIONAL_NUTRIENTS_V1,
   BASE_UNIT_CHART_V1,
 } from "./data/migrations";
+import { areUnitsConvertible, convertUnitsByName } from "./app/units";
 
 var platformInterface = new FMTPlatform();
 //Instance
@@ -170,8 +171,8 @@ function FMTCreateEmptyNutritionalValue(
   return nutritionalValue;
 }
 function FMTSumAdditionalNutrients(
-  additionalNutrientsSum,
-  additionalNutrientsObj,
+  additionalNutrientsSum: AdditionalNutrients,
+  additionalNutrientsObj: AdditionalNutrients,
   unitsChart
 ) {
   unitsChart = unitsChart || fmtAppInstance.unitsChart;
@@ -190,7 +191,7 @@ function FMTSumAdditionalNutrients(
       let l = 0;
       while (l < idx.length && !isConvertible) {
         const existingNutri = additionalNutrientsSum[category][idx[l]];
-        const convRes = FMTConvertUnits(
+        const convRes = convertUnitsByName(
           existingNutri.unit,
           addiNutriObj.unit,
           unitsChart
@@ -278,113 +279,7 @@ function FMTSumIngredients(ingredients, unitsChart) {
   }
   return FMTSumNutritionalValues(nutriValueArr, unitsChart);
 }
-function FMTIsConvertible(referenceUnits, valueUnits) {
-  //Takes two Unit Objects
-  const result = {};
 
-  if (referenceUnits.type === "mass" && valueUnits.type === "mass") {
-    result.isConvertible = true;
-    result.type = "mass";
-  } else if (referenceUnits.type === "volume" && valueUnits.type === "volume") {
-    result.isConvertible = true;
-    result.type = "volume";
-  } else if (
-    referenceUnits.type === "arbitrary" &&
-    valueUnits.type === "mass"
-  ) {
-    if (referenceUnits.value_in_grams > 0) {
-      result.isConvertible = true;
-      result.type = "mass";
-    } else {
-      result.isConvertible = false;
-    }
-  } else if (
-    referenceUnits.type === "mass" &&
-    valueUnits.type === "arbitrary"
-  ) {
-    if (valueUnits.value_in_grams > 0) {
-      result.isConvertible = true;
-      result.type = "mass";
-    } else {
-      result.isConvertible = false;
-    }
-  } else if (
-    referenceUnits.type === "arbitrary" &&
-    valueUnits.type === "volume"
-  ) {
-    if (referenceUnits.value_in_ml > 0) {
-      result.isConvertible = true;
-      result.type = "volume";
-    } else {
-      result.isConvertible = false;
-    }
-  } else if (
-    referenceUnits.type === "volume" &&
-    valueUnits.type === "arbitrary"
-  ) {
-    if (valueUnits.value_in_ml > 0) {
-      result.isConvertible = true;
-      result.type = "volume";
-    } else {
-      result.isConvertible = false;
-    }
-  } else if (
-    referenceUnits.type === "arbitrary" &&
-    valueUnits.type === "arbitrary"
-  ) {
-    if (referenceUnits.value_in_ml > 0 && valueUnits.value_in_ml > 0) {
-      result.isConvertible = true;
-      result.type = "volume";
-    } else if (
-      referenceUnits.value_in_grams > 0 &&
-      valueUnits.value_in_grams > 0
-    ) {
-      result.isConvertible = true;
-      result.type = "mass";
-    } else {
-      result.isConvertible = false;
-    }
-  } else {
-    result.isConvertible = false;
-  }
-  return result;
-}
-function FMTConvertUnits(referenceUnits, valueUnits, unitsChart) {
-  //returns by how many times valueUnits is greater than referenceUnits (or lower than if results is < 1)
-  unitsChart = unitsChart || fmtAppInstance.unitsChart;
-  const result = {};
-  if (!unitsChart) {
-    result.error = "Error - No Units loaded";
-    return result;
-  }
-  const _referenceUnits = unitsChart[referenceUnits];
-  const _valueUnits = unitsChart[valueUnits];
-  if (!referenceUnits || !valueUnits) {
-    result.error = `Error - Units ${_valueUnits} and ${_referenceUnits} could not be found`;
-    return result;
-  } else {
-    referenceUnits = _referenceUnits;
-    valueUnits = _valueUnits;
-  }
-  const isConvertible = FMTIsConvertible(referenceUnits, valueUnits);
-  if (isConvertible.isConvertible) {
-    switch (isConvertible.type) {
-      case "mass":
-        result.unitMultiplier =
-          valueUnits.value_in_grams / referenceUnits.value_in_grams;
-        break;
-      case "volume":
-        result.unitMultiplier =
-          valueUnits.value_in_ml / referenceUnits.value_in_ml;
-        break;
-    }
-  } else {
-    result.error = `Unit ${valueUnits.description} is incompatible with ${referenceUnits.description}`;
-  }
-  result.isConvertible = isConvertible.isConvertible;
-  result.type = isConvertible.type;
-  return result;
-}
 function FMTCalculateMultiplier(
   referenceValue,
   referenceUnits,
@@ -427,12 +322,12 @@ function FMTCalculateMultiplier(
     result.convertedValue = valueToconvert;
     result.error = null;
   } else {
-    const unitConvertRes = FMTConvertUnits(
+    const unitConvertRes = convertUnitsByName(
       referenceUnits,
       valueUnits,
       unitsChart
     );
-    if (unitConvertRes.error != null || unitConvertRes.unitMultiplier == null) {
+    if (unitConvertRes.error) {
       result.error = unitConvertRes.error;
     } else {
       const valueConverted = valueToconvert * unitConvertRes.unitMultiplier;
@@ -450,7 +345,7 @@ function FMTGetConvertibleUnits(unitName, unitsChart) {
     const unit = unitsChart[unitName];
     for (const uName in unitsChart) {
       const targetUnit = unitsChart[uName];
-      const _isConv = FMTIsConvertible(unit, targetUnit);
+      const _isConv = areUnitsConvertible(unit, targetUnit);
       if (_isConv.isConvertible === true) {
         result.convertibleUnits[uName] = targetUnit;
       }
