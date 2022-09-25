@@ -24,6 +24,7 @@ import {
   BASE_UNIT_CHART_V1,
 } from "./data/migrations";
 import { areUnitsConvertible, convertUnitsByName } from "./app/units";
+import { calculateConsumableRatio } from "./app/calculations";
 
 var platformInterface = new FMTPlatform();
 //Instance
@@ -280,64 +281,6 @@ function FMTSumIngredients(ingredients, unitsChart) {
   return FMTSumNutritionalValues(nutriValueArr, unitsChart);
 }
 
-function FMTCalculateMultiplier(
-  referenceValue,
-  referenceUnits,
-  valueToconvert,
-  valueUnits,
-  unitsChart
-) {
-  unitsChart = unitsChart || fmtAppInstance.unitsChart;
-  const result = {};
-  if (!unitsChart) {
-    result.error = "Error - No Units loaded";
-    return result;
-  }
-
-  if (!(valueUnits in unitsChart)) {
-    result.error = `Invalid or unknown units "${units}"`;
-    console.error(result.error);
-    return result;
-  }
-  if (!(referenceUnits in unitsChart)) {
-    result.error = `Invalid or unknown reference units "${referenceUnits}"`;
-    console.error(result.error);
-    return result;
-  }
-  if (!isNumber(valueToconvert)) {
-    result.error = `Invalid value to convert "${valueToconvert}"`;
-    console.error(result.error);
-    return result;
-  }
-  if (!isNumber(referenceValue)) {
-    result.error = `Invalid reference value "${referenceValue}"`;
-    console.error(result.error);
-    return result;
-  }
-
-  valueToconvert = Number(valueToconvert);
-  referenceValue = Number(referenceValue);
-  if (valueUnits === referenceUnits) {
-    result.multiplier = valueToconvert / referenceValue;
-    result.convertedValue = valueToconvert;
-    result.error = null;
-  } else {
-    const unitConvertRes = convertUnitsByName(
-      referenceUnits,
-      valueUnits,
-      unitsChart
-    );
-    if (unitConvertRes.error) {
-      result.error = unitConvertRes.error;
-    } else {
-      const valueConverted = valueToconvert * unitConvertRes.unitMultiplier;
-      result.convertedValue = valueConverted;
-      result.multiplier = valueConverted / referenceValue;
-      result.error = null;
-    }
-  }
-  return result;
-}
 function FMTGetConvertibleUnits(unitName, unitsChart) {
   const result = {};
   result.convertibleUnits = {};
@@ -4761,29 +4704,30 @@ function FMTUpdateConsumableValuesOnServingChange(
   const servingInputField = document.getElementById(
     `${baseScreenID}-${qualifier}-serving-input`
   );
-  let servingValue = servingInputField.value;
-  if (servingValue === "") {
-    servingValue = 0;
+  let userServingSize = servingInputField.value;
+  if (userServingSize === "") {
+    userServingSize = 0;
   }
-  let units = document.getElementById(
+  let userSelectedUnits = document.getElementById(
     `${baseScreenID}-${qualifier}-serving-unit-select`
   ).value;
-  let referenceServing = servingInputField.getAttribute("reference_serving");
+  let referenceServingSize =
+    servingInputField.getAttribute("reference_serving");
   let referenceServingUnits = servingInputField.getAttribute(
     "reference_serving_units"
   );
-  const conversionRes = FMTCalculateMultiplier(
-    referenceServing,
+  const conversionRes = calculateConsumableRatio(
+    referenceServingSize,
     referenceServingUnits,
-    servingValue,
-    units,
+    userServingSize,
+    userSelectedUnits,
     fmtAppInstance.unitsChart
   );
   let multiplier = 1;
-  if (conversionRes.error != null || conversionRes.multiplier == null) {
+  if (conversionRes.error) {
     //FMTShowAlert(alertsDivID, "danger", conversionRes.error, fmtAppGlobals.defaultAlertScroll);
-    units = undefined;
-    servingValue = undefined;
+    userSelectedUnits = undefined;
+    userServingSize = undefined;
   } else {
     multiplier = conversionRes.multiplier;
   }
@@ -4796,8 +4740,8 @@ function FMTUpdateConsumableValuesOnServingChange(
       ingredient,
       multiplier,
       false,
-      servingValue,
-      units,
+      userServingSize,
+      userSelectedUnits,
       undefined,
     ];
   } else {
@@ -4815,7 +4759,7 @@ function FMTUpdateConsumableValuesOnServingChange(
       );
       return;
     } else {
-      args = [objectId, multiplier, false, servingValue, units];
+      args = [objectId, multiplier, false, userServingSize, userSelectedUnits];
     }
   }
   // console.log(`FMTUpdateConsumableValuesOnServingChange, Args ${JSON.stringify(args)}`);

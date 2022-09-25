@@ -22,6 +22,8 @@ export interface UnitsConvertionResult extends UnitsConvertibleResult {
   error?: string;
 }
 
+export type UnitChart = { [key: string]: Unit };
+
 // TODO - Simplify logic
 export function areUnitsConvertible(
   targetUnit: Unit,
@@ -103,7 +105,7 @@ export function convertUnits(
 export function convertUnitsByName(
   targetUnitName: string,
   originUnitName: string,
-  unitsChart: { [key: string]: Unit }
+  unitsChart: UnitChart
 ): UnitsConvertionResult {
   if (!unitsChart) {
     return { error: "Error - No Units loaded" };
