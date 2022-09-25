@@ -10,6 +10,8 @@ import {
   fmtAppGlobals,
   DEFAULT_ROUNDING_PRECISION,
   NUTRIENT_ROUNDING_PRECISION,
+  FMT_DB_NAME,
+  FMT_DB_VER,
 } from "./app/globals";
 import {
   default as FMTPlatform,
@@ -8530,10 +8532,7 @@ function startIndexedDB() {
     window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 
   //Start IndexedDB
-  var dbOpenReq = indexedDB.open(
-    fmtAppGlobals.FMT_DB_NAME,
-    fmtAppGlobals.FMT_DB_VER
-  );
+  var dbOpenReq = indexedDB.open(FMT_DB_NAME, FMT_DB_VER);
   dbOpenReq.onupgradeneeded = onUpgradeNeeded;
   dbOpenReq.onsuccess = onDbSuccess;
 }

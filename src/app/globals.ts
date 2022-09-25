@@ -2,8 +2,6 @@ export const fmtAppGlobals: any = {};
 //Globals - Links
 fmtAppGlobals.projectURL = "https://github.com/guyo13/free-macro-tracker";
 //Globals - DB
-fmtAppGlobals.FMT_DB_NAME = "fmt";
-fmtAppGlobals.FMT_DB_VER = 1;
 fmtAppGlobals.FMT_DB_READONLY = "readonly";
 fmtAppGlobals.FMT_DB_READWRITE = "readwrite";
 fmtAppGlobals.FMT_DB_CURSOR_DIRS = ["next", "nextunique", "prev", "prevunique"];
@@ -153,3 +151,5 @@ fmtAppGlobals.strings = {
 
 export const DEFAULT_ROUNDING_PRECISION = 1;
 export const NUTRIENT_ROUNDING_PRECISION = 4;
+export const FMT_DB_NAME = "fmt";
+export const FMT_DB_VER = 1;
