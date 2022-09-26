@@ -1063,6 +1063,8 @@ function FMTValidateNutrientObject(nutrientObj) {
   nutrient.help = nutrientObj.help;
   return nutrient;
 }
+
+// TODO - Remove and use MacroSplit class
 function FMTValidateMacroSplit(macroSplitObj) {
   const result = {};
   const macroSplit = {};
@@ -1399,6 +1401,8 @@ function FMTValidateMealEntry(mealEntryObj) {
   result.mealEntry = mealEntry;
   return result;
 }
+
+// TODO - Remove and use MealIdentifier class
 function FMTValidateMealIdentifier(mealIdentifierObj) {
   const result = {};
   const mealIdentifier = {};
@@ -1461,6 +1465,8 @@ function FMTValidateMealIdentifier(mealIdentifierObj) {
   result.mealIdentifier = mealIdentifier;
   return result;
 }
+
+// TODO - Remove and use UserGoals class
 function FMTValidateUserGoals(userGoalsObj) {
   const result = {};
   const userGoals = {};

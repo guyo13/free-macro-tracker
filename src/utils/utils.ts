@@ -2,15 +2,7 @@ export function isFunction(fn: any) {
   return typeof fn === "function";
 }
 export function isPercent(num: any) {
-  if (!isNaN(num)) {
-    if (num >= 0 && num <= 100) {
-      return true;
-    } else {
-      return false;
-    }
-  } else {
-    return false;
-  }
+  return !isNaN(num) && num >= 0 && num <= 100;
 }
 
 export function isString(s: any) {

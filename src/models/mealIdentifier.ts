@@ -28,13 +28,11 @@ export default class MealIdentifier implements IMealIdentifier {
     this.meal_name = meal_name;
   }
 
-  static from(mealIdentifier: IMealIdentifier) {
-    const { profile_id, meal_year, meal_month, meal_day, meal_name } =
-      mealIdentifier;
-    return new this(profile_id, meal_year, meal_month, meal_day, meal_name);
+  static from(mealIdentifier: IMealIdentifier): MealIdentifier {
+    return this.fromObject(mealIdentifier);
   }
 
-  static fromObject(object: any) {
+  static fromObject(object: any): MealIdentifier {
     const { profile_id, meal_year, meal_month, meal_day, meal_name } = object;
     return new this(profile_id, meal_year, meal_month, meal_day, meal_name);
   }
