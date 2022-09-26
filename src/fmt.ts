@@ -25,12 +25,12 @@ import {
   isString,
   roundedToFixed,
 } from "./utils/utils";
+import { calculateConsumableRatio } from "./utils/calculations";
 import {
   areUnitsConvertible,
   convertUnitsByName,
   findConvertibleUnitsByName,
 } from "./models/units";
-import { calculateConsumableRatio } from "./app/calculations";
 import type {
   AdditionalNutrients,
   NutrientData,
