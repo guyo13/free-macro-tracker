@@ -3,42 +3,47 @@ export interface IMealIdentifier {
   meal_month: number;
   meal_day: number;
   profile_id: number;
+  meal_name: string;
 }
 
 export default class MealIdentifier implements IMealIdentifier {
+  readonly profile_id: number;
   readonly meal_year: number;
   readonly meal_month: number;
   readonly meal_day: number;
-  readonly profile_id: number;
+  readonly meal_name: string;
 
   constructor(
+    profile_id: number,
     meal_year: number,
     meal_month: number,
     meal_day: number,
-    profile_id: number
+    meal_name: string
   ) {
-    MealIdentifier.valiadate(meal_year, meal_month, meal_day, profile_id);
+    MealIdentifier.valiadate(profile_id, meal_year, meal_month, meal_day);
+    this.profile_id = profile_id;
     this.meal_year = meal_year;
     this.meal_month = meal_month;
     this.meal_day = meal_day;
-    this.profile_id = profile_id;
+    this.meal_name = meal_name;
   }
 
   static from(mealIdentifier: IMealIdentifier) {
-    const { meal_year, meal_month, meal_day, profile_id } = mealIdentifier;
-    return new this(meal_year, meal_month, meal_day, profile_id);
+    const { profile_id, meal_year, meal_month, meal_day, meal_name } =
+      mealIdentifier;
+    return new this(profile_id, meal_year, meal_month, meal_day, meal_name);
   }
 
   static fromObject(object: any) {
-    const { meal_year, meal_month, meal_day, profile_id } = object;
-    return new this(meal_year, meal_month, meal_day, profile_id);
+    const { profile_id, meal_year, meal_month, meal_day, meal_name } = object;
+    return new this(profile_id, meal_year, meal_month, meal_day, meal_name);
   }
 
   static valiadate(
+    profile_id: any,
     meal_year: any,
     meal_month: any,
-    meal_day: any,
-    profile_id: any
+    meal_day: any
   ) {
     if (!Number.isInteger(meal_year) || meal_year < 0) {
       throw `Meal Year must be a positive integer. Got '${meal_year}'`;
