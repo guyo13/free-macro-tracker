@@ -1,5 +1,5 @@
-import type { NutrientDefinition } from "../app/nutrient";
-import { UnitType, type Unit } from "../app/units";
+import type { NutrientDefinition } from "../models/nutrient";
+import { UnitType, type Unit } from "../models/units";
 import type { IndexConfig } from "idb_wrapper.js";
 
 export interface StoreConfig {

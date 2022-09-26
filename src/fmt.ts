@@ -29,13 +29,13 @@ import {
   areUnitsConvertible,
   convertUnitsByName,
   findConvertibleUnitsByName,
-} from "./app/units";
+} from "./models/units";
 import { calculateConsumableRatio } from "./app/calculations";
 import type {
   AdditionalNutrients,
   NutrientData,
   NutritionalValue,
-} from "./app/nutrient";
+} from "./models/nutrient";
 
 import { format as formatDate } from "date-fns";
 import { IDBTransactionModes } from "idb_wrapper.js";

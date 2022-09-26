@@ -1,4 +1,4 @@
-import { convertUnitsByName, type UnitChart } from "./units";
+import { convertUnitsByName, type UnitChart } from "../models/units";
 import { isNumber } from "../utils/utils";
 
 export interface ConsumableRatioResult {
