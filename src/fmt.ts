@@ -33,8 +33,8 @@ import {
 } from "./models/units";
 import type {
   AdditionalNutrients,
-  NutrientData,
-  NutritionalValue,
+  INutrientRecord,
+  INutritionalValue,
 } from "./models/nutrient";
 
 import { format as formatDate } from "date-fns";
@@ -142,7 +142,7 @@ function FMTCreateEmptyAdditionalNutrients(): AdditionalNutrients {
 }
 function FMTCreateEmptyNutritionalValue(
   withAdditionalNutrients: boolean
-): NutritionalValue {
+): INutritionalValue {
   const nutritionalValue = {
     calories: 0,
     proteins: 0,
@@ -1037,6 +1037,8 @@ function FMTValidateUnitObject(unitObj) {
   unit.description = unitObj.description;
   return unit;
 }
+
+// TODO - Remove and use NutrientDefinition class
 function FMTValidateNutrientObject(nutrientObj) {
   /*nutrientObj {name,category,default_unit,help}*/
   const _fnName = "FMTValidateNutrientObject";
@@ -1133,6 +1135,7 @@ function FMTValidateMacroSplit(macroSplitObj) {
   result.error = error;
   return result;
 }
+
 function FMTValidateProfile(profileObj) {
   const result = {};
   const profile = {};
@@ -1288,6 +1291,7 @@ function FMTValidateProfile(profileObj) {
   result.error = null;
   return result;
 }
+
 function FMTValidateMealEntry(mealEntryObj) {
   const result = {};
   const mealEntry = {};
@@ -1509,6 +1513,7 @@ function FMTValidateUserGoals(userGoalsObj) {
   result.userGoals = userGoals;
   return result;
 }
+
 function FMTValidateRecipeObject(recipeObj, unitsChart) {
   const _funcName = "FMTValidateRecipeObject";
   unitsChart = unitsChart || fmtAppInstance.unitsChart;

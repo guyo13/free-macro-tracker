@@ -1,17 +1,17 @@
-export interface NutrientData {
+export interface INutrientRecord {
   name: string;
   amount: number;
   unit: string;
 }
 
-export interface NutrientDefinition {
+export interface INutrientDefinition {
   name: string;
   category: string;
   default_unit: string;
   help?: string;
 }
 
-export interface NutritionalValue {
+export interface INutritionalValue {
   calories: number;
   proteins: number;
   carbohydrates: number;
@@ -21,5 +21,5 @@ export interface NutritionalValue {
 
 // TODO - rename it to something more clear
 export type AdditionalNutrients = {
-  [key: string]: Array<NutrientData>;
+  [key: string]: INutrientRecord[];
 };
