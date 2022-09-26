@@ -1,8 +1,12 @@
+import MacroSplit from "./macroSplit";
+import type { IMacroSplit } from "./macroSplit";
+
 export interface IUserGoals {
   profile_id: number;
   year: number;
   month: number;
   day: number;
+  macroSplit: IMacroSplit;
 }
 
 export default class UserGoals implements IUserGoals {
@@ -10,13 +14,21 @@ export default class UserGoals implements IUserGoals {
   readonly year: number;
   readonly month: number;
   readonly day: number;
+  readonly macroSplit: MacroSplit;
 
-  constructor(profile_id: number, year: number, month: number, day: number) {
-    UserGoals.valiadate(profile_id, year, month, day);
+  constructor(
+    profile_id: number,
+    year: number,
+    month: number,
+    day: number,
+    macroSplit: IMacroSplit
+  ) {
+    UserGoals.valiadate(profile_id, year, month, day, macroSplit);
     this.profile_id = profile_id;
     this.year = year;
     this.month = month;
     this.day = day;
+    this.macroSplit = MacroSplit.from(macroSplit);
   }
 
   static from(userGoals: IUserGoals): UserGoals {
@@ -24,11 +36,17 @@ export default class UserGoals implements IUserGoals {
   }
 
   static fromObject(object: any): UserGoals {
-    const { profile_id, year, month, day } = object;
-    return new this(profile_id, year, month, day);
+    const { profile_id, year, month, day, macroSplit } = object;
+    return new this(profile_id, year, month, day, macroSplit);
   }
 
-  static valiadate(profile_id: any, year: any, month: any, day: any) {
+  static valiadate(
+    profile_id: any,
+    year: any,
+    month: any,
+    day: any,
+    macroSplit: any
+  ) {
     if (!Number.isInteger(year) || year < 0) {
       throw `Year must be a positive integer. Got '${year}'`;
     }
@@ -41,5 +59,7 @@ export default class UserGoals implements IUserGoals {
     if (!Number.isInteger(profile_id)) {
       throw `Profile ID must be a valid integer. Got '${profile_id}'`;
     }
+    const { Calories, Protein, Carbohydrate, Fat } = macroSplit;
+    MacroSplit.validate(Calories, Protein, Carbohydrate, Fat);
   }
 }
