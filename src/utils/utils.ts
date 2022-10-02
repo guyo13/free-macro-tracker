@@ -29,6 +29,10 @@ export function isDate(date: any) {
   );
 }
 
+export function isDateString(dateString: any) {
+  return isString(dateString) && isDate(new Date(dateString));
+}
+
 export function isSameDay(d1: Date, d2: Date) {
   return (
     d1.getFullYear() === d2.getFullYear() &&

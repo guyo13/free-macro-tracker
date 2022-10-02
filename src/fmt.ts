@@ -1136,6 +1136,7 @@ function FMTValidateMacroSplit(macroSplitObj) {
   return result;
 }
 
+// TODO - Remove and use UserProfile class
 function FMTValidateProfile(profileObj) {
   const result = {};
   const profile = {};
@@ -1270,6 +1271,7 @@ function FMTValidateProfile(profileObj) {
     result.error = error;
     return result;
   }
+  // FIXME - Seems to be unused
   if (profileObj.date !== undefined && !isDate(new Date(profileObj.date))) {
     error = `Invalid date ${profileObj.date}`;
     result.error = error;
@@ -2552,34 +2554,6 @@ function FMTQueryUserGoalsByProfileAndDate(
   const cursorRequest = userGoalsStore.openCursor(keyRange, options.direction);
   cursorRequest.onerror = onerrorFn;
   cursorRequest.onsuccess = onsuccessFn;
-}
-
-//Functions - Nutritional
-function mifflinStJeorMen(weightKg, heightCm, ageYears) {
-  let bmr = 10 * weightKg + 6.25 * heightCm - 5 * ageYears + 5;
-  return bmr;
-}
-function mifflinStJeorWomen(weightKg, heightCm, ageYears) {
-  let bmr = 10 * weightKg + 6.25 * heightCm - 5 * ageYears - 161;
-  return bmr;
-}
-function mifflinStJeor(weightKg, heightCm, ageYears, sex) {
-  switch (sex) {
-    case "Male":
-      return mifflinStJeorMen(weightKg, heightCm, ageYears);
-    case "Female":
-      return mifflinStJeorWomen(weightKg, heightCm, ageYears);
-    default:
-      return -1;
-  }
-}
-function katchMcArdle(weightKg, bodyfatReal) {
-  if (bodyfatReal > 0 && bodyfatReal < 1) {
-    let bmr = 370 + 21.6 * (1 - bodyfatReal) * weightKg;
-    return bmr;
-  } else {
-    return -1;
-  }
 }
 
 //Functions - UI - Generic

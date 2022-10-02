@@ -1,5 +1,13 @@
 import { convertUnitsByName, type UnitChart } from "../models/units";
+import {
+  BodyHeightUnits,
+  BodyWeightUnits,
+  UserGender,
+} from "../models/userProfile";
 import { isNumber } from "./utils";
+
+const LBS_KG_RATIO = 2.2;
+const INCH_CM_RATIO = 2.54;
 
 export interface ConsumableRatioResult {
   error?: string;
@@ -57,4 +65,68 @@ export function calculateConsumableRatio(
     multiplier: convertedValue / referenceValue,
     convertedValue: convertedValue,
   };
+}
+
+export function convertBodyWeightToKg(
+  bodyWeight: number,
+  unit: BodyWeightUnits
+) {
+  switch (unit) {
+    case BodyWeightUnits.Kg:
+      return bodyWeight;
+    case BodyWeightUnits.Lbs:
+      return bodyWeight / LBS_KG_RATIO;
+  }
+}
+
+export function convertHeightToCm(height: number, unit: BodyHeightUnits) {
+  switch (unit) {
+    case BodyHeightUnits.Cm:
+      return height;
+    case BodyHeightUnits.Inch:
+      return height * INCH_CM_RATIO;
+  }
+}
+
+export function mifflinStJeorMale(
+  weightKg: number,
+  heightCm: number,
+  ageYears: number
+): number {
+  let bmr = 10 * weightKg + 6.25 * heightCm - 5 * ageYears + 5;
+  return bmr;
+}
+
+export function mifflinStJeorFemale(
+  weightKg: number,
+  heightCm: number,
+  ageYears: number
+): number {
+  let bmr = 10 * weightKg + 6.25 * heightCm - 5 * ageYears - 161;
+  return bmr;
+}
+
+export function mifflinStJeor(
+  weightKg: number,
+  heightCm: number,
+  ageYears: number,
+  sex: UserGender
+): number {
+  switch (sex) {
+    case UserGender.Male:
+      return mifflinStJeorMale(weightKg, heightCm, ageYears);
+    case UserGender.Female:
+      return mifflinStJeorFemale(weightKg, heightCm, ageYears);
+    default:
+      return -1;
+  }
+}
+
+export function katchMcArdle(weightKg: number, bodyfatReal: number): number {
+  if (bodyfatReal > 0 && bodyfatReal < 1) {
+    let bmr = 370 + 21.6 * (1 - bodyfatReal) * weightKg;
+    return bmr;
+  } else {
+    return -1;
+  }
 }
