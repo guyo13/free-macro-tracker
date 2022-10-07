@@ -6,8 +6,6 @@ export enum UnitType {
   Arbitrary = "arbitrary",
 }
 
-export type UnitChart = { [key: string]: IUnit };
-
 export interface IUnit {
   name: string;
   description: string;
@@ -151,6 +149,8 @@ export function areUnitsConvertible(
   }
   return { isConvertible: false, type: null };
 }
+
+export type UnitChart = { [key: string]: IUnit };
 
 /// Returns the ratio between `originUnit` and `targetUnit` real values.
 export function convertUnits(
