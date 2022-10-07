@@ -2,7 +2,7 @@
 // All rights reserved. Use of this source code is governed by a GNU GPL
 // license that can be found in the LICENSE file.
 
-import { MIGRATIONS_V1, prepareDBv1 } from "./data/migrations";
+import { prepareDBv1 } from "./data/migrations";
 import {
   fmtAppGlobals,
   DEFAULT_ROUNDING_PRECISION,
@@ -11,11 +11,7 @@ import {
   FMT_DB_VER,
   OVERVIEW_DATE_FORMAT,
 } from "./app/globals";
-import {
-  default as FMTPlatform,
-  FMTAndroidPlatform,
-  FMTPlatformType,
-} from "./app/platform";
+import { default as FMTPlatform, FMTPlatformType } from "./app/platform";
 import {
   isDate,
   isSameDay,
@@ -27,7 +23,6 @@ import {
 } from "./utils/utils";
 import { calculateConsumableRatio } from "./utils/calculations";
 import {
-  areUnitsConvertible,
   convertUnitsByName,
   findConvertibleUnitsByName,
   type IUnit,
@@ -36,7 +31,6 @@ import {
 import type {
   AdditionalNutrients,
   INutrientDefinition,
-  INutrientRecord,
   INutritionalValue,
 } from "./models/nutrient";
 
