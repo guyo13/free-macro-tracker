@@ -1139,10 +1139,6 @@ function FMTValidateMacroSplit(macroSplitObj): {
       return result;
     }
   }
-  error = `Error Validating Macro split!`;
-  console.error(macroSplitObj);
-  result.error = error;
-  return result;
 }
 
 // TODO - Remove and use UserProfile class
