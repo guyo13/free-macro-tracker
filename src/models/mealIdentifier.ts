@@ -20,7 +20,7 @@ export default class MealIdentifier implements IMealIdentifier {
     meal_day: number,
     meal_name: string
   ) {
-    MealIdentifier.valiadate(profile_id, meal_year, meal_month, meal_day);
+    MealIdentifier.validate(profile_id, meal_year, meal_month, meal_day);
     this.profile_id = profile_id;
     this.meal_year = meal_year;
     this.meal_month = meal_month;
@@ -37,7 +37,7 @@ export default class MealIdentifier implements IMealIdentifier {
     return new this(profile_id, meal_year, meal_month, meal_day, meal_name);
   }
 
-  static valiadate(
+  static validate(
     profile_id: any,
     meal_year: any,
     meal_month: any,

@@ -23,7 +23,7 @@ export default class UserGoals implements IUserGoals {
     day: number,
     macroSplit: IMacroSplit
   ) {
-    UserGoals.valiadate(profile_id, year, month, day, macroSplit);
+    UserGoals.validate(profile_id, year, month, day, macroSplit);
     this.profile_id = profile_id;
     this.year = year;
     this.month = month;
@@ -40,7 +40,7 @@ export default class UserGoals implements IUserGoals {
     return new this(profile_id, year, month, day, macroSplit);
   }
 
-  static valiadate(
+  static validate(
     profile_id: any,
     year: any,
     month: any,
