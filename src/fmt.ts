@@ -913,67 +913,67 @@ function FMTValidateNutritionalValue(
 }
 
 // TODO - Remove and use Food class
-function FMTValidateFoodObject(foodObj, unitsChart) {
-  /*foodObj - {foodName, foodBrand(optional), referenceServing, units, nutritionalValue}
-   *nutritionalValue - {calories, proteins, carbohydrates, fats, additionalNutrients}
-   *additionalNutrients - {Category1:[nutrient11, ... , nutrient1N],..CategoryM:[nutrientM1, ... , nutrientMN],}
-   *nutrient - {name,unit,amount}
-   */
+function FMTValidateFoodObject(
+  foodObj: any,
+  unitsChart: UnitChart
+): {
+  error?: string;
+  food?: {
+    foodName: string;
+    foodBrand?: string;
+    referenceServing: number;
+    units: string;
+    lastModified: string;
+    tzMinutes: number;
+    nutritionalValue: INutritionalValue;
+  };
+} {
   const _funcName = "FMTValidateFoodObject";
-  const result = {};
-  let food = {};
   if (foodObj.foodName == null || foodObj.foodName === "") {
     console.debug(`[${_funcName}] - null foodName`);
     return { food: null, error: "Food Description must not be empty" };
-  } else {
-    food.foodName = foodObj.foodName;
   }
-
-  food.foodBrand = foodObj.foodBrand;
-
   if (
     !isNumber(foodObj.referenceServing) ||
     Number(foodObj.referenceServing) <= 0
   ) {
     console.debug(`[${_funcName}] - referenceServing is not a positive number`);
     return { food: null, error: "Serving must be positive number" };
-  } else {
-    food.referenceServing = Number(foodObj.referenceServing);
   }
-
   if (foodObj.units == null) {
     console.debug(`[${_funcName}] - null units`);
     return { food: null, error: "Invalid units" };
-  } else {
-    food.units = foodObj.units;
   }
-
-  if (foodObj.lastModified != null && isDate(new Date(foodObj.lastModified))) {
-    food.lastModified = foodObj.lastModified;
-  }
-
-  if (foodObj.tzMinutes != null && isNumber(foodObj.tzMinutes)) {
-    food.tzMinutes = foodObj.tzMinutes;
-  }
-
   if (foodObj.nutritionalValue == null) {
     console.debug(`[${_funcName}] - null nutritionalValue`);
     return { food: null, error: "Nutritional Value must not be empty" };
-  } else {
-    const nutriValueValidateRes = FMTValidateNutritionalValue(
-      foodObj.nutritionalValue,
-      unitsChart
-    );
-    if (
-      nutriValueValidateRes.nutritionalValue == null ||
-      nutriValueValidateRes.error != null
-    ) {
-      result.error = nutriValueValidateRes.error;
-      return result;
-    }
-    food.nutritionalValue = nutriValueValidateRes.nutritionalValue;
   }
-  return { food: food, error: null };
+  const nutriValueValidateRes = FMTValidateNutritionalValue(
+    foodObj.nutritionalValue,
+    unitsChart
+  );
+  if (
+    nutriValueValidateRes.nutritionalValue == null ||
+    nutriValueValidateRes.error != null
+  ) {
+    return { food: null, error: nutriValueValidateRes.error };
+  }
+  const lastModified = foodObj.lastModified;
+  const tzMinutes = foodObj.tzMinutes;
+  const food = {
+    foodName: foodObj.foodName,
+    foodBrand: foodObj.foodBrand,
+    referenceServing: Number(foodObj.referenceServing),
+    units: foodObj.units,
+    lastModified:
+      lastModified != null && isDate(new Date(lastModified))
+        ? lastModified
+        : undefined,
+    tzMinutes: tzMinutes != null && isNumber(tzMinutes) ? tzMinutes : undefined,
+    nutritionalValue: nutriValueValidateRes.nutritionalValue,
+  };
+
+  return { food, error: null };
 }
 
 // TODO - Remove and use Unit class
