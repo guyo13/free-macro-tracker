@@ -913,6 +913,8 @@ function FMTValidateNutritionalValue(nutritionalValueObj, unitsChart, options) {
   result.nutritionalValue = nutritionalValue;
   return result;
 }
+
+// TODO - Remove and use Food class
 function FMTValidateFoodObject(foodObj, unitsChart) {
   /*foodObj - {foodName, foodBrand(optional), referenceServing, units, nutritionalValue}
    *nutritionalValue - {calories, proteins, carbohydrates, fats, additionalNutrients}
