@@ -4,14 +4,11 @@ import {
   katchMcArdle,
   mifflinStJeor,
 } from "../utils/calculations";
-import {
-  isDateString,
-  isPercent,
-  isPositiveNumber,
-  isString,
-} from "../utils/utils";
+import { isPercent, isPositiveNumber, isString } from "../utils/utils";
 import type { IMacroSplit } from "./macroSplit";
 import MacroSplit from "./macroSplit";
+import { validateRecord, type RecordId } from "./record";
+import type IDBRecord from "./record";
 
 export enum BodyWeightUnits {
   Kg = " Kg",
@@ -37,7 +34,7 @@ export enum UserActivityLevel {
   Very_High = "Very High",
   Custom = "Custom",
 }
-export interface IUserProfile {
+export interface IUserProfile extends IDBRecord {
   profile_id: number;
   name?: string;
   age: number;
@@ -52,8 +49,6 @@ export interface IUserProfile {
   formula: EnergyConsumptionFormula;
   bmr: number;
   tdee: number;
-  lastModified: String; // UTC ISO string
-  tzMinutes: number; // Timezone offset from UTC in minutes
   macroSplit?: IMacroSplit;
 }
 
@@ -136,6 +131,10 @@ export default class UserProfile implements IUserProfile {
     this.tdee = this.bmr * activityMultiplier;
   }
 
+  get id(): RecordId {
+    return this.profile_id;
+  }
+
   static from(userProfile: IUserProfile): UserProfile {
     return this.fromObject(userProfile);
   }
@@ -190,9 +189,7 @@ export default class UserProfile implements IUserProfile {
     tzMinutes?: any,
     macroSplit?: any
   ) {
-    if (!Number.isInteger(profile_id)) {
-      throw `Profile ID must be a valid integer. Got '${profile_id}'`;
-    }
+    validateRecord(profile_id, lastModified, tzMinutes);
     if (!Number.isInteger(age) || age < 1) {
       throw `Age must be a valid integer. Got '${age}'`;
     }
@@ -222,12 +219,6 @@ export default class UserProfile implements IUserProfile {
     }
     if (bodyfat && (!Number.isFinite(bodyfat) || !isPercent(bodyfat))) {
       throw `Body fat must be a valid percent. Got '${bodyfat}'`;
-    }
-    if (!isDateString(lastModified)) {
-      throw `Invalid last modified date. Got '${lastModified}'`;
-    }
-    if (!Number.isInteger(tzMinutes) || !Number.isFinite(tzMinutes)) {
-      throw `Invalid timezone offset value. Got '${tzMinutes}'`;
     }
     const { Calories, Protein, Carbohydrate, Fat } = macroSplit;
     MacroSplit.validate(Calories, Protein, Carbohydrate, Fat);
