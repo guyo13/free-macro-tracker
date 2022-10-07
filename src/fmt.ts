@@ -1077,66 +1077,53 @@ function FMTValidateMacroSplit(macroSplitObj): {
   error?: string;
   macroSplit?: IMacroSplit;
 } {
-  const result = {};
-  const macroSplit = {};
-  let error = null;
-  if (macroSplit == null) {
-    result.macroSplit = macroSplit;
-    return result;
-  }
   if (
-    macroSplitObj.Calories == null &&
-    macroSplitObj.Protein == null &&
-    macroSplitObj.Carbohydrate == null &&
-    macroSplitObj.Fat == null
+    macroSplitObj == null ||
+    (macroSplitObj.Calories == null &&
+      macroSplitObj.Protein == null &&
+      macroSplitObj.Carbohydrate == null &&
+      macroSplitObj.Fat == null)
   ) {
-    result.macroSplit = macroSplit;
-    return result;
+    return {};
   }
   if (macroSplitObj.Calories != null && !isNumber(macroSplitObj.Calories)) {
-    error = `Invalid Calories ${macroSplitObj.Calories}`;
-    result.error = error;
-    return result;
+    return { error: `Invalid Calories ${macroSplitObj.Calories}` };
   }
   if (macroSplitObj.Protein != null && !isPercent(macroSplitObj.Protein)) {
-    error = `Invalid Protein ${macroSplitObj.Protein}`;
-    result.error = error;
-    return result;
+    return { error: `Invalid Protein ${macroSplitObj.Protein}` };
   }
   if (
     macroSplitObj.Carbohydrate != null &&
     !isPercent(macroSplitObj.Carbohydrate)
   ) {
-    error = `Invalid Carbohydrate ${macroSplitObj.Carbohydrate}`;
-    result.error = error;
-    return result;
+    return { error: `Invalid Carbohydrate ${macroSplitObj.Carbohydrate}` };
   }
   if (macroSplitObj.Fat != null && !isPercent(macroSplitObj.Fat)) {
-    error = `Invalid Fat ${macroSplitObj.Fat}`;
-    result.error = error;
-    return result;
+    return { error: `Invalid Fat ${macroSplitObj.Fat}` };
   } else {
     const sum =
       Number(macroSplitObj.Protein) +
       Number(macroSplitObj.Carbohydrate) +
       Number(macroSplitObj.Fat);
     if (sum === 100) {
-      macroSplit.Calories = Number(macroSplitObj.Calories);
-      macroSplit.Protein = Number(macroSplitObj.Protein);
-      macroSplit.Carbohydrate = Number(macroSplitObj.Carbohydrate);
-      macroSplit.Fat = Number(macroSplitObj.Fat);
-      result.macroSplit = macroSplit;
-      return result;
+      return {
+        macroSplit: {
+          Calories: Number(macroSplitObj.Calories),
+          Protein: Number(macroSplitObj.Protein),
+          Carbohydrate: Number(macroSplitObj.Carbohydrate),
+          Fat: Number(macroSplitObj.Fat),
+        },
+      };
     } else {
       const percentDiff = 100 - sum;
       const calorieDiff = (percentDiff / 100) * macroSplitObj.Calories;
       const moreOrLess = calorieDiff > 0 ? "more" : "less";
       const gProtOrCarb = roundedToFixed(calorieDiff / 4, 2);
       const gFat = roundedToFixed(calorieDiff / 9, 2);
-      error = `The sum of Protein, Carbohydrate and Fat Percentages must equal 100, current sum : ${sum}.
-            (Thats ${gProtOrCarb} grams ${moreOrLess} of Carbs or Proteins or ${gFat} grams ${moreOrLess} of Fat)`;
-      result.error = error;
-      return result;
+      return {
+        error: `The sum of Protein, Carbohydrate and Fat Percentages must equal 100, current sum : ${sum}.
+            (Thats ${gProtOrCarb} grams ${moreOrLess} of Carbs or Proteins or ${gFat} grams ${moreOrLess} of Fat)`,
+      };
     }
   }
 }
