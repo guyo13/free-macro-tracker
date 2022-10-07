@@ -922,7 +922,6 @@ function FMTValidateFoodObject(foodObj, unitsChart) {
    *nutrient - {name,unit,amount}
    */
   const _funcName = "FMTValidateFoodObject";
-  unitsChart = unitsChart || fmtAppInstance.unitsChart;
   const result = {};
   let food = {};
   if (foodObj.foodName == null || foodObj.foodName === "") {
@@ -964,7 +963,8 @@ function FMTValidateFoodObject(foodObj, unitsChart) {
     return { food: null, error: "Nutritional Value must not be empty" };
   } else {
     const nutriValueValidateRes = FMTValidateNutritionalValue(
-      foodObj.nutritionalValue
+      foodObj.nutritionalValue,
+      unitsChart
     );
     if (
       nutriValueValidateRes.nutritionalValue == null ||
@@ -1588,7 +1588,10 @@ function FMTValidateRecipeObject(recipeObj, unitsChart) {
   ) {
     recipe.ingredients = [];
     recipeObj.ingredients.forEach((item, i) => {
-      const validateIngredient = FMTValidateFoodObject(item);
+      const validateIngredient = FMTValidateFoodObject(
+        item,
+        fmtAppInstance.unitsChart
+      );
       if (validateIngredient.error != null || validateIngredient.food == null) {
         error = `Ingredient number ${
           i + 1
@@ -5612,7 +5615,7 @@ function FMTUICreateIngredient(food) {
 }
 function FMTUIAddIngredient(foodObj, ingredientsDiv, onDel, onEdit) {
   const _funcName = "FMTUIAddIngredient";
-  const _res = FMTValidateFoodObject(foodObj);
+  const _res = FMTValidateFoodObject(foodObj, fmtAppInstance.unitsChart);
   if (_res.error != null || _res.food == null) {
     console.error(`[${_funcName}] - Error validating food`);
     return;
@@ -5748,7 +5751,7 @@ function FMTUIAddIngredientBtnClick(
       undefined,
       undefined
     );
-    const _validate = FMTValidateFoodObject(foodObj);
+    const _validate = FMTValidateFoodObject(foodObj, fmtAppInstance.unitsChart);
     if (_validate.error != null || _validate.food == null) {
       console.error(`Error validating ingredient (ID ${foodId})`);
       return;
@@ -7141,7 +7144,10 @@ var pageController = {
           undefined,
           undefined
         );
-        const _val = FMTValidateFoodObject(ingredientObj);
+        const _val = FMTValidateFoodObject(
+          ingredientObj,
+          fmtAppInstance.unitsChart
+        );
         if (_val.error == null && _val.food != null) {
           ingredient.referenceServing = _val.food.referenceServing;
           ingredient.units = _val.food.units;
