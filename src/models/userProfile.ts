@@ -68,7 +68,7 @@ export default class UserProfile implements IUserProfile {
   readonly formula: EnergyConsumptionFormula;
   readonly bmr: number;
   readonly tdee: number;
-  readonly lastModified: String;
+  readonly lastModified: string;
   readonly tzMinutes: number;
   readonly macroSplit?: IMacroSplit;
 
@@ -84,7 +84,7 @@ export default class UserProfile implements IUserProfile {
     activityMultiplier: number,
     name?: string,
     bodyfat?: number,
-    lastModified?: String,
+    lastModified?: string,
     tzMinutes?: number,
     macroSplit?: IMacroSplit
   ) {
