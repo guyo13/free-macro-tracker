@@ -30,9 +30,12 @@ import {
   areUnitsConvertible,
   convertUnitsByName,
   findConvertibleUnitsByName,
+  type IUnit,
+  type UnitChart,
 } from "./models/units";
 import type {
   AdditionalNutrients,
+  INutrientDefinition,
   INutrientRecord,
   INutritionalValue,
 } from "./models/nutrient";
@@ -827,80 +830,80 @@ function FMTIsValidId(id) {
 }
 
 // TODO - Remove
-function FMTValidateNutritionalValue(nutritionalValueObj, unitsChart, options) {
+function FMTValidateNutritionalValue(
+  nutritionalValueObj: any,
+  unitsChart: UnitChart,
+  options?: { compact?: boolean }
+): { error?: string; nutritionalValue?: INutritionalValue } {
   if (unitsChart == null) {
     unitsChart = fmtAppInstance.unitsChart;
   }
-  if (options == null) {
-    options = {};
-  }
-  options.compact = options.compact || false;
 
-  const result = {};
-  const nutritionalValue = {};
-  let error = null;
+  const isCompact = options?.compact ?? false;
 
   if (!isNumber(nutritionalValueObj.calories)) {
-    error = `Calories must be a valid number (got ${nutritionalValueObj.calories}`;
-    result.error = error;
-    return result;
+    return {
+      error: `Calories must be a valid number (got ${nutritionalValueObj.calories}`,
+    };
   }
-  nutritionalValue.calories = Number(nutritionalValueObj.calories);
 
   if (!isNumber(nutritionalValueObj.proteins)) {
-    error = `Proteins must be a valid number (got ${nutritionalValueObj.proteins}`;
-    result.error = error;
-    return result;
+    return {
+      error: `Proteins must be a valid number (got ${nutritionalValueObj.proteins}`,
+    };
   }
-  nutritionalValue.proteins = Number(nutritionalValueObj.proteins);
 
   if (!isNumber(nutritionalValueObj.carbohydrates)) {
-    error = `Carbohydrates must be a valid number (got ${nutritionalValueObj.carbohydrates}`;
-    result.error = error;
-    return result;
+    return {
+      error: `Carbohydrates must be a valid number (got ${nutritionalValueObj.carbohydrates}`,
+    };
   }
-  nutritionalValue.carbohydrates = Number(nutritionalValueObj.carbohydrates);
 
   if (!isNumber(nutritionalValueObj.fats)) {
-    error = `fats must be a valid number (got ${nutritionalValueObj.fats}`;
-    result.error = error;
-    return result;
+    return {
+      error: `fats must be a valid number (got ${nutritionalValueObj.fats}`,
+    };
   }
-  nutritionalValue.fats = Number(nutritionalValueObj.fats);
+  const nutritionalValue = {
+    calories: Number(nutritionalValueObj.calories),
+    proteins: Number(nutritionalValueObj.proteins),
+    carbohydrates: Number(nutritionalValueObj.carbohydrates),
+    fats: Number(nutritionalValueObj.fats),
+    additionalNutrients: {},
+  };
 
   let additionalNutrients = nutritionalValueObj.additionalNutrients;
-  nutritionalValue.additionalNutrients = {};
-
   if (additionalNutrients != null) {
     for (const nutrientCategoryName in additionalNutrients) {
       const nutrientsInCat = additionalNutrients[nutrientCategoryName];
       if (Array.isArray(nutrientsInCat) && nutrientsInCat.length > 0) {
         const validatedNutrientsInCat = [];
         for (const j in nutrientsInCat) {
-          const validatedNutrient = {};
           const nutrient = nutrientsInCat[j];
           if (nutrient.name == null || nutrient.name === "") {
-            error = `Nutrient in Category "${nutrientCategoryName}" has empty name`;
-            result.error = error;
-            return result;
+            return {
+              error: `Nutrient in Category "${nutrientCategoryName}" has empty name`,
+            };
           }
           if (!isNumber(nutrient.amount)) {
-            error = `Nutrient "${nutrient.name}" (Category ${nutrientCategoryName}) has invalid value "${nutrient.amount}"`;
-            result.error = error;
-            return result;
+            return {
+              error: `Nutrient "${nutrient.name}" (Category ${nutrientCategoryName}) has invalid value "${nutrient.amount}"`,
+            };
           }
           if (
             !fmtAppInstance.allowForeignNutrients &&
             !(nutrient.unit in unitsChart)
           ) {
-            error = `Nutrient "${nutrient.name}" (Category ${nutrientCategoryName}) has unknown or invalid unit "${nutrient.unit}"`;
-            result.error = error;
-            return result;
+            return {
+              error: `Nutrient "${nutrient.name}" (Category ${nutrientCategoryName}) has unknown or invalid unit "${nutrient.unit}"`,
+            };
           }
-          validatedNutrient.name = nutrient.name;
-          validatedNutrient.amount = Number(nutrient.amount);
-          validatedNutrient.unit = nutrient.unit;
-          if (!(options.compact && validatedNutrient.amount == 0)) {
+          const validatedNutrient = {
+            name: nutrient.name,
+            amount: Number(nutrient.amount),
+            unit: nutrient.unit,
+          };
+          if (!(isCompact && validatedNutrient.amount == 0)) {
             validatedNutrientsInCat.push(validatedNutrient);
           }
         }
@@ -912,8 +915,7 @@ function FMTValidateNutritionalValue(nutritionalValueObj, unitsChart, options) {
     }
   }
 
-  result.nutritionalValue = nutritionalValue;
-  return result;
+  return { nutritionalValue };
 }
 
 // TODO - Remove and use Food class
@@ -981,10 +983,17 @@ function FMTValidateFoodObject(foodObj, unitsChart) {
 }
 
 // TODO - Remove and use Unit class
-function FMTValidateUnitObject(unitObj) {
+function FMTValidateUnitObject(unitObj): IUnit {
   /*unitObj {name, value_in_grams, description}*/
   const _fnName = "FMTValidateUnitObject";
-  let unit = {};
+  const unit = {
+    name: null,
+    type: null,
+    value_in_grams: 0,
+    value_in_ml: 0,
+    description: null,
+  };
+
   if (unitObj.name == null || unitObj.name === "") {
     console.debug(`[${_fnName}] - unitObj.name is null or empty string`);
     return;
@@ -1045,10 +1054,9 @@ function FMTValidateUnitObject(unitObj) {
 }
 
 // TODO - Remove and use NutrientDefinition class
-function FMTValidateNutrientObject(nutrientObj) {
+function FMTValidateNutrientObject(nutrientObj: any): INutrientDefinition {
   /*nutrientObj {name,category,default_unit,help}*/
   const _fnName = "FMTValidateNutrientObject";
-  let nutrient = {};
   if (nutrientObj.name == null || nutrientObj.name === "") {
     console.debug(`[${_fnName}] - nutrientObj.name is null or empty string`);
     return;
@@ -1065,11 +1073,12 @@ function FMTValidateNutrientObject(nutrientObj) {
     );
     return;
   }
-  nutrient.name = nutrientObj.name;
-  nutrient.category = nutrientObj.category;
-  nutrient.default_unit = nutrientObj.default_unit;
-  nutrient.help = nutrientObj.help;
-  return nutrient;
+  return {
+    name: nutrientObj.name,
+    category: nutrientObj.category,
+    default_unit: nutrientObj.default_unit,
+    help: nutrientObj.help,
+  };
 }
 
 // TODO - Remove and use MacroSplit class
