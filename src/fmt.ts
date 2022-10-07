@@ -975,6 +975,8 @@ function FMTValidateFoodObject(foodObj, unitsChart) {
   }
   return { food: food, error: null };
 }
+
+// TODO - Remove and use Unit class
 function FMTValidateUnitObject(unitObj) {
   /*unitObj {name, value_in_grams, description}*/
   const _fnName = "FMTValidateUnitObject";

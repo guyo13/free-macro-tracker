@@ -1,17 +1,89 @@
+import { isPositiveNumber } from "../utils/utils";
+
 export enum UnitType {
   Mass = "mass",
   Volume = "volume",
   Arbitrary = "arbitrary",
 }
 
-export type UnitChart = { [key: string]: Unit };
+export type UnitChart = { [key: string]: IUnit };
 
-export interface Unit {
+export interface IUnit {
+  name: string;
+  description: string;
+  type: UnitType;
+  value_in_grams: number;
+  value_in_ml: number;
+}
+
+export default class Unit implements IUnit {
   readonly name: string;
   readonly description: string;
   readonly type: UnitType;
-  readonly value_in_grams: number; // TODO - change to camel case and migrate db
+  readonly value_in_grams: number;
   readonly value_in_ml: number;
+
+  constructor(
+    name: string,
+    description: string,
+    type: UnitType,
+    value_in_grams: number,
+    value_in_ml: number
+  ) {
+    Unit.validate(name, description, type, value_in_grams, value_in_ml);
+    this.name = name;
+    this.description = description;
+    this.type = type;
+    this.value_in_grams = value_in_grams;
+    this.value_in_ml = value_in_ml;
+  }
+
+  static from(unit: IUnit): Unit {
+    return this.fromObject(unit);
+  }
+
+  static fromObject(object: any): Unit {
+    const { name, description, type, value_in_grams, value_in_ml } = object;
+    return new this(name, description, type, value_in_grams, value_in_ml);
+  }
+
+  static validate(
+    name: any,
+    _description: any,
+    type: any,
+    value_in_grams: any,
+    value_in_ml: any
+  ) {
+    const isMass = isPositiveNumber(value_in_grams);
+    const isVolume = isPositiveNumber(value_in_ml);
+    if (!name) {
+      throw "Unit name must not be empty.";
+    }
+    switch (type) {
+      case UnitType.Mass:
+        if (!isMass)
+          throw `Mass unit must have a positive value in grams. Got '${value_in_grams}'`;
+        if (isVolume)
+          throw `Mass unit must not be convertible to ml. Got '${value_in_ml}'`;
+        break;
+      case UnitType.Volume:
+        if (!isPositiveNumber(value_in_ml))
+          throw `Volume unit must have a positive value in ml. Got '${value_in_ml}'`;
+        if (isMass)
+          throw `Volume unit must not be convertible to grams. Got '${value_in_grams}'`;
+        break;
+      case UnitType.Arbitrary:
+        // TODO - Relax this constraint?
+        if (isMass && isVolume) {
+          throw "Arbitrary unit can't represent both volume and mass.";
+        } else if (!(isMass || isVolume)) {
+          throw "Arbitrary unit must represent either volume and mass.";
+        }
+        break;
+      default:
+        throw `Invalid unit type. Got '${type}'`;
+    }
+  }
 }
 
 export interface UnitsConvertibleResult {
@@ -26,13 +98,13 @@ export interface UnitsConvertionResult extends UnitsConvertibleResult {
 
 export interface ConvertibleUnitsResult {
   error?: string;
-  convertibleUnits?: Unit[];
+  convertibleUnits?: IUnit[];
 }
 
 // TODO - Simplify logic
 export function areUnitsConvertible(
-  targetUnit: Unit,
-  originUnit: Unit
+  targetUnit: IUnit,
+  originUnit: IUnit
 ): UnitsConvertibleResult {
   const {
     type: targetType,
@@ -82,8 +154,8 @@ export function areUnitsConvertible(
 
 /// Returns the ratio between `originUnit` and `targetUnit` real values.
 export function convertUnits(
-  targetUnit: Unit,
-  originUnit: Unit
+  targetUnit: IUnit,
+  originUnit: IUnit
 ): UnitsConvertionResult {
   const { isConvertible, type: convertionType } = areUnitsConvertible(
     targetUnit,
@@ -126,7 +198,7 @@ export function convertUnitsByName(
 }
 
 export function findConvertibleUnits(
-  inputUnit: Unit,
+  inputUnit: IUnit,
   unitsChart: UnitChart
 ): ConvertibleUnitsResult {
   const convertibleUnits = Object.values(unitsChart).filter(

@@ -1,5 +1,5 @@
 import type { INutrientDefinition } from "../models/nutrient";
-import { UnitType, type Unit } from "../models/units";
+import { UnitType, type IUnit } from "../models/units";
 import type { IndexConfig } from "idb_wrapper.js";
 
 export interface StoreConfig {
@@ -10,7 +10,7 @@ export interface StoreConfig {
 }
 
 export type MigrationsV1 = {
-  readonly BASE_UNIT_CHART_V1: Array<Unit>;
+  readonly BASE_UNIT_CHART_V1: Array<IUnit>;
   readonly BASE_ADDITIONAL_NUTRIENTS_V1: Array<INutrientDefinition>;
   readonly STORES: { [key: string]: StoreConfig };
 };
