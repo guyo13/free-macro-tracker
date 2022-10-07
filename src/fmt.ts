@@ -4573,16 +4573,20 @@ function FMTSaveConsumableItemScreen(
     );
     const _fats = document.getElementById(`${baseScreenID}-${qualifier}-fats`);
     consumableObj.nutritionalValue.calories = isInput(_calories)
-      ? _calories.value
+      ? // @ts-ignore
+        _calories.value
       : _calories.innerHTML;
     consumableObj.nutritionalValue.carbohydrates = isInput(_carbs)
-      ? _carbs.value
+      ? // @ts-ignore
+        _carbs.value
       : _carbs.innerHTML;
     consumableObj.nutritionalValue.proteins = isInput(_proteins)
-      ? _proteins.value
+      ? // @ts-ignore
+        _proteins.value
       : _proteins.innerHTML;
     consumableObj.nutritionalValue.fats = isInput(_fats)
-      ? _fats.value
+      ? // @ts-ignore
+        _fats.value
       : _fats.innerHTML;
     consumableObj.nutritionalValue.additionalNutrients =
       FMTUIGetAdditionalNutrientsFromScreen(baseScreenID, qualifier);
@@ -4595,12 +4599,15 @@ function FMTSaveConsumableItemScreen(
       FMTUIGetPreparationSteps(prepStepContainerDiv);
     consumableObj.recipeDescription = document.getElementById(
       `${baseScreenID}-${qualifier}-description`
+      // @ts-ignore
     ).value;
     consumableObj.videoUrl = document.getElementById(
       `${baseScreenID}-${qualifier}-video-url`
+      // @ts-ignore
     ).value;
     consumableObj.website = document.getElementById(
       `${baseScreenID}-${qualifier}-website`
+      // @ts-ignore
     ).value;
   }
   switch (action) {
@@ -5825,21 +5832,27 @@ function FMTUIAddtoMealBtnClick(baseId, qualifier, objectType, event) {
     return;
   }
   const addToMealBtn = document.getElementById(`${baseId}-save`);
-  const mealIdentifierObj = {};
-  mealIdentifierObj.meal_year =
-    addToMealBtn.getAttribute("meal_year") ||
-    document.getElementById(`${baseId}-meal-year`).value;
-  mealIdentifierObj.meal_month =
-    addToMealBtn.getAttribute("meal_month") ||
-    Number(document.getElementById(`${baseId}-meal-month`).value) - 1;
-  mealIdentifierObj.meal_day =
-    addToMealBtn.getAttribute("meal_day") ||
-    document.getElementById(`${baseId}-meal-day`).value;
-  mealIdentifierObj.meal_name =
-    addToMealBtn.getAttribute("meal_name") ||
-    document.getElementById(`${baseId}-meal-name`).value;
-  mealIdentifierObj.profile_id =
-    addToMealBtn.getAttribute("profile_id") || fmtAppInstance.currentProfileId;
+  const mealIdentifierObj = {
+    meal_year:
+      addToMealBtn.getAttribute("meal_year") ||
+      // @ts-ignore
+      document.getElementById(`${baseId}-meal-year`).value,
+    meal_month:
+      addToMealBtn.getAttribute("meal_month") ||
+      // @ts-ignore
+      Number(document.getElementById(`${baseId}-meal-month`).value) - 1,
+    meal_day:
+      addToMealBtn.getAttribute("meal_day") ||
+      // @ts-ignore
+      document.getElementById(`${baseId}-meal-day`).value,
+    meal_name:
+      addToMealBtn.getAttribute("meal_name") ||
+      // @ts-ignore
+      document.getElementById(`${baseId}-meal-name`).value,
+    profile_id:
+      addToMealBtn.getAttribute("profile_id") ||
+      fmtAppInstance.currentProfileId,
+  };
 
   if (
     !mealIdentifierObj.meal_year ||
@@ -6955,6 +6968,7 @@ var pageController = {
         const recipe = validateResult.recipe;
         const onAddIngredientClick = function () {
           const mealName =
+            // @ts-ignore
             document.getElementById("edit-recipe-screen-recipe-name").value ||
             "";
           pageController.openAddToRecipeDynamicScreen(
