@@ -34,8 +34,9 @@ export enum UserActivityLevel {
   Very_High = "Very High",
   Custom = "Custom",
 }
+
 export interface IUserProfile extends IDBRecord {
-  profile_id: number;
+  profile_id: RecordId;
   name?: string;
   age: number;
   sex: UserGender;
@@ -53,7 +54,7 @@ export interface IUserProfile extends IDBRecord {
 }
 
 export default class UserProfile implements IUserProfile {
-  readonly profile_id: number;
+  readonly profile_id: RecordId;
   readonly name?: string;
   readonly age: number;
   readonly sex: UserGender;
@@ -72,7 +73,7 @@ export default class UserProfile implements IUserProfile {
   readonly macroSplit?: IMacroSplit;
 
   constructor(
-    profile_id: number,
+    profile_id: RecordId,
     age: number,
     sex: UserGender,
     bodyWeight: number,
@@ -173,6 +174,7 @@ export default class UserProfile implements IUserProfile {
       macroSplit
     );
   }
+
   static validate(
     profile_id: any,
     age: any,
