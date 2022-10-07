@@ -41,6 +41,8 @@ import { format as formatDate } from "date-fns";
 import { IDBTransactionModes } from "idb_wrapper.js";
 import type { IUserGoals } from "./models/userGoals";
 import type { RecordId } from "./models/record";
+import type { IMealIdentifier } from "./models/mealIdentifier";
+import type { IMacroSplit } from "./models/macroSplit";
 
 const platformInterface = new FMTPlatform();
 //Instance
@@ -1071,7 +1073,10 @@ function FMTValidateNutrientObject(nutrientObj) {
 }
 
 // TODO - Remove and use MacroSplit class
-function FMTValidateMacroSplit(macroSplitObj) {
+function FMTValidateMacroSplit(macroSplitObj): {
+  error?: string;
+  macroSplit?: IMacroSplit;
+} {
   const result = {};
   const macroSplit = {};
   let error = null;
@@ -1413,7 +1418,10 @@ function FMTValidateMealEntry(mealEntryObj) {
 }
 
 // TODO - Remove and use MealIdentifier class
-function FMTValidateMealIdentifier(mealIdentifierObj) {
+function FMTValidateMealIdentifier(mealIdentifierObj): {
+  error?: string;
+  mealIdentifier?: IMealIdentifier;
+} {
   const result = {};
   const mealIdentifier = {};
   let error = null;
@@ -1477,47 +1485,45 @@ function FMTValidateMealIdentifier(mealIdentifierObj) {
 }
 
 // TODO - Remove and use UserGoals class
-function FMTValidateUserGoals(userGoalsObj) {
+function FMTValidateUserGoals(userGoalsObj): {
+  error?: string;
+  userGoals?: IUserGoals;
+} {
   const result = {};
-  const userGoals = {};
-  let error = null;
 
   //Validate profile_id, year, month, day as a meal Identifier Object will null Meal Name
-  const mealIdentifierObj = {};
-  mealIdentifierObj.meal_year = userGoalsObj.year;
-  mealIdentifierObj.meal_month = userGoalsObj.month;
-  mealIdentifierObj.meal_day = userGoalsObj.day;
-  mealIdentifierObj.profile_id = userGoalsObj.profile_id;
+  const mealIdentifierObj = {
+    meal_year: userGoalsObj.year,
+    meal_month: userGoalsObj.month,
+    meal_day: userGoalsObj.day,
+    profile_id: userGoalsObj.profile_id,
+  };
   const mealIdentifierValidate = FMTValidateMealIdentifier(mealIdentifierObj);
   if (
     mealIdentifierValidate.mealIdentifier == null ||
     mealIdentifierValidate.error != null
   ) {
-    error = mealIdentifierValidate.error;
-    result.error = error;
-    return result;
+    return { error: mealIdentifierValidate.error };
   }
-  userGoals.year = mealIdentifierValidate.mealIdentifier.meal_year;
-  userGoals.month = mealIdentifierValidate.mealIdentifier.meal_month;
-  userGoals.day = mealIdentifierValidate.mealIdentifier.meal_day;
-  userGoals.profile_id = mealIdentifierValidate.mealIdentifier.profile_id;
+  const userGoals = {
+    year: mealIdentifierValidate.mealIdentifier.meal_year,
+    month: mealIdentifierValidate.mealIdentifier.meal_month,
+    day: mealIdentifierValidate.mealIdentifier.meal_day,
+    profile_id: mealIdentifierValidate.mealIdentifier.profile_id,
+  };
 
   const macroSplitValidate = FMTValidateMacroSplit(userGoalsObj.macroSplit);
   if (
     macroSplitValidate.macroSplit == null ||
     macroSplitValidate.error != null
   ) {
-    error = macroSplitValidate.error;
-    result.error = error;
-    return result;
+    return { error: macroSplitValidate.error };
   }
 
-  userGoals.macroSplit = macroSplitValidate.macroSplit;
-
   //TODO mealSplit and microSplit
-
-  result.userGoals = userGoals;
-  return result;
+  return {
+    userGoals: { ...userGoals, macroSplit: macroSplitValidate.macroSplit },
+  };
 }
 
 function FMTValidateRecipeObject(recipeObj, unitsChart) {
@@ -6638,6 +6644,7 @@ var pageController = {
             `Firing onConsumableAdded event to ${consumablesTableBodyID}`
           );
           const event = new Event("onConsumableAdded");
+          //@ts-ignore
           event.consumableObj = recipe;
           consumablesTableBodyNode.dispatchEvent(event);
         }
@@ -7962,6 +7969,7 @@ function prepareEventHandlers() {
             `Firing onConsumableAdded event to ${foodsTableBodyID}`
           );
           const event = new Event("onConsumableAdded");
+          //@ts-ignore
           event.consumableObj = food;
           foodsTableBodyNode.dispatchEvent(event);
         }
@@ -8017,6 +8025,7 @@ function prepareEventHandlers() {
             `Firing onConsumableEdited event to ${foodsTableBodyID}`
           );
           const event = new Event("onConsumableEdited");
+          //@ts-ignore
           event.consumableObj = food;
           foodsTableBodyNode.dispatchEvent(event);
         }
