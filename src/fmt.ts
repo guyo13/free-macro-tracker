@@ -39,6 +39,8 @@ import type {
 
 import { format as formatDate } from "date-fns";
 import { IDBTransactionModes } from "idb_wrapper.js";
+import type { IUserGoals } from "./models/userGoals";
+import type { RecordId } from "./models/record";
 
 const platformInterface = new FMTPlatform();
 //Instance
@@ -2436,13 +2438,13 @@ function FMTAddUserGoalEntry(userGoalsObj, onsuccessFn, onerrorFn) {
     };
 }
 function FMTUpdateUserGoalEntry(
-  profile_id,
-  year,
-  month,
-  day,
-  userGoalsDataObj,
-  onsuccessFn,
-  onerrorFn
+  profile_id: RecordId,
+  year: number,
+  month: number,
+  day: number,
+  userGoalsDataObj: IUserGoals,
+  onsuccessFn: any,
+  onerrorFn?: any
 ) {
   userGoalsDataObj;
   userGoalsDataObj.year = year;
@@ -2878,36 +2880,37 @@ function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
     throw TypeError(`Invalid profile_id ${profileId}`);
   }
   document.getElementById("profile-alerts").innerHTML = "";
-  let profile = {};
-  profile.profile_id = profileId;
-  // @ts-ignore
-  profile.name = document.getElementById("profile-name").value || null;
-  // @ts-ignore
-  profile.bodyWeight = document.getElementById("profile-weight").value;
-  profile.bodyWeightUnits = document.getElementById(
-    "profile-weight-units"
+  let profile = {
+    profile_id: profileId,
     // @ts-ignore
-  ).value;
-  // @ts-ignore
-  profile.height = document.getElementById("profile-height").value;
-  // @ts-ignore
-  profile.heightUnits = document.getElementById("profile-height-units").value;
-  // @ts-ignore
-  profile.age = document.getElementById("profile-age").value;
-  // @ts-ignore
-  profile.sex = document.getElementById("profile-sex").getAttribute("sex");
-  // @ts-ignore
-  profile.bodyfat = document.getElementById("profile-bodyfat").value || null;
-  // @ts-ignore
-  profile.activityLevel = document
-    .getElementById("profile-active-level")
-    .getAttribute("level");
-  profile.activityMultiplier = document.getElementById(
-    "profile-activity-mult"
+    name: document.getElementById("profile-name").value || null,
     // @ts-ignore
-  ).value;
-  // @ts-ignore
-  profile.formula = "Mifflin-St Jeor";
+    bodyWeight: document.getElementById("profile-weight").value,
+    bodyWeightUnits: document.getElementById(
+      "profile-weight-units"
+      // @ts-ignore
+    ).value,
+    // @ts-ignore
+    height: document.getElementById("profile-height").value,
+    // @ts-ignore
+    heightUnits: document.getElementById("profile-height-units").value,
+    // @ts-ignore
+    age: document.getElementById("profile-age").value,
+    // @ts-ignore
+    sex: document.getElementById("profile-sex").getAttribute("sex"),
+    // @ts-ignore
+    bodyfat: document.getElementById("profile-bodyfat").value || null,
+    // @ts-ignore
+    activityLevel: document
+      .getElementById("profile-active-level")
+      .getAttribute("level"),
+    activityMultiplier: document.getElementById(
+      "profile-activity-mult"
+      // @ts-ignore
+    ).value,
+    // @ts-ignore
+    formula: "Mifflin-St Jeor",
+  };
   document
     .getElementById("profile-activity-mult")
     .setAttribute("readonly", "true");
@@ -2947,13 +2950,19 @@ function FMTFillMacro(baseID, nutrient, calories) {
     console.warn(`Couldn't find all required macroes inputs. Skipping.`);
     return;
   }
+  // @ts-ignore
   let fat = isNumber(fatInput.value) ? Number(fatInput.value) : 0;
+  // @ts-ignore
   let carb = isNumber(carbInput.value) ? Number(carbInput.value) : 0;
+  // @ts-ignore
   let protein = isNumber(proteinInput.value) ? Number(proteinInput.value) : 0;
+  // @ts-ignore
   let fatUnit = document.getElementById(`${baseID}-fat-units-select`).value;
+  // @ts-ignore
   let carbUnit = document.getElementById(`${baseID}-carb-units-select`).value;
   let proteinUnit = document.getElementById(
     `${baseID}-protein-units-select`
+    // @ts-ignore
   ).value;
 
   let fats, carbs, proteins;
@@ -3006,33 +3015,34 @@ function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
     return onerrorFn(msg);
   }
   document.getElementById("profile-alerts").innerHTML = "";
-  const macroSplit = {};
+  // @ts-ignore
   const proteinVal = document.getElementById("profile-macro-protein").value;
+  // @ts-ignore
   const carbVal = document.getElementById("profile-macro-carb").value;
+  // @ts-ignore
   const fatVal = document.getElementById("profile-macro-fat").value;
+  // @ts-ignore
+  const caloriesVal = document.getElementById("profile-daily-calories").value;
   const pSelect = document.getElementById("profile-macro-protein-units-select");
   const cSelect = document.getElementById("profile-macro-carb-units-select");
   const fSelect = document.getElementById("profile-macro-fat-units-select");
-  macroSplit.Calories = document.getElementById("profile-daily-calories").value;
-  // FIXME - allow saving macroes in grams or kcal
-  macroSplit.Protein = FMTConvertMacro(
-    "protein",
-    pSelect.value,
-    proteinVal,
-    macroSplit.Calories
-  )["%"];
-  macroSplit.Carbohydrate = FMTConvertMacro(
-    "carbohydrate",
-    cSelect.value,
-    carbVal,
-    macroSplit.Calories
-  )["%"];
-  macroSplit.Fat = FMTConvertMacro(
-    "fat",
-    fSelect.value,
-    fatVal,
-    macroSplit.Calories
-  )["%"];
+  const macroSplit = {
+    Calories: caloriesVal,
+    // FIXME - allow saving macroes in grams or kcal
+    // @ts-ignore
+    Protein: FMTConvertMacro("protein", pSelect.value, proteinVal, caloriesVal)[
+      "%"
+    ],
+    Carbohydrate: FMTConvertMacro(
+      "carbohydrate",
+      // @ts-ignore
+      cSelect.value,
+      carbVal,
+      caloriesVal
+    )["%"],
+    // @ts-ignore
+    Fat: FMTConvertMacro("fat", fSelect.value, fatVal, caloriesVal)["%"],
+  };
   let sum = macroSplit.Protein + macroSplit.Carbohydrate + macroSplit.Fat;
   if (sum != 100) {
     // Autofill based on settings
@@ -3068,7 +3078,7 @@ function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
             fmtAppInstance.today.getMonth(),
             fmtAppInstance.today.getDate(),
             function (res) {
-              let userGoals = res.target.result;
+              let userGoals: IUserGoals = res.target.result;
               if (userGoals) {
                 userGoals.macroSplit = profile.macroSplit;
                 FMTUpdateUserGoalEntry(
