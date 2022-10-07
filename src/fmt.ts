@@ -3118,39 +3118,55 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
         return;
       }
       if (profile.name) {
+        // @ts-ignore
         document.getElementById("profile-name").value = profile.name;
       }
+      // @ts-ignore
       document.getElementById("profile-weight").value = profile.bodyWeight;
+      // @ts-ignore
       document.getElementById("profile-weight-units").value =
         profile.bodyWeightUnits;
+      // @ts-ignore
       document.getElementById("profile-height").value = profile.height;
+      // @ts-ignore
       document.getElementById("profile-height-units").value =
         profile.heightUnits;
+      // @ts-ignore
       document.getElementById("profile-age").value = profile.age;
+      // @ts-ignore
       document.getElementById("profile-sex").value = profile.sex;
+      // @ts-ignore
       document.getElementById("profile-sex-select").value = profile.sex;
       document.getElementById("profile-sex").setAttribute("sex", profile.sex);
       if (!isNaN(profile.bodyfat)) {
+        // @ts-ignore
         document.getElementById("profile-bodyfat").value = profile.bodyfat;
       }
+      // @ts-ignore
       document.getElementById("profile-active-level").value =
         profile.activityLevel;
       document
         .getElementById("profile-active-level")
         .setAttribute("level", profile.activityLevel);
+      // @ts-ignore
       document.getElementById("profile-activity-select").value =
         profile.activityLevel;
       const activityMultiplier = document.getElementById(
         "profile-activity-mult"
       );
+      // @ts-ignore
       activityMultiplier.value = profile.activityMultiplier;
-      activityMultiplier.setAttribute("readonly", true);
+      activityMultiplier.setAttribute("readonly", "true");
       activityMultiplier.classList.remove("d-none");
       let bmr = Math.round(profile.bmr);
       let tdee = Math.round(profile.tdee);
-      document.getElementById("profile-bmr").setAttribute("value", bmr);
+      document
+        .getElementById("profile-bmr")
+        .setAttribute("value", bmr.toString());
       document.getElementById("profile-bmr").innerHTML = `${bmr} Kcal/Day`;
-      document.getElementById("profile-tdee").setAttribute("value", tdee);
+      document
+        .getElementById("profile-tdee")
+        .setAttribute("value", tdee.toString());
       document.getElementById("profile-tdee").innerHTML = `${tdee} Kcal/Day*`;
       document
         .getElementById("profile-formula")
@@ -3162,12 +3178,16 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
       let macroSplit = profile.macroSplit;
       if (macroSplit !== null) {
         // Set saved macro split
+        // @ts-ignore
         document.getElementById("profile-daily-calories").value =
           macroSplit.Calories || "";
+        // @ts-ignore
         document.getElementById("profile-macro-protein").value =
           macroSplit.Protein || "";
+        // @ts-ignore
         document.getElementById("profile-macro-carb").value =
           macroSplit.Carbohydrate || "";
+        // @ts-ignore
         document.getElementById("profile-macro-fat").value =
           macroSplit.Fat || "";
       }
@@ -3178,8 +3198,11 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
         "profile-macro-carb-units-select"
       );
       const fSelect = document.getElementById("profile-macro-fat-units-select");
+      // @ts-ignore
       pSelect.value = "%";
+      // @ts-ignore
       cSelect.value = "%";
+      // @ts-ignore
       fSelect.value = "%";
       pSelect.setAttribute("previous", "%");
       cSelect.setAttribute("previous", "%");
@@ -3285,6 +3308,7 @@ function FMTCreateUnitSelectMenu(
       select.classList.add("fmt-select-noexpand");
     }
     if (!!defaultUnitName && defaultUnitName in unitsChart) {
+      // @ts-ignore
       select.value = defaultUnitName;
     }
     targetDiv.appendChild(select);
@@ -3776,9 +3800,13 @@ function FMTUIPopulateMacroes(
   const _carbs = document.getElementById(`${idBase}-carbohydrates`);
   const _proteins = document.getElementById(`${idBase}-proteins`);
   const _fats = document.getElementById(`${idBase}-fats`);
+  // @ts-ignore
   _calories.value = caloriesValue;
+  // @ts-ignore
   _carbs.value = carbsValue;
+  // @ts-ignore
   _proteins.value = proteinValue;
+  // @ts-ignore
   _fats.value = fatValue;
   /* When Macroes are not inputs */
   if (!isInput(_calories)) {
@@ -3862,7 +3890,9 @@ function FMTUIPopulateNutritionalValue(
           const inputElement = document.getElementById(inputElementId);
           const select = document.getElementById(selectId);
           if (inputElement) {
+            // @ts-ignore
             inputElement.value = nutrient.amount;
+            // @ts-ignore
             select.value = nutrient.unit;
           } else {
             //TODO - Review if needed to Lazy Load inexisting nutrients/categories based on APP settings
@@ -4064,7 +4094,9 @@ function FMTPopulateSavedValuesInConsumableItemScreen(
   document.getElementById(`${baseScreenID}-heading`).innerHTML = `${
     headingPrefix ? `${headingPrefix} - ` : ""
   }${consumableItem[nameProp]}`;
+  // @ts-ignore
   document.getElementById(`${idBase}-name`).value = consumableItem[nameProp];
+  // @ts-ignore
   document.getElementById(`${idBase}-brand`).value =
     consumableItem[brandProp] || "";
   // Set Serving properties
@@ -4073,11 +4105,13 @@ function FMTPopulateSavedValuesInConsumableItemScreen(
     !(currentServingUnits in fmtAppInstance.unitsChart)
   ) {
     const servInElem = document.getElementById(`${idBase}-serving-input`);
+    // @ts-ignore
     servInElem.value = consumableItem[servingProp];
     servInElem.setAttribute("reference_serving", consumableItem[servingProp]);
     servInElem.setAttribute("reference_serving_units", consumableItem.units);
     const select = document.getElementById(`${idBase}-serving-unit-select`);
     if (select) {
+      // @ts-ignore
       select.value = consumableItem.units;
     }
   } //Else dont touch these fields and retain user input
@@ -4087,7 +4121,7 @@ function FMTPopulateSavedValuesInConsumableItemScreen(
     for (const j in readonlyFields) {
       document
         .getElementById(`${idBase}-${readonlyFields[j]}`)
-        .setAttribute("readonly", true);
+        .setAttribute("readonly", "true");
     }
   }
   FMTUIPopulateNutritionalValue(
@@ -4104,14 +4138,18 @@ function FMTPopulateSavedValuesInConsumableItemScreen(
     case "Food Item":
       break;
     case "Meal Entry":
+      // @ts-ignore
       document.getElementById(`${idBase}-type`).value =
         consumableItem.consumableType;
       break;
     case "Recipe Item":
+      // @ts-ignore
       document.getElementById(`${idBase}-description`).value =
         consumableItem.recipeDescription || "";
+      // @ts-ignore
       document.getElementById(`${idBase}-video-url`).value =
         consumableItem.videoUrl || "";
+      // @ts-ignore
       document.getElementById(`${idBase}-website`).value =
         consumableItem.website || "";
       const prepStepContainerDiv = document.getElementById(
@@ -4275,9 +4313,13 @@ function FMTClearViewConsumableItemScreen(baseScreenID, qualifier, objectType) {
   saveBtn.removeAttribute("meal_month");
   saveBtn.removeAttribute("meal_day");
   saveBtn.removeAttribute("profile_id");
+  // @ts-ignore
   document.getElementById(`${baseScreenID}-meal-year`).value = "";
+  // @ts-ignore
   document.getElementById(`${baseScreenID}-meal-month`).value = "";
+  // @ts-ignore
   document.getElementById(`${baseScreenID}-meal-day`).value = "";
+  // @ts-ignore
   document.getElementById(`${baseScreenID}-meal-name`).value = "";
   //Hide container of the above input fields
   document
@@ -4310,11 +4352,17 @@ function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
     `${baseScreenID}-${qualifier}-carbohydrates`
   );
   const _fats = document.getElementById(`${baseScreenID}-${qualifier}-fats`);
+  // @ts-ignore
   document.getElementById(`${baseScreenID}-${qualifier}-name`).value = "";
+  // @ts-ignore
   document.getElementById(`${baseScreenID}-${qualifier}-brand`).value = "";
+  // @ts-ignore
   _calories.value = "";
+  // @ts-ignore
   _proteins.value = "";
+  // @ts-ignore
   _carbs.value = "";
+  // @ts-ignore
   _fats.value = "";
   if (!isInput(_calories)) {
     _calories.innerHTML = "";
@@ -4322,6 +4370,7 @@ function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
     _carbs.innerHTML = "";
     _fats.innerHTML = "";
   }
+  // @ts-ignore
   document.getElementById(`${baseScreenID}-${qualifier}-serving-input`).value =
     "";
   document.getElementById(`${baseScreenID}-${qualifier}-additional`).innerHTML =
@@ -4332,6 +4381,7 @@ function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
     let delBtn, saveBtn, updateBtn, editBtn;
     switch (objectType) {
       case "Meal Entry":
+        // @ts-ignore
         document.getElementById(`${baseScreenID}-${qualifier}-type`).value = "";
         updateBtn = document.getElementById(`${baseScreenID}-save`);
         delBtn = document.getElementById(`${baseScreenID}-delete`);
@@ -4364,10 +4414,13 @@ function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
       case "Recipe Item":
         document.getElementById(
           `${baseScreenID}-${qualifier}-description`
+          // @ts-ignore
         ).value = "";
         document.getElementById(
           `${baseScreenID}-${qualifier}-video-url`
+          // @ts-ignore
         ).value = "";
+        // @ts-ignore
         document.getElementById(`${baseScreenID}-${qualifier}-website`).value =
           "";
         removeChildren(
@@ -4418,6 +4471,7 @@ function FMTUIGetAdditionalNutrientsFromScreen(baseScreenID, qualifier) {
       screenAdditionalNutrients[category].push({
         name: name,
         amount: amount,
+        // @ts-ignore
         unit: select.value,
       });
     }
@@ -4476,20 +4530,25 @@ function FMTSaveConsumableItemScreen(
   const unitsChart = fmtAppInstance.unitsChart;
   consumableObj[nameProp] = document.getElementById(
     `${baseScreenID}-${qualifier}-name`
+    // @ts-ignore
   ).value;
   consumableObj[brandProp] = document.getElementById(
     `${baseScreenID}-${qualifier}-brand`
+    // @ts-ignore
   ).value;
   consumableObj[servingProp] = document.getElementById(
     `${baseScreenID}-${qualifier}-serving-input`
+    // @ts-ignore
   ).value;
   consumableObj.units = document.getElementById(
     `${baseScreenID}-${qualifier}-serving-unit-select`
+    // @ts-ignore
   ).value;
   if (objectType === "Meal Entry") {
     //FIXME - remove this logic from here and save these parameters by function reference inside Instance - State
     consumableObj.consumableType = document.getElementById(
       `${baseScreenID}-${qualifier}-type`
+      // @ts-ignore
     ).value;
     const updateBtn = document.getElementById(`${baseScreenID}-save`);
     consumableObj.year = updateBtn.getAttribute("meal_year");
