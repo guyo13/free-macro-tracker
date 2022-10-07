@@ -767,10 +767,10 @@ function FMTImportTables(dbTables, jsonData, verbose) {
   }
 }
 function FMTImportFromStructuredJSON(
-  jsonString,
-  jsonParseReviverFn,
-  onEnd,
-  excludeTables
+  jsonString: any,
+  jsonParseReviverFn?: any,
+  onEnd?: any,
+  excludeTables?: any
 ) {
   let jsonData = JSON.parse(jsonString, jsonParseReviverFn);
   let dbTables = Object.keys(jsonData);
@@ -2752,12 +2752,15 @@ function FMTProfileSelectActivityLevel(
   const DOMActiveLevel = document.getElementById(levelDivId);
   const DOMActiveLevelMult = document.getElementById(multiplierDivId);
   if (fmtAppGlobals.supportedActivityLevels.indexOf(activityLevel) < 0) {
+    // @ts-ignore
     DOMActiveLevel.value = "";
     DOMActiveLevel.setAttribute("level", "");
+    // @ts-ignore
     DOMActiveLevelMult.value = "";
     DOMActiveLevelMult.setAttribute("readonly", "true");
     return;
   }
+  // @ts-ignore
   DOMActiveLevel.value = activityLevel;
   DOMActiveLevel.setAttribute("level", activityLevel);
   if (activityLevel === "Custom") {
@@ -2765,6 +2768,7 @@ function FMTProfileSelectActivityLevel(
     DOMActiveLevelMult.classList.remove("d-none");
     DOMActiveLevelMult.focus();
   } else {
+    // @ts-ignore
     DOMActiveLevelMult.value =
       fmtAppGlobals.activityLevelsMultipliers[activityLevel];
     DOMActiveLevelMult.classList.remove("d-none");
@@ -2773,6 +2777,7 @@ function FMTProfileSelectActivityLevel(
 }
 function FMTProfileSelectSex(sex, divId) {
   const DOMSex = document.getElementById(divId);
+  // @ts-ignore
   DOMSex.value = sex;
   DOMSex.setAttribute("sex", sex);
 }
@@ -2848,10 +2853,14 @@ function FMTProfileSelectMacroUnits(
     console.error(`Unsupported units ${newUnit} for Macro`);
     return;
   }
+  // @ts-ignore
   const calories = isNumber(caloriesDiv.value) ? Number(caloriesDiv.value) : 0;
+  // @ts-ignore
   const value = isNumber(macroValueDiv.value)
-    ? Number(macroValueDiv.value)
+    ? // @ts-ignore
+      Number(macroValueDiv.value)
     : NaN;
+  // @ts-ignore
   if (macroValueDiv.value == undefined || macroValueDiv.value == "") {
     convertedValueDiv.innerHTML = "";
     return;
@@ -2871,26 +2880,37 @@ function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
   document.getElementById("profile-alerts").innerHTML = "";
   let profile = {};
   profile.profile_id = profileId;
+  // @ts-ignore
   profile.name = document.getElementById("profile-name").value || null;
+  // @ts-ignore
   profile.bodyWeight = document.getElementById("profile-weight").value;
   profile.bodyWeightUnits = document.getElementById(
     "profile-weight-units"
+    // @ts-ignore
   ).value;
+  // @ts-ignore
   profile.height = document.getElementById("profile-height").value;
+  // @ts-ignore
   profile.heightUnits = document.getElementById("profile-height-units").value;
+  // @ts-ignore
   profile.age = document.getElementById("profile-age").value;
+  // @ts-ignore
   profile.sex = document.getElementById("profile-sex").getAttribute("sex");
+  // @ts-ignore
   profile.bodyfat = document.getElementById("profile-bodyfat").value || null;
+  // @ts-ignore
   profile.activityLevel = document
     .getElementById("profile-active-level")
     .getAttribute("level");
   profile.activityMultiplier = document.getElementById(
     "profile-activity-mult"
+    // @ts-ignore
   ).value;
+  // @ts-ignore
+  profile.formula = "Mifflin-St Jeor";
   document
     .getElementById("profile-activity-mult")
-    .setAttribute("readonly", true);
-  profile.formula = "Mifflin-St Jeor";
+    .setAttribute("readonly", "true");
 
   FMTReadProfile(
     profileId,
@@ -4585,12 +4605,14 @@ function FMTUpdateConsumableValuesOnServingChange(
   const servingInputField = document.getElementById(
     `${baseScreenID}-${qualifier}-serving-input`
   );
+  // @ts-ignore
   let userServingSize = servingInputField.value;
   if (userServingSize === "") {
     userServingSize = 0;
   }
   let userSelectedUnits = document.getElementById(
     `${baseScreenID}-${qualifier}-serving-unit-select`
+    // @ts-ignore
   ).value;
   let referenceServingSize =
     servingInputField.getAttribute("reference_serving");
@@ -5581,10 +5603,10 @@ function FMTUIGetPreparationSteps(prepStepContainerDiv) {
   return steps;
 }
 function FMTUIAddPreparationStep(
-  prepStepContainerDiv,
-  scroll,
-  addStepDelBtn,
-  column
+  prepStepContainerDiv: HTMLElement,
+  scroll: boolean,
+  addStepDelBtn?: boolean,
+  column?: HTMLElement
 ) {
   addStepDelBtn = addStepDelBtn == undefined ? true : addStepDelBtn;
   const exisitingSteps = prepStepContainerDiv.getElementsByClassName(
@@ -5874,15 +5896,19 @@ function FMTUIEditBtnClick(baseId, qualifier, objectType, event) {
   const mealIdentifierObj = {};
   mealIdentifierObj.meal_year =
     addToMealBtn.getAttribute("meal_year") ||
+    // @ts-ignore
     document.getElementById(`${baseId}-meal-year`).value;
   mealIdentifierObj.meal_month =
     addToMealBtn.getAttribute("meal_month") ||
+    // @ts-ignore
     Number(document.getElementById(`${baseId}-meal-month`).value) - 1;
   mealIdentifierObj.meal_day =
     addToMealBtn.getAttribute("meal_day") ||
+    // @ts-ignore
     document.getElementById(`${baseId}-meal-day`).value;
   mealIdentifierObj.meal_name =
     addToMealBtn.getAttribute("meal_name") ||
+    // @ts-ignore
     document.getElementById(`${baseId}-meal-name`).value;
   mealIdentifierObj.profile_id =
     addToMealBtn.getAttribute("profile_id") || fmtAppInstance.currentProfileId;
@@ -5925,16 +5951,16 @@ function FMTUIDeleteConsumable(event, baseId, qualifier, objectType) {
       return;
   }
   const editBtn = document.getElementById(`${baseId}-delete`);
-  let consumableId = editBtn.getAttribute(idProp);
-  if (!isValidIDFn(consumableId)) {
-    const msg = `Invalid ${objectType} ID (${consumableId}). Please reload`;
+  const dom_consumableId = editBtn.getAttribute(idProp);
+  if (!isValidIDFn(dom_consumableId)) {
+    const msg = `Invalid ${objectType} ID (${dom_consumableId}). Please reload`;
     console.error(msg);
     // FMTShowAlert(`${baseId}-alerts`, "danger", msg, fmtAppGlobals.defaultAlertScroll);
     FMTShowAlertBar(msg, `${baseId}-alerts`, "danger");
     return;
   }
   //FIXME - each one in their own function.
-  consumableId = Number(consumableId);
+  const consumableId = Number(dom_consumableId);
   const msg = `Are you sure you would like to delete this ${objectType}?`;
   FMTShowPrompt(
     `${baseId}-alerts`,
@@ -6007,28 +6033,24 @@ function FMTSetCurrentDate(currentDate, onsuccessFn, onerrorFn) {
   fmtAppInstance.currentDay = currentDate;
   FMTLoadCurrentDayUserGoals(onsuccessFn, onerrorFn);
 }
-function FMTPreviousDay(onsuccessFn, onerrorFn) {
-  onerrorFn =
-    onerrorFn ||
-    function () {
-      console.error(
-        `currentDay (${fmtAppInstance.currentDay}) is not a valid Date object`
-      );
-    };
+function FMTPreviousDay(onsuccessFn) {
+  const onerrorFn = function () {
+    console.error(
+      `currentDay (${fmtAppInstance.currentDay}) is not a valid Date object`
+    );
+  };
   if (!isDate(fmtAppInstance.currentDay)) {
     return onerrorFn();
   }
   fmtAppInstance.currentDay.setDate(fmtAppInstance.currentDay.getDate() - 1);
   FMTLoadCurrentDayUserGoals(onsuccessFn, onerrorFn);
 }
-function FMTNextDay(onsuccessFn, onerrorFn) {
-  onerrorFn =
-    onerrorFn ||
-    function () {
-      console.error(
-        `currentDay (${fmtAppInstance.currentDay}) is not a valid Date object`
-      );
-    };
+function FMTNextDay(onsuccessFn) {
+  const onerrorFn = function () {
+    console.error(
+      `currentDay (${fmtAppInstance.currentDay}) is not a valid Date object`
+    );
+  };
   if (!isDate(fmtAppInstance.currentDay)) {
     return onerrorFn();
   }
@@ -6077,7 +6099,7 @@ var pageController = {
     fmtAppInstance.pageState.activeTab = tabId;
     pageController.closeDynamicScreens();
   },
-  showOverview: function (showToday) {
+  showOverview: function (showToday?: boolean) {
     pageController.setTabActive("goto-overview");
     if (showToday === true) {
       FMTToday();
@@ -6170,7 +6192,7 @@ var pageController = {
     for (let i = sortedScreenNames.length - 1; i >= 0; i--) {
       const screenName = sortedScreenNames[i];
       const zIndex = i + 1;
-      document.getElementById(screenName).style.zIndex = zIndex;
+      document.getElementById(screenName).style.zIndex = zIndex.toString();
       fmtAppInstance.pageState.activeDynamicScreens[screenName] = zIndex;
     }
     if (reverse) {
@@ -6400,17 +6422,22 @@ var pageController = {
       if (mealIdentifier) {
         const mealNameInput = document.getElementById(`${screenID}-meal-name`);
         if (mealIdentifier.meal_name) {
+          // @ts-ignore
           mealNameInput.value = mealIdentifier.meal_name;
         } else {
+          // @ts-ignore
           mealNameInput.value = "";
           document
             .getElementById(`${screenID}-add-to-meal`)
             .classList.remove("d-none");
         }
+        // @ts-ignore
         document.getElementById("view-food-screen-meal-year").value =
           mealIdentifier.meal_year;
+        // @ts-ignore
         document.getElementById("view-food-screen-meal-month").value =
           mealIdentifier.meal_month + 1;
+        // @ts-ignore
         document.getElementById("view-food-screen-meal-day").value =
           mealIdentifier.meal_day;
       }
@@ -6495,6 +6522,7 @@ var pageController = {
     const additionalNutrientsObj = FMTCreateEmptyAdditionalNutrients();
     const onAddIngredientClick = function () {
       const mealName =
+        // @ts-ignore
         document.getElementById("add-recipe-screen-recipe-name").value || "";
       pageController.openAddToRecipeDynamicScreen(
         mealName,
@@ -6644,17 +6672,22 @@ var pageController = {
       if (mealIdentifier) {
         const mealNameInput = document.getElementById(`${screenID}-meal-name`);
         if (mealIdentifier.meal_name) {
+          // @ts-ignore
           mealNameInput.value = mealIdentifier.meal_name;
         } else {
+          // @ts-ignore
           mealNameInput.value = "";
           document
             .getElementById(`${screenID}-add-to-meal`)
             .classList.remove("d-none");
         }
+        // @ts-ignore
         document.getElementById(`${screenID}-meal-year`).value =
           mealIdentifier.meal_year;
+        // @ts-ignore
         document.getElementById(`${screenID}-meal-month`).value =
           mealIdentifier.meal_month + 1;
+        // @ts-ignore
         document.getElementById(`${screenID}-meal-day`).value =
           mealIdentifier.meal_day;
       }
@@ -7482,10 +7515,12 @@ function prepareEventHandlers() {
     pageController.showSettings();
   });
   $("#profile-sex-select").change((e) => {
+    // @ts-ignore
     const sex = e.currentTarget.value;
     FMTProfileSelectSex(sex, "profile-sex");
   });
   $("#profile-activity-select").change((e) => {
+    // @ts-ignore
     const activityLevel = e.currentTarget.value;
     FMTProfileSelectActivityLevel(
       activityLevel,
@@ -7534,7 +7569,9 @@ function prepareEventHandlers() {
   });
   $("#profile-macro-protein").keyup((e) => {
     if (
+      // @ts-ignore
       isNumber(e.currentTarget.value) &&
+      // @ts-ignore
       !e.currentTarget.value.endsWith(".")
     ) {
       const _e = {
@@ -7550,7 +7587,9 @@ function prepareEventHandlers() {
         "profile-daily-calories"
       );
     } else if (
+      // @ts-ignore
       e.currentTarget.value == undefined ||
+      // @ts-ignore
       e.currentTarget.value == ""
     ) {
       document.getElementById("profile-macro-protein-result").innerHTML = "";
@@ -7558,7 +7597,9 @@ function prepareEventHandlers() {
   });
   $("#profile-macro-carb").keyup((e) => {
     if (
+      // @ts-ignore
       isNumber(e.currentTarget.value) &&
+      // @ts-ignore
       !e.currentTarget.value.endsWith(".")
     ) {
       const _e = {
@@ -7574,7 +7615,9 @@ function prepareEventHandlers() {
         "profile-daily-calories"
       );
     } else if (
+      // @ts-ignore
       e.currentTarget.value == undefined ||
+      // @ts-ignore
       e.currentTarget.value == ""
     ) {
       document.getElementById("profile-macro-carb-result").innerHTML = "";
@@ -7582,7 +7625,9 @@ function prepareEventHandlers() {
   });
   $("#profile-macro-fat").keyup((e) => {
     if (
+      // @ts-ignore
       isNumber(e.currentTarget.value) &&
+      // @ts-ignore
       !e.currentTarget.value.endsWith(".")
     ) {
       const _e = {
@@ -7598,7 +7643,9 @@ function prepareEventHandlers() {
         "profile-daily-calories"
       );
     } else if (
+      // @ts-ignore
       e.currentTarget.value == undefined ||
+      // @ts-ignore
       e.currentTarget.value == ""
     ) {
       document.getElementById("profile-macro-fat-result").innerHTML = "";
@@ -7644,6 +7691,7 @@ function prepareEventHandlers() {
     let caloriesDiv = document.getElementById("profile-daily-calories");
     if (
       !caloriesDiv ||
+      // @ts-ignore
       !(isNumber(caloriesDiv.value) && Number(caloriesDiv.value) > 0)
     ) {
       FMTShowAlertBar(
@@ -7653,6 +7701,7 @@ function prepareEventHandlers() {
       );
       return;
     }
+    // @ts-ignore
     let calories = Number(caloriesDiv.value);
     FMTFillMacro(baseID, nutrient, calories);
   });
@@ -7662,6 +7711,7 @@ function prepareEventHandlers() {
     let caloriesDiv = document.getElementById("profile-daily-calories");
     if (
       !caloriesDiv ||
+      // @ts-ignore
       !(isNumber(caloriesDiv.value) && Number(caloriesDiv.value) > 0)
     ) {
       FMTShowAlertBar(
@@ -7671,6 +7721,7 @@ function prepareEventHandlers() {
       );
       return;
     }
+    // @ts-ignore
     let calories = Number(caloriesDiv.value);
     FMTFillMacro(baseID, nutrient, calories);
   });
@@ -7680,6 +7731,7 @@ function prepareEventHandlers() {
     let caloriesDiv = document.getElementById("profile-daily-calories");
     if (
       !caloriesDiv ||
+      // @ts-ignore
       !(isNumber(caloriesDiv.value) && Number(caloriesDiv.value) > 0)
     ) {
       FMTShowAlertBar(
@@ -7689,6 +7741,7 @@ function prepareEventHandlers() {
       );
       return;
     }
+    // @ts-ignore
     let calories = Number(caloriesDiv.value);
     FMTFillMacro(baseID, nutrient, calories);
   });
@@ -7879,6 +7932,7 @@ function prepareEventHandlers() {
         }
       }
       const msg = `Successfully updated food: ${
+        // @ts-ignore
         document.getElementById("edit-food-screen-food-name").value
       }`;
 
@@ -7975,7 +8029,7 @@ function prepareEventHandlers() {
     }
   });
   $("#add-recipe-screen-recipe-preparation-steps-add").click((e) => {
-    const prepStepContainerDiv = e.currentTarget.parentNode;
+    const prepStepContainerDiv = e.currentTarget.parentElement;
     FMTUIAddPreparationStep(prepStepContainerDiv, false);
   });
   $("#add-recipe-screen-more").click(() => {
@@ -8018,7 +8072,7 @@ function prepareEventHandlers() {
     }
   });
   $("#edit-recipe-screen-recipe-preparation-steps-add").click((e) => {
-    const prepStepContainerDiv = e.currentTarget.parentNode;
+    const prepStepContainerDiv = e.currentTarget.parentElement;
     FMTUIAddPreparationStep(prepStepContainerDiv, false);
   });
   $("#edit-recipe-screen-more").click(() => {
@@ -8103,14 +8157,14 @@ function prepareEventHandlers() {
   $("#edit-meal-entry-screen-delete").click(() => {
     const alertsDivId = "edit-meal-entry-screen-alerts";
     const delBtn = document.getElementById("edit-meal-entry-screen-delete");
-    let entry_id = delBtn.getAttribute("entry_id");
-    if (!FMTIsValidId(entry_id)) {
-      const msg = `Invalid Entry ID (${entry_id}). Please reload`;
+    const dom_entry_id = delBtn.getAttribute("entry_id");
+    if (!FMTIsValidId(dom_entry_id)) {
+      const msg = `Invalid Entry ID (${dom_entry_id}). Please reload`;
       console.error(msg);
       // FMTShowAlert(alertsDivId, "danger", msg, fmtAppGlobals.defaultAlertScroll);
       return;
     }
-    entry_id = Number(entry_id);
+    const entry_id = Number(dom_entry_id);
     const msg = `Are you sure you would like to delete this Entry?`;
     FMTShowPrompt(
       alertsDivId,
@@ -8158,8 +8212,8 @@ function prepareEventHandlers() {
     const objectType = "Meal Entry";
     const alertsDivId = `${baseScreenID}-alerts`;
     const updateBtn = document.getElementById(`${baseScreenID}-save`);
-    let entry_id = updateBtn.getAttribute("entry_id");
-    if (!FMTIsValidId(entry_id)) {
+    const dom_entry_id = updateBtn.getAttribute("entry_id");
+    if (!FMTIsValidId(dom_entry_id)) {
       const msg = `Invalid Meal Entry. Please reload`;
       console.error(msg);
       FMTShowAlert(
@@ -8170,7 +8224,7 @@ function prepareEventHandlers() {
       );
       return;
     }
-    entry_id = Number(entry_id);
+    const entry_id = Number(dom_entry_id);
     const consumableValues = FMTSaveConsumableItemScreen(
       baseScreenID,
       "get-object",
@@ -8308,6 +8362,7 @@ function prepareEventHandlers() {
   $("#settings-data-control-import-file").change(() => {
     const fileList = document.getElementById(
       "settings-data-control-import-file"
+      // @ts-ignore
     ).files;
     if (fileList.length < 1) {
       document
@@ -8349,22 +8404,27 @@ function prepareEventHandlers() {
   });
   //Search functions
   $("#foods-food-search").keyup((e) => {
+    // @ts-ignore
     let query = e.currentTarget.value;
     FMTQueryConsumablesTable("foods", "food", query);
   });
   $("#add-to-meal-screen-food-search").keyup((e) => {
+    // @ts-ignore
     let query = e.currentTarget.value;
     FMTQueryConsumablesTable("add-to-meal-screen", "food", query);
   });
   $("#foods-recipe-search").keyup((e) => {
+    // @ts-ignore
     let query = e.currentTarget.value;
     FMTQueryConsumablesTable("foods", "recipe", query);
   });
   $("#add-to-meal-screen-recipe-search").keyup((e) => {
+    // @ts-ignore
     let query = e.currentTarget.value;
     FMTQueryConsumablesTable("add-to-meal-screen", "recipe", query);
   });
   $("#add-to-recipe-screen-food-search").keyup((e) => {
+    // @ts-ignore
     let query = e.currentTarget.value;
     FMTQueryConsumablesTable("add-to-recipe-screen", "food", query);
   });
