@@ -4,7 +4,12 @@ import {
   katchMcArdle,
   mifflinStJeor,
 } from "../utils/calculations";
-import { isDateString, isPercent, isString } from "../utils/utils";
+import {
+  isDateString,
+  isPercent,
+  isPositiveNumber,
+  isString,
+} from "../utils/utils";
 import type { IMacroSplit } from "./macroSplit";
 import MacroSplit from "./macroSplit";
 
@@ -194,13 +199,13 @@ export default class UserProfile implements IUserProfile {
     if (!Object.values(UserGender).includes(sex)) {
       throw `Sex must be either Male or Female. Got '${sex}'`;
     }
-    if (!Number.isFinite(bodyWeight) || bodyWeight <= 0) {
+    if (!isPositiveNumber(bodyWeight)) {
       throw `Bodyweight must be a positive number. Got '${bodyWeight}'`;
     }
     if (!Object.values(BodyWeightUnits).includes(bodyWeightUnits)) {
       throw `Bodyweight must be either Kg or Lbs. Got '${bodyWeightUnits}'`;
     }
-    if (!Number.isFinite(height) || height <= 0) {
+    if (!isPositiveNumber(height)) {
       throw `Height must be a positive number. Got '${height}'`;
     }
     if (!Object.values(BodyHeightUnits).includes(heightUnits)) {
@@ -209,7 +214,7 @@ export default class UserProfile implements IUserProfile {
     if (!Object.values(UserActivityLevel).includes(activityLevel)) {
       throw `Invalid Activity Level. Got '${activityLevel}'`;
     }
-    if (!Number.isFinite(activityMultiplier) || activityMultiplier <= 0) {
+    if (!isPositiveNumber(activityMultiplier)) {
       throw `Activity Multiplier must be a positive number. Got '${activityMultiplier}'`;
     }
     if (name && !isString(name)) {

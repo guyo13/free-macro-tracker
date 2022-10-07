@@ -3,6 +3,7 @@ export function isFunction(fn: any) {
 }
 
 export function isPercent(num: any) {
+  // TODO - Replace isNaN with Number.isFinite
   return !isNaN(num) && num >= 0 && num <= 100;
 }
 
