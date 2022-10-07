@@ -3107,7 +3107,10 @@ function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
   };
   readAndUpdateOperation();
 }
-function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
+function FMTDisplayProfile(profileId) {
+  const onerrorFn = function () {
+    console.error(`Failed getting Profile id ${profileId}`);
+  };
   FMTReadProfile(
     profileId,
     function (e) {
@@ -3234,19 +3237,8 @@ function FMTDisplayProfile(profileId, onsuccessFn, onerrorFn) {
         "profile-daily-calories"
       );
       FMTProfileStorePreviousSelection(_e);
-      if (onsuccessFn) {
-        onsuccessFn();
-      }
     },
-    function (ev) {
-      // On Error
-      onerrorFn = isFunction(onerrorFn)
-        ? onerrorFn
-        : function () {
-            console.error(`Failed getting Profile id ${profileId}`);
-          };
-      onerrorFn(ev);
-    }
+    onerrorFn
   );
 }
 
@@ -4648,12 +4640,12 @@ function FMTSaveConsumableItemScreen(
   }
 }
 function FMTUpdateConsumableValuesOnServingChange(
-  event,
-  baseScreenID,
-  qualifier,
-  objectType,
-  consumableItem,
-  ingredient
+  event: any,
+  baseScreenID: string,
+  qualifier: string,
+  objectType: string,
+  consumableItem?: any,
+  ingredient?: any
 ) {
   //TODO add object ID validation function based on objectType
   let idProp, pageFunction;
