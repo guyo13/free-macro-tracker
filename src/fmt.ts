@@ -816,15 +816,12 @@ function FMTImportFromStructuredJSON(
 }
 
 //Functions - Validation
-function FMTIsValidFoodId(foodId) {
-  return isNumber(foodId) && Number.isInteger(Number(foodId));
+
+// TODO - Remove after migrating to svelte components
+function FMTIsValidId(id) {
+  return isNumber(id) && Number.isInteger(Number(id));
 }
-function FMTIsValidRecipeId(recipeId) {
-  return isNumber(recipeId) && Number.isInteger(Number(recipeId));
-}
-function FMTIsValidEntryId(entryId) {
-  return isNumber(entryId) && Number.isInteger(Number(entryId));
-}
+
 function FMTValidateNutritionalValue(nutritionalValueObj, unitsChart, options) {
   if (unitsChart == null) {
     unitsChart = fmtAppInstance.unitsChart;
@@ -5641,7 +5638,7 @@ function FMTUIAddIngredientBtnClick(
   }
 
   let foodId = addBtn.getAttribute("food_id");
-  if (FMTIsValidFoodId(foodId)) {
+  if (FMTIsValidId(foodId)) {
     addBtn.removeAttribute("food_id");
     const foodObj = FMTSaveConsumableItemScreen(
       baseId,
@@ -5848,12 +5845,12 @@ function FMTUIEditBtnClick(baseId, qualifier, objectType, event) {
   switch (objectType) {
     case "Food Item":
       idProp = "food_id";
-      isValidIDFn = FMTIsValidFoodId;
+      isValidIDFn = FMTIsValidId;
       screenFn = pageController.openEditFoodDynamicScreen;
       break;
     case "Recipe Item":
       idProp = "recipe_id";
-      isValidIDFn = FMTIsValidRecipeId;
+      isValidIDFn = FMTIsValidId;
       screenFn = pageController.openEditRecipeDynamicScreen;
       break;
     default:
@@ -5907,7 +5904,7 @@ function FMTUIDeleteConsumable(event, baseId, qualifier, objectType) {
   switch (objectType) {
     case "Food Item":
       idProp = "food_id";
-      isValidIDFn = FMTIsValidFoodId;
+      isValidIDFn = FMTIsValidId;
       screenFns = [
         pageController.closeEditFoodDynamicScreen,
         pageController.closeViewFoodDynamicScreen,
@@ -5916,7 +5913,7 @@ function FMTUIDeleteConsumable(event, baseId, qualifier, objectType) {
       break;
     case "Recipe Item":
       idProp = "recipe_id";
-      isValidIDFn = FMTIsValidRecipeId;
+      isValidIDFn = FMTIsValidId;
       screenFns = [
         pageController.closeEditRecipeDynamicScreen,
         pageController.closeViewRecipeDynamicScreen,
@@ -6254,7 +6251,7 @@ var pageController = {
     mealIdentifier
   ) {
     //Sync Tasks - Argument Validation, handling, const definition
-    if (!FMTIsValidFoodId(foodId)) {
+    if (!FMTIsValidId(foodId)) {
       console.error(`Invalid Food ID (${foodId})`);
       return;
     }
@@ -6345,7 +6342,7 @@ var pageController = {
     showAddToRecipe
   ) {
     //Sync Tasks - Argument Validation, constants definition
-    if (!FMTIsValidFoodId(foodId)) {
+    if (!FMTIsValidId(foodId)) {
       console.error(`Invalid Food ID: ${foodId}`);
       return;
     }
@@ -6586,7 +6583,7 @@ var pageController = {
     recipesTableBodyID
   ) {
     //Sync Tasks - Argument Validation, constants definition
-    if (!FMTIsValidRecipeId(recipeId)) {
+    if (!FMTIsValidId(recipeId)) {
       console.error(`Invalid Recipe ID: ${recipeId}`);
       return;
     }
@@ -6802,7 +6799,7 @@ var pageController = {
     mealIdentifier
   ) {
     //Sync Tasks - Argument Validation, handling, const definition
-    if (!FMTIsValidRecipeId(recipeId)) {
+    if (!FMTIsValidId(recipeId)) {
       console.error(`Invalid Recipe ID (${recipeId})`);
       return;
     }
@@ -7147,7 +7144,7 @@ var pageController = {
     currentServingUnits
   ) {
     //Sync Tasks - Argument validation and constants definition
-    if (!FMTIsValidEntryId(entry_id)) {
+    if (!FMTIsValidId(entry_id)) {
       return;
     }
     if (!isNumber(multiplier)) {
@@ -7852,7 +7849,7 @@ function prepareEventHandlers() {
   });
   $("#edit-food-screen-save").click((e) => {
     let foodId = e.currentTarget.getAttribute("food_id");
-    if (!FMTIsValidFoodId(foodId)) {
+    if (!FMTIsValidId(foodId)) {
       console.error(`Invalid Food ID (${foodId})`);
       return;
     }
@@ -8106,7 +8103,7 @@ function prepareEventHandlers() {
     const alertsDivId = "edit-meal-entry-screen-alerts";
     const delBtn = document.getElementById("edit-meal-entry-screen-delete");
     let entry_id = delBtn.getAttribute("entry_id");
-    if (!FMTIsValidEntryId(entry_id)) {
+    if (!FMTIsValidId(entry_id)) {
       const msg = `Invalid Entry ID (${entry_id}). Please reload`;
       console.error(msg);
       // FMTShowAlert(alertsDivId, "danger", msg, fmtAppGlobals.defaultAlertScroll);
@@ -8161,7 +8158,7 @@ function prepareEventHandlers() {
     const alertsDivId = `${baseScreenID}-alerts`;
     const updateBtn = document.getElementById(`${baseScreenID}-save`);
     let entry_id = updateBtn.getAttribute("entry_id");
-    if (!FMTIsValidEntryId(entry_id)) {
+    if (!FMTIsValidId(entry_id)) {
       const msg = `Invalid Meal Entry. Please reload`;
       console.error(msg);
       FMTShowAlert(
