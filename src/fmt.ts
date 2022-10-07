@@ -822,6 +822,7 @@ function FMTIsValidId(id) {
   return isNumber(id) && Number.isInteger(Number(id));
 }
 
+// TODO - Remove
 function FMTValidateNutritionalValue(nutritionalValueObj, unitsChart, options) {
   if (unitsChart == null) {
     unitsChart = fmtAppInstance.unitsChart;
@@ -6046,7 +6047,7 @@ var pageController = {
   },
   setSkipProfile: function () {
     if (this.hasLocalStorage()) {
-      window.localStorage.setItem("profileCreationSkippedByUser", true);
+      window.localStorage.setItem("profileCreationSkippedByUser", "true");
     }
   },
   isProfileCreationSkippedByUser: function () {
@@ -8373,26 +8374,32 @@ function prepareEventHandlers() {
   $("#overview-date-next").click(() => {
     FMTNextDay(FMTOverviewLoadCurrentDay);
   });
+  // @ts-ignore
   $(".carousel #profile-carousel").carousel({
     interval: false,
     wrap: false,
   });
   $("#profile-carousel").on("swiped-left", () => {
+    // @ts-ignore
     $(".carousel").carousel("prev");
   });
   $("#profile-carousel").on("swiped-right", () => {
+    // @ts-ignore
     $(".carousel").carousel("next");
   });
   // Workaround for weird Boostrap carousel behavior...
   document.getElementById("profile-first-indicator").click();
+  // @ts-ignore
   $('[data-toggle="tooltip"]').tooltip();
   $("#profile-tdee-tooltip").on("shown.bs.tooltip", () => {
     setTimeout(() => {
+      // @ts-ignore
       $("#profile-tdee-tooltip").tooltip("hide");
     }, 3000);
   });
   $("#profile-bmr-tooltip").on("shown.bs.tooltip", () => {
     setTimeout(() => {
+      // @ts-ignore
       $("#profile-bmr-tooltip").tooltip("hide");
     }, 3000);
   });
@@ -8400,12 +8407,16 @@ function prepareEventHandlers() {
     document.getElementById("profile-last-indicator").click();
   });
   $("#profile-carousel-previous-chevron").click(() => {
+    // @ts-ignore
     $(".carousel").carousel("prev");
   });
   $("#profile-carousel-next-chevron").click(() => {
+    // @ts-ignore
     $(".carousel").carousel("next");
   });
 }
+
+// TODO - Remove and use idb-wrapper
 function startIndexedDB() {
   //Check if IndexedDB supported
   Object.defineProperty(window, "indexedDB", {
@@ -8422,8 +8433,11 @@ function startIndexedDB() {
     return;
   }
   window.IDBTransaction = window.IDBTransaction ||
+    // @ts-ignore
     window.webkitIDBTransaction ||
+    // @ts-ignore
     window.msIDBTransaction || { READ_WRITE: "readwrite" };
+  // @ts-ignore
   window.IDBKeyRange =
     window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 
@@ -8432,6 +8446,8 @@ function startIndexedDB() {
   dbOpenReq.onupgradeneeded = onUpgradeNeeded;
   dbOpenReq.onsuccess = onDbSuccess;
 }
+
+// TODO - Remove and use idb-wrapper
 function askPersistentStorage() {
   navigator.storage.persist().then((isConfirmed) => {
     if (isConfirmed) {
