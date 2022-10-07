@@ -4490,7 +4490,6 @@ function FMTSaveConsumableItemScreen(
 ) {
   const _funcName = "FMTSaveConsumableItemScreen";
   let nameProp, brandProp, servingProp;
-  let consumableObj = {};
   switch (objectType) {
     case "Food Item":
     //FIXME
@@ -4528,6 +4527,20 @@ function FMTSaveConsumableItemScreen(
     return onerrorFn();
   }
   const unitsChart = fmtAppInstance.unitsChart;
+  const updateBtn = document.getElementById(`${baseScreenID}-save`);
+
+  let consumableObj = {
+    units: document.getElementById(
+      `${baseScreenID}-${qualifier}-serving-unit-select`
+      // @ts-ignore
+    ).value,
+    year: updateBtn.getAttribute("meal_year"),
+    month: updateBtn.getAttribute("meal_month"),
+    day: updateBtn.getAttribute("meal_day"),
+    mealName: updateBtn.getAttribute("meal_name"),
+    profile_id: updateBtn.getAttribute("profile_id"),
+    consumable_id: updateBtn.getAttribute("consumable_id"),
+  };
   consumableObj[nameProp] = document.getElementById(
     `${baseScreenID}-${qualifier}-name`
     // @ts-ignore
@@ -4540,23 +4553,12 @@ function FMTSaveConsumableItemScreen(
     `${baseScreenID}-${qualifier}-serving-input`
     // @ts-ignore
   ).value;
-  consumableObj.units = document.getElementById(
-    `${baseScreenID}-${qualifier}-serving-unit-select`
-    // @ts-ignore
-  ).value;
   if (objectType === "Meal Entry") {
     //FIXME - remove this logic from here and save these parameters by function reference inside Instance - State
     consumableObj.consumableType = document.getElementById(
       `${baseScreenID}-${qualifier}-type`
       // @ts-ignore
     ).value;
-    const updateBtn = document.getElementById(`${baseScreenID}-save`);
-    consumableObj.year = updateBtn.getAttribute("meal_year");
-    consumableObj.month = updateBtn.getAttribute("meal_month");
-    consumableObj.day = updateBtn.getAttribute("meal_day");
-    consumableObj.mealName = updateBtn.getAttribute("meal_name");
-    consumableObj.profile_id = updateBtn.getAttribute("profile_id");
-    consumableObj.consumable_id = updateBtn.getAttribute("consumable_id");
   }
   if (getNutritionalValue === true) {
     consumableObj.nutritionalValue = {};
