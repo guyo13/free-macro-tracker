@@ -5900,7 +5900,6 @@ function FMTUIAddtoMealBtnClick(baseId, qualifier, objectType, event) {
     undefined,
     undefined
   );
-  const mealEntryObj = {};
   let idProp, nameProp, brandProp, closeFn;
   switch (objectType) {
     case "Food Item":
@@ -5916,18 +5915,20 @@ function FMTUIAddtoMealBtnClick(baseId, qualifier, objectType, event) {
       closeFn = pageController.closeViewRecipeDynamicScreen;
       break;
   }
-  mealEntryObj.profile_id = mealIdentifier.profile_id;
-  mealEntryObj.year = mealIdentifier.meal_year;
-  mealEntryObj.month = mealIdentifier.meal_month;
-  mealEntryObj.day = mealIdentifier.meal_day;
-  mealEntryObj.mealName = mealIdentifier.meal_name;
-  mealEntryObj.consumable_id = Number(addToMealBtn.getAttribute(idProp));
-  mealEntryObj.consumableName = consumableValues[nameProp];
-  mealEntryObj.consumableBrand = consumableValues[brandProp];
-  mealEntryObj.consumableType = objectType;
-  mealEntryObj.serving = consumableValues.referenceServing;
-  mealEntryObj.units = consumableValues.units;
-  mealEntryObj.nutritionalValue = consumableValues.nutritionalValue;
+  const mealEntryObj = {
+    profile_id: mealIdentifier.profile_id,
+    year: mealIdentifier.meal_year,
+    month: mealIdentifier.meal_month,
+    day: mealIdentifier.meal_day,
+    mealName: mealIdentifier.meal_name,
+    consumable_id: Number(addToMealBtn.getAttribute(idProp)),
+    consumableName: consumableValues[nameProp],
+    consumableBrand: consumableValues[brandProp],
+    consumableType: objectType,
+    serving: consumableValues.referenceServing,
+    units: consumableValues.units,
+    nutritionalValue: consumableValues.nutritionalValue,
+  };
   FMTAddMealEntry(
     mealEntryObj,
     function () {
@@ -7992,12 +7993,12 @@ function prepareEventHandlers() {
     FMTConsumableItemScreenShowLess("edit-food-screen", "food");
   });
   $("#edit-food-screen-save").click((e) => {
-    let foodId = e.currentTarget.getAttribute("food_id");
-    if (!FMTIsValidId(foodId)) {
-      console.error(`Invalid Food ID (${foodId})`);
+    const dom_foodId = e.currentTarget.getAttribute("food_id");
+    if (!FMTIsValidId(dom_foodId)) {
+      console.error(`Invalid Food ID (${dom_foodId})`);
       return;
     }
-    foodId = Number(foodId);
+    const foodId = Number(dom_foodId);
 
     const onerrorFn = function (err) {
       const msg = `Failed editing food - ${err}`;
@@ -8026,12 +8027,13 @@ function prepareEventHandlers() {
         document.getElementById("edit-food-screen-food-name").value
       }`;
 
-      const mealIdentifierObj = {};
-      mealIdentifierObj.meal_year = saveBtn.getAttribute("meal_year");
-      mealIdentifierObj.meal_month = saveBtn.getAttribute("meal_month");
-      mealIdentifierObj.meal_day = saveBtn.getAttribute("meal_day");
-      mealIdentifierObj.meal_name = saveBtn.getAttribute("meal_name");
-      mealIdentifierObj.profile_id = saveBtn.getAttribute("profile_id");
+      const mealIdentifierObj = {
+        meal_year: saveBtn.getAttribute("meal_year"),
+        meal_month: saveBtn.getAttribute("meal_month"),
+        meal_day: saveBtn.getAttribute("meal_day"),
+        meal_name: saveBtn.getAttribute("meal_name"),
+        profile_id: saveBtn.getAttribute("profile_id"),
+      };
       const validateMealIdentifierObjRes =
         FMTValidateMealIdentifier(mealIdentifierObj);
       /*            if (validateMealIdentifierObjRes.mealIdentifier == null || validateMealIdentifierObjRes.error != null) {
