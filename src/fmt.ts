@@ -686,7 +686,7 @@ function FMTImportRecordsSeq(
   importReq.onsuccess = successIterFn;
   importReq.onerror = errIterFn;
 }
-function FMTImportTables(dbTables, jsonData, verbose) {
+function FMTImportTables(dbTables: any, jsonData: any, verbose?: any) {
   if (dbTables.length < 1) return;
   const dbTableName = dbTables[0]; //.shift();
 
@@ -4460,9 +4460,7 @@ function FMTUIGetAdditionalNutrientsFromScreen(baseScreenID, qualifier) {
       const select = document.getElementById(selectId);
       if (!select) {
         //TODO increase error count
-        console.error(
-          `[${_funcName}] - Failed finding select element at id: ${selectId}`
-        );
+        console.error(`Failed finding select element at id: ${selectId}`);
         continue;
       }
       if (!Array.isArray(screenAdditionalNutrients[category])) {
@@ -4748,9 +4746,15 @@ function FMTUpdateConsumableValuesOnServingChange(
 }
 
 //Functions - UI - Overview
-function FMTCreateMacroProgressBar(c, p, f, inPercent, className, addLabels) {
+function FMTCreateMacroProgressBar(
+  c: number,
+  p: number,
+  f: number,
+  inPercent: boolean,
+  className?: string,
+  addLabels?: boolean
+) {
   className = className || "fmt-macros-dist-progress-bar";
-  addLabels = addLabels == undefined ? false : addLabels;
   const carbCalories = c * 4;
   const proteinCalories = p * 4;
   const fatCalories = f * 9;
@@ -5466,12 +5470,13 @@ function FMTOverviewLoadMealEntries(onsuccessFn, onerrorFn) {
   ) {
     const mealContainer = document.getElementById("overview-meals-container");
     fmtAppInstance.defaultMeals.forEach((item) => {
-      const _mealobj = {};
-      _mealobj.year = fmtAppInstance.currentDay.getFullYear();
-      _mealobj.month = fmtAppInstance.currentDay.getMonth();
-      _mealobj.day = fmtAppInstance.currentDay.getDate();
-      _mealobj.mealName = item;
-      _mealobj.profile_id = fmtAppInstance.currentProfileId;
+      const _mealobj = {
+        year: fmtAppInstance.currentDay.getFullYear(),
+        month: fmtAppInstance.currentDay.getMonth(),
+        day: fmtAppInstance.currentDay.getDate(),
+        mealName: item,
+        profile_id: fmtAppInstance.currentProfileId,
+      };
       const defaultMealNode = FMTOverviewCreateMealNode(_mealobj, false);
       mealContainer.appendChild(defaultMealNode);
     });
