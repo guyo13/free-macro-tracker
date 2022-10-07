@@ -1,6 +1,7 @@
 export function isFunction(fn: any) {
   return typeof fn === "function";
 }
+
 export function isPercent(num: any) {
   return !isNaN(num) && num >= 0 && num <= 100;
 }
@@ -19,6 +20,10 @@ export function isNumber(input: any) {
   } else {
     return true;
   }
+}
+
+export function isPositiveNumber(x: any) {
+  return Number.isFinite(x) && x > 0;
 }
 
 export function isDate(date: any) {
