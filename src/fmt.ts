@@ -5784,8 +5784,7 @@ function FMTUIAddIngredientBtnClick(
     };
 
     const onEdit = (col, input) => {
-      const _recipe = {};
-      _recipe.ingredients = ingredients;
+      const _recipe = { ingredients };
       const onEdited = () => {
         onModified();
         input.value = `${food.foodName} ${food.referenceServing}/${food.units}`;
@@ -5983,25 +5982,27 @@ function FMTUIEditBtnClick(baseId, qualifier, objectType, event) {
     consumablesTableBodyID = editBtn.getAttribute("consumables-table-body-id");
   }
   const addToMealBtn = document.getElementById(`${baseId}-save`);
-  const mealIdentifierObj = {};
-  mealIdentifierObj.meal_year =
-    addToMealBtn.getAttribute("meal_year") ||
-    // @ts-ignore
-    document.getElementById(`${baseId}-meal-year`).value;
-  mealIdentifierObj.meal_month =
-    addToMealBtn.getAttribute("meal_month") ||
-    // @ts-ignore
-    Number(document.getElementById(`${baseId}-meal-month`).value) - 1;
-  mealIdentifierObj.meal_day =
-    addToMealBtn.getAttribute("meal_day") ||
-    // @ts-ignore
-    document.getElementById(`${baseId}-meal-day`).value;
-  mealIdentifierObj.meal_name =
-    addToMealBtn.getAttribute("meal_name") ||
-    // @ts-ignore
-    document.getElementById(`${baseId}-meal-name`).value;
-  mealIdentifierObj.profile_id =
-    addToMealBtn.getAttribute("profile_id") || fmtAppInstance.currentProfileId;
+  const mealIdentifierObj = {
+    meal_year:
+      addToMealBtn.getAttribute("meal_year") ||
+      // @ts-ignore
+      document.getElementById(`${baseId}-meal-year`).value,
+    meal_month:
+      addToMealBtn.getAttribute("meal_month") ||
+      // @ts-ignore
+      Number(document.getElementById(`${baseId}-meal-month`).value) - 1,
+    meal_day:
+      addToMealBtn.getAttribute("meal_day") ||
+      // @ts-ignore
+      document.getElementById(`${baseId}-meal-day`).value,
+    meal_name:
+      addToMealBtn.getAttribute("meal_name") ||
+      // @ts-ignore
+      document.getElementById(`${baseId}-meal-name`).value,
+    profile_id:
+      addToMealBtn.getAttribute("profile_id") ||
+      fmtAppInstance.currentProfileId,
+  };
   const validateMealIdentifierObjRes =
     FMTValidateMealIdentifier(mealIdentifierObj);
   // Will either be a valid mealIDentifier Object and get proccessed by Edit screen or undefined and ignored by it
