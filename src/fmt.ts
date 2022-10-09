@@ -1464,8 +1464,6 @@ function FMTValidateUserGoals(userGoalsObj): {
   error?: string;
   userGoals?: IUserGoals;
 } {
-  const result = {};
-
   //Validate profile_id, year, month, day as a meal Identifier Object will null Meal Name
   const mealIdentifierObj = {
     meal_year: userGoalsObj.year,
@@ -1501,108 +1499,74 @@ function FMTValidateUserGoals(userGoalsObj): {
   };
 }
 
-function FMTValidateRecipeObject(recipeObj, unitsChart) {
-  const _funcName = "FMTValidateRecipeObject";
+function FMTValidateRecipeObject(
+  recipeObj,
+  unitsChart
+): { error?: string; recipe?: any } {
   unitsChart = unitsChart || fmtAppInstance.unitsChart;
-  const result = {};
-  const recipe = {};
-  let error = null;
-
   if (recipeObj.recipeName == null || recipeObj.recipeName === "") {
-    console.debug(`[${_funcName}] - empty recipeName`);
-    error = "Recipe Name must not be empty";
-    result.error = error;
-    return result;
-  } else {
-    recipe.recipeName = recipeObj.recipeName;
+    return { error: "Recipe Name must not be empty" };
   }
-
-  if (isString(recipeObj.recipeCreator)) {
-    recipe.recipeCreator = recipeObj.recipeCreator;
-  }
-  if (isString(recipeObj.recipeDescription)) {
-    recipe.recipeDescription = recipeObj.recipeDescription;
-  }
-  if (isString(recipeObj.website)) {
-    recipe.website = recipeObj.website;
-  }
-  if (isString(recipeObj.videoUrl)) {
-    recipe.videoUrl = recipeObj.videoUrl;
-  }
-
   if (
     !isNumber(recipeObj.referenceServing) ||
     Number(recipeObj.referenceServing) <= 0
   ) {
-    console.debug(`[${_funcName}] - referenceServing is not a positive number`);
-    error = "Serving must be positive number";
-    result.error = error;
-    return result;
-  } else {
-    recipe.referenceServing = Number(recipeObj.referenceServing);
+    return { error: "Serving must be positive number" };
   }
-
   if (recipeObj.units == null) {
-    console.debug(`[${_funcName}] - null units`);
-    error = "Invalid units";
-    result.error = error;
-    return result;
-  } else {
-    recipe.units = recipeObj.units;
+    return { error: "Invalid units" };
   }
-
   if (
-    recipeObj.lastModified != null &&
-    isDate(new Date(recipeObj.lastModified))
+    !(Array.isArray(recipeObj.ingredients) && recipeObj.ingredients.length > 0)
   ) {
-    recipe.lastModified = recipeObj.lastModified;
-  }
-
-  if (recipeObj.tzMinutes != null && isNumber(recipeObj.tzMinutes)) {
-    recipe.tzMinutes = recipeObj.tzMinutes;
+    return { error: "You must have at least one ingredient!" };
   }
 
   const nutriValuesArr = [];
-  if (
-    Array.isArray(recipeObj.ingredients) &&
-    recipeObj.ingredients.length > 0
-  ) {
-    recipe.ingredients = [];
-    recipeObj.ingredients.forEach((item, i) => {
-      const validateIngredient = FMTValidateFoodObject(
-        item,
-        fmtAppInstance.unitsChart
-      );
-      if (validateIngredient.error != null || validateIngredient.food == null) {
-        error = `Ingredient number ${
-          i + 1
-        } is invalid or corrupted. Please remove it`;
-        result.error = error;
-        return error;
-      }
-      recipe.ingredients.push(validateIngredient.food);
-      nutriValuesArr.push(validateIngredient.food.nutritionalValue);
-    });
-  } else {
-    error = "You must have at least one ingredient!";
-    result.error = error;
-    return result;
-  }
+  const ingredients = [];
+  const preparationSteps = [];
 
-  recipe.nutritionalValue = FMTSumNutritionalValues(nutriValuesArr, unitsChart);
+  recipeObj.ingredients.forEach((item, i) => {
+    const validateIngredient = FMTValidateFoodObject(
+      item,
+      fmtAppInstance.unitsChart
+    );
+    if (validateIngredient.error != null || validateIngredient.food == null) {
+      const error = `Ingredient number ${
+        i + 1
+      } is invalid or corrupted. Please remove it`;
+      return { error };
+    }
+    ingredients.push(validateIngredient.food);
+    nutriValuesArr.push(validateIngredient.food.nutritionalValue);
+  });
+  const nutritionalValue = FMTSumNutritionalValues(nutriValuesArr, unitsChart);
 
-  recipe.preparationSteps = [];
   if (Array.isArray(recipeObj.preparationSteps)) {
     for (let p = 0; p < recipeObj.preparationSteps.length; p++) {
       const step = recipeObj.preparationSteps[p];
       if (step) {
-        recipe.preparationSteps.push(step.toString());
+        preparationSteps.push(step.toString());
       }
     }
   }
 
-  result.recipe = recipe;
-  return result;
+  const recipe = {
+    recipeName: recipeObj.recipeName,
+    referenceServing: Number(recipeObj.referenceServing),
+    units: recipeObj.units,
+    tzMinutes: recipeObj.tzMinutes,
+    lastModified: recipeObj.lastModified,
+    recipeCreator: isString(recipeObj.recipeCreator) && recipeObj.recipeCreator,
+    recipeDescription:
+      isString(recipeObj.recipeDescription) && recipeObj.recipeDescription,
+    website: isString(recipeObj.website) && recipeObj.website,
+    videoUrl: isString(recipeObj.videoUrl) && recipeObj.videoUrl,
+    nutritionalValue,
+    preparationSteps,
+  };
+
+  return { recipe };
 }
 
 //Functions - DB - Meal Entries
