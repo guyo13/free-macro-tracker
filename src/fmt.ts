@@ -21,7 +21,11 @@ import {
   isString,
   roundedToFixed,
 } from "./utils/utils";
-import { calculateConsumableRatio } from "./utils/calculations";
+import {
+  calculateConsumableRatio,
+  katchMcArdle,
+  mifflinStJeor,
+} from "./utils/calculations";
 import {
   convertUnitsByName,
   findConvertibleUnitsByName,
@@ -1132,161 +1136,155 @@ function FMTValidateMacroSplit(macroSplitObj): {
 }
 
 // TODO - Remove and use UserProfile class
-function FMTValidateProfile(profileObj) {
-  const result = {};
-  const profile = {};
-  let error = null;
+function FMTValidateProfile(profileObj): {
+  profile?: {
+    profile_id: RecordId;
+    name?: string;
+    age: number;
+    sex: string;
+    bodyWeight: number;
+    bodyWeightUnits: string;
+    bodyfat?: number;
+    height: number;
+    heightUnits: string;
+    activityLevel: string;
+    activityMultiplier: number;
+    formula: string;
+    bmr: number;
+    tdee: number;
+    macroSplit?: IMacroSplit | {};
+  };
+  error?: string;
+} {
   if (
     !isNumber(profileObj.profile_id) ||
     !Number.isInteger(Number(profileObj.profile_id))
   ) {
-    error = `Profile id must be an integer, got (${profileObj.profile_id})`;
-    result.error = error;
-    return result;
+    return {
+      error: `Profile id must be an integer, got (${profileObj.profile_id})`,
+    };
   }
-  profile.profile_id = Number(profileObj.profile_id);
-
-  profile.name = profileObj.name;
-
   if (!isNumber(profileObj.bodyWeight)) {
-    error = `Invalid body weight ${profileObj.bodyWeight}`;
-    result.error = error;
-    return result;
+    return { error: `Invalid body weight ${profileObj.bodyWeight}` };
   }
-  profile.bodyWeight = Number(profileObj.bodyWeight);
-
   if (
     fmtAppGlobals.supportedBodyweightUnits.indexOf(profileObj.bodyWeightUnits) <
     0
   ) {
-    error = `Invalid body weight units ${profileObj.bodyWeightUnits}`;
-    result.error = error;
-    return result;
+    return { error: `Invalid body weight units ${profileObj.bodyWeightUnits}` };
   }
-  profile.bodyWeightUnits = profileObj.bodyWeightUnits;
-  switch (profile.bodyWeightUnits) {
-    case "Kg":
-      profile.bodyWeightKg = profile.bodyWeight;
-      break;
-    case "Lbs":
-      profile.bodyWeightKg = profile.bodyWeight / 2.2;
-      break;
-  }
-
   if (!isNumber(profileObj.height)) {
-    error = `Invalid height ${profileObj.height}`;
-    result.error = error;
-    return result;
+    return { error: `Invalid height ${profileObj.height}` };
   }
-  profile.height = Number(profileObj.height);
-
   if (fmtAppGlobals.supportedHeightUnits.indexOf(profileObj.heightUnits) < 0) {
-    error = `Invalid height units ${profileObj.heightUnits}`;
-    result.error = error;
-    return result;
-  }
-  profile.heightUnits = profileObj.heightUnits;
-
-  switch (profile.heightUnits) {
-    case "Cm":
-      profile.heightCm = profile.height;
-      break;
-    case "Inch":
-      profile.heightCm = profile.height * 2.54;
-      break;
+    return { error: `Invalid height units ${profileObj.heightUnits}` };
   }
   if (
     !(Number.isInteger(Number(profileObj.age)) && Number(profileObj.age) > 0)
   ) {
-    error = `Invalid age ${profileObj.age}`;
-    result.error = error;
-    return result;
+    return { error: `Invalid age ${profileObj.age}` };
   }
-  profile.age = Number(profileObj.age);
-
   if (fmtAppGlobals.sexes.indexOf(profileObj.sex) < 0) {
-    error = `Invalid sex ${profileObj.sex}`;
-    result.error = error;
-    return result;
-  }
-  profile.sex = profileObj.sex;
-
-  if (isNumber(profileObj.bodyfat) && isPercent(Number(profileObj.bodyfat))) {
-    profile.bodyfat = Number(profileObj.bodyfat);
-    profile.bodyfatReal = profile.bodyfat / 100;
-    profile.formula = "Katch-McArdle";
-  } else {
-    profile.bodyfatReal = null;
-    profile.bodyfat = null;
-    profile.formula = "Mifflin-St Jeor";
+    return { error: `Invalid sex ${profileObj.sex}` };
   }
   if (
     fmtAppGlobals.supportedActivityLevels.indexOf(profileObj.activityLevel) < 0
   ) {
-    error = `Invalid activityLevel ${profileObj.activityLevel}`;
-    result.error = error;
-    return result;
+    return { error: `Invalid activityLevel ${profileObj.activityLevel}` };
   }
-  profile.activityLevel = profileObj.activityLevel;
-
   if (!isNumber(profileObj.activityMultiplier)) {
-    error = `Invalid activity multiplier ${profileObj.activityMultiplier}`;
-    result.error = error;
-    return result;
+    return {
+      error: `Invalid activity multiplier ${profileObj.activityMultiplier}`,
+    };
   }
-  profile.activityMultiplier = Number(profileObj.activityMultiplier);
-
-  switch (profile.formula) {
-    case "Katch-McArdle":
-      profile.bmr = katchMcArdle(profile.bodyWeightKg, profile.bodyfatReal);
-      break;
-    case "Mifflin-St Jeor":
-    default:
-      profile.bmr = mifflinStJeor(
-        profile.bodyWeightKg,
-        profile.heightCm,
-        profile.age,
-        profile.sex
-      );
-      break;
-  }
-  if (profile.bmr <= 0) {
-    error = `Invalid BMR ${profile.bmr}`;
-    result.error = error;
-    return result;
-  }
-
-  profile.tdee = profile.bmr * profile.activityMultiplier;
-
   if (
     profileObj.tzMinutes !== undefined &&
     !Number.isInteger(profileObj.tzMinutes)
   ) {
-    error = `Invalid timezone ${profileObj.tzMinutes}`;
-    result.error = error;
-    return result;
+    return { error: `Invalid timezone ${profileObj.tzMinutes}` };
   }
-  // FIXME - Seems to be unused
-  if (profileObj.date !== undefined && !isDate(new Date(profileObj.date))) {
-    error = `Invalid date ${profileObj.date}`;
-    result.error = error;
-    return result;
+
+  const bodyWeight = Number(profileObj.bodyWeight);
+  const bodyWeightUnits = profileObj.bodyWeightUnits;
+  const heightUnits = profileObj.heightUnits;
+  const height = Number(profileObj.height);
+  const age = Number(profileObj.age);
+  const sex = profileObj.sex;
+  const activityMultiplier = Number(profileObj.activityMultiplier);
+  let bodyWeightKg: number, heightCm: number, bmr: number, tdee: number;
+  let macroSplit;
+  let [bodyfat, bodyfatReal, formula] = [null, null, "Mifflin-St Jeor"];
+  switch (bodyWeightUnits) {
+    case "Kg":
+      bodyWeightKg = bodyWeight;
+      break;
+    case "Lbs":
+      bodyWeightKg = bodyWeight / 2.2;
+      break;
   }
+
+  switch (heightUnits) {
+    case "Cm":
+      heightCm = height;
+      break;
+    case "Inch":
+      heightCm = height * 2.54;
+      break;
+  }
+
+  if (isNumber(profileObj.bodyfat) && isPercent(Number(profileObj.bodyfat))) {
+    bodyfat = Number(profileObj.bodyfat);
+    bodyfatReal = bodyfat / 100;
+    formula = "Katch-McArdle";
+  }
+
+  switch (formula) {
+    case "Katch-McArdle":
+      bmr = katchMcArdle(bodyWeightKg, bodyfatReal);
+      break;
+    case "Mifflin-St Jeor":
+    default:
+      bmr = mifflinStJeor(bodyWeightKg, heightCm, age, sex);
+      break;
+  }
+  tdee = bmr * activityMultiplier;
 
   if (profileObj.macroSplit != null) {
     const valMSplitRes = FMTValidateMacroSplit(profileObj.macroSplit);
     if (valMSplitRes.macroSplit == null || valMSplitRes.error != null) {
-      result.error = valMSplitRes.error;
-      return result;
+      return { error: valMSplitRes.error };
     }
-    profile.macroSplit = valMSplitRes.macroSplit;
+    macroSplit = valMSplitRes.macroSplit;
   } else {
-    profile.macroSplit = {};
+    macroSplit = {};
   }
 
-  result.profile = profile;
-  result.error = null;
-  return result;
+  const profile = {
+    profile_id: Number(profileObj.profile_id),
+    name: profileObj.name,
+    bodyWeight,
+    bodyWeightUnits,
+    height,
+    heightUnits,
+    age,
+    sex,
+    activityLevel: profileObj.activityLevel,
+    activityMultiplier,
+    bodyfat,
+    bodyfatReal,
+    formula,
+    bmr,
+    tdee,
+    lastModified: profileObj.lastModified,
+    tzMinutes: profileObj.tzMinutes,
+    macroSplit,
+  };
+
+  if (profile.bmr <= 0) {
+    return { error: `Invalid BMR ${profile.bmr}` };
+  }
+
+  return { profile };
 }
 
 function FMTValidateMealEntry(mealEntryObj) {
