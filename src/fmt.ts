@@ -1406,20 +1406,15 @@ function FMTValidateMealIdentifier(mealIdentifierObj): {
   error?: string;
   mealIdentifier?: IMealIdentifier;
 } {
-  const result = {};
-  const mealIdentifier = {};
-  let error = null;
   if (
     !isNumber(mealIdentifierObj.meal_year) ||
     !Number.isInteger(Number(mealIdentifierObj.meal_year)) ||
     !(Number(mealIdentifierObj.meal_year) > 0)
   ) {
-    error = `Meal Year must be a positive integer. Got (${mealIdentifierObj.meal_year})`;
-    result.error = error;
-    return result;
+    return {
+      error: `Meal Year must be a positive integer. Got (${mealIdentifierObj.meal_year})`,
+    };
   }
-  mealIdentifier.meal_year = Number(mealIdentifierObj.meal_year);
-
   if (
     !isNumber(mealIdentifierObj.meal_month) ||
     !Number.isInteger(Number(mealIdentifierObj.meal_month)) ||
@@ -1428,12 +1423,10 @@ function FMTValidateMealIdentifier(mealIdentifierObj): {
       Number(mealIdentifierObj.meal_month) < 12
     )
   ) {
-    error = `Meal Month must be a valid Month number. Got (${mealIdentifierObj.meal_month})`;
-    result.error = error;
-    return result;
+    return {
+      error: `Meal Month must be a valid Month number. Got (${mealIdentifierObj.meal_month})`,
+    };
   }
-  mealIdentifier.meal_month = Number(mealIdentifierObj.meal_month);
-
   if (
     !isNumber(mealIdentifierObj.meal_day) ||
     !Number.isInteger(Number(mealIdentifierObj.meal_day)) ||
@@ -1442,30 +1435,28 @@ function FMTValidateMealIdentifier(mealIdentifierObj): {
       Number(mealIdentifierObj.meal_day) < 32
     )
   ) {
-    error = `Meal Day must be an integer in range of 1-31. Got (${mealIdentifierObj.meal_day})`;
-    result.error = error;
-    return result;
+    return {
+      error: `Meal Day must be an integer in range of 1-31. Got (${mealIdentifierObj.meal_day})`,
+    };
   }
-  mealIdentifier.meal_day = Number(mealIdentifierObj.meal_day);
-
   if (
     !isNumber(mealIdentifierObj.profile_id) ||
     !Number.isInteger(Number(mealIdentifierObj.profile_id))
   ) {
-    error = `Profile ID must be a valid integer. Got (${mealIdentifierObj.profile_id})`;
-    result.error = error;
-    return result;
-  }
-  mealIdentifier.profile_id = Number(mealIdentifierObj.profile_id);
-
-  if (mealIdentifierObj.meal_name) {
-    mealIdentifier.meal_name = mealIdentifierObj.meal_name;
-  } else {
-    mealIdentifier.meal_name = null;
+    return {
+      error: `Profile ID must be a valid integer. Got (${mealIdentifierObj.profile_id})`,
+    };
   }
 
-  result.mealIdentifier = mealIdentifier;
-  return result;
+  const mealIdentifier = {
+    meal_year: Number(mealIdentifierObj.meal_year),
+    meal_month: Number(mealIdentifierObj.meal_month),
+    meal_day: Number(mealIdentifierObj.meal_day),
+    profile_id: Number(mealIdentifierObj.profile_id),
+    meal_name: mealIdentifierObj.meal_name || null,
+  };
+
+  return { mealIdentifier };
 }
 
 // TODO - Remove and use UserGoals class
