@@ -930,6 +930,7 @@ function FMTValidateFoodObject(
     lastModified: string;
     tzMinutes: number;
     nutritionalValue: INutritionalValue;
+    food_id?: RecordId;
   };
 } {
   const _funcName = "FMTValidateFoodObject";
@@ -1153,6 +1154,8 @@ function FMTValidateProfile(profileObj): {
     bmr: number;
     tdee: number;
     macroSplit?: IMacroSplit | {};
+    lastModified?: string;
+    tzMinutes?: number;
   };
   error?: string;
 } {
@@ -2839,8 +2842,8 @@ function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
       "profile-activity-mult"
       // @ts-ignore
     ).value,
-    // @ts-ignore
     formula: "Mifflin-St Jeor",
+    macroSplit: null,
   };
   document
     .getElementById("profile-activity-mult")
@@ -2850,8 +2853,7 @@ function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
     profileId,
     function (e) {
       let res = e.target.result || {};
-      let macroSplit = res.macroSplit || null;
-      profile.macroSplit = macroSplit;
+      profile.macroSplit = res?.macroSplit || null;
       console.debug(res);
       console.debug(profile);
       const onProfileUpdatedFn = function (event, updatedProfile) {
@@ -3237,7 +3239,7 @@ function FMTCreateUnitSelectMenu(
     targetDiv.appendChild(select);
   } else {
     console.warn(
-      `[${_fnName}] - Requested dropdown menu creation with base name ${baseName} in inexisting target Div ID ${targetDivId}`
+      `[${_fnName}] - Requested dropdown menu creation with base name ${baseName} in inexisting target Div ${targetDiv}`
     );
   }
 }
@@ -3733,10 +3735,10 @@ function FMTUIPopulateMacroes(
   _fats.value = fatValue;
   /* When Macroes are not inputs */
   if (!isInput(_calories)) {
-    _calories.innerHTML = caloriesValue;
-    _carbs.innerHTML = carbsValue;
-    _proteins.innerHTML = proteinValue;
-    _fats.innerHTML = fatValue;
+    _calories.innerHTML = caloriesValue.toString();
+    _carbs.innerHTML = carbsValue.toString();
+    _proteins.innerHTML = proteinValue.toString();
+    _fats.innerHTML = fatValue.toString();
   }
   const readonlyFields =
     fmtAppGlobals.consumableItemScreenStaticFieldsNutirtional;
@@ -3744,7 +3746,7 @@ function FMTUIPopulateMacroes(
     for (const j in readonlyFields) {
       document
         .getElementById(`${idBase}-${readonlyFields[j]}`)
-        .setAttribute("readonly", true);
+        .setAttribute("readonly", "true");
     }
   }
 }
@@ -3819,9 +3821,7 @@ function FMTUIPopulateNutritionalValue(
             select.value = nutrient.unit;
           } else {
             //TODO - Review if needed to Lazy Load inexisting nutrients/categories based on APP settings
-            console.warn(
-              `[${_funcName}] - Consumable (${consumableItem}), could not find DOM element "${inputElementId}"`
-            );
+            console.warn(`Could not find DOM element "${inputElementId}"`);
           }
         }
       }
@@ -3833,9 +3833,12 @@ function FMTUIPopulateNutritionalValue(
     if (multiplier !== 1) {
       for (let k = 0; k < addiNutrients.length; k++) {
         const _field = addiNutrients[k];
+        //@ts-ignore
         if (isNumber(_field.value)) {
+          //@ts-ignore
           _field.value = Number(
             roundedToFixed(
+              //@ts-ignore
               _field.value * multiplier,
               NUTRIENT_ROUNDING_PRECISION
             )
@@ -3852,19 +3855,19 @@ function FMTPopulateConsumableItemScreen(
   objectType,
   mealIdentifierObj,
   createAdditionalNutrients
-) {
+): { error?: string; mealIdentifier?: IMealIdentifier } {
   //optionsObj {consumableId(int),readonly(bool),eventListenersObj}
   //evenListenerObj{"DOM ID1": {"event": fn},...,"DOM IDN": {"event": fn}}
   const result = {};
   if (fmtAppGlobals.inputScreensQualifiers.indexOf(qualifier) < 0) {
-    result.error = `Invalid qualifier ${qualifier}`;
-    console.error(result.error);
-    return result;
+    const error = `Invalid qualifier ${qualifier}`;
+    console.error(error);
+    return { error };
   }
   if (fmtAppGlobals.consumableTypes.indexOf(objectType) < 0) {
-    result.error = `Invalid Object Type ${objectType}`;
-    console.error(result.error);
-    return result;
+    const error = `Invalid Object Type ${objectType}`;
+    console.error(error);
+    return { error };
   }
   optionsObj = optionsObj || { readonly: false };
   let idProp;
@@ -3920,6 +3923,7 @@ function FMTPopulateConsumableItemScreen(
       validateMealIdentifier.mealIdentifier == null
     ) {
       //TODO handle error
+      //@ts-ignore
       result.error = validateMealIdentifier.error;
     }
     const mealIdentifier = validateMealIdentifier.mealIdentifier;
@@ -3928,10 +3932,19 @@ function FMTPopulateConsumableItemScreen(
       if (mealIdentifier.meal_name) {
         saveOrAddBtn.setAttribute("meal_name", mealIdentifier.meal_name);
       }
-      saveOrAddBtn.setAttribute("meal_year", mealIdentifier.meal_year);
-      saveOrAddBtn.setAttribute("meal_month", mealIdentifier.meal_month);
-      saveOrAddBtn.setAttribute("meal_day", mealIdentifier.meal_day);
-      saveOrAddBtn.setAttribute("profile_id", mealIdentifier.profile_id);
+      saveOrAddBtn.setAttribute(
+        "meal_year",
+        mealIdentifier.meal_year.toString()
+      );
+      saveOrAddBtn.setAttribute(
+        "meal_month",
+        mealIdentifier.meal_month.toString()
+      );
+      saveOrAddBtn.setAttribute("meal_day", mealIdentifier.meal_day.toString());
+      saveOrAddBtn.setAttribute(
+        "profile_id",
+        mealIdentifier.profile_id.toString()
+      );
     }
   }
 
@@ -4370,7 +4383,9 @@ function FMTUIGetAdditionalNutrientsFromScreen(baseScreenID, qualifier) {
     additionalNutriDiv.getElementsByClassName("fmt-add-nutri");
   for (let k = 0; k < addiNutrients.length; k++) {
     const _field = addiNutrients[k];
+    // @ts-ignore
     if (isNumber(_field.value) && Number(_field.value) > 0) {
+      // @ts-ignore
       const amount = Number(_field.value);
       const category = _field.getAttribute("nutrient-category");
       const name = _field.getAttribute("nutrient-name");
@@ -5685,7 +5700,7 @@ function FMTUIAddIngredientBtnClick(
       return;
     }
     const food = _validate.food;
-    food.food_id = foodId;
+    food.food_id = Number(foodId);
     ingredientScreenCloseFn();
     const baseIngredientsID = `${recipeBaseId}-recipe-ingredients`;
     const ingredientsDiv = document.getElementById(baseIngredientsID);
@@ -6936,6 +6951,7 @@ var pageController = {
                 `Firing onConsumableEdited event to ${recipesTableBodyNode}`
               );
               const event = new Event("onConsumableEdited");
+              // @ts-ignore
               event.consumableObj = recipe;
               recipesTableBodyNode.dispatchEvent(event);
             }
