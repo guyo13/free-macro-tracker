@@ -1287,118 +1287,101 @@ function FMTValidateProfile(profileObj): {
   return { profile };
 }
 
-function FMTValidateMealEntry(mealEntryObj) {
-  const result = {};
-  const mealEntry = {};
-  let error = null;
+function FMTValidateMealEntry(mealEntryObj): {
+  error?: string;
+  mealEntry?: any;
+} {
   if (
     !isNumber(mealEntryObj.profile_id) ||
     !Number.isInteger(Number(mealEntryObj.profile_id))
   ) {
-    error = `Profile id must be an integer, got (${mealEntryObj.profile_id})`;
-    result.error = error;
-    return result;
+    return {
+      error: `Profile id must be an integer, got (${mealEntryObj.profile_id})`,
+    };
   }
-  mealEntry.profile_id = Number(mealEntryObj.profile_id);
-
   if (
     !isDate(new Date(mealEntryObj.year, mealEntryObj.month, mealEntryObj.day))
   ) {
-    error = `Year Month and Day must be valid integers, got (${mealEntryObj.year}, ${mealEntryObj.month}, ${mealEntryObj.day})`;
-    result.error = error;
-    return result;
+    return {
+      error: `Year Month and Day must be valid integers, got (${mealEntryObj.year}, ${mealEntryObj.month}, ${mealEntryObj.day})`,
+    };
   }
-  mealEntry.year = Number(mealEntryObj.year);
-  mealEntry.month = Number(mealEntryObj.month);
-  mealEntry.day = Number(mealEntryObj.day);
   if (mealEntryObj.mealName == null || mealEntryObj.mealName === "") {
-    error = `Meal Name must not be null or empty string (got ${mealEntryObj.mealName})`;
-    result.error = error;
-    return result;
+    return {
+      error: `Meal Name must not be null or empty string (got ${mealEntryObj.mealName})`,
+    };
   }
-  mealEntry.mealName = mealEntryObj.mealName;
-
   if (
     !!mealEntryObj.lastModified &&
     !isDate(new Date(mealEntryObj.lastModified))
   ) {
-    error = `'lastModified ' value must be valid Date (got ${mealEntryObj.lastModified})`;
-    result.error = error;
-    return result;
-  } else {
-    mealEntry.lastModified = mealEntryObj.lastModified;
+    return {
+      error: `'lastModified ' value must be valid Date (got ${mealEntryObj.lastModified})`,
+    };
   }
-
   if (
     mealEntryObj.tzMinutes !== undefined &&
     !Number.isInteger(mealEntryObj.tzMinutes)
   ) {
-    error = `Invalid timezone ${mealEntryObj.tzMinutes}`;
-    result.error = error;
-    return result;
-  } else {
-    mealEntry.tzMinutes = mealEntryObj.tzMinutes;
+    return { error: `Invalid timezone ${mealEntryObj.tzMinutes}` };
   }
-
   if (
     !isNumber(mealEntryObj.consumable_id) ||
     !Number.isInteger(Number(mealEntryObj.consumable_id))
   ) {
-    error = `Consumable id must be an integer, got (${mealEntryObj.consumable_id})`;
-    result.error = error;
-    return result;
+    return {
+      error: `Consumable id must be an integer, got (${mealEntryObj.consumable_id})`,
+    };
   }
-  mealEntry.consumable_id = Number(mealEntryObj.consumable_id);
-
   if (
     mealEntryObj.consumableName == null ||
     mealEntryObj.consumableName === ""
   ) {
-    error = `Consumable Name  must not be null or empty string (got ${mealEntryObj.consumableName})`;
-    result.error = error;
-    return result;
+    return {
+      error: `Consumable Name  must not be null or empty string (got ${mealEntryObj.consumableName})`,
+    };
   }
-  mealEntry.consumableName = mealEntryObj.consumableName;
-
-  mealEntry.consumableBrand = mealEntryObj.consumableBrand;
-  mealEntry.consumableType = mealEntryObj.consumableType || "";
-
   if (!isNumber(mealEntryObj.serving) || Number(mealEntryObj.serving) <= 0) {
-    error = `Serving must be a positive number (got ${mealEntryObj.serving})`;
-    result.error = error;
-    return result;
+    return {
+      error: `Serving must be a positive number (got ${mealEntryObj.serving})`,
+    };
   }
-  mealEntry.serving = mealEntryObj.serving;
-
   if (mealEntryObj.units == null || mealEntryObj.units === "") {
-    error = `Units must not be null`;
-    result.error = error;
-    return result;
+    return { error: `Units must not be null` };
   }
-  mealEntry.units = mealEntryObj.units;
-
   if (mealEntryObj.nutritionalValue == null) {
-    error = `Nutritional Value must not be empty`;
-    result.error = error;
-    return result;
+    return { error: `Nutritional Value must not be empty` };
   }
   const nutriValueValidateRes = FMTValidateNutritionalValue(
-    mealEntryObj.nutritionalValue
+    mealEntryObj.nutritionalValue,
+    fmtAppInstance.unitsChart
   );
   if (
     nutriValueValidateRes.nutritionalValue == null ||
     nutriValueValidateRes.error != null
   ) {
-    result.error = nutriValueValidateRes.error;
-    return result;
-  }
-  mealEntry.nutritionalValue = nutriValueValidateRes.nutritionalValue;
-  if ("entry_id" in mealEntryObj) {
-    mealEntry.entry_id = mealEntryObj.entry_id;
+    return { error: nutriValueValidateRes.error };
   }
 
-  result.mealEntry = mealEntry;
-  return result;
+  const mealEntry = {
+    profile_id: Number(mealEntryObj.profile_id),
+    year: Number(mealEntryObj.year),
+    month: Number(mealEntryObj.month),
+    day: Number(mealEntryObj.day),
+    mealName: mealEntryObj.mealName,
+    lastModified: mealEntryObj.lastModified,
+    tzMinutes: mealEntryObj.tzMinutes,
+    consumable_id: Number(mealEntryObj.consumable_id),
+    consumableName: mealEntryObj.consumableName,
+    consumableBrand: mealEntryObj.consumableBrand,
+    consumableType: mealEntryObj.consumableType || "",
+    serving: mealEntryObj.serving,
+    units: mealEntryObj.units,
+    nutritionalValue: nutriValueValidateRes.nutritionalValue,
+    entry_id: mealEntryObj.entry_id,
+  };
+
+  return { mealEntry };
 }
 
 // TODO - Remove and use MealIdentifier class
