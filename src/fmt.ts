@@ -10,6 +10,7 @@ import {
   OVERVIEW_DATE_FORMAT,
   PREVIOUS_UNIT_ATTR,
 } from "./app/globals";
+import fmtAppInstance from "./app/instance";
 import { default as FMTPlatform, FMTPlatformType } from "./app/platform";
 import {
   isDate,
@@ -45,49 +46,6 @@ import type { IMealIdentifier } from "./models/mealIdentifier";
 import type { IMacroSplit } from "./models/macroSplit";
 
 const platformInterface = new FMTPlatform();
-//Instance
-const fmtAppInstance: any = {};
-//Instance - Db
-fmtAppInstance.fmtDb = undefined;
-//Instance - Settings
-fmtAppInstance.displaySettings = {};
-fmtAppInstance.displaySettings.showConsumableIdColumn = false;
-fmtAppInstance.promptSettings = {};
-fmtAppInstance.promptSettings.promptOnUnsavedFood = true;
-fmtAppInstance.promptSettings.promptOnNoProfileCreated = true;
-fmtAppInstance.firstTimeScreenAutomatic = false;
-fmtAppInstance.allowForeignNutrients = true;
-fmtAppInstance.mealEntryMacroBarInPercent = false;
-fmtAppInstance.macroAutoFill = "carb";
-//TODO - Default meals
-fmtAppInstance.defaultMeals = [
-  "Breakfast",
-  "Early Snack",
-  "Lunch",
-  "Late Snack",
-  "Dinner",
-];
-//Instance - State - Page
-fmtAppInstance.pageState = {};
-fmtAppInstance.pageState.activeTab = null;
-fmtAppInstance.pageState.activeDynamicScreens = {};
-//Instance - State - Log
-fmtAppInstance.today = null;
-fmtAppInstance.currentDay = null;
-//Instance - State - function pointers
-fmtAppInstance.eventFunctions = {};
-fmtAppInstance.viewFoodAddIngredientFn = null;
-fmtAppInstance.addRecipeAddIngredientFn = null;
-fmtAppInstance.addRecipeSaveRecipeFn = null;
-fmtAppInstance.editRecipeSaveRecipeFn = null;
-fmtAppInstance.editRecipeAddIngredientFn = null;
-fmtAppInstance.editRecipeDeleteFn = null;
-fmtAppInstance.editIngredientDeleteFn = null;
-fmtAppInstance.editIngredientUpdateFn = null;
-fmtAppInstance.editIngredientServingKeyupFn = null;
-//Instance - User defined metrics
-fmtAppInstance.unitsChart = null;
-fmtAppInstance.additionalNutrients = null;
 
 //Globals - Export
 var fmtAppExport;
