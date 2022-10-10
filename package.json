@@ -1,6 +1,6 @@
 {
   "name": "free-macro-tracker",
-  "version": "1.0.0",
+  "version": "2.0.0-dev",
   "devDependencies": {
     "@tsconfig/svelte": "^3.0.0",
     "@types/jquery": "^3.5.14",
