@@ -4465,7 +4465,7 @@ function FMTSaveConsumableItemScreen(
   const unitsChart = fmtAppInstance.unitsChart;
   const updateBtn = document.getElementById(`${baseScreenID}-save`);
 
-  let consumableObj = {
+  let consumableObj: any = {
     units: document.getElementById(
       `${baseScreenID}-${qualifier}-serving-unit-select`
       // @ts-ignore
@@ -4476,19 +4476,19 @@ function FMTSaveConsumableItemScreen(
     mealName: updateBtn.getAttribute("meal_name"),
     profile_id: updateBtn.getAttribute("profile_id"),
     consumable_id: updateBtn.getAttribute("consumable_id"),
+    [nameProp]: document.getElementById(
+      `${baseScreenID}-${qualifier}-name`
+      // @ts-ignore
+    ).value,
+    [brandProp]: document.getElementById(
+      `${baseScreenID}-${qualifier}-brand`
+      // @ts-ignore
+    ).value,
+    [servingProp]: document.getElementById(
+      `${baseScreenID}-${qualifier}-serving-input`
+      // @ts-ignore
+    ).value,
   };
-  consumableObj[nameProp] = document.getElementById(
-    `${baseScreenID}-${qualifier}-name`
-    // @ts-ignore
-  ).value;
-  consumableObj[brandProp] = document.getElementById(
-    `${baseScreenID}-${qualifier}-brand`
-    // @ts-ignore
-  ).value;
-  consumableObj[servingProp] = document.getElementById(
-    `${baseScreenID}-${qualifier}-serving-input`
-    // @ts-ignore
-  ).value;
   if (objectType === "Meal Entry") {
     //FIXME - remove this logic from here and save these parameters by function reference inside Instance - State
     consumableObj.consumableType = document.getElementById(
