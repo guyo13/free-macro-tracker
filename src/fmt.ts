@@ -4262,7 +4262,11 @@ function FMTClearViewConsumableItemScreen(baseScreenID, qualifier, objectType) {
     .getElementById(`${baseScreenID}-add-to-meal`)
     .classList.add("d-none");
 }
-function FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType) {
+function FMTClearConsumableItemScreen(
+  baseScreenID: string,
+  qualifier: string,
+  objectType?: string
+) {
   if (fmtAppGlobals.inputScreensQualifiers.indexOf(qualifier) < 0) {
     console.error(`Invalid qualifier ${qualifier}`);
     return;
@@ -5460,7 +5464,7 @@ function FMTOverviewLoadMealEntries(onsuccessFn, onerrorFn) {
   );
   //End Query for Meal Entries
 }
-function FMTOverviewLoadCurrentDay(onsuccessFn, onerrorFn) {
+function FMTOverviewLoadCurrentDay(onsuccessFn?: any, onerrorFn?: any) {
   //Handle dates
   FMTToday();
   const thisYear = fmtAppInstance.today.getFullYear();
@@ -5589,8 +5593,8 @@ function FMTUIAddIngredient(foodObj, ingredientsDiv, onDel, onEdit) {
       onDel();
     }
   });
-  input.parentNode.insertAdjacentElement("beforeend", editBtn);
-  input.parentNode.insertAdjacentElement("beforeend", delBtn);
+  input.parentElement.insertAdjacentElement("beforeend", editBtn);
+  input.parentElement.insertAdjacentElement("beforeend", delBtn);
   const lastElement =
     ingredientsDiv.children[ingredientsDiv.children.length - 1];
   ingredientsDiv.insertBefore(col, lastElement);
@@ -6055,12 +6059,10 @@ function FMTUIDeleteConsumable(event, baseId, qualifier, objectType) {
 function FMTToday() {
   fmtAppInstance.today = new Date();
 }
-function FMTSetCurrentDate(currentDate, onsuccessFn, onerrorFn) {
-  onerrorFn =
-    onerrorFn ||
-    function (e) {
-      console.error(e);
-    };
+function FMTSetCurrentDate(currentDate, onsuccessFn) {
+  const onerrorFn = function (e?: any) {
+    console.error(e);
+  };
   if (!isDate(currentDate)) {
     console.error(`${currentDate} is not a valid date.`);
     return onerrorFn();
