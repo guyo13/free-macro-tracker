@@ -1,15 +1,15 @@
 {
-    "rules": {},
-    "extends": "eslint:recommended",
-    "parserOptions": {
-        "sourceType": "module",
-        "ecmaVersion": 2015
-    },
-    "env": {
-        "commonjs": true,
-        "node": true,
-        "browser": true,
-        "es6": true,
-        "jest": true
-      }
+  "rules": {},
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2015
+  },
+  "env": {
+    "commonjs": true,
+    "node": true,
+    "browser": true,
+    "es6": true,
+    "jest": true
+  }
 }
