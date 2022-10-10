@@ -41,7 +41,10 @@ module.exports = {
             },
             emitCss: prod,
             hotReload: !prod,
-            preprocess: sveltePreprocess({ sourceMap: !prod }),
+            preprocess: sveltePreprocess({
+              sourceMap: !prod,
+              typescript: { tsconfigFile: "tsconfig.json" },
+            }),
           },
         },
       },
@@ -65,6 +68,7 @@ module.exports = {
     }),
     new ESLintPlugin(),
   ],
+  //   TODO - Optimize Webpack devtool configuration
   devtool: prod ? false : "source-map",
   devServer: {
     hot: true,
