@@ -1,3 +1,7 @@
+// Copyright (c) 2020-2022, Guy Or Please see the AUTHORS file for details.
+// All rights reserved. Use of this source code is governed by a GNU GPL
+// license that can be found in the LICENSE file.
+
 import type { INutrientDefinition } from "../models/nutrient";
 import { UnitType, type IUnit } from "../models/units";
 import type { IndexConfig } from "idb_wrapper.js";

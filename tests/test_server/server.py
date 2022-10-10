@@ -1,3 +1,7 @@
+# Copyright (c) 2020-2022, Guy Or Please see the AUTHORS file for details.
+# All rights reserved. Use of this source code is governed by a GNU GPL
+# license that can be found in the LICENSE file.
+
 from flask import Flask
 from flask import jsonify
 from flask import send_from_directory
