@@ -4,14 +4,8 @@
 
 import type { INutrientDefinition } from "../models/nutrient";
 import { UnitType, type IUnit } from "../models/units";
-import type { IndexConfig } from "idb_wrapper.js";
-
-export interface StoreConfig {
-  readonly name: string;
-  readonly keyPath: string | string[];
-  readonly autoIncrement: boolean;
-  readonly indices: IndexConfig[];
-}
+import type { IDBUpgradeHandler, StoreConfig } from "idb_wrapper.js";
+import IDBWrapper from "idb_wrapper.js";
 
 export type MigrationsV1 = {
   readonly BASE_UNIT_CHART_V1: Array<IUnit>;
@@ -307,50 +301,27 @@ export const MIGRATIONS_V1: MigrationsV1 = Object.freeze({
   },
 });
 
-// TODO - Replace with idb_wrapper.js implementation
-function createIndexes(objectStore: IDBObjectStore, indexesObj: IndexConfig[]) {
-  for (const indexConfig of Object.values(indexesObj)) {
-    try {
-      const { name, kp, options } = indexConfig;
-      objectStore.createIndex(name, kp, options);
-    } catch (error) {
-      console.error(error);
-      console.log(indexesObj);
-    }
-  }
-}
-
-// TODO - Refactor IDBWrapper
-export function initializeStore(
-  indexedDB: IDBDatabase,
-  storeConfig: StoreConfig
-): IDBObjectStore {
-  const storeObject = indexedDB.createObjectStore(storeConfig.name, {
-    keyPath: storeConfig.keyPath,
-    autoIncrement: storeConfig.autoIncrement,
-  });
-  createIndexes(storeObject, storeConfig.indices);
-  return storeObject;
-}
-
 export function prepareDBv1(indexedDB: IDBDatabase) {
   console.debug("Preparing DB V1.");
   if (!indexedDB) {
     console.error("indexedDB must not be null.");
     return;
   }
-  initializeStore(indexedDB, MIGRATIONS_V1.STORES.fmt_meal_entries);
-  initializeStore(indexedDB, MIGRATIONS_V1.STORES.fmt_foods);
-  initializeStore(indexedDB, MIGRATIONS_V1.STORES.fmt_recipes);
-  initializeStore(indexedDB, MIGRATIONS_V1.STORES.fmt_profiles);
+  IDBWrapper.initializeStore(indexedDB, MIGRATIONS_V1.STORES.fmt_meal_entries);
+  IDBWrapper.initializeStore(indexedDB, MIGRATIONS_V1.STORES.fmt_foods);
+  IDBWrapper.initializeStore(indexedDB, MIGRATIONS_V1.STORES.fmt_recipes);
+  IDBWrapper.initializeStore(indexedDB, MIGRATIONS_V1.STORES.fmt_profiles);
 
-  const unitStore = initializeStore(indexedDB, MIGRATIONS_V1.STORES.fmt_units);
+  const unitStore = IDBWrapper.initializeStore(
+    indexedDB,
+    MIGRATIONS_V1.STORES.fmt_units
+  );
   for (const unit of MIGRATIONS_V1.BASE_UNIT_CHART_V1) {
     console.debug(`Adding Unit entry: ${JSON.stringify(unit)}`);
     unitStore.add(unit);
   }
 
-  const nutrientStore = initializeStore(
+  const nutrientStore = IDBWrapper.initializeStore(
     indexedDB,
     MIGRATIONS_V1.STORES.fmt_nutrients
   );
@@ -361,7 +332,24 @@ export function prepareDBv1(indexedDB: IDBDatabase) {
     nutrientStore.add(nutrient);
   }
 
-  initializeStore(indexedDB, MIGRATIONS_V1.STORES.fmt_user_settings);
-  initializeStore(indexedDB, MIGRATIONS_V1.STORES.fmt_user_goals);
+  IDBWrapper.initializeStore(indexedDB, MIGRATIONS_V1.STORES.fmt_user_settings);
+  IDBWrapper.initializeStore(indexedDB, MIGRATIONS_V1.STORES.fmt_user_goals);
   console.debug("Initialized DB V1.");
 }
+
+export const migrationHandler: IDBUpgradeHandler = (
+  event: IDBVersionChangeEvent,
+  idb: IDBDatabase
+) => {
+  const idbWrapper: IDBWrapper = this;
+  console.log("idbWrapper", idbWrapper);
+  console.log("event.newVersion", event.newVersion);
+
+  switch (event.newVersion) {
+    case 1:
+      prepareDBv1(idb);
+      break;
+    default:
+      break;
+  }
+};
