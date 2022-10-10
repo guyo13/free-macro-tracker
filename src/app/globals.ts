@@ -95,3 +95,5 @@ export const NUTRIENT_ROUNDING_PRECISION = 4;
 export const FMT_DB_NAME = "fmt";
 export const FMT_DB_VER = 1;
 export const OVERVIEW_DATE_FORMAT = "MMM do yyyy";
+// FIXME - Temporary, until we change state to be stored inside the component
+export const PREVIOUS_UNIT_ATTR = "aria-roledescription";

@@ -10,6 +10,7 @@ import {
   FMT_DB_NAME,
   FMT_DB_VER,
   OVERVIEW_DATE_FORMAT,
+  PREVIOUS_UNIT_ATTR,
 } from "./app/globals";
 import { default as FMTPlatform, FMTPlatformType } from "./app/platform";
 import {
@@ -2678,7 +2679,8 @@ function FMTConvertMacro(macroName, unit, value, calories) {
 }
 function FMTProfileStorePreviousSelection(e) {
   const previousOpt = e.currentTarget.value;
-  e.currentTarget.setAttribute("previous", previousOpt);
+  // FIXME - Don't store state in DOM attributes!
+  e.currentTarget.setAttribute(PREVIOUS_UNIT_ATTR, previousOpt);
 }
 function FMTProfileSelectActivityLevel(
   activityLevel,
@@ -2768,7 +2770,8 @@ function FMTProfileSelectMacroUnits(
    ** key with value being the DOM element of the Unit select element
    */
   const newUnit = e.currentTarget.value;
-  const prevUnit = e.currentTarget.getAttribute("previous");
+  // FIXME - Don't store state in DOM attributes!
+  const prevUnit = e.currentTarget.getAttribute(PREVIOUS_UNIT_ATTR);
   const macroValueDiv = document.getElementById(macroValueDivId);
   const convertedValueDiv = document.getElementById(convertedValueDivId);
   const caloriesDiv = document.getElementById(caloriesDivId);
@@ -3140,9 +3143,10 @@ function FMTDisplayProfile(profileId) {
       cSelect.value = "%";
       // @ts-ignore
       fSelect.value = "%";
-      pSelect.setAttribute("previous", "%");
-      cSelect.setAttribute("previous", "%");
-      fSelect.setAttribute("previous", "%");
+      // FIXME - Don't store state in DOM attributes!
+      pSelect.setAttribute(PREVIOUS_UNIT_ATTR, "%");
+      cSelect.setAttribute(PREVIOUS_UNIT_ATTR, "%");
+      fSelect.setAttribute(PREVIOUS_UNIT_ATTR, "%");
       let _e = { currentTarget: pSelect };
       FMTProfileSelectMacroUnits(
         _e,

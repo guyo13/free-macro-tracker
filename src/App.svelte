@@ -33,7 +33,7 @@ import { onMount } from 'svelte';
                     <div class="w-100"></div>
                     <div class="fmt-progress-bar-container col-10 col-lg-8">
                         <div class="progress fmt-total-progress fmt-prog-sm">
-                            <div id="calories-progress-bar" class="progress-bar fmt-bg-dark-green" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div id="calories-progress-bar" class="progress-bar fmt-bg-dark-green" role="progressbar" aria-valuenow={0} aria-valuemin={0} aria-valuemax={100}></div>
                         </div>
                     </div>
                     <div class="w-100"></div>
@@ -56,17 +56,17 @@ import { onMount } from 'svelte';
                     <div class="w-100"></div>
                     <div class="fmt-progress-bar-container col-4 col-lg-2">
                         <div class="progress fmt-macro-progress fmt-prog-sm">
-                            <div id="carb-progress-bar" class="progress-bar fmt-bg-violet" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div id="carb-progress-bar" class="progress-bar fmt-bg-violet" role="progressbar" aria-valuenow={0} aria-valuemin={0} aria-valuemax={100}></div>
                         </div>
                     </div>
                     <div class="fmt-progress-bar-container col-4 col-lg-2">
                         <div class="progress fmt-macro-progress fmt-prog-sm">
-                            <div id="protein-progress-bar" class="progress-bar bg-info" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div id="protein-progress-bar" class="progress-bar bg-info" role="progressbar" aria-valuenow={0} aria-valuemin={0} aria-valuemax={100}></div>
                         </div>
                     </div>
                     <div class="fmt-progress-bar-container col-4 col-lg-2">
                         <div class="progress fmt-macro-progress fmt-prog-sm">
-                            <div id="fat-progress-bar" class="progress-bar fmt-bg-orange" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div id="fat-progress-bar" class="progress-bar fmt-bg-orange" role="progressbar" aria-valuenow={0} aria-valuemin={0} aria-valuemax={100}></div>
                         </div>
                     </div>
                     <div class="w-100"></div>
@@ -189,10 +189,10 @@ import { onMount } from 'svelte';
                       </div>
                       <div class="col-12 col-lg-8 mb-1">
                           <div class="form__group d-flex">
-                            <input id="profile-sex" type="text" class="form__field fmt-input-field" placeholder="Sex" required readonly="true"/>
+                            <input id="profile-sex" type="text" class="form__field fmt-input-field" placeholder="Sex" required readonly={true}/>
                             <label for="profile-sex" class="form__label">Sex</label>
                             <select id="profile-sex-select" name="profile-sex-select" class="custom-select fmt-select fmt-center-text">
-                              <option value="" selected="selected">Select</option>
+                              <option value="" selected={true}>Select</option>
                               <option value="Male">Male</option>
                               <option value="Female">Female</option>
                             </select>
@@ -200,10 +200,10 @@ import { onMount } from 'svelte';
                       </div>
                       <div class="col-12 col-lg-8 mb-1">
                           <div class="form__group d-flex">
-                            <input id="profile-active-level" type="text" class="form__field fmt-input-field" placeholder="Activity Level" required readonly="true"/>
+                            <input id="profile-active-level" type="text" class="form__field fmt-input-field" placeholder="Activity Level" required readonly={true}/>
                             <label for="profile-active-level" class="form__label">Activity Level</label>
                             <select id="profile-activity-select" name="profile-activity-select" class="custom-select fmt-select fmt-center-text">
-                              <option value="" selected="selected">Select</option>
+                              <option value="" selected={true}>Select</option>
                               <option value="Sedentary">Sedentary</option>
                               <option value="Light">1-3 days/week</option>
                               <option value="Moderate">3-5 days/week</option>
@@ -215,7 +215,7 @@ import { onMount } from 'svelte';
                       </div>
                       <div class="col-12 col-lg-8 mb-1">
                         <div class="form__group d-flex">
-                          <input id="profile-activity-mult" type="text" class="form__field fmt-input-field" required readonly="true"/>
+                          <input id="profile-activity-mult" type="text" class="form__field fmt-input-field" required readonly={true}/>
                           <label for="profile-activity-mult" class="form__label">Activity Level Multiplier</label>
                         </div>
                       </div>
@@ -280,8 +280,9 @@ import { onMount } from 'svelte';
                         <div class="form__group fmt-macro-form-container">
                           <input id="profile-macro-protein" type="number" class="form__field fmt-macro-form-input" placeholder="Protein" required />
                           <label for="profile-macro-protein" class="form__label">Protein</label>
-                          <select id="profile-macro-protein-units-select" previous="%" name="profile-macro-protein-units-select" class="custom-select fmt-center-text fmt-macro-form-select" aria-label="Protein Units">
-                            <option value="%" selected="selected" aria-label="Percents">%</option>
+                          <!-- FIXME: Don't use aria-roledescription to store the previous selection -->
+                          <select id="profile-macro-protein-units-select" aria-roledescription="%" name="profile-macro-protein-units-select" class="custom-select fmt-center-text fmt-macro-form-select" aria-label="Protein Units">
+                            <option value="%" selected={true} aria-label="Percents">%</option>
                             <option value="g" aria-label="Grams">g</option>
                             <option value="kCal" aria-label="Kilo Calories">kCal</option>
                           </select>
@@ -293,8 +294,9 @@ import { onMount } from 'svelte';
                         <div class="form__group fmt-macro-form-container">
                           <input id="profile-macro-carb" type="number" class="form__field fmt-macro-form-input" placeholder="Carbs" required />
                           <label for="profile-macro-carb" class="form__label">Carbs</label>
-                          <select id="profile-macro-carb-units-select" previous="%" name="profile-macro-carb-units-select" class="custom-select fmt-macro-form-select fmt-center-text" aria-label="Carb Units">
-                            <option value="%" selected="selected" aria-label="Percents">%</option>
+                          <!-- FIXME: Don't use aria-roledescription to store the previous selection -->
+                          <select id="profile-macro-carb-units-select" aria-roledescription="%" name="profile-macro-carb-units-select" class="custom-select fmt-macro-form-select fmt-center-text" aria-label="Carb Units">
+                            <option value="%" selected={true} aria-label="Percents">%</option>
                             <option value="g" aria-label="Grams">g</option>
                             <option value="kCal" aria-label="Kilo Calories">kCal</option>
                           </select>
@@ -306,8 +308,9 @@ import { onMount } from 'svelte';
                         <div class="form__group fmt-macro-form-container">
                           <input id="profile-macro-fat" type="number" class="form__field fmt-macro-form-input" placeholder="Fat" required />
                           <label for="profile-macro-fat" class="form__label">Fat</label>
-                          <select id="profile-macro-fat-units-select" previous="%" name="profile-macro-fat-units-select" class="custom-select fmt-macro-form-select fmt-center-text" aria-label="Fat Units">
-                            <option value="%" selected="selected" aria-label="Percents">%</option>
+                          <!-- FIXME: Don't use aria-roledescription to store the previous selection -->
+                          <select id="profile-macro-fat-units-select" aria-roledescription="%" name="profile-macro-fat-units-select" class="custom-select fmt-macro-form-select fmt-center-text" aria-label="Fat Units">
+                            <option value="%" selected={true} aria-label="Percents">%</option>
                             <option value="g" aria-label="Grams">g</option>
                             <option value="kCal" aria-label="Kilo Calories">kCal</option>
                           </select>
@@ -841,7 +844,7 @@ import { onMount } from 'svelte';
                   </div>
                   <div class="col-12 col-lg-8 mb-1">
                     <div class="form__group d-flex">
-                      <textarea type="text" class="form__field fmt-input-field" placeholder="Description" id='view-recipe-screen-recipe-description' required readonly="true" />
+                      <textarea type="text" class="form__field fmt-input-field" placeholder="Description" id='view-recipe-screen-recipe-description' required readonly={true} />
                       <label for="view-recipe-screen-recipe-description" class="form__label">Description</label>
                     </div>
                   </div>
@@ -862,13 +865,13 @@ import { onMount } from 'svelte';
                   </div>
                   <div class="col-12 col-lg-8 mb-1">
                     <div class="form__group d-flex">
-                      <input type="text" class="form__field fmt-input-field" placeholder="Video URL" id='view-recipe-screen-recipe-video-url' required readonly="true" />
+                      <input type="text" class="form__field fmt-input-field" placeholder="Video URL" id='view-recipe-screen-recipe-video-url' required readonly={true} />
                       <label for="view-recipe-screen-recipe-video-url" class="form__label">Video Link</label>
                     </div>
                   </div>
                   <div class="col-12 col-lg-8 mb-1">
                     <div class="form__group d-flex">
-                      <input type="text" class="form__field fmt-input-field" placeholder="Website Link" id='view-recipe-screen-recipe-website' required readonly="true" />
+                      <input type="text" class="form__field fmt-input-field" placeholder="Website Link" id='view-recipe-screen-recipe-website' required readonly={true} />
                       <label for="view-recipe-screen-recipe-website" class="form__label">Website Link</label>
                     </div>
                   </div>
@@ -1050,13 +1053,13 @@ import { onMount } from 'svelte';
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
                   <div class="form__group d-flex">
-                    <input type="text" class="form__field fmt-input-field" placeholder="Item Name" id='edit-ingredient-screen-ingredient-name' required readonly="true"/>
+                    <input type="text" class="form__field fmt-input-field" placeholder="Item Name" id='edit-ingredient-screen-ingredient-name' required readonly={true}/>
                     <label for="edit-ingredient-screen-ingredient-name" class="form__label">Item Name</label>
                   </div>
                 </div>
                 <div class="col-12 col-lg-8 mb-1">
                   <div class="form__group d-flex">
-                    <input type="text" class="form__field fmt-input-field" placeholder="Item Brand" id='edit-ingredient-screen-ingredient-brand' required readonly="true"/>
+                    <input type="text" class="form__field fmt-input-field" placeholder="Item Brand" id='edit-ingredient-screen-ingredient-brand' required readonly={true}/>
                     <label for="edit-ingredient-screen-ingredient-brand" class="form__label">Brand</label>
                   </div>
                 </div>
@@ -1212,19 +1215,19 @@ import { onMount } from 'svelte';
                 </div>
               <div class="col-12 col-lg-8 mb-1">
                 <div class="form__group d-flex">
-                  <input type="text" class="form__field fmt-input-field" placeholder="Consumable Name" id='edit-meal-entry-screen-consumable-name' required readonly="true" />
+                  <input type="text" class="form__field fmt-input-field" placeholder="Consumable Name" id='edit-meal-entry-screen-consumable-name' required readonly={true} />
                   <label for="edit-meal-entry-screen-consumable-name" class="form__label">Description</label>
                 </div>
               </div>
               <div class="col-12 col-lg-8 mb-1">
                 <div class="form__group d-flex">
-                  <input type="text" class="form__field fmt-input-field" placeholder="Consumable Brand" id='edit-meal-entry-screen-consumable-brand' required readonly="true" />
+                  <input type="text" class="form__field fmt-input-field" placeholder="Consumable Brand" id='edit-meal-entry-screen-consumable-brand' required readonly={true} />
                   <label for="edit-meal-entry-screen-consumable-brand" class="form__label">Brand</label>
                 </div>
               </div>
               <div class="col-12 col-lg-8 mb-1">
                 <div class="form__group d-flex">
-                  <input type="text" class="form__field fmt-input-field" placeholder="Consumable Type" id='edit-meal-entry-screen-consumable-type' required readonly="true" />
+                  <input type="text" class="form__field fmt-input-field" placeholder="Consumable Type" id='edit-meal-entry-screen-consumable-type' required readonly={true} />
                   <label for="edit-meal-entry-screen-consumable-type" class="form__label">Type</label>
                 </div>
               </div>
