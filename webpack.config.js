@@ -6,7 +6,9 @@ const sveltePreprocess = require("svelte-preprocess");
 const mode = process.env.NODE_ENV || "development";
 const prod = mode === "production";
 console.log("mode", mode);
+
 module.exports = {
+  target: "web",
   entry: {
     app: {
       import: ["./src/main.ts"],
@@ -22,7 +24,6 @@ module.exports = {
   output: {
     path: path.join(__dirname, "public", "build"),
     filename: "[name].bundle.js",
-    chunkFilename: "[name].[id].js",
   },
   module: {
     rules: [
