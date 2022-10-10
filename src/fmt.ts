@@ -4856,12 +4856,13 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
   );
   mealFooterAddBtn.innerHTML = `Add to ${mealEntry.mealName}`; //"+";
   mealFooterAddBtn.addEventListener("click", function () {
-    const mealIdentifierObj = {};
-    mealIdentifierObj.meal_year = mealEntryObj.year;
-    mealIdentifierObj.meal_month = mealEntryObj.month;
-    mealIdentifierObj.meal_day = mealEntryObj.day;
-    mealIdentifierObj.meal_name = mealEntryObj.mealName;
-    mealIdentifierObj.profile_id = mealEntryObj.profile_id;
+    const mealIdentifierObj = {
+      meal_year: mealEntryObj.year,
+      meal_month: mealEntryObj.month,
+      meal_day: mealEntryObj.day,
+      meal_name: mealEntryObj.mealName,
+      profile_id: mealEntryObj.profile_id,
+    };
     pageController.openAddToMealDynamicScreen(mealIdentifierObj);
   });
   mealFooterAddDiv.appendChild(mealFooterAddBtn);
@@ -5335,7 +5336,11 @@ function FMTLoadCurrentDayUserGoals(onsuccessFn, onerrorFn) {
               fmtAppInstance.currentDay.getMonth();
             fmtAppInstance.currentDayUserGoals.day =
               fmtAppInstance.currentDay.getDate();
-            FMTAddUserGoalEntry(fmtAppInstance.currentDayUserGoals);
+            FMTAddUserGoalEntry(
+              fmtAppInstance.currentDayUserGoals,
+              undefined,
+              undefined
+            );
           }
           console.debug(
             `${msg} - ${JSON.stringify(fmtAppInstance.currentDayUserGoals)}`
@@ -5354,12 +5359,13 @@ function FMTLoadCurrentDayUserGoals(onsuccessFn, onerrorFn) {
           console.info(
             "Couldn't find any matching user Goals. Creating one based on current Profile!"
           );
-          const userGoals = {};
-          userGoals.macroSplit = fmtAppInstance.currentProfile.macroSplit;
-          userGoals.year = fmtAppInstance.currentDay.getFullYear();
-          userGoals.month = fmtAppInstance.currentDay.getMonth();
-          userGoals.day = fmtAppInstance.currentDay.getDate();
-          userGoals.profile_id = fmtAppInstance.currentProfileId;
+          const userGoals = {
+            macroSplit: fmtAppInstance.currentProfile.macroSplit,
+            year: fmtAppInstance.currentDay.getFullYear(),
+            month: fmtAppInstance.currentDay.getMonth(),
+            day: fmtAppInstance.currentDay.getDate(),
+            profile_id: fmtAppInstance.currentProfileId,
+          };
           fmtAppInstance.currentDayUserGoals = userGoals;
           //Async tasks
           FMTAddUserGoalEntry(userGoals, undefined, onerrorFn);
