@@ -2,13 +2,11 @@
 // All rights reserved. Use of this source code is governed by a GNU GPL
 // license that can be found in the LICENSE file.
 
-import { prepareDBv1 } from "./db/migrations";
+import { FMT_DB_NAME, FMT_DB_VER, prepareDBv1 } from "./db/migrations";
 import {
   fmtAppGlobals,
   DEFAULT_ROUNDING_PRECISION,
   NUTRIENT_ROUNDING_PRECISION,
-  FMT_DB_NAME,
-  FMT_DB_VER,
   OVERVIEW_DATE_FORMAT,
   PREVIOUS_UNIT_ATTR,
 } from "./app/globals";
@@ -6100,7 +6098,7 @@ function FMTNextDay(onsuccessFn) {
 }
 
 //Page
-var pageController = {
+export const pageController = {
   hasLocalStorage: function () {
     try {
       return "localStorage" in window && window["localStorage"] !== null;
@@ -7536,6 +7534,8 @@ function onDbSuccess(event) {
     });
   }, 300);
 }
+
+// TODO - Remove and use migration function
 function onUpgradeNeeded(event) {
   fmtAppInstance.fmtDb = event.target.result;
   switch (fmtAppInstance.fmtDb.version) {

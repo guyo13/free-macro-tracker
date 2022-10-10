@@ -13,6 +13,8 @@ export type MigrationsV1 = {
   readonly STORES: { [key: string]: StoreConfig };
 };
 
+export const FMT_DB_NAME = "fmt";
+export const FMT_DB_VER = 1;
 export const MIGRATIONS_V1: MigrationsV1 = Object.freeze({
   BASE_UNIT_CHART_V1: [
     {
