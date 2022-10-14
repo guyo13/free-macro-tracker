@@ -6016,7 +6016,7 @@ function FMTUIDeleteConsumable(event, baseId, qualifier, objectType) {
 }
 //Functions - State
 //Functions - State - Date
-function FMTToday() {
+export function FMTToday() {
   fmtAppInstance.today = new Date();
 }
 function FMTSetCurrentDate(currentDate, onsuccessFn) {
@@ -7354,7 +7354,7 @@ export const pageController = {
 };
 
 //Functions - DB - Init
-function FMTLoadUnits(onloadedFn) {
+export function FMTLoadUnits(onloadedFn) {
   FMTReadAllUnits(
     function (e) {
       let units = e.target.result;
@@ -7382,7 +7382,7 @@ function FMTLoadUnits(onloadedFn) {
     }
   );
 }
-function FMTLoadAdditionalNutrients(onloadedFn) {
+export function FMTLoadAdditionalNutrients(onloadedFn) {
   FMTReadAllNutrients(
     function (e) {
       let addNutri = e.target.result;
@@ -7413,7 +7413,7 @@ function FMTLoadAdditionalNutrients(onloadedFn) {
     }
   );
 }
-function FMTLoadProfile(profile_id, onloadedFn, onNoProfileFn) {
+export function FMTLoadProfile(profile_id, onloadedFn, onNoProfileFn) {
   fmtAppInstance.currentProfileId = profile_id;
   FMTReadProfile(
     fmtAppInstance.currentProfileId,
@@ -7444,67 +7444,70 @@ function FMTLoadProfile(profile_id, onloadedFn, onNoProfileFn) {
 }
 // Called when the app has finished loading.
 // Notifies the platform when finished loading.
-function onAppFinishedLoading() {
+export function onAppFinishedLoading() {
   console.log(`${platformInterface.platform} platform interface detected!`);
   if (platformInterface.hasPlatformInterface) {
     platformInterface.FMTFinishedLoading();
   }
 }
-function onDbSuccess(event) {
-  fmtAppInstance.fmtDb = event.target.result;
-  setTimeout(function () {
-    prepareEventHandlers();
-    FMTLoadUnits(function () {
-      FMTLoadAdditionalNutrients(function () {
-        FMTLoadProfile(
-          1,
-          //onloaded
-          function () {
-            // pageController.closeLoadingScreen();
-            pageController.showOverview(true);
-            pageController.showNavOverlay();
-            onAppFinishedLoading();
-          },
-          //onNoProfile
-          function () {
-            console.warn("No user Profile could be loaded");
-            // If profile creation skipped by user then load normally
-            if (pageController.isProfileCreationSkippedByUser()) {
-              pageController.showOverview(true);
-              pageController.showNavOverlay();
-              onAppFinishedLoading();
-              return;
-            }
-            FMTToday();
-            fmtAppInstance.currentDay = fmtAppInstance.today;
-            pageController.showFirstTimeScreen();
-            onAppFinishedLoading();
-            // pageController.closeLoadingScreen();
-            if (fmtAppInstance.firstTimeScreenAutomatic) {
-              setTimeout(() => {
-                document.getElementById("fmt-app-first-time-create").click();
-                pageController.showProfile();
-              }, 3000);
-            }
-          }
-        );
-      });
-    });
-  }, 300);
-}
 
-// TODO - Remove and use migration function
-function onUpgradeNeeded(event) {
-  fmtAppInstance.fmtDb = event.target.result;
-  switch (fmtAppInstance.fmtDb.version) {
-    case 1:
-      prepareDBv1(fmtAppInstance.fmtDb);
-      break;
-    default:
-      break;
-  }
-}
-function prepareEventHandlers() {
+// TODO - Move to App.svelte
+// function onDbSuccess(event) {
+//   fmtAppInstance.fmtDb = event.target.result;
+//   setTimeout(function () {
+//     prepareEventHandlers();
+//     FMTLoadUnits(function () {
+//       FMTLoadAdditionalNutrients(function () {
+//         FMTLoadProfile(
+//           1,
+//           //onloaded
+//           function () {
+//             // pageController.closeLoadingScreen();
+//             pageController.showOverview(true);
+//             pageController.showNavOverlay();
+//             onAppFinishedLoading();
+//           },
+//           //onNoProfile
+//           function () {
+//             console.warn("No user Profile could be loaded");
+//             // If profile creation skipped by user then load normally
+//             if (pageController.isProfileCreationSkippedByUser()) {
+//               pageController.showOverview(true);
+//               pageController.showNavOverlay();
+//               onAppFinishedLoading();
+//               return;
+//             }
+//             FMTToday();
+//             fmtAppInstance.currentDay = fmtAppInstance.today;
+//             pageController.showFirstTimeScreen();
+//             onAppFinishedLoading();
+//             // pageController.closeLoadingScreen();
+//             if (fmtAppInstance.firstTimeScreenAutomatic) {
+//               setTimeout(() => {
+//                 document.getElementById("fmt-app-first-time-create").click();
+//                 pageController.showProfile();
+//               }, 3000);
+//             }
+//           }
+//         );
+//       });
+//     });
+//   }, 300);
+// }
+
+// TODO - Remove
+// function onUpgradeNeeded(event) {
+//   fmtAppInstance.fmtDb = event.target.result;
+//   switch (fmtAppInstance.fmtDb.version) {
+//     case 1:
+//       prepareDBv1(fmtAppInstance.fmtDb);
+//       break;
+//     default:
+//       break;
+//   }
+// }
+
+export function prepareEventHandlers() {
   //On click functions
   //Tabs
   $("#goto-overview").click(() => {
@@ -8485,65 +8488,45 @@ function prepareEventHandlers() {
 }
 
 // TODO - Remove and use idb-wrapper
-function startIndexedDB() {
-  //Check if IndexedDB supported
-  Object.defineProperty(window, "indexedDB", {
-    value:
-      window.indexedDB ||
-      window.mozIndexedDB ||
-      window.webkitIndexedDB ||
-      window.msIndexedDB,
-  });
+// function startIndexedDB() {
+//   //Check if IndexedDB supported
+//   Object.defineProperty(window, "indexedDB", {
+//     value:
+//       window.indexedDB ||
+//       window.mozIndexedDB ||
+//       window.webkitIndexedDB ||
+//       window.msIndexedDB,
+//   });
 
-  if (!window.indexedDB) {
-    document.getElementById("page-title").innerHTML +=
-      '<div class="alert alert-danger col-12" role="alert">IndexedDB is not supported on this browser. Can\'t use app!</div>';
-    return;
-  }
-  window.IDBTransaction = window.IDBTransaction ||
-    // @ts-ignore
-    window.webkitIDBTransaction ||
-    // @ts-ignore
-    window.msIDBTransaction || { READ_WRITE: "readwrite" };
-  // @ts-ignore
-  window.IDBKeyRange =
-    window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+//   if (!window.indexedDB) {
+//     document.getElementById("page-title").innerHTML +=
+//       '<div class="alert alert-danger col-12" role="alert">IndexedDB is not supported on this browser. Can\'t use app!</div>';
+//     return;
+//   }
+//   window.IDBTransaction = window.IDBTransaction ||
+//     // @ts-ignore
+//     window.webkitIDBTransaction ||
+//     // @ts-ignore
+//     window.msIDBTransaction || { READ_WRITE: "readwrite" };
+//   // @ts-ignore
+//   window.IDBKeyRange =
+//     window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 
-  //Start IndexedDB
-  var dbOpenReq = indexedDB.open(FMT_DB_NAME, FMT_DB_VER);
-  dbOpenReq.onupgradeneeded = onUpgradeNeeded;
-  dbOpenReq.onsuccess = onDbSuccess;
-}
+//   //Start IndexedDB
+//   var dbOpenReq = indexedDB.open(FMT_DB_NAME, FMT_DB_VER);
+//   dbOpenReq.onupgradeneeded = onUpgradeNeeded;
+//   dbOpenReq.onsuccess = onDbSuccess;
+// }
 
 // TODO - Remove and use idb-wrapper
-function askPersistentStorage() {
-  navigator.storage.persist().then((isConfirmed) => {
-    if (isConfirmed) {
-      fmtAppInstance.isStoragePersistent = true;
-      startIndexedDB();
-    } else {
-      fmtAppInstance.isStoragePersistent = false;
-      startIndexedDB();
-    }
-  });
-}
-//Main
-export default function startApp() {
-  pageController.hideAllTabs();
-  pageController.closeDynamicScreens();
-  try {
-    navigator.storage.persisted().then((isPersisted) => {
-      if (isPersisted) {
-        fmtAppInstance.isStoragePersistent = true;
-        startIndexedDB();
-      } else {
-        fmtAppInstance.isStoragePersistent = false;
-        askPersistentStorage();
-      }
-    });
-  } catch (error) {
-    console.error(error);
-    fmtAppInstance.isStoragePersistent = false;
-    startIndexedDB();
-  }
-}
+// function askPersistentStorage() {
+//   navigator.storage.persist().then((isConfirmed) => {
+//     if (isConfirmed) {
+//       fmtAppInstance.isStoragePersistent = true;
+//       startIndexedDB();
+//     } else {
+//       fmtAppInstance.isStoragePersistent = false;
+//       startIndexedDB();
+//     }
+//   });
+// }
