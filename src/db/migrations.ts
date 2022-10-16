@@ -6,7 +6,6 @@ import type { INutrientDefinition } from "../models/nutrient";
 import { UnitType, type IUnit } from "../models/units";
 import type { IDBUpgradeHandler, StoreConfig } from "idb_wrapper.js";
 import IDBWrapper from "idb_wrapper.js";
-import fmtAppInstance from "../app/instance";
 
 export type MigrationsV1 = {
   readonly BASE_UNIT_CHART_V1: Array<IUnit>;
@@ -345,9 +344,6 @@ export const migrationHandler: IDBUpgradeHandler = (
   idb: IDBDatabase
 ) => {
   const idbWrapper: IDBWrapper = this;
-  // FIXME - Temporary hack - make the raw IDB object available globally until after we
-  // migrate all db access to repositories
-  fmtAppInstance.fmtDb = idb;
   console.log("idbWrapper", idbWrapper);
   console.log("event.newVersion", event.newVersion);
 
