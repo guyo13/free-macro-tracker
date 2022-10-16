@@ -22,7 +22,6 @@ license that can be found in the LICENSE file. -->
     pageController.hideAllTabs();
     pageController.closeDynamicScreens();
     return idbConnector.subscribe(async (idbWrapper: IDBWrapper) => {
-      console.log("idbConnector subscriber");
       if (!idbWrapper) return;
       try {
         await idbWrapper.wait();

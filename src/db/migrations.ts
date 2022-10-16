@@ -344,8 +344,7 @@ export const migrationHandler: IDBUpgradeHandler = (
   idb: IDBDatabase
 ) => {
   const idbWrapper: IDBWrapper = this;
-  console.log("idbWrapper", idbWrapper);
-  console.log("event.newVersion", event.newVersion);
+  console.log("New DB schema version", event.newVersion);
 
   switch (event.newVersion) {
     case 1:
