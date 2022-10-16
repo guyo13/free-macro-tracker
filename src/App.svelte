@@ -2,11 +2,75 @@
 All rights reserved. Use of this source code is governed by a GNU GPL
 license that can be found in the LICENSE file. -->
 <script lang="ts">
+  import idbConnector from "./db/idb";
   import { onMount } from "svelte";
+  import {
+    FMTLoadAdditionalNutrients,
+    FMTLoadProfile,
+    FMTLoadUnits,
+    FMTToday,
+    onAppFinishedLoading,
+    pageController,
+    prepareEventHandlers,
+  } from "./fmt";
+  import type IDBWrapper from "idb_wrapper.js";
+  import fmtAppInstance from "./app/instance";
 
-  import startApp from "./fmt";
+  let isLoading: boolean = true;
+
   onMount(() => {
-    startApp();
+    pageController.hideAllTabs();
+    pageController.closeDynamicScreens();
+    return idbConnector.subscribe(async (idbWrapper: IDBWrapper) => {
+      console.log("idbConnector subscriber");
+      if (!idbWrapper) return;
+      try {
+        await idbWrapper.wait();
+        // TODO - Temporary so that we can use the existing method before implementing repository design
+        fmtAppInstance.fmtDb = idbWrapper.idbInstance;
+        prepareEventHandlers();
+        FMTLoadUnits(function () {
+          FMTLoadAdditionalNutrients(function () {
+            FMTLoadProfile(
+              1,
+              //onloaded
+              function () {
+                // pageController.closeLoadingScreen();
+                pageController.showOverview(true);
+                pageController.showNavOverlay();
+                onAppFinishedLoading();
+              },
+              //onNoProfile
+              function () {
+                console.warn("No user Profile could be loaded");
+                // If profile creation skipped by user then load normally
+                if (pageController.isProfileCreationSkippedByUser()) {
+                  pageController.showOverview(true);
+                  pageController.showNavOverlay();
+                  onAppFinishedLoading();
+                  return;
+                }
+                FMTToday();
+                fmtAppInstance.currentDay = fmtAppInstance.today;
+                pageController.showFirstTimeScreen();
+                onAppFinishedLoading();
+                // pageController.closeLoadingScreen();
+                if (fmtAppInstance.firstTimeScreenAutomatic) {
+                  setTimeout(() => {
+                    document
+                      .getElementById("fmt-app-first-time-create")
+                      .click();
+                    pageController.showProfile();
+                  }, 3000);
+                }
+              }
+            );
+          });
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    });
   });
 </script>
 

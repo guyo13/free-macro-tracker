@@ -28,6 +28,6 @@
   },
   "dependencies": {
     "date-fns": "^2.29.3",
-    "idb_wrapper.js": "2.3.0"
+    "idb_wrapper.js": "2.3.1"
   }
 }
