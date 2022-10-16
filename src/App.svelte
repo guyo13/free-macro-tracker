@@ -26,6 +26,8 @@ license that can be found in the LICENSE file. -->
       if (!idbWrapper) return;
       try {
         await idbWrapper.wait();
+        // TODO - Temporary so that we can use the existing method before implementing repository design
+        fmtAppInstance.fmtDb = idbWrapper.idbInstance;
         prepareEventHandlers();
         FMTLoadUnits(function () {
           FMTLoadAdditionalNutrients(function () {

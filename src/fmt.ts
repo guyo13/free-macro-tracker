@@ -2,7 +2,6 @@
 // All rights reserved. Use of this source code is governed by a GNU GPL
 // license that can be found in the LICENSE file.
 
-import { FMT_DB_NAME, FMT_DB_VER, prepareDBv1 } from "./db/migrations";
 import {
   fmtAppGlobals,
   DEFAULT_ROUNDING_PRECISION,
@@ -7451,62 +7450,6 @@ export function onAppFinishedLoading() {
   }
 }
 
-// TODO - Move to App.svelte
-// function onDbSuccess(event) {
-//   fmtAppInstance.fmtDb = event.target.result;
-//   setTimeout(function () {
-//     prepareEventHandlers();
-//     FMTLoadUnits(function () {
-//       FMTLoadAdditionalNutrients(function () {
-//         FMTLoadProfile(
-//           1,
-//           //onloaded
-//           function () {
-//             // pageController.closeLoadingScreen();
-//             pageController.showOverview(true);
-//             pageController.showNavOverlay();
-//             onAppFinishedLoading();
-//           },
-//           //onNoProfile
-//           function () {
-//             console.warn("No user Profile could be loaded");
-//             // If profile creation skipped by user then load normally
-//             if (pageController.isProfileCreationSkippedByUser()) {
-//               pageController.showOverview(true);
-//               pageController.showNavOverlay();
-//               onAppFinishedLoading();
-//               return;
-//             }
-//             FMTToday();
-//             fmtAppInstance.currentDay = fmtAppInstance.today;
-//             pageController.showFirstTimeScreen();
-//             onAppFinishedLoading();
-//             // pageController.closeLoadingScreen();
-//             if (fmtAppInstance.firstTimeScreenAutomatic) {
-//               setTimeout(() => {
-//                 document.getElementById("fmt-app-first-time-create").click();
-//                 pageController.showProfile();
-//               }, 3000);
-//             }
-//           }
-//         );
-//       });
-//     });
-//   }, 300);
-// }
-
-// TODO - Remove
-// function onUpgradeNeeded(event) {
-//   fmtAppInstance.fmtDb = event.target.result;
-//   switch (fmtAppInstance.fmtDb.version) {
-//     case 1:
-//       prepareDBv1(fmtAppInstance.fmtDb);
-//       break;
-//     default:
-//       break;
-//   }
-// }
-
 export function prepareEventHandlers() {
   //On click functions
   //Tabs
@@ -8486,47 +8429,3 @@ export function prepareEventHandlers() {
     $(".carousel").carousel("next");
   });
 }
-
-// TODO - Remove and use idb-wrapper
-// function startIndexedDB() {
-//   //Check if IndexedDB supported
-//   Object.defineProperty(window, "indexedDB", {
-//     value:
-//       window.indexedDB ||
-//       window.mozIndexedDB ||
-//       window.webkitIndexedDB ||
-//       window.msIndexedDB,
-//   });
-
-//   if (!window.indexedDB) {
-//     document.getElementById("page-title").innerHTML +=
-//       '<div class="alert alert-danger col-12" role="alert">IndexedDB is not supported on this browser. Can\'t use app!</div>';
-//     return;
-//   }
-//   window.IDBTransaction = window.IDBTransaction ||
-//     // @ts-ignore
-//     window.webkitIDBTransaction ||
-//     // @ts-ignore
-//     window.msIDBTransaction || { READ_WRITE: "readwrite" };
-//   // @ts-ignore
-//   window.IDBKeyRange =
-//     window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
-
-//   //Start IndexedDB
-//   var dbOpenReq = indexedDB.open(FMT_DB_NAME, FMT_DB_VER);
-//   dbOpenReq.onupgradeneeded = onUpgradeNeeded;
-//   dbOpenReq.onsuccess = onDbSuccess;
-// }
-
-// TODO - Remove and use idb-wrapper
-// function askPersistentStorage() {
-//   navigator.storage.persist().then((isConfirmed) => {
-//     if (isConfirmed) {
-//       fmtAppInstance.isStoragePersistent = true;
-//       startIndexedDB();
-//     } else {
-//       fmtAppInstance.isStoragePersistent = false;
-//       startIndexedDB();
-//     }
-//   });
-// }
