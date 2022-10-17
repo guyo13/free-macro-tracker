@@ -23,14 +23,14 @@ class UnitRepository extends Repository implements IUnitRepository {
         this.storeName,
         IDBTransactionModes.Readonly
       );
-      const readRequest = unitStore.getAll();
-      readRequest.onsuccess = (ev: Event) => {
+      const getAllRequest = unitStore.getAll();
+      getAllRequest.onsuccess = (ev: Event) => {
         // @ts-ignore
         const units: any[] | undefined = ev?.target?.result;
         resolve(units ? units.map(Unit.fromObject) : []);
       };
-      readRequest.onerror = (_ev: Event) => {
-        reject("Failed reading units");
+      getAllRequest.onerror = (_ev: Event) => {
+        reject("Failed getting all units");
       };
     });
   }
@@ -44,7 +44,6 @@ class UnitRepository extends Repository implements IUnitRepository {
         this.storeName,
         IDBTransactionModes.Readwrite
       );
-
       const addRequest = unitStore.add(unit);
       addRequest.onsuccess = (_ev: Event) => {
         resolve();
@@ -64,7 +63,6 @@ class UnitRepository extends Repository implements IUnitRepository {
         this.storeName,
         IDBTransactionModes.Readwrite
       );
-
       const putRequest = unitStore.put(unit);
       putRequest.onsuccess = (_ev: Event) => {
         resolve();
@@ -84,7 +82,6 @@ class UnitRepository extends Repository implements IUnitRepository {
         this.storeName,
         IDBTransactionModes.Readonly
       );
-
       const getRequest = unitStore.get(unitName);
       getRequest.onsuccess = (_ev: Event) => {
         // @ts-ignore
@@ -111,7 +108,6 @@ class UnitRepository extends Repository implements IUnitRepository {
         this.storeName,
         IDBTransactionModes.Readwrite
       );
-
       const deleteRequest = unitStore.delete(unitName);
       deleteRequest.onsuccess = (_ev: Event) => {
         resolve();
