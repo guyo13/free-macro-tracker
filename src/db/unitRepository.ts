@@ -32,6 +32,93 @@ class UnitRepository extends Repository implements IUnitRepository {
       };
     });
   }
+
+  addUnit(unit: IUnit): Promise<void> {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isReady) {
+        await this.connection.wait();
+      }
+      const unitStore = this.connection.getObjectStore(
+        FMT_DB_UNITS_STORE,
+        IDBTransactionModes.Readwrite
+      );
+
+      const addRequest = unitStore.add(unit);
+      addRequest.onsuccess = (_ev: Event) => {
+        resolve();
+      };
+      addRequest.onerror = (_ev: Event) => {
+        reject(`Failed adding unit ${JSON.stringify(unit)}`);
+      };
+    });
+  }
+
+  updateUnit(unit: IUnit): Promise<void> {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isReady) {
+        await this.connection.wait();
+      }
+      const unitStore = this.connection.getObjectStore(
+        FMT_DB_UNITS_STORE,
+        IDBTransactionModes.Readwrite
+      );
+
+      const putRequest = unitStore.put(unit);
+      putRequest.onsuccess = (_ev: Event) => {
+        resolve();
+      };
+      putRequest.onerror = (_ev: Event) => {
+        reject(`Failed updating unit ${JSON.stringify(unit)}`);
+      };
+    });
+  }
+
+  getUnit(unitName: string): Promise<IUnit | null> {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isReady) {
+        await this.connection.wait();
+      }
+      const unitStore = this.connection.getObjectStore(
+        FMT_DB_UNITS_STORE,
+        IDBTransactionModes.Readonly
+      );
+
+      const getRequest = unitStore.get(unitName);
+      getRequest.onsuccess = (_ev: Event) => {
+        // @ts-ignore
+        const result: any | undefined = ev?.target?.result;
+        try {
+          const unit = Unit.fromObject(result);
+          resolve(unit);
+        } catch (err) {
+          reject(err);
+        }
+      };
+      getRequest.onerror = (_ev: Event) => {
+        reject(`Failed getting unit with name '${unitName}`);
+      };
+    });
+  }
+
+  deleteUnit(unitName: string): Promise<void> {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isReady) {
+        await this.connection.wait();
+      }
+      const unitStore = this.connection.getObjectStore(
+        FMT_DB_UNITS_STORE,
+        IDBTransactionModes.Readwrite
+      );
+
+      const deleteRequest = unitStore.delete(unitName);
+      deleteRequest.onsuccess = (_ev: Event) => {
+        resolve();
+      };
+      deleteRequest.onerror = (_ev: Event) => {
+        reject(`Failed deleting unit with name '${unitName}`);
+      };
+    });
+  }
 }
 
 const unitRepositoryProvider = derived<Readable<IDBWrapper>, IUnitRepository>(
@@ -48,5 +135,9 @@ const unitRepositoryProvider = derived<Readable<IDBWrapper>, IUnitRepository>(
 export const FMT_DB_UNITS_STORE = "fmt_units";
 export interface IUnitRepository extends IRepository {
   readAllUnits: () => Promise<IUnit[]>;
+  addUnit: (unit: IUnit) => Promise<void>;
+  updateUnit: (unit: IUnit) => Promise<void>;
+  getUnit: (unitName: string) => Promise<IUnit | null>;
+  deleteUnit: (unitName: string) => Promise<void>;
 }
 export default unitRepositoryProvider;

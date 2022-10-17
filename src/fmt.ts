@@ -2225,54 +2225,6 @@ function FMTDeleteNutrient(nutrientCat, nutrientName, onsuccessFn, onerrorFn) {
 }
 
 //Functions - DB - Units
-function FMTAddUnit(unitObj, onsuccessFn, onerrorFn) {
-  let unit = FMTValidateUnitObject(unitObj);
-  if (unit == null) {
-    onerrorFn =
-      onerrorFn || console.error(`Failed validating unit object ${unitObj}`);
-    onerrorFn();
-    return;
-  }
-  let unitStore = getObjectStore(
-    fmtAppGlobals.FMT_DB_UNITS_STORE,
-    IDBTransactionModes.Readwrite
-  );
-  let addRequest = unitStore.add(unit);
-  addRequest.onsuccess =
-    onsuccessFn || console.debug(`Successfully added unit object ${unit}`);
-  addRequest.onerror =
-    onerrorFn || console.debug(`Error adding unit object ${unit}`);
-}
-function FMTUpdateUnit(unitObj, onsuccessFn, onerrorFn) {
-  let unit = FMTValidateUnitObject(unitObj);
-  if (unit == null) {
-    onerrorFn =
-      onerrorFn || console.error(`Failed validating unit object ${unitObj}`);
-    onerrorFn();
-    return;
-  }
-  let unitStore = getObjectStore(
-    fmtAppGlobals.FMT_DB_UNITS_STORE,
-    IDBTransactionModes.Readwrite
-  );
-  let addRequest = unitStore.put(unit);
-  addRequest.onsuccess =
-    onsuccessFn || console.debug(`Successfully added unit object ${unit}`);
-  addRequest.onerror =
-    onerrorFn || console.debug(`Error adding unit object ${unit}`);
-}
-function FMTReadUnit(unitName, onsuccessFn, onerrorFn) {
-  let unitStore = getObjectStore(
-    fmtAppGlobals.FMT_DB_UNITS_STORE,
-    IDBTransactionModes.Readonly
-  );
-  let readRequest = unitStore.get(unitName);
-  readRequest.onsuccess =
-    onsuccessFn || console.debug(`Successfully read unit ${unitName}`);
-  readRequest.onerror =
-    onerrorFn || console.debug(`Failed reading unit ${unitName}`);
-}
-
 // TODO - Remove and use repository method
 function FMTReadAllUnits(onsuccessFn, onerrorFn) {
   let unitStore = getObjectStore(
@@ -2293,17 +2245,6 @@ function FMTIterateUnits(onsuccessFn, onerrorFn) {
   readRequest.onsuccess =
     onsuccessFn || console.debug(`Successfully iterate unit`);
   readRequest.onerror = onerrorFn || console.debug(`Failed units iteration`);
-}
-function FMTDeleteUnit(unitName, onsuccessFn, onerrorFn) {
-  let unitStore = getObjectStore(
-    fmtAppGlobals.FMT_DB_UNITS_STORE,
-    IDBTransactionModes.Readwrite
-  );
-  let deleteRequest = unitStore.delete(unitName);
-  deleteRequest.onsuccess =
-    onsuccessFn || console.debug(`Successfully delete unit ${unitName}`);
-  deleteRequest.onerror =
-    onerrorFn || console.debug(`Failed deleting unit ${unitName}`);
 }
 
 //Functions - DB - User Goals
