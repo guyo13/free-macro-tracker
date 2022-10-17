@@ -6,9 +6,9 @@ import { derived, type Readable } from "svelte/store";
 import type IDBWrapper from "idb_wrapper.js";
 import { IDBTransactionModes } from "idb_wrapper.js";
 import idbConnector from "./idb";
-import type { IUnit } from "../models/units";
 import type { IRepository } from "./repository";
 import Repository from "./repository";
+import type { IUnit } from "../models/units";
 import Unit from "../models/units";
 
 const FMT_DB_UNITS_STORE = "fmt_units";
