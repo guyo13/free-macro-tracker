@@ -2,7 +2,7 @@
 // All rights reserved. Use of this source code is governed by a GNU GPL
 // license that can be found in the LICENSE file.
 
-import { isPositiveNumber } from "../utils/utils";
+import { isNonNegativeNumber, isPositiveNumber } from "../utils/utils";
 
 export type UnitChart = { [key: string]: IUnit };
 
@@ -63,6 +63,12 @@ export default class Unit implements IUnit {
     if (!name) {
       throw "Unit name must not be empty.";
     }
+    if (!isNonNegativeNumber(value_in_grams)) {
+      throw `Invalid value in grams. Got '${value_in_grams}'`;
+    }
+    if (!isNonNegativeNumber(value_in_ml)) {
+      throw `Invalid value in ml. Got '${value_in_ml}'`;
+    }
     switch (type) {
       case UnitType.Mass:
         if (!isMass)
@@ -80,8 +86,6 @@ export default class Unit implements IUnit {
         // TODO - Relax this constraint?
         if (isMass && isVolume) {
           throw "Arbitrary unit can't represent both volume and mass.";
-        } else if (!(isMass || isVolume)) {
-          throw "Arbitrary unit must represent either volume and mass.";
         }
         break;
       default:

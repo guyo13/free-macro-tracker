@@ -31,6 +31,10 @@ export function isPositiveNumber(x: any) {
   return Number.isFinite(x) && x > 0;
 }
 
+export function isNonNegativeNumber(x: any) {
+  return Number.isFinite(x) && x >= 0;
+}
+
 export function isDate(date: any) {
   return (
     date &&
