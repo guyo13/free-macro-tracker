@@ -6,16 +6,13 @@ import IDBWrapper from "idb_wrapper.js";
 import { readable } from "svelte/store";
 import { migrationHandler, FMT_DB_NAME, FMT_DB_VER } from "./migrations";
 
-const idbConnector = readable<IDBWrapper>(null, (set) => {
-  set(
-    new IDBWrapper({
-      dbName: FMT_DB_NAME,
-      dbVersion: FMT_DB_VER,
-      upgradeHandler: migrationHandler,
-      persistent: true,
-    })
-  );
-  return () => {};
-});
+const idbConnector = readable<IDBWrapper>(
+  new IDBWrapper({
+    dbName: FMT_DB_NAME,
+    dbVersion: FMT_DB_VER,
+    upgradeHandler: migrationHandler,
+    persistent: true,
+  })
+);
 
 export default idbConnector;

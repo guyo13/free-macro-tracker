@@ -2,33 +2,49 @@
 All rights reserved. Use of this source code is governed by a GNU GPL
 license that can be found in the LICENSE file. -->
 <script lang="ts">
-  import idbConnector from "./db/idb";
+  import unitRepositoryProvider, {
+    type IUnitRepository,
+  } from "./db/unitRepository";
   import { onMount } from "svelte";
   import {
     FMTLoadAdditionalNutrients,
     FMTLoadProfile,
-    FMTLoadUnits,
     FMTToday,
     onAppFinishedLoading,
     pageController,
     prepareEventHandlers,
   } from "./fmt";
-  import type IDBWrapper from "idb_wrapper.js";
   import fmtAppInstance from "./app/instance";
+  import { createUnitChart, type IUnit } from "./models/units";
 
   let isLoading: boolean = true;
+
+  function setUnitChart(units: IUnit[]) {
+    fmtAppInstance.unitsChart = createUnitChart(units);
+    console.debug(
+      `Units loaded into Application instance ${JSON.stringify(
+        fmtAppInstance.unitsChart
+      )}`
+    );
+  }
 
   onMount(() => {
     pageController.hideAllTabs();
     pageController.closeDynamicScreens();
-    return idbConnector.subscribe(async (idbWrapper: IDBWrapper) => {
-      if (!idbWrapper) return;
-      try {
-        await idbWrapper.wait();
-        // TODO - Temporary so that we can use the existing method before implementing repository design
-        fmtAppInstance.fmtDb = idbWrapper.idbInstance;
-        prepareEventHandlers();
-        FMTLoadUnits(function () {
+    return unitRepositoryProvider.subscribe(
+      async (unitRepository: IUnitRepository) => {
+        if (!unitRepository) {
+          console.log("unit repository not yet initilialized.");
+          return;
+        }
+        try {
+          await unitRepository.connection.wait();
+          // TODO - Temporary so that we can use existing DB methods before implementing all repositories.
+          fmtAppInstance.fmtDb = unitRepository.connection.idbInstance;
+          prepareEventHandlers();
+          const userUnits = await unitRepository.readAllUnits();
+          console.debug(`Successfully read all units`);
+          setUnitChart(userUnits);
           FMTLoadAdditionalNutrients(function () {
             FMTLoadProfile(
               1,
@@ -65,11 +81,11 @@ license that can be found in the LICENSE file. -->
               }
             );
           });
-        });
-      } catch (error) {
-        console.error(error);
+        } catch (err) {
+          console.error(err);
+        }
       }
-    });
+    );
   });
 </script>
 

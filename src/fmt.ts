@@ -2272,6 +2272,8 @@ function FMTReadUnit(unitName, onsuccessFn, onerrorFn) {
   readRequest.onerror =
     onerrorFn || console.debug(`Failed reading unit ${unitName}`);
 }
+
+// TODO - Remove and use repository method
 function FMTReadAllUnits(onsuccessFn, onerrorFn) {
   let unitStore = getObjectStore(
     fmtAppGlobals.FMT_DB_UNITS_STORE,
@@ -7353,6 +7355,8 @@ export const pageController = {
 };
 
 //Functions - DB - Init
+
+// TODO - Delete
 export function FMTLoadUnits(onloadedFn) {
   FMTReadAllUnits(
     function (e) {
