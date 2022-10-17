@@ -2106,71 +2106,7 @@ function FMTDeleteRecipe(recipeId, onsuccessFn, onerrorFn) {
 }
 
 //Functions - DB - Nutrients
-function FMTAddNutrient(nutrientObj, onsuccessFn, onerrorFn) {
-  let nutrient = FMTValidateNutrientObject(nutrientObj);
-  if (nutrient == null) {
-    onerrorFn =
-      onerrorFn ||
-      console.error(`Failed validating nutrient object ${nutrientObj}`);
-    return onerrorFn();
-  }
-  let nutrientStore = getObjectStore(
-    fmtAppGlobals.FMT_DB_NUTRIENTS_STORE,
-    IDBTransactionModes.Readwrite
-  );
-  let addRequest = nutrientStore.add(nutrient);
-  addRequest.onsuccess =
-    onsuccessFn ||
-    function (e) {
-      console.debug(`[FMTAddNutrient.onsuccess] - ${JSON.stringify(e)}`);
-    };
-  addRequest.onerror =
-    onerrorFn ||
-    function (e) {
-      console.debug(`[FMTAddNutrient.onerror] - ${JSON.stringify(e)}`);
-    };
-}
-function FMTUpdateNutrient(nutrientObj, onsuccessFn, onerrorFn) {
-  let nutrient = FMTValidateNutrientObject(nutrientObj);
-  if (nutrient == null) {
-    onerrorFn =
-      onerrorFn ||
-      console.error(`Failed validating nutrient object ${nutrientObj}`);
-    return onerrorFn();
-  }
-  let nutrientStore = getObjectStore(
-    fmtAppGlobals.FMT_DB_NUTRIENTS_STORE,
-    IDBTransactionModes.Readwrite
-  );
-  let addRequest = nutrientStore.put(nutrient);
-  addRequest.onsuccess =
-    onsuccessFn ||
-    function (e) {
-      console.debug(`[FMTUpdateNutrient.onsuccess] - ${JSON.stringify(e)}`);
-    };
-  addRequest.onerror =
-    onerrorFn ||
-    function (e) {
-      console.debug(`[FMTUpdateNutrient.onerror] - ${JSON.stringify(e)}`);
-    };
-}
-function FMTReadNutrient(nutrientCat, nutrientName, onsuccessFn, onerrorFn) {
-  let nutrientStore = getObjectStore(
-    fmtAppGlobals.FMT_DB_NUTRIENTS_STORE,
-    IDBTransactionModes.Readonly
-  );
-  let readRequest = nutrientStore.get([nutrientCat, nutrientName]);
-  readRequest.onsuccess =
-    onsuccessFn ||
-    function (e) {
-      console.debug(`[FMTReadNutrient.onsuccess] - ${JSON.stringify(e)}`);
-    };
-  readRequest.onerror =
-    onerrorFn ||
-    function (e) {
-      console.debug(`[FMTReadNutrient.onerror] - ${JSON.stringify(e)}`);
-    };
-}
+// TODO - Delete
 function FMTReadAllNutrients(onsuccessFn, onerrorFn) {
   let nutrientStore = getObjectStore(
     fmtAppGlobals.FMT_DB_NUTRIENTS_STORE,
@@ -2204,23 +2140,6 @@ function FMTIterateNutrients(onsuccessFn, onerrorFn) {
     onerrorFn ||
     function (e) {
       console.debug(`[FMTIterateNutrients.onerror] - ${JSON.stringify(e)}`);
-    };
-}
-function FMTDeleteNutrient(nutrientCat, nutrientName, onsuccessFn, onerrorFn) {
-  let nutrientStore = getObjectStore(
-    fmtAppGlobals.FMT_DB_NUTRIENTS_STORE,
-    IDBTransactionModes.Readwrite
-  );
-  let deleteRequest = nutrientStore.delete([nutrientCat, nutrientName]);
-  deleteRequest.onsuccess =
-    onsuccessFn ||
-    function (e) {
-      console.debug(`[FMTDeleteNutrient.onsuccess] - ${JSON.stringify(e)}`);
-    };
-  deleteRequest.onerror =
-    onerrorFn ||
-    function (e) {
-      console.debug(`[FMTDeleteNutrient.onerror] - ${JSON.stringify(e)}`);
     };
 }
 
@@ -7326,6 +7245,8 @@ export function FMTLoadUnits(onloadedFn) {
     }
   );
 }
+
+// TODO - Delete
 export function FMTLoadAdditionalNutrients(onloadedFn) {
   FMTReadAllNutrients(
     function (e) {
