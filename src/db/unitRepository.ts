@@ -11,6 +11,8 @@ import type { IRepository } from "./repository";
 import Repository from "./repository";
 import Unit from "../models/units";
 
+const FMT_DB_UNITS_STORE = "fmt_units";
+
 class UnitRepository extends Repository implements IUnitRepository {
   readAllUnits(): Promise<IUnit[]> {
     return new Promise(async (resolve, reject) => {
@@ -18,7 +20,7 @@ class UnitRepository extends Repository implements IUnitRepository {
         await this.connection.wait();
       }
       const unitStore = this.connection.getObjectStore(
-        FMT_DB_UNITS_STORE,
+        this.storeName,
         IDBTransactionModes.Readonly
       );
       const readRequest = unitStore.getAll();
@@ -39,7 +41,7 @@ class UnitRepository extends Repository implements IUnitRepository {
         await this.connection.wait();
       }
       const unitStore = this.connection.getObjectStore(
-        FMT_DB_UNITS_STORE,
+        this.storeName,
         IDBTransactionModes.Readwrite
       );
 
@@ -59,7 +61,7 @@ class UnitRepository extends Repository implements IUnitRepository {
         await this.connection.wait();
       }
       const unitStore = this.connection.getObjectStore(
-        FMT_DB_UNITS_STORE,
+        this.storeName,
         IDBTransactionModes.Readwrite
       );
 
@@ -79,7 +81,7 @@ class UnitRepository extends Repository implements IUnitRepository {
         await this.connection.wait();
       }
       const unitStore = this.connection.getObjectStore(
-        FMT_DB_UNITS_STORE,
+        this.storeName,
         IDBTransactionModes.Readonly
       );
 
@@ -106,7 +108,7 @@ class UnitRepository extends Repository implements IUnitRepository {
         await this.connection.wait();
       }
       const unitStore = this.connection.getObjectStore(
-        FMT_DB_UNITS_STORE,
+        this.storeName,
         IDBTransactionModes.Readwrite
       );
 
@@ -127,12 +129,11 @@ const unitRepositoryProvider = derived<Readable<IDBWrapper>, IUnitRepository>(
     let isIntialized = false;
     if (idbConnector && !isIntialized) {
       isIntialized = true;
-      set(new UnitRepository(connector));
+      set(new UnitRepository(connector, FMT_DB_UNITS_STORE));
     }
   }
 );
 
-export const FMT_DB_UNITS_STORE = "fmt_units";
 export interface IUnitRepository extends IRepository {
   readAllUnits: () => Promise<IUnit[]>;
   addUnit: (unit: IUnit) => Promise<void>;

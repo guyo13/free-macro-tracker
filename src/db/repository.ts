@@ -12,8 +12,10 @@ export interface IRepository {
 class Repository {
   #connection: IDBWrapper;
   #isReady: boolean;
+  readonly storeName: string;
 
-  constructor(connection: IDBWrapper) {
+  constructor(connection: IDBWrapper, storeName: string) {
+    this.storeName = storeName;
     this.#connection = connection;
     connection
       .wait()
