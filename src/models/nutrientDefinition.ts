@@ -32,7 +32,7 @@ export default class NutrientDefinition implements INutrientDefinition {
 
   static fromObject(object: any): NutrientDefinition {
     const { name, category, default_unit, help } = object;
-    return new this(name, category, default_unit, help);
+    return new NutrientDefinition(name, category, default_unit, help);
   }
 
   static validate(name: any, category: any, default_unit: any, help: any) {

@@ -4,6 +4,8 @@
 
 import { isPositiveNumber } from "../utils/utils";
 
+export type UnitChart = { [key: string]: IUnit };
+
 export enum UnitType {
   Mass = "mass",
   Volume = "volume",
@@ -46,7 +48,7 @@ export default class Unit implements IUnit {
 
   static fromObject(object: any): Unit {
     const { name, description, type, value_in_grams, value_in_ml } = object;
-    return new this(name, description, type, value_in_grams, value_in_ml);
+    return new Unit(name, description, type, value_in_grams, value_in_ml);
   }
 
   static validate(
@@ -154,8 +156,6 @@ export function areUnitsConvertible(
   return { isConvertible: false, type: null };
 }
 
-export type UnitChart = { [key: string]: IUnit };
-
 /// Returns the ratio between `originUnit` and `targetUnit` real values.
 export function convertUnits(
   targetUnit: IUnit,
@@ -220,4 +220,12 @@ export function findConvertibleUnitsByName(
     return { error: `Unit '${unitName}' not in unitsChart` };
   }
   return findConvertibleUnits(unit, unitsChart);
+}
+
+export function createUnitChart(units: IUnit[]): UnitChart {
+  const unitsChart: UnitChart = {};
+  for (const unit of units) {
+    unitsChart[unit.name] = unit;
+  }
+  return unitsChart;
 }

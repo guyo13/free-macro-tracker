@@ -36,7 +36,7 @@ export default class MacroSplit implements IMacroSplit {
 
   static fromObject(object: any): MacroSplit {
     const { Calories, Protein, Carbohydrate, Fat } = object;
-    return new this(Calories, Protein, Carbohydrate, Fat);
+    return new MacroSplit(Calories, Protein, Carbohydrate, Fat);
   }
 
   static validate(Calories: any, Protein: any, Carbohydrate: any, Fat: any) {

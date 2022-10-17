@@ -72,7 +72,7 @@ export default class Food implements IConsumable {
       lastModified,
       tzMinutes,
     } = object;
-    return new this(
+    return new Food(
       id,
       name,
       brand,

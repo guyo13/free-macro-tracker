@@ -38,7 +38,13 @@ export default class MealIdentifier implements IMealIdentifier {
 
   static fromObject(object: any): MealIdentifier {
     const { profile_id, meal_year, meal_month, meal_day, meal_name } = object;
-    return new this(profile_id, meal_year, meal_month, meal_day, meal_name);
+    return new MealIdentifier(
+      profile_id,
+      meal_year,
+      meal_month,
+      meal_day,
+      meal_name
+    );
   }
 
   static validate(

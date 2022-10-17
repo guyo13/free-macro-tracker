@@ -161,7 +161,7 @@ export default class UserProfile implements IUserProfile {
       tzMinutes,
       macroSplit,
     } = object;
-    return new this(
+    return new UserProfile(
       profile_id,
       age,
       sex,

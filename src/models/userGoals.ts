@@ -41,7 +41,7 @@ export default class UserGoals implements IUserGoals {
 
   static fromObject(object: any): UserGoals {
     const { profile_id, year, month, day, macroSplit } = object;
-    return new this(profile_id, year, month, day, macroSplit);
+    return new UserGoals(profile_id, year, month, day, macroSplit);
   }
 
   static validate(
