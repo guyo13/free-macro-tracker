@@ -53,10 +53,8 @@ license that can be found in the LICENSE file. -->
           IUnitRepository,
           INutrientRepository
         ];
-        console.log(unitRepository, nutrientRepository);
 
         try {
-          await unitRepository.connection.wait();
           // TODO - Temporary so that we can use existing DB methods before implementing all repositories.
           fmtAppInstance.fmtDb = unitRepository.connection.idbInstance;
           const userUnits = await unitRepository.readAllUnits();
