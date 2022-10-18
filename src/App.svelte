@@ -7,8 +7,6 @@ license that can be found in the LICENSE file. -->
   } from "./db/unitRepository";
   import { onMount } from "svelte";
   import {
-    FMTLoadAdditionalNutrients,
-    FMTLoadProfile,
     FMTToday,
     prepareEventHandlers,
     pageController,
@@ -21,7 +19,13 @@ license that can be found in the LICENSE file. -->
     type INutrientRepository,
   } from "./db/nutrientRepository";
   import type { INutrientDefinition } from "./models/nutrient";
+  import profileRepositoryProvider, {
+    type IProfileRepository,
+  } from "./db/profileRepository";
+  import type { RecordId } from "./models/record";
+  import type { IUserProfile } from "./models/userProfile";
 
+  const DEFAULT_PROFILE_ID = 1;
   let isLoading: boolean = true;
 
   function setUnitChart(units: IUnit[]) {
@@ -50,6 +54,15 @@ license that can be found in the LICENSE file. -->
     );
   }
 
+  // TODO - Refactor into reactive variable
+  function setCurrentProfileId(id: RecordId) {
+    fmtAppInstance.currentProfileId = id;
+  }
+  // TODO - Refactor into reactive variable
+  function setCurrentProfile(userProfile: IUserProfile) {
+    fmtAppInstance.currentProfile = userProfile;
+  }
+
   // Called when the app has finished loading.
   // Notifies the platform when finished loading.
   function onAppFinishedLoading() {
@@ -64,13 +77,19 @@ license that can be found in the LICENSE file. -->
     pageController.closeDynamicScreens();
     prepareEventHandlers();
     const unsubscribe = repositoriesProvider
-      .synced([unitRepositoryProvider, nutrientRepositoryProvider])
+      .synced([
+        unitRepositoryProvider,
+        nutrientRepositoryProvider,
+        profileRepositoryProvider,
+      ])
       .subscribe(async (repositories) => {
         if (!repositories) return;
-        const [unitRepository, nutrientRepository] = repositories as [
-          IUnitRepository,
-          INutrientRepository
-        ];
+        const [unitRepository, nutrientRepository, profileRepository] =
+          repositories as [
+            IUnitRepository,
+            INutrientRepository,
+            IProfileRepository
+          ];
 
         try {
           // TODO - Temporary so that we can use existing DB methods before implementing all repositories.
@@ -81,40 +100,39 @@ license that can be found in the LICENSE file. -->
           const additionalNutrients =
             await nutrientRepository.getAllNutrients();
           setAdditionalNutrients(additionalNutrients);
-          FMTLoadProfile(
-            1,
-            //onloaded
-            function () {
-              // pageController.closeLoadingScreen();
+
+          // TODO - Remove this
+          setCurrentProfileId(DEFAULT_PROFILE_ID);
+          const userProfile = await profileRepository.getProfile(
+            DEFAULT_PROFILE_ID
+          );
+          setCurrentProfile(userProfile);
+          if (userProfile) {
+            // pageController.closeLoadingScreen();
+            pageController.showOverview(true);
+            pageController.showNavOverlay();
+            onAppFinishedLoading();
+          } else {
+            console.warn("No user Profile could be loaded");
+            // If profile creation skipped by user then load normally
+            if (pageController.isProfileCreationSkippedByUser()) {
               pageController.showOverview(true);
               pageController.showNavOverlay();
               onAppFinishedLoading();
-            },
-            //onNoProfile
-            function () {
-              console.warn("No user Profile could be loaded");
-              // If profile creation skipped by user then load normally
-              if (pageController.isProfileCreationSkippedByUser()) {
-                pageController.showOverview(true);
-                pageController.showNavOverlay();
-                onAppFinishedLoading();
-              } else {
-                FMTToday();
-                fmtAppInstance.currentDay = fmtAppInstance.today;
-                pageController.showFirstTimeScreen();
-                onAppFinishedLoading();
-                // pageController.closeLoadingScreen();
-                if (fmtAppInstance.firstTimeScreenAutomatic) {
-                  setTimeout(() => {
-                    document
-                      .getElementById("fmt-app-first-time-create")
-                      .click();
-                    pageController.showProfile();
-                  }, 3000);
-                }
+            } else {
+              FMTToday();
+              fmtAppInstance.currentDay = fmtAppInstance.today;
+              pageController.showFirstTimeScreen();
+              onAppFinishedLoading();
+              // pageController.closeLoadingScreen();
+              if (fmtAppInstance.firstTimeScreenAutomatic) {
+                setTimeout(() => {
+                  document.getElementById("fmt-app-first-time-create").click();
+                  pageController.showProfile();
+                }, 3000);
               }
             }
-          );
+          }
         } catch (err) {
           console.error(err);
         }

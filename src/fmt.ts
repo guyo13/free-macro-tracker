@@ -43,6 +43,7 @@ import type { IUserGoals } from "./models/userGoals";
 import type { RecordId } from "./models/record";
 import type { IMealIdentifier } from "./models/mealIdentifier";
 import type { IMacroSplit } from "./models/macroSplit";
+import UserProfile from "./models/userProfile";
 
 // TODO - Temporary - until this is migrated to its own store
 export const platformInterface = new FMTPlatform();
@@ -1093,160 +1094,6 @@ function FMTValidateMacroSplit(macroSplitObj): {
   }
 }
 
-// TODO - Remove and use UserProfile class
-function FMTValidateProfile(profileObj): {
-  profile?: {
-    profile_id: RecordId;
-    name?: string;
-    age: number;
-    sex: string;
-    bodyWeight: number;
-    bodyWeightUnits: string;
-    bodyfat?: number;
-    height: number;
-    heightUnits: string;
-    activityLevel: string;
-    activityMultiplier: number;
-    formula: string;
-    bmr: number;
-    tdee: number;
-    macroSplit?: IMacroSplit | {};
-    lastModified?: string;
-    tzMinutes?: number;
-  };
-  error?: string;
-} {
-  if (
-    !isNumber(profileObj.profile_id) ||
-    !Number.isInteger(Number(profileObj.profile_id))
-  ) {
-    return {
-      error: `Profile id must be an integer, got (${profileObj.profile_id})`,
-    };
-  }
-  if (!isNumber(profileObj.bodyWeight)) {
-    return { error: `Invalid body weight ${profileObj.bodyWeight}` };
-  }
-  if (
-    fmtAppGlobals.supportedBodyweightUnits.indexOf(profileObj.bodyWeightUnits) <
-    0
-  ) {
-    return { error: `Invalid body weight units ${profileObj.bodyWeightUnits}` };
-  }
-  if (!isNumber(profileObj.height)) {
-    return { error: `Invalid height ${profileObj.height}` };
-  }
-  if (fmtAppGlobals.supportedHeightUnits.indexOf(profileObj.heightUnits) < 0) {
-    return { error: `Invalid height units ${profileObj.heightUnits}` };
-  }
-  if (
-    !(Number.isInteger(Number(profileObj.age)) && Number(profileObj.age) > 0)
-  ) {
-    return { error: `Invalid age ${profileObj.age}` };
-  }
-  if (fmtAppGlobals.sexes.indexOf(profileObj.sex) < 0) {
-    return { error: `Invalid sex ${profileObj.sex}` };
-  }
-  if (
-    fmtAppGlobals.supportedActivityLevels.indexOf(profileObj.activityLevel) < 0
-  ) {
-    return { error: `Invalid activityLevel ${profileObj.activityLevel}` };
-  }
-  if (!isNumber(profileObj.activityMultiplier)) {
-    return {
-      error: `Invalid activity multiplier ${profileObj.activityMultiplier}`,
-    };
-  }
-  if (
-    profileObj.tzMinutes !== undefined &&
-    !Number.isInteger(profileObj.tzMinutes)
-  ) {
-    return { error: `Invalid timezone ${profileObj.tzMinutes}` };
-  }
-
-  const bodyWeight = Number(profileObj.bodyWeight);
-  const bodyWeightUnits = profileObj.bodyWeightUnits;
-  const heightUnits = profileObj.heightUnits;
-  const height = Number(profileObj.height);
-  const age = Number(profileObj.age);
-  const sex = profileObj.sex;
-  const activityMultiplier = Number(profileObj.activityMultiplier);
-  let bodyWeightKg: number, heightCm: number, bmr: number, tdee: number;
-  let macroSplit;
-  let [bodyfat, bodyfatReal, formula] = [null, null, "Mifflin-St Jeor"];
-  switch (bodyWeightUnits) {
-    case "Kg":
-      bodyWeightKg = bodyWeight;
-      break;
-    case "Lbs":
-      bodyWeightKg = bodyWeight / 2.2;
-      break;
-  }
-
-  switch (heightUnits) {
-    case "Cm":
-      heightCm = height;
-      break;
-    case "Inch":
-      heightCm = height * 2.54;
-      break;
-  }
-
-  if (isNumber(profileObj.bodyfat) && isPercent(Number(profileObj.bodyfat))) {
-    bodyfat = Number(profileObj.bodyfat);
-    bodyfatReal = bodyfat / 100;
-    formula = "Katch-McArdle";
-  }
-
-  switch (formula) {
-    case "Katch-McArdle":
-      bmr = katchMcArdle(bodyWeightKg, bodyfatReal);
-      break;
-    case "Mifflin-St Jeor":
-    default:
-      bmr = mifflinStJeor(bodyWeightKg, heightCm, age, sex);
-      break;
-  }
-  tdee = bmr * activityMultiplier;
-
-  if (profileObj.macroSplit != null) {
-    const valMSplitRes = FMTValidateMacroSplit(profileObj.macroSplit);
-    if (valMSplitRes.macroSplit == null || valMSplitRes.error != null) {
-      return { error: valMSplitRes.error };
-    }
-    macroSplit = valMSplitRes.macroSplit;
-  } else {
-    macroSplit = {};
-  }
-
-  const profile = {
-    profile_id: Number(profileObj.profile_id),
-    name: profileObj.name,
-    bodyWeight,
-    bodyWeightUnits,
-    height,
-    heightUnits,
-    age,
-    sex,
-    activityLevel: profileObj.activityLevel,
-    activityMultiplier,
-    bodyfat,
-    bodyfatReal,
-    formula,
-    bmr,
-    tdee,
-    lastModified: profileObj.lastModified,
-    tzMinutes: profileObj.tzMinutes,
-    macroSplit,
-  };
-
-  if (profile.bmr <= 0) {
-    return { error: `Invalid BMR ${profile.bmr}` };
-  }
-
-  return { profile };
-}
-
 function FMTValidateMealEntry(mealEntryObj): {
   error?: string;
   mealEntry?: any;
@@ -1676,6 +1523,7 @@ function FMTReadMealEntry(entry_id, onsuccessFn, onerrorFn) {
 }
 
 //Functions - DB - Profile
+// TODO - Delete
 function FMTReadProfile(profileId, onsuccessFn, onerrorFn) {
   if (isNaN(profileId)) {
     const msg = `Invalid profile_id ${profileId}`;
@@ -1698,6 +1546,7 @@ function FMTReadProfile(profileId, onsuccessFn, onerrorFn) {
     };
   getRequest.onsuccess = onsuccessFn;
 }
+// TODO - Delete
 function FMTReadAllProfiles(onsuccessFn, onerrorFn) {
   let profileStore = getObjectStore(
     fmtAppGlobals.FMT_DB_PROFILES_STORE,
@@ -1707,51 +1556,21 @@ function FMTReadAllProfiles(onsuccessFn, onerrorFn) {
   getRequest.onerror = onerrorFn;
   getRequest.onsuccess = onsuccessFn;
 }
-function FMTAddProfile(profileObj, onsuccessFn, onerrorFn) {
-  let result = FMTValidateProfile(profileObj);
-  if (result.profile == null || result.error != null) {
-    onerrorFn =
-      onerrorFn ||
-      function () {
-        console.error(result.error);
-      };
-    return onerrorFn(result.error);
-  }
-  const profile = result.profile;
-  let date = new Date();
-  profile.lastModified = date.toISOString();
-  profile.tzMinutes = date.getTimezoneOffset();
-  let profileStore = getObjectStore(
-    fmtAppGlobals.FMT_DB_PROFILES_STORE,
-    IDBTransactionModes.Readwrite
-  );
-  let addRequest = profileStore.add(profile);
-  addRequest.onerror =
-    onerrorFn ||
-    function () {
-      console.error(`Failed adding Profile ${JSON.stringify(profile)}`);
-    };
-  addRequest.onsuccess =
-    onsuccessFn ||
-    function () {
-      console.debug(`Success adding Profile ${JSON.stringify(profile)}`);
-    };
-}
+// TODO - Delete
 function FMTUpdateProfile(profileId, profileObj, onsuccessFn, onerrorFn) {
   profileObj.profile_id = profileId;
-  let result = FMTValidateProfile(profileObj);
-  if (result.profile == null || result.error != null) {
+  let result;
+  try {
+    result = UserProfile.fromObject(profileObj, new Date());
+  } catch (err) {
     onerrorFn =
       onerrorFn ||
       function () {
-        console.error(result.error);
+        console.error(err);
       };
-    return onerrorFn(result.error);
+    return onerrorFn(err);
   }
-  const profile = result.profile;
-  let date = new Date();
-  profile.lastModified = date.toISOString();
-  profile.tzMinutes = date.getTimezoneOffset();
+  const profile = result;
   let profileStore = getObjectStore(
     fmtAppGlobals.FMT_DB_PROFILES_STORE,
     IDBTransactionModes.Readwrite
@@ -1770,23 +1589,6 @@ function FMTUpdateProfile(profileId, profileObj, onsuccessFn, onerrorFn) {
       };
     onsuccessFn(event, profile);
   };
-}
-function FMTDeleteProfile(profileId, onsuccessFn, onerrorFn) {
-  let profileStore = getObjectStore(
-    fmtAppGlobals.FMT_DB_PROFILES_STORE,
-    IDBTransactionModes.Readwrite
-  );
-  let delRequest = profileStore.delete(profileId);
-  delRequest.onerror =
-    onerrorFn ||
-    function () {
-      console.error(`Failed deleting  Profile id ${profileId}`);
-    };
-  delRequest.onsuccess =
-    onsuccessFn ||
-    function () {
-      console.debug(`Success deleting Profile id ${profileId}`);
-    };
 }
 
 //Functions - DB - Foods
@@ -2640,29 +2442,31 @@ function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
     // @ts-ignore
     name: document.getElementById("profile-name").value || null,
     // @ts-ignore
-    bodyWeight: document.getElementById("profile-weight").value,
+    bodyWeight: Number(document.getElementById("profile-weight").value),
     bodyWeightUnits: document.getElementById(
       "profile-weight-units"
       // @ts-ignore
     ).value,
     // @ts-ignore
-    height: document.getElementById("profile-height").value,
+    height: Number(document.getElementById("profile-height").value),
     // @ts-ignore
     heightUnits: document.getElementById("profile-height-units").value,
     // @ts-ignore
-    age: document.getElementById("profile-age").value,
+    age: Number(document.getElementById("profile-age").value),
     // @ts-ignore
     sex: document.getElementById("profile-sex").getAttribute("sex"),
     // @ts-ignore
-    bodyfat: document.getElementById("profile-bodyfat").value || null,
+    bodyfat: Number(document.getElementById("profile-bodyfat").value) || null,
     // @ts-ignore
     activityLevel: document
       .getElementById("profile-active-level")
       .getAttribute("level"),
-    activityMultiplier: document.getElementById(
-      "profile-activity-mult"
-      // @ts-ignore
-    ).value,
+    activityMultiplier: Number(
+      document.getElementById(
+        "profile-activity-mult"
+        // @ts-ignore
+      ).value
+    ),
     formula: "Mifflin-St Jeor",
     macroSplit: null,
   };
@@ -2933,7 +2737,7 @@ function FMTDisplayProfile(profileId) {
       ).innerHTML = `* According to ${profile.formula} formula`;
       // Set Macro fields
       let macroSplit = profile.macroSplit;
-      if (macroSplit !== null) {
+      if (macroSplit) {
         // Set saved macro split
         // @ts-ignore
         document.getElementById("profile-daily-calories").value =
@@ -7279,6 +7083,8 @@ export function FMTLoadAdditionalNutrients(onloadedFn) {
     }
   );
 }
+
+//TODO - Delete
 export function FMTLoadProfile(profile_id, onloadedFn, onNoProfileFn) {
   fmtAppInstance.currentProfileId = profile_id;
   FMTReadProfile(
