@@ -20,6 +20,7 @@ license that can be found in the LICENSE file. -->
   import nutrientRepositoryProvider, {
     type INutrientRepository,
   } from "./db/nutrientRepository";
+  import type { INutrientDefinition } from "./models/nutrient";
 
   let isLoading: boolean = true;
 
@@ -32,10 +33,27 @@ license that can be found in the LICENSE file. -->
     );
   }
 
+  function setAdditionalNutrients(nutrients: INutrientDefinition[]) {
+    fmtAppInstance.additionalNutrients = {};
+    const categories = new Set(nutrients.map((x) => x.category));
+    for (const category of categories.values()) {
+      fmtAppInstance.additionalNutrients[category] = [];
+    }
+    for (const nutrientDefition of nutrients) {
+      const category = nutrientDefition.category;
+      fmtAppInstance.additionalNutrients[category].push(nutrientDefition);
+    }
+    console.debug(
+      `Additional Nutrients loaded into Application instance ${JSON.stringify(
+        fmtAppInstance.additionalNutrients
+      )}`
+    );
+  }
+
   // Called when the app has finished loading.
   // Notifies the platform when finished loading.
   function onAppFinishedLoading() {
-    console.log(`${platformInterface.platform} platform interface detected!`);
+    console.debug(`${platformInterface.platform} platform interface detected!`);
     if (platformInterface.hasPlatformInterface) {
       platformInterface.FMTFinishedLoading();
     }
@@ -60,42 +78,43 @@ license that can be found in the LICENSE file. -->
           const userUnits = await unitRepository.readAllUnits();
           console.debug(`Successfully read all units`);
           setUnitChart(userUnits);
-          FMTLoadAdditionalNutrients(function () {
-            FMTLoadProfile(
-              1,
-              //onloaded
-              function () {
-                // pageController.closeLoadingScreen();
+          const additionalNutrients =
+            await nutrientRepository.getAllNutrients();
+          setAdditionalNutrients(additionalNutrients);
+          FMTLoadProfile(
+            1,
+            //onloaded
+            function () {
+              // pageController.closeLoadingScreen();
+              pageController.showOverview(true);
+              pageController.showNavOverlay();
+              onAppFinishedLoading();
+            },
+            //onNoProfile
+            function () {
+              console.warn("No user Profile could be loaded");
+              // If profile creation skipped by user then load normally
+              if (pageController.isProfileCreationSkippedByUser()) {
                 pageController.showOverview(true);
                 pageController.showNavOverlay();
                 onAppFinishedLoading();
-              },
-              //onNoProfile
-              function () {
-                console.warn("No user Profile could be loaded");
-                // If profile creation skipped by user then load normally
-                if (pageController.isProfileCreationSkippedByUser()) {
-                  pageController.showOverview(true);
-                  pageController.showNavOverlay();
-                  onAppFinishedLoading();
-                } else {
-                  FMTToday();
-                  fmtAppInstance.currentDay = fmtAppInstance.today;
-                  pageController.showFirstTimeScreen();
-                  onAppFinishedLoading();
-                  // pageController.closeLoadingScreen();
-                  if (fmtAppInstance.firstTimeScreenAutomatic) {
-                    setTimeout(() => {
-                      document
-                        .getElementById("fmt-app-first-time-create")
-                        .click();
-                      pageController.showProfile();
-                    }, 3000);
-                  }
+              } else {
+                FMTToday();
+                fmtAppInstance.currentDay = fmtAppInstance.today;
+                pageController.showFirstTimeScreen();
+                onAppFinishedLoading();
+                // pageController.closeLoadingScreen();
+                if (fmtAppInstance.firstTimeScreenAutomatic) {
+                  setTimeout(() => {
+                    document
+                      .getElementById("fmt-app-first-time-create")
+                      .click();
+                    pageController.showProfile();
+                  }, 3000);
                 }
               }
-            );
-          });
+            }
+          );
         } catch (err) {
           console.error(err);
         }

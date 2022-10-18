@@ -43,6 +43,7 @@ const fmtAppInstance = {
   editIngredientServingKeyupFn: null,
   //Instance - User defined metrics
   unitsChart: null,
+  // TODO - Rename this
   additionalNutrients: null,
   // Profile state
   currentProfile: undefined,
