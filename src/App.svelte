@@ -94,7 +94,7 @@ license that can be found in the LICENSE file. -->
         try {
           // TODO - Temporary so that we can use existing DB methods before implementing all repositories.
           fmtAppInstance.fmtDb = unitRepository.connection.idbInstance;
-          const userUnits = await unitRepository.readAllUnits();
+          const userUnits = await unitRepository.getAllUnits();
           console.debug(`Successfully read all units`);
           setUnitChart(userUnits);
           const additionalNutrients =
