@@ -73,7 +73,10 @@ class NutrientRepository extends Repository implements INutrientRepository {
     });
   }
 
-  getNutrient(category: string, name: string): Promise<INutrientDefinition> {
+  getNutrient(
+    category: string,
+    name: string
+  ): Promise<INutrientDefinition | null> {
     return new Promise(async (resolve, reject) => {
       if (!this.isReady) {
         await this.connection.wait();
@@ -87,7 +90,9 @@ class NutrientRepository extends Repository implements INutrientRepository {
         //@ts-ignore
         const result: any | undefined = ev?.target?.result;
         try {
-          const nutrientDef = NutrientDefinition.fromObject(result);
+          const nutrientDef = result
+            ? NutrientDefinition.fromObject(result)
+            : null;
           resolve(nutrientDef);
         } catch (err) {
           reject(err);
@@ -132,12 +137,12 @@ const nutrientRepositoryProvider = derived<
 
 export interface INutrientRepository extends IRepository {
   getAllNutrients: () => Promise<INutrientDefinition[]>;
-  addNutrient: (nutrient: INutrientDefinition) => Promise<void>;
-  updateNutrient: (nutrient: INutrientDefinition) => Promise<void>;
   getNutrient: (
     category: string,
     name: string
   ) => Promise<INutrientDefinition | null>;
+  addNutrient: (nutrient: INutrientDefinition) => Promise<void>;
+  updateNutrient: (nutrient: INutrientDefinition) => Promise<void>;
   deleteNutrient: (category: string, name: string) => Promise<void>;
 }
 export default nutrientRepositoryProvider;
