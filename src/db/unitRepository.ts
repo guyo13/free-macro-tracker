@@ -35,6 +35,32 @@ class UnitRepository extends Repository implements IUnitRepository {
     });
   }
 
+  getUnit(unitName: string): Promise<IUnit | null> {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isReady) {
+        await this.connection.wait();
+      }
+      const unitStore = this.connection.getObjectStore(
+        this.storeName,
+        IDBTransactionModes.Readonly
+      );
+      const getRequest = unitStore.get(unitName);
+      getRequest.onsuccess = (_ev: Event) => {
+        // @ts-ignore
+        const result: any | undefined = ev?.target?.result;
+        try {
+          const unit = Unit.fromObject(result);
+          resolve(unit);
+        } catch (err) {
+          reject(err);
+        }
+      };
+      getRequest.onerror = (_ev: Event) => {
+        reject(`Failed getting unit with name '${unitName}`);
+      };
+    });
+  }
+
   addUnit(unit: IUnit): Promise<void> {
     return new Promise(async (resolve, reject) => {
       if (!this.isReady) {
@@ -73,32 +99,6 @@ class UnitRepository extends Repository implements IUnitRepository {
     });
   }
 
-  getUnit(unitName: string): Promise<IUnit | null> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
-      const unitStore = this.connection.getObjectStore(
-        this.storeName,
-        IDBTransactionModes.Readonly
-      );
-      const getRequest = unitStore.get(unitName);
-      getRequest.onsuccess = (_ev: Event) => {
-        // @ts-ignore
-        const result: any | undefined = ev?.target?.result;
-        try {
-          const unit = Unit.fromObject(result);
-          resolve(unit);
-        } catch (err) {
-          reject(err);
-        }
-      };
-      getRequest.onerror = (_ev: Event) => {
-        reject(`Failed getting unit with name '${unitName}`);
-      };
-    });
-  }
-
   deleteUnit(unitName: string): Promise<void> {
     return new Promise(async (resolve, reject) => {
       if (!this.isReady) {
@@ -132,9 +132,9 @@ const unitRepositoryProvider = derived<Readable<IDBWrapper>, IUnitRepository>(
 
 export interface IUnitRepository extends IRepository {
   readAllUnits: () => Promise<IUnit[]>;
+  getUnit: (unitName: string) => Promise<IUnit | null>;
   addUnit: (unit: IUnit) => Promise<void>;
   updateUnit: (unit: IUnit) => Promise<void>;
-  getUnit: (unitName: string) => Promise<IUnit | null>;
   deleteUnit: (unitName: string) => Promise<void>;
 }
 export default unitRepositoryProvider;
