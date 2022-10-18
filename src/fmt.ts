@@ -44,7 +44,8 @@ import type { RecordId } from "./models/record";
 import type { IMealIdentifier } from "./models/mealIdentifier";
 import type { IMacroSplit } from "./models/macroSplit";
 
-const platformInterface = new FMTPlatform();
+// TODO - Temporary - until this is migrated to its own store
+export const platformInterface = new FMTPlatform();
 
 //Globals - Export
 var fmtAppExport;
@@ -5959,7 +5960,7 @@ export const pageController = {
   },
   showOverview: function (showToday?: boolean) {
     pageController.setTabActive("goto-overview");
-    if (showToday === true) {
+    if (showToday) {
       FMTToday();
       FMTSetCurrentDate(fmtAppInstance.today, FMTOverviewLoadCurrentDay);
     } else {
@@ -7306,14 +7307,6 @@ export function FMTLoadProfile(profile_id, onloadedFn, onNoProfileFn) {
       throw ReferenceError(msg);
     }
   );
-}
-// Called when the app has finished loading.
-// Notifies the platform when finished loading.
-export function onAppFinishedLoading() {
-  console.log(`${platformInterface.platform} platform interface detected!`);
-  if (platformInterface.hasPlatformInterface) {
-    platformInterface.FMTFinishedLoading();
-  }
 }
 
 export function prepareEventHandlers() {

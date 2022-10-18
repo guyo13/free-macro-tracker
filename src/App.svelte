@@ -10,12 +10,16 @@ license that can be found in the LICENSE file. -->
     FMTLoadAdditionalNutrients,
     FMTLoadProfile,
     FMTToday,
-    onAppFinishedLoading,
-    pageController,
     prepareEventHandlers,
+    pageController,
+    platformInterface,
   } from "./fmt";
   import fmtAppInstance from "./app/instance";
   import { createUnitChart, type IUnit } from "./models/units";
+  import repositoriesProvider from "./db/repositoriesProvider";
+  import nutrientRepositoryProvider, {
+    type INutrientRepository,
+  } from "./db/nutrientRepository";
 
   let isLoading: boolean = true;
 
@@ -28,20 +32,33 @@ license that can be found in the LICENSE file. -->
     );
   }
 
+  // Called when the app has finished loading.
+  // Notifies the platform when finished loading.
+  function onAppFinishedLoading() {
+    console.log(`${platformInterface.platform} platform interface detected!`);
+    if (platformInterface.hasPlatformInterface) {
+      platformInterface.FMTFinishedLoading();
+    }
+  }
+
   onMount(() => {
     pageController.hideAllTabs();
     pageController.closeDynamicScreens();
-    return unitRepositoryProvider.subscribe(
-      async (unitRepository: IUnitRepository) => {
-        if (!unitRepository) {
-          console.log("unit repository not yet initilialized.");
-          return;
-        }
+    prepareEventHandlers();
+    const unsubscribe = repositoriesProvider
+      .synced([unitRepositoryProvider, nutrientRepositoryProvider])
+      .subscribe(async (repositories) => {
+        if (!repositories) return;
+        const [unitRepository, nutrientRepository] = repositories as [
+          IUnitRepository,
+          INutrientRepository
+        ];
+        console.log(unitRepository, nutrientRepository);
+
         try {
           await unitRepository.connection.wait();
           // TODO - Temporary so that we can use existing DB methods before implementing all repositories.
           fmtAppInstance.fmtDb = unitRepository.connection.idbInstance;
-          prepareEventHandlers();
           const userUnits = await unitRepository.readAllUnits();
           console.debug(`Successfully read all units`);
           setUnitChart(userUnits);
@@ -63,20 +80,20 @@ license that can be found in the LICENSE file. -->
                   pageController.showOverview(true);
                   pageController.showNavOverlay();
                   onAppFinishedLoading();
-                  return;
-                }
-                FMTToday();
-                fmtAppInstance.currentDay = fmtAppInstance.today;
-                pageController.showFirstTimeScreen();
-                onAppFinishedLoading();
-                // pageController.closeLoadingScreen();
-                if (fmtAppInstance.firstTimeScreenAutomatic) {
-                  setTimeout(() => {
-                    document
-                      .getElementById("fmt-app-first-time-create")
-                      .click();
-                    pageController.showProfile();
-                  }, 3000);
+                } else {
+                  FMTToday();
+                  fmtAppInstance.currentDay = fmtAppInstance.today;
+                  pageController.showFirstTimeScreen();
+                  onAppFinishedLoading();
+                  // pageController.closeLoadingScreen();
+                  if (fmtAppInstance.firstTimeScreenAutomatic) {
+                    setTimeout(() => {
+                      document
+                        .getElementById("fmt-app-first-time-create")
+                        .click();
+                      pageController.showProfile();
+                    }, 3000);
+                  }
                 }
               }
             );
@@ -84,8 +101,8 @@ license that can be found in the LICENSE file. -->
         } catch (err) {
           console.error(err);
         }
-      }
-    );
+      });
+    return unsubscribe;
   });
 </script>
 
