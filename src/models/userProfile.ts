@@ -140,11 +140,11 @@ export default class UserProfile implements IUserProfile {
     return this.profile_id;
   }
 
-  static from(userProfile: IUserProfile): UserProfile {
-    return this.fromObject(userProfile);
+  static from(userProfile: IUserProfile, dateModified?: Date): UserProfile {
+    return this.fromObject(userProfile, dateModified);
   }
 
-  static fromObject(object: any): UserProfile {
+  static fromObject(object: any, dateModified?: Date): UserProfile {
     const {
       profile_id,
       age,
@@ -161,6 +161,9 @@ export default class UserProfile implements IUserProfile {
       tzMinutes,
       macroSplit,
     } = object;
+    const [lastModifiedValue, tzMinutesValue] = dateModified
+      ? [dateModified.toISOString(), dateModified.getTimezoneOffset()]
+      : [lastModified, tzMinutes];
     return new UserProfile(
       profile_id,
       age,
@@ -173,8 +176,8 @@ export default class UserProfile implements IUserProfile {
       activityMultiplier,
       name,
       bodyfat,
-      lastModified,
-      tzMinutes,
+      lastModifiedValue,
+      tzMinutesValue,
       macroSplit
     );
   }
@@ -206,7 +209,7 @@ export default class UserProfile implements IUserProfile {
       throw `Bodyweight must be a positive number. Got '${bodyWeight}'`;
     }
     if (!Object.values(BodyWeightUnits).includes(bodyWeightUnits)) {
-      throw `Bodyweight must be either Kg or Lbs. Got '${bodyWeightUnits}'`;
+      throw `Bodyweight units must be either Kg or Lbs. Got '${bodyWeightUnits}'`;
     }
     if (!isPositiveNumber(height)) {
       throw `Height must be a positive number. Got '${height}'`;
@@ -226,7 +229,9 @@ export default class UserProfile implements IUserProfile {
     if (bodyfat && (!Number.isFinite(bodyfat) || !isPercent(bodyfat))) {
       throw `Body fat must be a valid percent. Got '${bodyfat}'`;
     }
-    const { Calories, Protein, Carbohydrate, Fat } = macroSplit;
-    MacroSplit.validate(Calories, Protein, Carbohydrate, Fat);
+    if (macroSplit) {
+      const { Calories, Protein, Carbohydrate, Fat } = macroSplit;
+      MacroSplit.validate(Calories, Protein, Carbohydrate, Fat);
+    }
   }
 }
