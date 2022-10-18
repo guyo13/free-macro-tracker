@@ -35,6 +35,37 @@ class NutrientRepository extends Repository implements INutrientRepository {
     });
   }
 
+  getNutrient(
+    category: string,
+    name: string
+  ): Promise<INutrientDefinition | null> {
+    return new Promise(async (resolve, reject) => {
+      if (!this.isReady) {
+        await this.connection.wait();
+      }
+      const nutrientStore = this.connection.getObjectStore(
+        this.storeName,
+        IDBTransactionModes.Readonly
+      );
+      const getRequest = nutrientStore.get([category, name]);
+      getRequest.onsuccess = (ev: Event) => {
+        //@ts-ignore
+        const result: any | undefined = ev?.target?.result;
+        try {
+          const nutrientDef = result
+            ? NutrientDefinition.fromObject(result)
+            : null;
+          resolve(nutrientDef);
+        } catch (err) {
+          reject(err);
+        }
+      };
+      getRequest.onerror = (_ev: Event) => {
+        reject(`Failed getting nutrient with key '${[category, name]}`);
+      };
+    });
+  }
+
   addNutrient(nutrient: INutrientDefinition): Promise<void> {
     return new Promise(async (resolve, reject) => {
       if (!this.isReady) {
@@ -69,37 +100,6 @@ class NutrientRepository extends Repository implements INutrientRepository {
       };
       putRequest.onerror = (_ev: Event) => {
         reject(`Failed updating nutrient ${JSON.stringify(nutrient)}`);
-      };
-    });
-  }
-
-  getNutrient(
-    category: string,
-    name: string
-  ): Promise<INutrientDefinition | null> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
-      const nutrientStore = this.connection.getObjectStore(
-        this.storeName,
-        IDBTransactionModes.Readonly
-      );
-      const getRequest = nutrientStore.get([category, name]);
-      getRequest.onsuccess = (ev: Event) => {
-        //@ts-ignore
-        const result: any | undefined = ev?.target?.result;
-        try {
-          const nutrientDef = result
-            ? NutrientDefinition.fromObject(result)
-            : null;
-          resolve(nutrientDef);
-        } catch (err) {
-          reject(err);
-        }
-      };
-      getRequest.onerror = (_ev: Event) => {
-        reject(`Failed getting nutrient with key '${[category, name]}`);
       };
     });
   }
