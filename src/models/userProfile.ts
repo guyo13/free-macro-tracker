@@ -15,11 +15,11 @@ import { validateRecord, type RecordId } from "./record";
 import type IDBRecord from "./record";
 
 export enum BodyWeightUnits {
-  Kg = " Kg",
+  Kg = "Kg",
   Lbs = "Lbs",
 }
 export enum BodyHeightUnits {
-  Cm = " Cm",
+  Cm = "Cm",
   Inch = "Inch",
 }
 export enum UserGender {
