@@ -25,9 +25,12 @@ license that can be found in the LICENSE file. -->
   import type { RecordId } from "./models/record";
   import type { IUserProfile } from "./models/userProfile";
   import SplashScreen from "./components/SplashScreen.svelte";
+  import OnboardingScreen from "./components/OnboardingScreen.svelte";
+  import { hasLocalStorage } from "./utils/browser";
 
   const DEFAULT_PROFILE_ID = 1;
   let isLoading: boolean = true;
+  let isOnboarding: boolean = false;
 
   function setUnitChart(units: IUnit[]) {
     fmtAppInstance.unitsChart = createUnitChart(units);
@@ -62,6 +65,31 @@ license that can be found in the LICENSE file. -->
   // TODO - Refactor into reactive variable
   function setCurrentProfile(userProfile: IUserProfile) {
     fmtAppInstance.currentProfile = userProfile;
+  }
+
+  // TODO - Use a Store?
+  function setSkipProfile() {
+    if (hasLocalStorage()) {
+      window.localStorage.setItem("profileCreationSkippedByUser", "true");
+    }
+  }
+
+  function isProfileCreationSkippedByUser() {
+    return (
+      hasLocalStorage() &&
+      window.localStorage.getItem("profileCreationSkippedByUser") == "true"
+    );
+  }
+
+  function handleSkipProfileCreationClick() {
+    pageController.showOverview();
+    setSkipProfile();
+    isOnboarding = false;
+  }
+
+  function handleCreateProfileClick() {
+    pageController.showProfile();
+    isOnboarding = false;
   }
 
   // Called when the app has finished loading.
@@ -108,7 +136,7 @@ license that can be found in the LICENSE file. -->
             DEFAULT_PROFILE_ID
           );
           setCurrentProfile(userProfile);
-          if (userProfile || pageController.isProfileCreationSkippedByUser()) {
+          if (userProfile || isProfileCreationSkippedByUser()) {
             pageController.showOverview(true);
             pageController.showNavOverlay();
             onAppFinishedLoading();
@@ -116,14 +144,8 @@ license that can be found in the LICENSE file. -->
             console.warn("No user Profile could be loaded");
             FMTToday();
             fmtAppInstance.currentDay = fmtAppInstance.today;
-            pageController.showFirstTimeScreen();
             onAppFinishedLoading();
-            if (fmtAppInstance.firstTimeScreenAutomatic) {
-              setTimeout(() => {
-                document.getElementById("fmt-app-first-time-create").click();
-                pageController.showProfile();
-              }, 3000);
-            }
+            isOnboarding = true;
           }
         } catch (err) {
           console.error(err);
@@ -137,8 +159,13 @@ license that can be found in the LICENSE file. -->
 
 {#if isLoading}
   <SplashScreen />
+{:else if isOnboarding}
+  <OnboardingScreen
+    onSkipProfileClick={handleSkipProfileCreationClick}
+    onCreateProfileClick={handleCreateProfileClick}
+  />
 {/if}
-<main class={isLoading ? "d-none" : ""}>
+<main class={isLoading || isOnboarding ? "d-none" : ""}>
   <div id="overview" class="fmt-tab container-fluid">
     <div id="overview-alerts" class="row justify-content-center" />
     <div id="overview-container" class="">
@@ -2582,41 +2609,6 @@ license that can be found in the LICENSE file. -->
     </div>
   </div>
   <!--Overlays-->
-  <div
-    id="fmt-app-first-time-overlay"
-    class="d-none fmt-overlay container-fluid bg-white"
-  >
-    <div
-      id="fmt-app-first-time-overlay-msg"
-      class="row justify-content-center fmt-center-text"
-    >
-      <div class="fmt-column fmt-page-height fmt-content-center">
-        <div class="mb-2">
-          <span id="fmt-app-first-time-overlay-text-1" class="" />
-        </div>
-        <div class="mb-2">
-          <span class="">To get started, let's create your profile.</span>
-        </div>
-        <div class="mt-2">
-          <button
-            id="fmt-app-first-time-create"
-            class="btn btn-outline-primary"
-            type="button">Create My Profile</button
-          >
-        </div>
-        <div class="mt-2">
-          <span class="">Or</span>
-        </div>
-        <div class="mt-2">
-          <button
-            id="fmt-app-first-time-skip"
-            class="btn btn-outline-primary"
-            type="button">Start Without a Profile</button
-          >
-        </div>
-      </div>
-    </div>
-  </div>
   <div id="fmt-app-nav-overlay" class=" container-fluid">
     <div
       id="fmt-app-nav-overlay-alerts"

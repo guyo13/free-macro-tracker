@@ -16,7 +16,6 @@ const fmtAppInstance = {
     promptOnUnsavedFood: true,
     promptOnNoProfileCreated: true,
   },
-  firstTimeScreenAutomatic: false,
   allowForeignNutrients: true,
   mealEntryMacroBarInPercent: false,
   macroAutoFill: "carb",

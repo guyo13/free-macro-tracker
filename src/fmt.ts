@@ -5723,24 +5723,6 @@ function FMTNextDay(onsuccessFn) {
 
 //Page
 export const pageController = {
-  hasLocalStorage: function () {
-    try {
-      return "localStorage" in window && window["localStorage"] !== null;
-    } catch (e) {
-      return false;
-    }
-  },
-  setSkipProfile: function () {
-    if (this.hasLocalStorage()) {
-      window.localStorage.setItem("profileCreationSkippedByUser", "true");
-    }
-  },
-  isProfileCreationSkippedByUser: function () {
-    return (
-      this.hasLocalStorage() &&
-      window.localStorage.getItem("profileCreationSkippedByUser") == "true"
-    );
-  },
   hideAllTabs: function () {
     for (const i in fmtAppGlobals.tabIds) {
       let s = "#" + fmtAppGlobals.tabIds[i];
@@ -6972,28 +6954,6 @@ export const pageController = {
     }-alerts`;
     return alertDivId;
   },
-  showFirstTimeScreen: function () {
-    const overlay = document.getElementById("fmt-app-first-time-overlay");
-    const msg = document.getElementById("fmt-app-first-time-overlay-msg");
-    const titleSpan = document.getElementById(
-      "fmt-app-first-time-overlay-text-1"
-    );
-    const appName =
-      platformInterface.platform === FMTPlatformType.IOS ? "Open" : "Free";
-    titleSpan.innerHTML = `Welcome to ${appName} Macro Tracker.`;
-    overlay.classList.remove("d-none");
-    overlay.style.zIndex = fmtAppGlobals.maxDynamicScreens + 2;
-    msg.classList.remove("fmt-faded");
-    msg.classList.add("fmt-fadein");
-  },
-  closeFirstTimeScreen: function () {
-    const overlay = document.getElementById("fmt-app-first-time-overlay");
-    const msg = document.getElementById("fmt-app-first-time-overlay-msg");
-    overlay.classList.add("d-none");
-    overlay.style.zIndex = "-2";
-    msg.classList.remove("fmt-fadein");
-    msg.classList.remove("fmt-faded");
-  },
   showNavOverlay: function () {
     const navOverlay = document.getElementById("fmt-app-nav-overlay");
     navOverlay.classList.remove("d-none");
@@ -7926,15 +7886,6 @@ export function prepareEventHandlers() {
   });
   $("#edit-meal-entry-screen-less").click(() => {
     FMTConsumableItemScreenShowLess("edit-meal-entry-screen", "consumable");
-  });
-  $("#fmt-app-first-time-create").click(() => {
-    pageController.closeFirstTimeScreen();
-    pageController.showProfile();
-  });
-  $("#fmt-app-first-time-skip").click(() => {
-    pageController.closeFirstTimeScreen();
-    pageController.showOverview();
-    pageController.setSkipProfile();
   });
   $("#settings-data-control-export").click(() => {
     const d = new Date();
