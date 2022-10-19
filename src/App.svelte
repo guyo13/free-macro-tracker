@@ -24,6 +24,7 @@ license that can be found in the LICENSE file. -->
   } from "./db/profileRepository";
   import type { RecordId } from "./models/record";
   import type { IUserProfile } from "./models/userProfile";
+  import SplashScreen from "./components/SplashScreen.svelte";
 
   const DEFAULT_PROFILE_ID = 1;
   let isLoading: boolean = true;
@@ -135,13 +136,18 @@ license that can be found in the LICENSE file. -->
           }
         } catch (err) {
           console.error(err);
+        } finally {
+          isLoading = false;
         }
       });
     return unsubscribe;
   });
 </script>
 
-<main>
+{#if isLoading}
+  <SplashScreen />
+{/if}
+<main class={isLoading ? "d-none" : ""}>
   <div id="overview" class="fmt-tab container-fluid">
     <div id="overview-alerts" class="row justify-content-center" />
     <div id="overview-container" class="">
@@ -2585,34 +2591,6 @@ license that can be found in the LICENSE file. -->
     </div>
   </div>
   <!--Overlays-->
-  <div
-    id="fmt-app-load-overlay"
-    class="fmt-overlay bg-white container-fluid d-none"
-  >
-    <div
-      id="fmt-app-load-overlay-content"
-      class="row justify-content-center fmt-center-text fmt-loading-screen-position"
-    >
-      <div class="col-12">
-        <span class="fmt-bold fmt-loading-screen-font">Free</span>
-      </div>
-      <div class="col-12">
-        <span class="fmt-loading-screen-font-responsive">Macro Tracker</span>
-      </div>
-      <div class="col-12 mb-3 d-none">
-        <span class="fmt-loading-screen-logo">Logo</span>
-      </div>
-      <div id="fmt-app-load-overlay-spinner" class="col-12 d-none">
-        <div class="spinner-border" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>
-      <div
-        id="fmt-app-load-overlay-alerts"
-        class="row justify-content-center d-none"
-      />
-    </div>
-  </div>
   <div
     id="fmt-app-first-time-overlay"
     class="d-none fmt-overlay container-fluid bg-white"
