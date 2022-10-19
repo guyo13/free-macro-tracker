@@ -108,28 +108,21 @@ license that can be found in the LICENSE file. -->
             DEFAULT_PROFILE_ID
           );
           setCurrentProfile(userProfile);
-          if (userProfile) {
+          if (userProfile || pageController.isProfileCreationSkippedByUser()) {
             pageController.showOverview(true);
             pageController.showNavOverlay();
             onAppFinishedLoading();
           } else {
             console.warn("No user Profile could be loaded");
-            // If profile creation skipped by user then load normally
-            if (pageController.isProfileCreationSkippedByUser()) {
-              pageController.showOverview(true);
-              pageController.showNavOverlay();
-              onAppFinishedLoading();
-            } else {
-              FMTToday();
-              fmtAppInstance.currentDay = fmtAppInstance.today;
-              pageController.showFirstTimeScreen();
-              onAppFinishedLoading();
-              if (fmtAppInstance.firstTimeScreenAutomatic) {
-                setTimeout(() => {
-                  document.getElementById("fmt-app-first-time-create").click();
-                  pageController.showProfile();
-                }, 3000);
-              }
+            FMTToday();
+            fmtAppInstance.currentDay = fmtAppInstance.today;
+            pageController.showFirstTimeScreen();
+            onAppFinishedLoading();
+            if (fmtAppInstance.firstTimeScreenAutomatic) {
+              setTimeout(() => {
+                document.getElementById("fmt-app-first-time-create").click();
+                pageController.showProfile();
+              }, 3000);
             }
           }
         } catch (err) {
