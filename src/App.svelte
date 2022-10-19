@@ -109,7 +109,6 @@ license that can be found in the LICENSE file. -->
           );
           setCurrentProfile(userProfile);
           if (userProfile) {
-            // pageController.closeLoadingScreen();
             pageController.showOverview(true);
             pageController.showNavOverlay();
             onAppFinishedLoading();
@@ -125,7 +124,6 @@ license that can be found in the LICENSE file. -->
               fmtAppInstance.currentDay = fmtAppInstance.today;
               pageController.showFirstTimeScreen();
               onAppFinishedLoading();
-              // pageController.closeLoadingScreen();
               if (fmtAppInstance.firstTimeScreenAutomatic) {
                 setTimeout(() => {
                   document.getElementById("fmt-app-first-time-create").click();

@@ -399,14 +399,6 @@ button {
     opacity: 100%;
   }
 }
-@keyframes fmt-fadeout-keyframe {
-  from {
-    opacity: 100%;
-  }
-  to {
-    opacity: 0;
-  }
-}
 @keyframes fmt-fadeinout-keyframe {
   from {
     opacity: 0%;
@@ -420,9 +412,6 @@ button {
 }
 .fmt-fadein {
   animation: fmt-fadein-keyframe 1.1s;
-}
-.fmt-fadeout {
-  animation: fmt-fadeout-keyframe 1s;
 }
 .fmt-fadeinout {
   animation: fmt-fadeinout-keyframe 3s;
