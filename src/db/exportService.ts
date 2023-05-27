@@ -7,17 +7,22 @@ import type { IUnit } from "../models/units";
 import type { IUnitRepository } from "./unitRepository";
 import type { INutrientRepository } from "./nutrientRepository";
 import type { INutrientDefinition } from "../models/nutrient";
+import type { IUserProfile } from "../models/userProfile";
+import type { IProfileRepository } from "./profileRepository";
 
 class ExportService implements IExportService {
   readonly #unitRepository: IUnitRepository;
   readonly #nutrientRepository: INutrientRepository;
+  readonly #profileRepository: IProfileRepository;
 
   constructor(
     unitRepository: IUnitRepository,
-    nutrientRepository: INutrientRepository
+    nutrientRepository: INutrientRepository,
+    profileRepository: IProfileRepository
   ) {
     this.#unitRepository = unitRepository;
     this.#nutrientRepository = nutrientRepository;
+    this.#profileRepository = profileRepository;
   }
 
   #export<T>(
@@ -47,6 +52,10 @@ class ExportService implements IExportService {
   exportNutrients(writer: CursorConsumer<INutrientDefinition>): Promise<void> {
     return this.#export(this.#nutrientRepository.interateNutrients, writer);
   }
+
+  exportProfiles(writer: CursorConsumer<IUserProfile>): Promise<void> {
+    return this.#export(this.#profileRepository.interateProfiles, writer);
+  }
 }
 
 export interface CursorConsumer<T> {
@@ -59,11 +68,11 @@ export interface IExportService {
   //   records[fmtAppGlobals.FMT_DB_RECIPES_STORE] = [];
   //   records[fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE] = {};
   //   records[fmtAppGlobals.FMT_DB_USER_GOALS_STORE] = {};
-  //   records[fmtAppGlobals.FMT_DB_PROFILES_STORE] = [];
   exportUnits: (writer: CursorConsumer<IUnit>) => Promise<void>;
   exportNutrients: (
     writer: CursorConsumer<INutrientDefinition>
   ) => Promise<void>;
+  exportProfiles: (writer: CursorConsumer<IUserProfile>) => Promise<void>;
 }
 
 export default ExportService;
