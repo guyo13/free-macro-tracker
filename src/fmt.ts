@@ -1355,6 +1355,7 @@ function FMTValidateRecipeObject(
     videoUrl: isString(recipeObj.videoUrl) && recipeObj.videoUrl,
     nutritionalValue,
     preparationSteps,
+    ingredients,
   };
 
   return { recipe };
