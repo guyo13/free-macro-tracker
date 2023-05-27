@@ -252,11 +252,6 @@ function getIndex(store_name, indexName) {
 }
 
 //Functions - DB - Export
-function FMTStringifyRemoveNewlines(k, v) {
-  if (typeof v === "string") {
-    return v.replace(/\n/g, "");
-  } else return v;
-}
 function FMTExportToJSON(data, onsuccessFn, stringifyReplacerFn, filename) {
   if (platformInterface.hasPlatformInterface) {
     const stringified = JSON.stringify(data, stringifyReplacerFn);
@@ -411,7 +406,7 @@ function FMTDataToJSONArray(exportFn) {
     }
   });
 }
-function FMTDataToStructuredJSON(exportFn) {
+function FMTDataToStructuredJSON(exportFn: (records: any) => any) {
   let records = {};
   records[fmtAppGlobals.FMT_DB_UNITS_STORE] = [];
   records[fmtAppGlobals.FMT_DB_NUTRIENTS_STORE] = [];
@@ -420,10 +415,8 @@ function FMTDataToStructuredJSON(exportFn) {
   records[fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE] = {};
   records[fmtAppGlobals.FMT_DB_USER_GOALS_STORE] = {};
   records[fmtAppGlobals.FMT_DB_PROFILES_STORE] = [];
+  // TODO Export User Settings after implementation
   let errors = [];
-  if (!(typeof exportFn === "function")) {
-    return;
-  }
 
   const onIterRecipesSuccFn = function (ev) {
     let cursor = ev.target.result;
@@ -432,9 +425,9 @@ function FMTDataToStructuredJSON(exportFn) {
       records[fmtAppGlobals.FMT_DB_RECIPES_STORE].push(record);
       cursor.continue();
     } else {
-      //Finalize Export (TODO Export User Settings after implementation)
+      //Finalize Export
       if (errors.length > 0) {
-        for (let k = 0; k < errors.length; k++) console.error(errors[k]);
+        for (const e of errors) console.error(e);
       }
       exportFn(records);
     }
@@ -442,22 +435,21 @@ function FMTDataToStructuredJSON(exportFn) {
 
   const onReadUnitsSuccFn = function (e) {
     const units = e.target.result;
-    if (units && Array.isArray(units)) {
-      for (let k = 0; k < units.length; k++) {
-        const record = units[k];
-        records[fmtAppGlobals.FMT_DB_UNITS_STORE].push(record);
+    if (Array.isArray(units)) {
+      for (const unit of units) {
+        records[fmtAppGlobals.FMT_DB_UNITS_STORE].push(unit);
       }
     }
     FMTIterateRecipes(onIterRecipesSuccFn, function (err) {
       errors.push(err);
     });
   };
+
   const onReadNutriSuccFn = function (e) {
-    const nutri = e.target.result;
-    if (nutri && Array.isArray(nutri)) {
-      for (let k = 0; k < nutri.length; k++) {
-        const record = nutri[k];
-        records[fmtAppGlobals.FMT_DB_NUTRIENTS_STORE].push(record);
+    const nutrients = e.target.result;
+    if (Array.isArray(nutrients)) {
+      for (const nutrient of nutrients) {
+        records[fmtAppGlobals.FMT_DB_NUTRIENTS_STORE].push(nutrient);
       }
     }
     //Export Units
@@ -465,6 +457,7 @@ function FMTDataToStructuredJSON(exportFn) {
       errors.push(err);
     });
   };
+
   const onIterFoodsSuccFn = function (ev) {
     let cursor = ev.target.result;
     if (cursor) {
@@ -478,6 +471,7 @@ function FMTDataToStructuredJSON(exportFn) {
       });
     }
   };
+
   const onQueryMealEntriesSuccFn = function (ev) {
     let cursor = ev.target.result;
     if (cursor) {
@@ -499,6 +493,7 @@ function FMTDataToStructuredJSON(exportFn) {
       });
     }
   };
+
   const onQueryUserGoalsSuccFn = function (ev) {
     let cursor = ev.target.result;
     if (cursor) {
@@ -529,15 +524,16 @@ function FMTDataToStructuredJSON(exportFn) {
       );
     }
   };
+
   const onAllProfileReadFn = function (e) {
     //Export profiles
     const profileEntries = e.target.result;
-    if (profileEntries && profileEntries.length > 0) {
-      for (let i = 0; i < profileEntries.length; i++) {
-        const record = profileEntries[i];
-        records[fmtAppGlobals.FMT_DB_PROFILES_STORE].push(record);
+    if (Array.isArray(profileEntries)) {
+      for (const profileEntry of profileEntries) {
+        records[fmtAppGlobals.FMT_DB_PROFILES_STORE].push(profileEntry);
       }
     }
+
     //Export User Goals
     const userGoalsQueryOpts = { queryType: "lowerBound", lowerOpen: false };
     FMTQueryUserGoalsByProfileAndDate(
@@ -552,9 +548,10 @@ function FMTDataToStructuredJSON(exportFn) {
       userGoalsQueryOpts
     );
   };
+
   FMTReadAllProfiles(onAllProfileReadFn, function (err) {
     errors.push(err);
-    for (const e in errors) {
+    for (const e of errors) {
       console.error(errors[e]);
     }
   });
