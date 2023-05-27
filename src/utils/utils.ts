@@ -1,6 +1,7 @@
 // Copyright (c) 2020-2022, Guy Or Please see the AUTHORS file for details.
 // All rights reserved. Use of this source code is governed by a GNU GPL
 // license that can be found in the LICENSE file.
+const EMPTY_OBJ = {};
 
 export function isFunction(fn: any) {
   return typeof fn === "function";
@@ -61,4 +62,8 @@ export function roundedToFixed(
 ): string {
   let rounded = Math.pow(10, decimalDigits);
   return (Math.round(realNumber * rounded) / rounded).toFixed(decimalDigits);
+}
+
+export function isEmptyObject(obj?: Object) {
+  return Object.keys(obj ?? EMPTY_OBJ).length === 0;
 }

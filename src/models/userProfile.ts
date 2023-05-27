@@ -8,7 +8,12 @@ import {
   katchMcArdle,
   mifflinStJeor,
 } from "../utils/calculations";
-import { isPercent, isPositiveNumber, isString } from "../utils/utils";
+import {
+  isEmptyObject,
+  isPercent,
+  isPositiveNumber,
+  isString,
+} from "../utils/utils";
 import type { IMacroSplit } from "./macroSplit";
 import MacroSplit from "./macroSplit";
 import { validateRecord, type RecordId } from "./record";
@@ -229,7 +234,7 @@ export default class UserProfile implements IUserProfile {
     if (bodyfat && (!Number.isFinite(bodyfat) || !isPercent(bodyfat))) {
       throw `Body fat must be a valid percent. Got '${bodyfat}'`;
     }
-    if (macroSplit) {
+    if (!isEmptyObject(macroSplit)) {
       const { Calories, Protein, Carbohydrate, Fat } = macroSplit;
       MacroSplit.validate(Calories, Protein, Carbohydrate, Fat);
     }
