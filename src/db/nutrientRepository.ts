@@ -17,7 +17,7 @@ import NutrientDefinition from "../models/nutrientDefinition";
 const FMT_DB_NUTRIENTS_STORE = "fmt_nutrients";
 
 class NutrientRepository extends Repository implements INutrientRepository {
-  async interateNutrients(): Promise<
+  async iterateNutrients(): Promise<
     IDBCursorWithTypedValue<INutrientDefinition>
   > {
     if (!this.isReady) {
@@ -152,9 +152,7 @@ const nutrientRepositoryProvider = derived<
 });
 
 export interface INutrientRepository extends IRepository {
-  interateNutrients: () => Promise<
-    IDBCursorWithTypedValue<INutrientDefinition>
-  >;
+  iterateNutrients: () => Promise<IDBCursorWithTypedValue<INutrientDefinition>>;
   getAllNutrients: () => Promise<INutrientDefinition[]>;
   getNutrient: (
     category: string,

@@ -46,15 +46,15 @@ class ExportService implements IExportService {
   }
 
   exportUnits(writer: CursorConsumer<IUnit>): Promise<void> {
-    return this.#export(this.#unitRepository.interateUnits, writer);
+    return this.#export(this.#unitRepository.iterateUnits, writer);
   }
 
   exportNutrients(writer: CursorConsumer<INutrientDefinition>): Promise<void> {
-    return this.#export(this.#nutrientRepository.interateNutrients, writer);
+    return this.#export(this.#nutrientRepository.iterateNutrients, writer);
   }
 
   exportProfiles(writer: CursorConsumer<IUserProfile>): Promise<void> {
-    return this.#export(this.#profileRepository.interateProfiles, writer);
+    return this.#export(this.#profileRepository.iterateProfiles, writer);
   }
 }
 

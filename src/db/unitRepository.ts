@@ -17,7 +17,7 @@ import Unit from "../models/units";
 const FMT_DB_UNITS_STORE = "fmt_units";
 
 class UnitRepository extends Repository implements IUnitRepository {
-  async interateUnits(): Promise<IDBCursorWithTypedValue<IUnit>> {
+  async iterateUnits(): Promise<IDBCursorWithTypedValue<IUnit>> {
     if (!this.isReady) {
       await this.connection.wait();
     }
@@ -145,7 +145,7 @@ const unitRepositoryProvider = derived<Readable<IDBWrapper>, IUnitRepository>(
 );
 
 export interface IUnitRepository extends IRepository {
-  interateUnits: () => Promise<IDBCursorWithTypedValue<IUnit>>;
+  iterateUnits: () => Promise<IDBCursorWithTypedValue<IUnit>>;
   getAllUnits: () => Promise<IUnit[]>;
   getUnit: (unitName: string) => Promise<IUnit | null>;
   addUnit: (unit: IUnit) => Promise<void>;

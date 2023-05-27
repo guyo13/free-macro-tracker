@@ -18,7 +18,7 @@ import UserProfile from "../models/userProfile";
 const FMT_DB_PROFILES_STORE = "fmt_profiles";
 
 class ProfileRepository extends Repository implements IProfileRepository {
-  async interateProfiles(): Promise<IDBCursorWithTypedValue<IUserProfile>> {
+  async iterateProfiles(): Promise<IDBCursorWithTypedValue<IUserProfile>> {
     if (!this.isReady) {
       await this.connection.wait();
     }
@@ -154,7 +154,7 @@ const profileRepositoryProvider = derived<
 });
 
 export interface IProfileRepository extends IRepository {
-  interateProfiles: () => Promise<IDBCursorWithTypedValue<IUserProfile>>;
+  iterateProfiles: () => Promise<IDBCursorWithTypedValue<IUserProfile>>;
   getAllProfiles: () => Promise<IUserProfile[]>;
   getProfile: (profileId: RecordId) => Promise<IUserProfile | null>;
   addProfile: (profile: IUserProfile) => Promise<void>;
