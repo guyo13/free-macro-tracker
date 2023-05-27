@@ -4,7 +4,10 @@
 
 import { derived, type Readable } from "svelte/store";
 import type IDBWrapper from "idb_wrapper.js";
-import { IDBTransactionModes } from "idb_wrapper.js";
+import {
+  IDBTransactionModes,
+  type IDBCursorWithTypedValue,
+} from "idb_wrapper.js";
 import idbConnector from "./idb";
 import type { IRepository } from "./repository";
 import Repository from "./repository";
@@ -14,6 +17,17 @@ import Unit from "../models/units";
 const FMT_DB_UNITS_STORE = "fmt_units";
 
 class UnitRepository extends Repository implements IUnitRepository {
+  async interateUnits(): Promise<IDBCursorWithTypedValue<IUnit>> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+
+    return this.connection.openCursor(
+      this.storeName,
+      IDBTransactionModes.Readonly
+    );
+  }
+
   getAllUnits(): Promise<IUnit[]> {
     return new Promise(async (resolve, reject) => {
       if (!this.isReady) {
@@ -131,6 +145,7 @@ const unitRepositoryProvider = derived<Readable<IDBWrapper>, IUnitRepository>(
 );
 
 export interface IUnitRepository extends IRepository {
+  interateUnits: () => Promise<IDBCursorWithTypedValue<IUnit>>;
   getAllUnits: () => Promise<IUnit[]>;
   getUnit: (unitName: string) => Promise<IUnit | null>;
   addUnit: (unit: IUnit) => Promise<void>;

@@ -260,6 +260,7 @@ function FMTExportToJSON(data, onsuccessFn, stringifyReplacerFn, filename) {
     FMTExportToJSONBlob(data, onsuccessFn, stringifyReplacerFn);
   }
 }
+
 function FMTExportToJSONBlob(data, onsuccessFn, stringifyReplacerFn) {
   if (fmtAppExport != null) {
     window.URL.revokeObjectURL(fmtAppExport);
@@ -271,6 +272,7 @@ function FMTExportToJSONBlob(data, onsuccessFn, stringifyReplacerFn) {
     onsuccessFn();
   }
 }
+
 function FMTDataToJSONArray(exportFn) {
   let records = [];
   let errors = [];
