@@ -186,11 +186,14 @@ license that can be found in the LICENSE file. -->
           />
         </div>
         <div class="col-lg-6 col-8 fmt-center-text">
-          <h1
-            id="overview-date-day-large"
-            class="display-5 d-none d-md-block"
-          />
-          <h4 id="overview-date-day-small" class="display-5 d-md-none" />
+          <h1 id="overview-date-day-large" class="display-5 d-none d-md-block">
+            <!-- Temp workaround until refactor -->
+            <span />
+          </h1>
+          <h4 id="overview-date-day-small" class="display-5 d-md-none">
+            <!-- Temp workaround until refactor -->
+            <span />
+          </h4>
         </div>
         <div id="overview-date-next" class="col-lg-1 col-2">
           <button
@@ -605,7 +608,10 @@ license that can be found in the LICENSE file. -->
                   />
                 </div>
                 <div class="card-body fmt-center-text">
-                  <h2 id="profile-tdee" style="margin: 0;" />
+                  <h2 id="profile-tdee" style="margin: 0;">
+                    <!-- Temp workaround until refactor -->
+                    <span />
+                  </h2>
                 </div>
               </div>
             </div>
@@ -628,7 +634,10 @@ license that can be found in the LICENSE file. -->
                   />
                 </div>
                 <div class="card-body fmt-center-text">
-                  <h2 id="profile-bmr" style="margin: 0;" />
+                  <h2 id="profile-bmr" style="margin: 0;">
+                    <!-- Temp workaround until refactor -->
+                    <span />
+                  </h2>
                 </div>
               </div>
             </div>
