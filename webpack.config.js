@@ -20,6 +20,7 @@ module.exports = {
     },
     extensions: [".mjs", ".js", ".ts", ".svelte"],
     mainFields: ["svelte", "browser", "module", "main"],
+    conditionNames: ["svelte"],
   },
   output: {
     path: path.join(__dirname, "public", "build"),

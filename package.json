@@ -2,32 +2,32 @@
   "name": "free-macro-tracker",
   "version": "2.0.0-dev",
   "devDependencies": {
-    "@tsconfig/svelte": "^3.0.0",
-    "@types/jquery": "^3.5.14",
-    "@types/node": "^18.8.3",
-    "css-loader": "^5.0.1",
-    "eslint": "^8.25.0",
-    "eslint-webpack-plugin": "^3.2.0",
-    "mini-css-extract-plugin": "^2.6.1",
-    "prettier": "^2.7.1",
-    "prettier-plugin-svelte": "^2.7.1",
-    "svelte": "^3.50.1",
-    "svelte-check": "^2.9.1",
-    "svelte-loader": "^3.0.0",
-    "svelte-preprocess": "^4.10.7",
-    "ts-loader": "^9.4.1",
-    "tslib": "^2.4.0",
-    "typescript": "^4.8.4",
-    "webpack": "^5.74.0",
-    "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.11.1"
+    "@tsconfig/svelte": "^4.0.1",
+    "@types/jquery": "^3.5.16",
+    "@types/node": "^18.16.16",
+    "css-loader": "^6.7.4",
+    "eslint": "^8.41.0",
+    "eslint-webpack-plugin": "^4.0.1",
+    "mini-css-extract-plugin": "^2.7.6",
+    "prettier": "^2.8.8",
+    "prettier-plugin-svelte": "^2.10.0",
+    "svelte": "^3.59.1",
+    "svelte-check": "^3.4.3",
+    "svelte-loader": "^3.1.8",
+    "svelte-preprocess": "^5.0.4",
+    "ts-loader": "^9.4.3",
+    "tslib": "^2.5.2",
+    "typescript": "^5.0.4",
+    "webpack": "^5.84.1",
+    "webpack-cli": "^5.1.1",
+    "webpack-dev-server": "^4.15.0"
   },
   "scripts": {
     "build": "webpack --node-env production",
     "dev": "webpack serve"
   },
   "dependencies": {
-    "date-fns": "^2.29.3",
+    "date-fns": "^2.30.0",
     "idb_wrapper.js": "2.3.1"
   }
 }
