@@ -1012,34 +1012,6 @@ function FMTValidateUnitObject(unitObj): IUnit {
   return unit;
 }
 
-// TODO - Remove and use NutrientDefinition class
-function FMTValidateNutrientObject(nutrientObj: any): INutrientDefinition {
-  /*nutrientObj {name,category,default_unit,help}*/
-  const _fnName = "FMTValidateNutrientObject";
-  if (nutrientObj.name == null || nutrientObj.name === "") {
-    console.debug(`[${_fnName}] - nutrientObj.name is null or empty string`);
-    return;
-  }
-  if (nutrientObj.category == null || nutrientObj.category === "") {
-    console.debug(
-      `[${_fnName}] - nutrientObj.category is null or empty string`
-    );
-    return;
-  }
-  if (nutrientObj.default_unit == null || nutrientObj.default_unit === "") {
-    console.debug(
-      `[${_fnName}] - nutrientObj.default_unit is null or empty string`
-    );
-    return;
-  }
-  return {
-    name: nutrientObj.name,
-    category: nutrientObj.category,
-    default_unit: nutrientObj.default_unit,
-    help: nutrientObj.help,
-  };
-}
-
 // TODO - Remove and use MacroSplit class
 function FMTValidateMacroSplit(macroSplitObj): {
   error?: string;
