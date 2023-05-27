@@ -1,6 +1,5 @@
 <script lang="ts">
-  // TODO - Remove
-  //   export let id = "";
+  // TODO - Add event handlers
 </script>
 
 <div class="container-fluid">
@@ -9,36 +8,30 @@
     id="fmt-app-nav-overlay-alerts"
     class="row justify-content-center d-none"
   />
-  <div
-    class="row justify-content-between fmt-bg-dark-green fmt-navbar-position"
-  >
+  <div class="row justify-content-between fmt-bg-dark-green navbarPosition">
     <div
       id="goto-overview"
-      class="col-3 align-self-center menuItem fmt-nav-item-container"
+      class="col-3 align-self-center menuItem"
       title="Meals"
     >
-      <i class="fal fa-tasks-alt fmt-nav-icon" />
+      <i class="fal fa-tasks-alt navbarIcon" />
     </div>
     <div
       id="goto-profile"
-      class="col-3 align-self-center menuItem fmt-nav-item-container"
+      class="col-3 align-self-center menuItem"
       title="Profile"
     >
-      <i class="fal fa-user fmt-nav-icon" />
+      <i class="fal fa-user navbarIcon" />
     </div>
-    <div
-      id="goto-foods"
-      class="col-3 align-self-center menuItem fmt-nav-item-container"
-      title="Foods"
-    >
-      <i class="fal fa-utensils fmt-nav-icon" />
+    <div id="goto-foods" class="col-3 align-self-center menuItem" title="Foods">
+      <i class="fal fa-utensils navbarIcon" />
     </div>
     <div
       id="goto-settings"
-      class="col-3 align-self-center menuItem fmt-nav-item-container"
+      class="col-3 align-self-center menuItem"
       title="Settings"
     >
-      <i class="fal fa-cog fmt-nav-icon" />
+      <i class="fal fa-cog navbarIcon" />
     </div>
   </div>
 </div>
@@ -49,5 +42,18 @@
     font-size: 1.5rem;
     color: var(--fmt-gainsboro);
     cursor: pointer;
+    height: inherit;
+  }
+
+  .navbarIcon {
+    vertical-align: bottom;
+  }
+
+  .navbarPosition {
+    bottom: 0;
+    position: fixed;
+    height: 3rem;
+    width: 100vw;
+    transition: bottom 0.3s;
   }
 </style>
