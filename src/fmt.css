@@ -28,13 +28,6 @@ html {
 button {
   touch-action: manipulation;
 }
-.fmt-macro-progress {
-}
-.fmt-macro-progress-inverse {
-  background-color: #343a40;
-}
-.fmt-total-progress {
-}
 .fmt-label1 {
   width: 6rem;
 }
@@ -50,34 +43,8 @@ button {
 .fmt-prog-sm {
   height: 0.5rem;
 }
-.fmt-table-height {
-}
-.fmt-max-height60 {
-  height: 82%;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-.fmt-consumable-id-cell {
-}
-.fmt-consumable-name-cell {
-}
-.fmt-consumable-brand-cell {
-}
-.fmt-consumable-table-row {
-}
-.fmt-overlay {
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 100vh;
-  width: 100vw;
-  z-index: 3000;
-  overflow: hidden;
-}
 .fmt-add-nutri {
   flex: 4;
-}
-.fmt-unit-igroup {
 }
 .fmt-bg-light {
   background-color: var(--fmt-light-gray);
@@ -172,12 +139,6 @@ button {
   border-radius: 2px;
   margin-top: 0.7rem;
 }
-.fmt-meal-carbs {
-}
-.fmt-meal-proteins {
-}
-.fmt-meal-fats {
-}
 .fmt-meal-entry {
   padding: 0;
   border-bottom-style: solid;
@@ -195,22 +156,11 @@ button {
   background-color: var(--fmt-light-gray);
   height: auto;
 }
-.fmt-meal-footer-add {
-}
 .fmt-meal-entries {
   height: auto;
 }
 .fmt-meal-header {
   background-color: var(--fmt-light-gray);
-}
-.fmt-progress-bar-container {
-}
-.footer {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
 }
 .fmt-pad-1 {
   padding-top: 0.2rem;
@@ -363,20 +313,9 @@ button {
   left: calc(50% - 13 * 1.05rem);
   right: calc(50% - 13 * 1.05rem);
 }
-.fmt-btn-no-focus {
-}
 .fmt-btn-no-focus:focus {
   box-shadow: none;
 }
-/*Table Colors*/
-/*.table-striped>tbody>tr:nth-child(odd)>td,
-.table-striped>tbody>tr:nth-child(odd)>th {
-   background-color: rgb(54, 157, 77);
- }
-.table-striped>tbody>tr:nth-child(even)>td,
-.table-striped>tbody>tr:nth-child(even)>th {
-   background-color: rgb(36, 157, 63);
- }*/
 .fmt-w-inherit {
   width: inherit;
 }
@@ -434,10 +373,6 @@ button {
 .fmt-search-bar::placeholder {
   font-family: "Font Awesome 5 Pro";
   font-weight: 300;
-}
-.fmt-recipe-step-cont {
-}
-.fmt-recipe-ingredient-cont {
 }
 .fmt-recipe-ingredient {
   flex: 2;
@@ -498,7 +433,6 @@ button {
 
 .form__field:focus {
   padding-bottom: 0.3rem;
-  /* font-weight: 700; */
   border-width: 1px;
   -webkit-border-image: linear-gradient(to right, #11998e, #38ef7d);
   -webkit-border-image-slice: 1;
@@ -604,10 +538,6 @@ input[type="number"] {
     font-size: 0.9rem;
     font-weight: 400;
   }
-  /* .fmt-font-2 {
-      font-size: 1.2rem;
-      font-weight: 300;
-  } */
   .fmt-font-3 {
     font-size: 1.5rem;
     font-weight: 300;
@@ -628,10 +558,6 @@ input[type="number"] {
     font-size: 1rem;
     font-weight: 400;
   }
-  /* .fmt-font-2 {
-      font-size: 1.3rem;
-      font-weight: 300;
-  } */
   .fmt-font-3 {
     font-size: 1.6rem;
     font-weight: 300;
@@ -659,7 +585,6 @@ input[type="number"] {
   }
 }
 .fmt-carousel-indicators {
-  /* background-color: rgba(15,15,15,0.3); */
   margin-bottom: 0;
 }
 .fmt-carousel-indicators li {
@@ -704,8 +629,6 @@ textarea {
   align-self: center;
   flex-basis: 30%;
   border: none;
-}
-.fmt-macro-form-btn {
 }
 .fmt-column {
   display: flex;

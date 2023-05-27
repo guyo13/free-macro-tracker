@@ -213,8 +213,8 @@ license that can be found in the LICENSE file. -->
           <span class="fmt-font-2">Calories:</span>
         </div>
         <div class="w-100" />
-        <div class="fmt-progress-bar-container col-10 col-lg-8">
-          <div class="progress fmt-total-progress fmt-prog-sm">
+        <div class="col-10 col-lg-8">
+          <div class="progress fmt-prog-sm">
             <div
               id="calories-progress-bar"
               class="progress-bar fmt-bg-dark-green"
@@ -249,8 +249,8 @@ license that can be found in the LICENSE file. -->
           <span class="fmt-font-2">Fats</span>
         </div>
         <div class="w-100" />
-        <div class="fmt-progress-bar-container col-4 col-lg-2">
-          <div class="progress fmt-macro-progress fmt-prog-sm">
+        <div class="col-4 col-lg-2">
+          <div class="progress fmt-prog-sm">
             <div
               id="carb-progress-bar"
               class="progress-bar fmt-bg-violet"
@@ -261,8 +261,8 @@ license that can be found in the LICENSE file. -->
             />
           </div>
         </div>
-        <div class="fmt-progress-bar-container col-4 col-lg-2">
-          <div class="progress fmt-macro-progress fmt-prog-sm">
+        <div class="col-4 col-lg-2">
+          <div class="progress fmt-prog-sm">
             <div
               id="protein-progress-bar"
               class="progress-bar bg-info"
@@ -273,8 +273,8 @@ license that can be found in the LICENSE file. -->
             />
           </div>
         </div>
-        <div class="fmt-progress-bar-container col-4 col-lg-2">
-          <div class="progress fmt-macro-progress fmt-prog-sm">
+        <div class="col-4 col-lg-2">
+          <div class="progress fmt-prog-sm">
             <div
               id="fat-progress-bar"
               class="progress-bar fmt-bg-orange"
@@ -374,10 +374,7 @@ license that can be found in the LICENSE file. -->
           />
         </div>
       </div>
-      <div
-        id="foods-food-table-cont"
-        class="input-group col-12 col-lg-8 mb-1 fmt-table-height"
-      >
+      <div id="foods-food-table-cont" class="input-group col-12 col-lg-8 mb-1">
         <table id="foods-food-table" class="table table-striped table-hover">
           <tbody id="foods-food-table-body" />
         </table>
@@ -399,7 +396,7 @@ license that can be found in the LICENSE file. -->
       </div>
       <div
         id="foods-recipe-table-cont"
-        class="input-group col-12 col-lg-8 mb-1 fmt-table-height d-none"
+        class="input-group col-12 col-lg-8 mb-1 d-none"
       >
         <table id="foods-recipe-table" class="table table-striped table-hover">
           <tbody id="foods-recipe-table-body" />
@@ -708,8 +705,7 @@ license that can be found in the LICENSE file. -->
                 />
                 <button
                   id="profile-macro-protein-fill"
-                  class="btn btn-outline-primary fmt-macro-form-btn"
-                  >Fill</button
+                  class="btn btn-outline-primary">Fill</button
                 >
               </div>
             </div>
@@ -744,8 +740,7 @@ license that can be found in the LICENSE file. -->
                 />
                 <button
                   id="profile-macro-carb-fill"
-                  class="btn btn-outline-primary fmt-macro-form-btn"
-                  >Fill</button
+                  class="btn btn-outline-primary">Fill</button
                 >
               </div>
             </div>
@@ -779,8 +774,7 @@ license that can be found in the LICENSE file. -->
                 />
                 <button
                   id="profile-macro-fat-fill"
-                  class="btn btn-outline-primary fmt-macro-form-btn"
-                  >Fill</button
+                  class="btn btn-outline-primary">Fill</button
                 >
               </div>
             </div>
@@ -2339,7 +2333,7 @@ license that can be found in the LICENSE file. -->
       </div>
       <div
         id="add-to-recipe-screen-food-table-cont"
-        class="input-group col-12 col-lg-8 mb-1 fmt-table-height"
+        class="input-group col-12 col-lg-8 mb-1"
       >
         <table
           id="add-to-recipe-screen-food-table"
@@ -2414,7 +2408,7 @@ license that can be found in the LICENSE file. -->
       </div>
       <div
         id="add-to-meal-screen-food-table-cont"
-        class="input-group col-12 col-lg-8 mb-1 fmt-table-height"
+        class="input-group col-12 col-lg-8 mb-1"
       >
         <table
           id="add-to-meal-screen-food-table"
@@ -2440,7 +2434,7 @@ license that can be found in the LICENSE file. -->
       </div>
       <div
         id="add-to-meal-screen-recipe-table-cont"
-        class="input-group col-12 col-lg-8 mb-1 fmt-table-height d-none"
+        class="input-group col-12 col-lg-8 mb-1 d-none"
       >
         <table
           id="add-to-meal-screen-recipe-table"

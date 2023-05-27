@@ -231,6 +231,7 @@ function FMTSumIngredients(ingredients, unitsChart) {
 
 function _removeChildren(element, className) {
   if (element) {
+    // TODO - refactor selection by class name
     const members = element.getElementsByClassName(className);
     while (members.length > 0) {
       element.removeChild(members[0]);
@@ -2937,7 +2938,7 @@ function FMTCreateConsumablesTableRowElement(
   let consumableRow = document.createElement("tr");
   consumableRow.setAttribute(idProp, consumableObj[idProp]);
   consumableRow.classList.add("fmt-consumable-table-row");
-  consumableRow.innerHTML = `<th scope="row" class="fmt-consumable-id-cell ${
+  consumableRow.innerHTML = `<th scope="row" class="${
     fmtAppInstance.displaySettings.showConsumableIdColumn ? "" : "d-none"
   }">${consumableObj[idProp]}</th><td class= "fmt-consumable-name-cell">${
     consumableObj[nameProp]
@@ -3081,6 +3082,7 @@ function FMTDisplayConsumableTable(
   fmtAppInstance.eventFunctions[
     consumableTableBodyID
   ].consumablesTableOnConsumableEdit = function (event) {
+    // TODO - refactor selection by class name
     const consumableRows = consumableTableBody.getElementsByClassName(
       "fmt-consumable-table-row"
     );
@@ -3138,6 +3140,7 @@ function FMTDisplayConsumableTable(
 }
 function FMTQueryConsumablesTable(baseID, qualifier, query) {
   let tbody = document.getElementById(`${baseID}-${qualifier}-table-body`);
+  // TODO - refactor selection by class name
   let tableRows = tbody.getElementsByClassName("fmt-consumable-table-row");
   if (query === "") {
     for (let i = 0; i < tableRows.length; i++) {
@@ -3148,6 +3151,7 @@ function FMTQueryConsumablesTable(baseID, qualifier, query) {
     query = query.toLowerCase();
     for (let i = 0; i < tableRows.length; i++) {
       let row = tableRows[i];
+      // TODO - refactor selection by class name
       let _nameCell = row.getElementsByClassName("fmt-consumable-name-cell");
       let _brandCell = row.getElementsByClassName("fmt-consumable-brand-cell");
       let consumableName = "";
@@ -3424,6 +3428,7 @@ function FMTUIPopulateNutritionalValue(
       }
     }
     //Iterate and manipulate fields as needed
+    // TODO - refactor selection by class name
     const addiNutrients =
       additionalNutriDiv.getElementsByClassName("fmt-add-nutri");
     //Apply multiplier
@@ -3979,6 +3984,7 @@ function FMTUIGetAdditionalNutrientsFromScreen(baseScreenID, qualifier) {
   const additionalNutriDiv = document.getElementById(
     `${baseScreenID}-${qualifier}-additional`
   );
+  // TODO - refactor selection by class name
   const addiNutrients =
     additionalNutriDiv.getElementsByClassName("fmt-add-nutri");
   for (let k = 0; k < addiNutrients.length; k++) {
@@ -4441,7 +4447,6 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
   const mealFooterAddDiv = document.createElement("div");
   mealFooterAddDiv.classList.add(
     "col-12",
-    "fmt-meal-footer-add",
     "fmt-center-text",
     "d-flex",
     "pr-0",
@@ -4473,15 +4478,9 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
     "fmt-font-1",
     "d-none",
     "d-sm-inline",
-    "fmt-meal-carbs",
     "fmt-font-color-violet"
   );
-  carbSpanSm.classList.add(
-    "fmt-font-1",
-    "d-sm-none",
-    "fmt-meal-carbs",
-    "fmt-font-color-violet"
-  );
+  carbSpanSm.classList.add("fmt-font-1", "d-sm-none", "fmt-font-color-violet");
   carbSpanMd.innerHTML = "Carbohydrates: ";
   carbSpanSm.innerHTML = "Carbs: ";
   const mCarbsDiv = document.createElement("div");
@@ -4490,22 +4489,14 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
   mCarbsDiv.appendChild(carbSpanSm);
 
   const proteinSpan = document.createElement("span");
-  proteinSpan.classList.add(
-    "fmt-font-1",
-    "fmt-meal-proteins",
-    "fmt-font-color-info"
-  );
+  proteinSpan.classList.add("fmt-font-1", "fmt-font-color-info");
   proteinSpan.innerHTML = "Proteins: ";
   const mProtDiv = document.createElement("div");
   mProtDiv.classList.add("col-4", "fmt-center-text", "pl-0", "pr-0");
   mProtDiv.appendChild(proteinSpan);
 
   const fatsSpan = document.createElement("span");
-  fatsSpan.classList.add(
-    "fmt-font-1",
-    "fmt-meal-fats",
-    "fmt-font-color-orange"
-  );
+  fatsSpan.classList.add("fmt-font-1", "fmt-font-color-orange");
   fatsSpan.innerHTML = "Fats: ";
   const mFatsDiv = document.createElement("div");
   mFatsDiv.classList.add("col-4", "fmt-center-text", "pl-0", "pr-0");
@@ -4663,6 +4654,7 @@ function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
 }
 function FMTOverviewUpdateMealProgress(targetID) {
   const mealDiv = document.getElementById(targetID);
+  // TODO - refactor selection by class name
   const mealEntries = mealDiv.getElementsByClassName("fmt-meal-entry");
   const totalNutriValue = {
     calories: 0,
@@ -4703,6 +4695,7 @@ function FMTOverviewUpdateMealProgress(targetID) {
 }
 function FMTOverviewUpdateTotalProgress(sourceID) {
   const mealsContainerDiv = document.getElementById(sourceID);
+  // TODO - refactor selection by class name
   const mealEntries =
     mealsContainerDiv.getElementsByClassName("fmt-meal-entry");
   const totalNutriValue = {
@@ -5199,6 +5192,7 @@ function FMTUIRefreshPreparationStepNumbers(prepStepContainerDiv) {
   if (prepStepContainerDiv == null) {
     return;
   }
+  // TODO - refactor selection by class name
   const exisitingSteps = prepStepContainerDiv.getElementsByClassName(
     "fmt-recipe-step-cont"
   );
@@ -5236,6 +5230,7 @@ function FMTUIAddPreparationStep(
   column?: HTMLElement
 ) {
   addStepDelBtn = addStepDelBtn == undefined ? true : addStepDelBtn;
+  // TODO - refactor selection by class name
   const exisitingSteps = prepStepContainerDiv.getElementsByClassName(
     "fmt-recipe-step-cont"
   );

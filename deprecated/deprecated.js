@@ -17,13 +17,7 @@ function FMTCreateUnitDropdownMenu(
     }
     //Input group container Div for Units
     inputGroup = document.createElement("div");
-    inputGroup.classList.add(
-      "col-3",
-      "col-lg-1",
-      "pl-0",
-      "input-group-append",
-      "fmt-unit-igroup"
-    );
+    inputGroup.classList.add("col-3", "col-lg-1", "pl-0", "input-group-append");
     inputGroup.setAttribute("id", inputGroupId);
     //Button element that holds the 'unit' attribute and the unit text
     let selectedBtn = document.createElement("button");
