@@ -27,6 +27,7 @@ license that can be found in the LICENSE file. -->
   import SplashScreen from "./components/SplashScreen.svelte";
   import OnboardingScreen from "./components/OnboardingScreen.svelte";
   import { hasLocalStorage } from "./utils/browser";
+  import Navbar from "./components/Navbar.svelte";
 
   const DEFAULT_PROFILE_ID = 1;
   let isLoading: boolean = true;
@@ -138,7 +139,6 @@ license that can be found in the LICENSE file. -->
           setCurrentProfile(userProfile);
           if (userProfile || isProfileCreationSkippedByUser()) {
             pageController.showOverview(true);
-            pageController.showNavOverlay();
             onAppFinishedLoading();
           } else {
             console.warn("No user Profile could be loaded");
@@ -2617,46 +2617,7 @@ license that can be found in the LICENSE file. -->
       </div>
     </div>
   </div>
-  <!--Overlays-->
-  <div id="fmt-app-nav-overlay" class=" container-fluid">
-    <div
-      id="fmt-app-nav-overlay-alerts"
-      class="row justify-content-center d-none"
-    />
-    <div
-      id="fmt-app-nav-overlay-content"
-      class="row justify-content-between fmt-center-text fmt-bg-dark-green fmt-navbar-position"
-    >
-      <div
-        id="goto-overview"
-        class="col-3 align-self-center fmt-menu-font fmt-nav-item-container"
-        title="Meals"
-      >
-        <i class="fal fa-tasks-alt fmt-nav-icon" />
-      </div>
-      <div
-        id="goto-profile"
-        class="col-3 align-self-center fmt-menu-font fmt-nav-item-container"
-        title="Profile"
-      >
-        <i class="fal fa-user fmt-nav-icon" />
-      </div>
-      <div
-        id="goto-foods"
-        class="col-3 align-self-center fmt-menu-font fmt-nav-item-container"
-        title="Foods"
-      >
-        <i class="fal fa-utensils fmt-nav-icon" />
-      </div>
-      <div
-        id="goto-settings"
-        class="col-3 align-self-center fmt-menu-font fmt-nav-item-container"
-        title="Settings"
-      >
-        <i class="fal fa-cog fmt-nav-icon" />
-      </div>
-    </div>
-  </div>
+  <Navbar />
 </main>
 
 <style>

@@ -6924,16 +6924,6 @@ export const pageController = {
     }-alerts`;
     return alertDivId;
   },
-  showNavOverlay: function () {
-    const navOverlay = document.getElementById("fmt-app-nav-overlay");
-    navOverlay.classList.remove("d-none");
-    navOverlay.style.zIndex = fmtAppGlobals.maxDynamicScreens + 1;
-  },
-  closeNavOverlay: function () {
-    const navOverlay = document.getElementById("fmt-app-nav-overlay");
-    navOverlay.classList.add("d-none");
-    navOverlay.style.zIndex = "-1";
-  },
 };
 
 //Functions - DB - Init
