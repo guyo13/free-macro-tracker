@@ -62,6 +62,7 @@ function appendChildren(DOMElement, childrenArray) {
 function isInput(elem) {
   return elem.tagName.toLowerCase() == "input";
 }
+
 function taskWaitUntil(onendFn, endconditionFn, intervalMs) {
   intervalMs = intervalMs || 50;
   if (!(typeof endconditionFn === "function")) return;
@@ -75,11 +76,13 @@ function taskWaitUntil(onendFn, endconditionFn, intervalMs) {
     }
   }, intervalMs);
 }
+
 function getEmptyArrayEndCondition(array) {
   return function () {
     return array.length < 1;
   };
 }
+
 function getOnEndRemoveFirstFromArrayAndExec(globalArray, elem, fn) {
   return function () {
     const idx = globalArray.indexOf(elem);
@@ -91,6 +94,7 @@ function getOnEndRemoveFirstFromArrayAndExec(globalArray, elem, fn) {
     }
   };
 }
+
 function FMTCreateEmptyAdditionalNutrients(): AdditionalNutrients {
   const additional = fmtAppInstance.additionalNutrients;
   const additionalNutrients: AdditionalNutrients = {};
@@ -103,6 +107,7 @@ function FMTCreateEmptyAdditionalNutrients(): AdditionalNutrients {
   }
   return additionalNutrients;
 }
+
 function FMTCreateEmptyNutritionalValue(
   withAdditionalNutrients: boolean
 ): INutritionalValue {
@@ -117,12 +122,12 @@ function FMTCreateEmptyNutritionalValue(
   };
   return nutritionalValue;
 }
+
 function FMTSumAdditionalNutrients(
   additionalNutrientsSum: AdditionalNutrients,
   additionalNutrientsObj: AdditionalNutrients,
   unitsChart
 ) {
-  unitsChart = unitsChart || fmtAppInstance.unitsChart;
   const categories = Object.keys(additionalNutrientsObj);
   categories.forEach((category) => {
     if (!Array.isArray(additionalNutrientsSum[category])) {
@@ -191,7 +196,6 @@ function _FMTSumNutritionalValues(
   nutritionalValuesArray,
   unitsChart
 ) {
-  unitsChart = unitsChart || fmtAppInstance.unitsChart;
   nutritionalValuesArray.forEach((nutriValueObj) => {
     nutritionalValue.calories += nutriValueObj.calories;
     nutritionalValue.proteins += nutriValueObj.proteins;
@@ -208,7 +212,6 @@ function _FMTSumNutritionalValues(
   return nutritionalValue;
 }
 function FMTSumNutritionalValues(nutritionalValuesArray, unitsChart) {
-  unitsChart = unitsChart || fmtAppInstance.unitsChart;
   const nutritionalValue = FMTCreateEmptyNutritionalValue(false);
   return _FMTSumNutritionalValues(
     nutritionalValue,
@@ -217,7 +220,6 @@ function FMTSumNutritionalValues(nutritionalValuesArray, unitsChart) {
   );
 }
 function FMTSumIngredients(ingredients, unitsChart) {
-  unitsChart = unitsChart || fmtAppInstance.unitsChart;
   const nutriValueArr = [];
   if (Array.isArray(ingredients)) {
     ingredients.forEach((item) => {
@@ -1293,7 +1295,6 @@ function FMTValidateRecipeObject(
   recipeObj,
   unitsChart
 ): { error?: string; recipe?: any } {
-  unitsChart = unitsChart || fmtAppInstance.unitsChart;
   if (recipeObj.recipeName == null || recipeObj.recipeName === "") {
     return { error: "Recipe Name must not be empty" };
   }
@@ -1773,7 +1774,6 @@ function FMTIterateRecipes(onsuccessFn, onerrorFn) {
 }
 function FMTAddRecipe(recipeObj, onsuccessFn, onerrorFn, unitsChart) {
   const _fnName = "FMTAddRecipe";
-  unitsChart = unitsChart || fmtAppInstance.unitsChart;
   const result = FMTValidateRecipeObject(recipeObj, unitsChart);
   const recipe = result.recipe;
   if (recipe != null && result.error == null) {
@@ -1831,7 +1831,6 @@ function FMTUpdateRecipe(
   unitsChart
 ) {
   const _fnName = "FMTUpdateRecipe";
-  unitsChart = unitsChart || fmtAppInstance.unitsChart;
   const result = FMTValidateRecipeObject(recipeObj, unitsChart);
   const recipe = result.recipe;
   if (recipe != null && result.error == null) {
@@ -3402,7 +3401,6 @@ function FMTUIPopulateNutritionalValue(
   if (nutritionalValue.additionalNutrients) {
     //Create and/or Populate Additional Nutrients values
     const idBase = `${baseScreenID}-${qualifier}`;
-    const unitsChart = fmtAppInstance.unitsChart;
     const additionalNutriDivId = `${idBase}-additional`;
     const additionalNutriDiv = document.getElementById(additionalNutriDivId);
     const additionalNutrients = nutritionalValue.additionalNutrients;
@@ -3413,14 +3411,14 @@ function FMTUIPopulateNutritionalValue(
       FMTSumAdditionalNutrients(
         additionalNutrients,
         emptyAdditionalNutrients,
-        unitsChart
+        fmtAppInstance.unitsChart
       );
       FMTUICreateAdditionalNutrientsFromObj(
         baseScreenID,
         qualifier,
         additionalNutrients,
         restrictNutrientUnit,
-        unitsChart,
+        fmtAppInstance.unitsChart,
         readonly
       );
     } else {
@@ -3630,7 +3628,6 @@ function FMTPopulateSavedValuesInConsumableItemScreen(
     return;
   }
   const idBase = `${baseScreenID}-${qualifier}`;
-  const _funcName = "FMTPopulateSavedValuesInConsumableItemScreen";
   //FIXME - write a function that gets this done. and remove repetition everywhere
   let nameProp, brandProp, servingProp;
   switch (objectType) {
