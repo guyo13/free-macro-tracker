@@ -18,6 +18,12 @@ export function validateRecord(id: any, lastModified: any, tzMinutes: any) {
   }
 }
 
+export function updateRecordDates(record: IDBRecord) {
+  const date = new Date();
+  record.lastModified = date.toISOString();
+  record.tzMinutes = date.getTimezoneOffset();
+}
+
 export default interface IDBRecord {
   id: RecordId;
   lastModified: String; // UTC ISO string

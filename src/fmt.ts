@@ -1558,6 +1558,7 @@ function FMTUpdateProfile(profileId, profileObj, onsuccessFn, onerrorFn) {
 }
 
 //Functions - DB - Foods
+// TODO - Delete
 function FMTReadFood(foodId, onsuccessFn, onerrorFn) {
   let foodStore = getObjectStore(
     fmtAppGlobals.FMT_DB_FOODS_STORE,
@@ -1567,6 +1568,7 @@ function FMTReadFood(foodId, onsuccessFn, onerrorFn) {
   getRequest.onerror = onerrorFn;
   getRequest.onsuccess = onsuccessFn;
 }
+// TODO - Delete
 function FMTReadAllFoods(onsuccessFn, onerrorFn) {
   let foodStore = getObjectStore(
     fmtAppGlobals.FMT_DB_FOODS_STORE,
@@ -1576,6 +1578,7 @@ function FMTReadAllFoods(onsuccessFn, onerrorFn) {
   getRequest.onerror = onerrorFn;
   getRequest.onsuccess = onsuccessFn;
 }
+// TODO - Delete
 function FMTIterateFoods(onsuccessFn, onerrorFn) {
   /*onsuccessFn must implement success function accessing the cursor*/
   onerrorFn =
@@ -1591,6 +1594,7 @@ function FMTIterateFoods(onsuccessFn, onerrorFn) {
   getRequest.onerror = onerrorFn;
   getRequest.onsuccess = onsuccessFn;
 }
+// TODO - Delete
 function FMTAddFood(foodObj, unitsChart, onsuccessFn, onerrorFn) {
   const _fnName = "FMTAddFood";
   unitsChart = unitsChart || fmtAppInstance.unitsChart;
@@ -1636,6 +1640,7 @@ function FMTAddFood(foodObj, unitsChart, onsuccessFn, onerrorFn) {
     onerrorFn(result.error);
   }
 }
+// TODO - Delete
 function FMTUpdateFood(foodId, foodObj, unitsChart, onsuccessFn, onerrorFn) {
   const _fnName = "FMTUpdateFood";
   unitsChart = unitsChart || fmtAppInstance.unitsChart;
@@ -1682,6 +1687,7 @@ function FMTUpdateFood(foodId, foodObj, unitsChart, onsuccessFn, onerrorFn) {
     onerrorFn(result.error);
   }
 }
+// TODO - Delete
 function FMTDeleteFood(foodId, onsuccessFn, onerrorFn) {
   const _fnName = "FMTDeleteFood";
   let foodStore = getObjectStore(
