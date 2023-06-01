@@ -9,20 +9,25 @@ import type { INutrientRepository } from "./nutrientRepository";
 import type { INutrientDefinition } from "../models/nutrient";
 import type { IUserProfile } from "../models/userProfile";
 import type { IProfileRepository } from "./profileRepository";
+import type { IFood } from "../models/food";
+import type { IFoodRepository } from "./foodRepository";
 
 class ExportService implements IExportService {
   readonly #unitRepository: IUnitRepository;
   readonly #nutrientRepository: INutrientRepository;
   readonly #profileRepository: IProfileRepository;
+  readonly #foodRepository: IFoodRepository;
 
   constructor(
     unitRepository: IUnitRepository,
     nutrientRepository: INutrientRepository,
-    profileRepository: IProfileRepository
+    profileRepository: IProfileRepository,
+    foodRepository: IFoodRepository
   ) {
     this.#unitRepository = unitRepository;
     this.#nutrientRepository = nutrientRepository;
     this.#profileRepository = profileRepository;
+    this.#foodRepository = foodRepository;
   }
 
   #export<T>(
@@ -56,6 +61,10 @@ class ExportService implements IExportService {
   exportProfiles(writer: CursorConsumer<IUserProfile>): Promise<void> {
     return this.#export(this.#profileRepository.iterateProfiles, writer);
   }
+
+  exportFoods(writer: CursorConsumer<IFood>): Promise<void> {
+    return this.#export(this.#foodRepository.iterateFoods, writer);
+  }
 }
 
 export interface CursorConsumer<T> {
@@ -64,7 +73,6 @@ export interface CursorConsumer<T> {
 
 export interface IExportService {
   //     let records = {};
-  //   records[fmtAppGlobals.FMT_DB_FOODS_STORE] = [];
   //   records[fmtAppGlobals.FMT_DB_RECIPES_STORE] = [];
   //   records[fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE] = {};
   //   records[fmtAppGlobals.FMT_DB_USER_GOALS_STORE] = {};
@@ -73,6 +81,7 @@ export interface IExportService {
     writer: CursorConsumer<INutrientDefinition>
   ) => Promise<void>;
   exportProfiles: (writer: CursorConsumer<IUserProfile>) => Promise<void>;
+  exportFoods: (writer: CursorConsumer<IFood>) => Promise<void>;
 }
 
 export default ExportService;
