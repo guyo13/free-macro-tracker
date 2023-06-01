@@ -20,14 +20,7 @@ class NutrientRepository extends Repository implements INutrientRepository {
   async iterateNutrients(): Promise<
     IDBCursorWithTypedValue<INutrientDefinition>
   > {
-    if (!this.isReady) {
-      await this.connection.wait();
-    }
-
-    return this.connection.openCursor(
-      this.storeName,
-      IDBTransactionModes.Readonly
-    );
+    return this.iterate<INutrientDefinition>(IDBTransactionModes.Readonly);
   }
 
   getAllNutrients(): Promise<INutrientDefinition[]> {

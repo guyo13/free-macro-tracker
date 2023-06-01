@@ -2,6 +2,10 @@
 // All rights reserved. Use of this source code is governed by a GNU GPL
 // license that can be found in the LICENSE file.
 
+import type {
+  IDBCursorWithTypedValue,
+  IDBTransactionModes,
+} from "idb_wrapper.js";
 import type IDBWrapper from "idb_wrapper.js";
 
 export interface IRepository {
@@ -29,6 +33,16 @@ class Repository {
 
   get connection(): IDBWrapper {
     return this.#connection;
+  }
+
+  protected async iterate<T>(
+    mode: IDBTransactionModes
+  ): Promise<IDBCursorWithTypedValue<T>> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+
+    return this.connection.openCursor(this.storeName, mode);
   }
 }
 

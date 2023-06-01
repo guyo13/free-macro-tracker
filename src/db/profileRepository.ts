@@ -19,14 +19,7 @@ const FMT_DB_PROFILES_STORE = "fmt_profiles";
 
 class ProfileRepository extends Repository implements IProfileRepository {
   async iterateProfiles(): Promise<IDBCursorWithTypedValue<IUserProfile>> {
-    if (!this.isReady) {
-      await this.connection.wait();
-    }
-
-    return this.connection.openCursor(
-      this.storeName,
-      IDBTransactionModes.Readonly
-    );
+    return this.iterate<IUserProfile>(IDBTransactionModes.Readonly);
   }
 
   getAllProfiles(): Promise<IUserProfile[]> {

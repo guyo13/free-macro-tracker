@@ -18,14 +18,7 @@ const FMT_DB_UNITS_STORE = "fmt_units";
 
 class UnitRepository extends Repository implements IUnitRepository {
   async iterateUnits(): Promise<IDBCursorWithTypedValue<IUnit>> {
-    if (!this.isReady) {
-      await this.connection.wait();
-    }
-
-    return this.connection.openCursor(
-      this.storeName,
-      IDBTransactionModes.Readonly
-    );
+    return this.iterate<IUnit>(IDBTransactionModes.Readonly);
   }
 
   getAllUnits(): Promise<IUnit[]> {
