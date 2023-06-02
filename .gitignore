@@ -8,3 +8,4 @@ firebase.json
 .DS_Store
 node_modules
 public/build/*
+.idea
