@@ -1940,6 +1940,7 @@ function FMTIterateUnits(onsuccessFn, onerrorFn) {
 }
 
 //Functions - DB - User Goals
+// TODO - Delete
 function FMTAddUserGoalEntry(userGoalsObj, onsuccessFn, onerrorFn) {
   const userGoalsValidate = FMTValidateUserGoals(userGoalsObj);
   if (userGoalsValidate.userGoals == null || userGoalsValidate.error != null) {
@@ -1962,6 +1963,8 @@ function FMTAddUserGoalEntry(userGoalsObj, onsuccessFn, onerrorFn) {
       console.error("failed adding user goal entry", e);
     };
 }
+
+// TODO - Delete
 function FMTUpdateUserGoalEntry(
   profile_id: RecordId,
   year: number,
@@ -1993,6 +1996,8 @@ function FMTUpdateUserGoalEntry(
   putRequest.onsuccess = onsuccessFn;
   putRequest.onerror = onerrorFn;
 }
+
+// TODO - Delete
 function FMTReadUserGoalEntry(
   profile_id,
   year,
@@ -2009,6 +2014,8 @@ function FMTReadUserGoalEntry(
   getRequest.onsuccess = onsuccessFn;
   getRequest.onerror = onerrorFn;
 }
+
+// TODO - Delete
 function FMTQueryUserGoalsByProfileAndDate(
   profile_id,
   year,
