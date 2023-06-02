@@ -22,11 +22,11 @@ class ProfileRepository extends Repository implements IProfileRepository {
     return this.iterate<IUserProfile>(IDBTransactionModes.Readonly);
   }
 
-  getAllProfiles(): Promise<IUserProfile[]> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async getAllProfiles(): Promise<IUserProfile[]> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const profileStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readonly
@@ -47,11 +47,11 @@ class ProfileRepository extends Repository implements IProfileRepository {
     });
   }
 
-  getProfile(profileId: RecordId): Promise<IUserProfile | null> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async getProfile(profileId: RecordId): Promise<IUserProfile | null> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const profileStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readonly
@@ -73,11 +73,11 @@ class ProfileRepository extends Repository implements IProfileRepository {
     });
   }
 
-  addProfile(profile: IUserProfile): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async addProfile(profile: IUserProfile): Promise<void> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const profileStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readwrite
@@ -94,11 +94,11 @@ class ProfileRepository extends Repository implements IProfileRepository {
     });
   }
 
-  updateProfile(profile: IUserProfile): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async updateProfile(profile: IUserProfile): Promise<void> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const profileStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readwrite
@@ -115,11 +115,11 @@ class ProfileRepository extends Repository implements IProfileRepository {
     });
   }
 
-  deleteProfile(profileId: RecordId): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async deleteProfile(profileId: RecordId): Promise<void> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const profileStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readwrite
@@ -139,9 +139,9 @@ const profileRepositoryProvider = derived<
   Readable<IDBWrapper>,
   IProfileRepository
 >(idbConnector, (connector, set) => {
-  let isIntialized = false;
-  if (idbConnector && !isIntialized) {
-    isIntialized = true;
+  let isInitialized = false;
+  if (idbConnector && !isInitialized) {
+    isInitialized = true;
     set(new ProfileRepository(connector, FMT_DB_PROFILES_STORE));
   }
 });

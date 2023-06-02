@@ -22,11 +22,11 @@ class FoodRepository extends Repository implements IFoodRepository {
     return this.iterate<IFood>(IDBTransactionModes.Readonly);
   }
 
-  getAllFoods(): Promise<IFood[]> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async getAllFoods(): Promise<IFood[]> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const foodStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readonly
@@ -43,17 +43,17 @@ class FoodRepository extends Repository implements IFoodRepository {
     });
   }
 
-  getFood(id: RecordId): Promise<IFood | null> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async getFood(id: RecordId): Promise<IFood | null> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const foodStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readonly
       );
       const getRequest = foodStore.get(id);
-      getRequest.onsuccess = (_ev: Event) => {
+      getRequest.onsuccess = (ev: Event) => {
         // @ts-ignore
         const result: any | undefined = ev?.target?.result;
         try {
@@ -69,11 +69,11 @@ class FoodRepository extends Repository implements IFoodRepository {
     });
   }
 
-  addFood(food: IFood): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async addFood(food: IFood): Promise<void> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const foodStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readwrite
@@ -88,11 +88,11 @@ class FoodRepository extends Repository implements IFoodRepository {
     });
   }
 
-  updateFood(food: IFood): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async updateFood(food: IFood): Promise<void> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       updateRecordDates(food);
       const foodStore = this.connection.getObjectStore(
         this.storeName,
@@ -108,11 +108,11 @@ class FoodRepository extends Repository implements IFoodRepository {
     });
   }
 
-  deleteFood(id: RecordId): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async deleteFood(id: RecordId): Promise<void> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const foodStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readwrite
@@ -131,9 +131,9 @@ class FoodRepository extends Repository implements IFoodRepository {
 const foodRepositoryProvider = derived<Readable<IDBWrapper>, IFoodRepository>(
   idbConnector,
   (connector, set) => {
-    let isIntialized = false;
-    if (idbConnector && !isIntialized) {
-      isIntialized = true;
+    let isInitialized = false;
+    if (idbConnector && !isInitialized) {
+      isInitialized = true;
       set(new FoodRepository(connector, FMT_DB_FOODS_STORE));
     }
   }

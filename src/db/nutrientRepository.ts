@@ -23,11 +23,11 @@ class NutrientRepository extends Repository implements INutrientRepository {
     return this.iterate<INutrientDefinition>(IDBTransactionModes.Readonly);
   }
 
-  getAllNutrients(): Promise<INutrientDefinition[]> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async getAllNutrients(): Promise<INutrientDefinition[]> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const nutrientStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readonly
@@ -44,14 +44,14 @@ class NutrientRepository extends Repository implements INutrientRepository {
     });
   }
 
-  getNutrient(
+  async getNutrient(
     category: string,
     name: string
   ): Promise<INutrientDefinition | null> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const nutrientStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readonly
@@ -75,11 +75,11 @@ class NutrientRepository extends Repository implements INutrientRepository {
     });
   }
 
-  addNutrient(nutrient: INutrientDefinition): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async addNutrient(nutrient: INutrientDefinition): Promise<void> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const nutrientStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readwrite
@@ -94,11 +94,11 @@ class NutrientRepository extends Repository implements INutrientRepository {
     });
   }
 
-  updateNutrient(nutrient: INutrientDefinition): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async updateNutrient(nutrient: INutrientDefinition): Promise<void> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const nutrientStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readwrite
@@ -113,11 +113,11 @@ class NutrientRepository extends Repository implements INutrientRepository {
     });
   }
 
-  deleteNutrient(category: string, name: string): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async deleteNutrient(category: string, name: string): Promise<void> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const nutrientStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readwrite
@@ -137,9 +137,9 @@ const nutrientRepositoryProvider = derived<
   Readable<IDBWrapper>,
   INutrientRepository
 >(idbConnector, (connector, set) => {
-  let isIntialized = false;
-  if (idbConnector && !isIntialized) {
-    isIntialized = true;
+  let isInitialized = false;
+  if (idbConnector && !isInitialized) {
+    isInitialized = true;
     set(new NutrientRepository(connector, FMT_DB_NUTRIENTS_STORE));
   }
 });

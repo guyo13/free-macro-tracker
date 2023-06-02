@@ -21,11 +21,11 @@ class UnitRepository extends Repository implements IUnitRepository {
     return this.iterate<IUnit>(IDBTransactionModes.Readonly);
   }
 
-  getAllUnits(): Promise<IUnit[]> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async getAllUnits(): Promise<IUnit[]> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const unitStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readonly
@@ -42,17 +42,17 @@ class UnitRepository extends Repository implements IUnitRepository {
     });
   }
 
-  getUnit(unitName: string): Promise<IUnit | null> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async getUnit(unitName: string): Promise<IUnit | null> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const unitStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readonly
       );
       const getRequest = unitStore.get(unitName);
-      getRequest.onsuccess = (_ev: Event) => {
+      getRequest.onsuccess = (ev: Event) => {
         // @ts-ignore
         const result: any | undefined = ev?.target?.result;
         try {
@@ -68,11 +68,11 @@ class UnitRepository extends Repository implements IUnitRepository {
     });
   }
 
-  addUnit(unit: IUnit): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async addUnit(unit: IUnit): Promise<void> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const unitStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readwrite
@@ -87,11 +87,11 @@ class UnitRepository extends Repository implements IUnitRepository {
     });
   }
 
-  updateUnit(unit: IUnit): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async updateUnit(unit: IUnit): Promise<void> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const unitStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readwrite
@@ -106,11 +106,11 @@ class UnitRepository extends Repository implements IUnitRepository {
     });
   }
 
-  deleteUnit(unitName: string): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.isReady) {
-        await this.connection.wait();
-      }
+  async deleteUnit(unitName: string): Promise<void> {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return new Promise((resolve, reject) => {
       const unitStore = this.connection.getObjectStore(
         this.storeName,
         IDBTransactionModes.Readwrite
@@ -129,9 +129,9 @@ class UnitRepository extends Repository implements IUnitRepository {
 const unitRepositoryProvider = derived<Readable<IDBWrapper>, IUnitRepository>(
   idbConnector,
   (connector, set) => {
-    let isIntialized = false;
-    if (idbConnector && !isIntialized) {
-      isIntialized = true;
+    let isInitialized = false;
+    if (idbConnector && !isInitialized) {
+      isInitialized = true;
       set(new UnitRepository(connector, FMT_DB_UNITS_STORE));
     }
   }
