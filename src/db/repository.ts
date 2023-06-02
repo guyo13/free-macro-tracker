@@ -7,6 +7,7 @@ import type {
   IDBTransactionModes,
 } from "idb_wrapper.js";
 import type IDBWrapper from "idb_wrapper.js";
+import { type KeyRangeSettings } from "idb_wrapper.js/src/types";
 
 export interface IRepository {
   connection: IDBWrapper;
@@ -36,13 +37,14 @@ class Repository {
   }
 
   protected async iterate<T>(
-    mode: IDBTransactionModes
+    mode: IDBTransactionModes,
+    query?: KeyRangeSettings
   ): Promise<IDBCursorWithTypedValue<T>> {
     if (!this.isReady) {
       await this.connection.wait();
     }
 
-    return this.connection.openCursor(this.storeName, mode);
+    return this.connection.openCursor(this.storeName, mode, query);
   }
 }
 
