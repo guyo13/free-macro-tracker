@@ -21,11 +21,7 @@ export function isNullOrEmptyString(s: any) {
 }
 
 export function isNumber(input: any) {
-  if (input === "" || isNaN(input) || input == null) {
-    return false;
-  } else {
-    return true;
-  }
+  return !(input === "" || isNaN(input) || input == null);
 }
 
 export function isPositiveNumber(x: any) {
@@ -64,6 +60,6 @@ export function roundedToFixed(
   return (Math.round(realNumber * rounded) / rounded).toFixed(decimalDigits);
 }
 
-export function isEmptyObject(obj?: object) {
+export function isEmptyObject(obj: object) {
   return Object.keys(obj ?? EMPTY_OBJ).length === 0;
 }
