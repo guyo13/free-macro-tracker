@@ -7,7 +7,7 @@ import type IConsumable from "./consumable";
 import type { INutritionalValue } from "./nutrient";
 import { validateRecord, type RecordId } from "./record";
 
-export interface IFood extends IConsumable {}
+export type IFood = IConsumable;
 
 export default class Food implements IFood {
   readonly food_id: RecordId;

@@ -13,7 +13,7 @@ import type { IRepository } from "./repository";
 import Repository from "./repository";
 import Food from "../models/food";
 import type { IFood } from "../models/food";
-import { updateRecordDates, type RecordId } from "../models/record";
+import type { RecordId } from "../models/record";
 
 const FMT_DB_FOODS_STORE = "fmt_foods";
 
@@ -41,18 +41,11 @@ class FoodRepository extends Repository implements IFoodRepository {
   }
 
   async addFood(food: IFood): Promise<void> {
-    if (!this.isReady) {
-      await this.connection.wait();
-    }
-    return this.connection.add(this.storeName, food);
+    return this.add(food);
   }
 
   async updateFood(food: IFood): Promise<void> {
-    if (!this.isReady) {
-      await this.connection.wait();
-    }
-    updateRecordDates(food);
-    return this.connection.put(this.storeName, food);
+    return this.updateRecord(food);
   }
 
   async deleteFood(id: RecordId): Promise<void> {

@@ -8,6 +8,8 @@ import type {
   KeyRangeSettings,
 } from "idb_wrapper.js";
 import type IDBWrapper from "idb_wrapper.js";
+import type IDBRecord from "../models/record";
+import { updateRecordDates } from "../models/record";
 
 export interface IRepository {
   connection: IDBWrapper;
@@ -25,7 +27,7 @@ class Repository {
     connection
       .wait()
       .then(() => (this.#isReady = true))
-      .catch((_err) => (this.#isReady = false));
+      .catch(() => (this.#isReady = false));
   }
 
   get isReady(): boolean {
@@ -45,6 +47,29 @@ class Repository {
     }
 
     return this.connection.openCursor(this.storeName, mode, query);
+  }
+
+  protected async add<T>(object: T) {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    return this.connection.add(this.storeName, object);
+  }
+
+  protected async updateRecord<T extends IDBRecord>(record: T) {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+    updateRecordDates(record);
+    return this.connection.put(this.storeName, record);
+  }
+
+  protected async update<T>(object: T) {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+
+    return this.connection.put(this.storeName, object);
   }
 }
 
