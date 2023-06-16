@@ -4,10 +4,7 @@
 
 import { derived, type Readable } from "svelte/store";
 import type IDBWrapper from "idb_wrapper.js";
-import {
-  IDBTransactionModes,
-  type IDBCursorWithTypedValue,
-} from "idb_wrapper.js";
+import { IDBTransactionModes, type CursorConsumer } from "idb_wrapper.js";
 import idbConnector from "./idb";
 import type { IRepository } from "./repository";
 import Repository from "./repository";
@@ -18,8 +15,8 @@ import UserProfile from "../models/userProfile";
 const FMT_DB_PROFILES_STORE = "fmt_profiles";
 
 class ProfileRepository extends Repository implements IProfileRepository {
-  iterateProfiles(): Promise<IDBCursorWithTypedValue<IUserProfile>> {
-    return this.iterate<IUserProfile>(IDBTransactionModes.Readonly);
+  iterateProfiles(consumer: CursorConsumer<IUserProfile>): Promise<void> {
+    return this.iterate<IUserProfile>(IDBTransactionModes.Readonly, consumer);
   }
 
   async getAllProfiles(): Promise<IUserProfile[]> {
@@ -69,7 +66,7 @@ const profileRepositoryProvider = derived<
 });
 
 export interface IProfileRepository extends IRepository {
-  iterateProfiles: () => Promise<IDBCursorWithTypedValue<IUserProfile>>;
+  iterateProfiles: (consumer: CursorConsumer<IUserProfile>) => Promise<void>;
   getAllProfiles: () => Promise<IUserProfile[]>;
   getProfile: (profileId: RecordId) => Promise<IUserProfile | null>;
   addProfile: (profile: IUserProfile) => Promise<void>;

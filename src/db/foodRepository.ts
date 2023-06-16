@@ -4,10 +4,7 @@
 
 import { derived, type Readable } from "svelte/store";
 import type IDBWrapper from "idb_wrapper.js";
-import {
-  IDBTransactionModes,
-  type IDBCursorWithTypedValue,
-} from "idb_wrapper.js";
+import { IDBTransactionModes, type CursorConsumer } from "idb_wrapper.js";
 import idbConnector from "./idb";
 import type { IRepository } from "./repository";
 import Repository from "./repository";
@@ -18,8 +15,8 @@ import type { RecordId } from "../models/record";
 const FMT_DB_FOODS_STORE = "fmt_foods";
 
 class FoodRepository extends Repository implements IFoodRepository {
-  iterateFoods(): Promise<IDBCursorWithTypedValue<IFood>> {
-    return this.iterate<IFood>(IDBTransactionModes.Readonly);
+  iterateFoods(consumer: CursorConsumer<IFood>): Promise<void> {
+    return this.iterate<IFood>(IDBTransactionModes.Readonly, consumer);
   }
 
   async getAllFoods(): Promise<IFood[]> {
@@ -65,7 +62,7 @@ const foodRepositoryProvider = derived<Readable<IDBWrapper>, IFoodRepository>(
 );
 
 export interface IFoodRepository extends IRepository {
-  iterateFoods: () => Promise<IDBCursorWithTypedValue<IFood>>;
+  iterateFoods: (consumer: CursorConsumer<IFood>) => Promise<void>;
   getAllFoods: () => Promise<IFood[]>;
   getFood: (id: RecordId) => Promise<IFood | null>;
   addFood: (food: IFood) => Promise<void>;

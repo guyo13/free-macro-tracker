@@ -4,10 +4,7 @@
 
 import { derived, type Readable } from "svelte/store";
 import type IDBWrapper from "idb_wrapper.js";
-import {
-  IDBTransactionModes,
-  type IDBCursorWithTypedValue,
-} from "idb_wrapper.js";
+import { IDBTransactionModes, type CursorConsumer } from "idb_wrapper.js";
 import idbConnector from "./idb";
 import type { IRepository } from "./repository";
 import Repository from "./repository";
@@ -17,8 +14,13 @@ import NutrientDefinition from "../models/nutrientDefinition";
 const FMT_DB_NUTRIENTS_STORE = "fmt_nutrients";
 
 class NutrientRepository extends Repository implements INutrientRepository {
-  iterateNutrients(): Promise<IDBCursorWithTypedValue<INutrientDefinition>> {
-    return this.iterate<INutrientDefinition>(IDBTransactionModes.Readonly);
+  iterateNutrients(
+    consumer: CursorConsumer<INutrientDefinition>
+  ): Promise<void> {
+    return this.iterate<INutrientDefinition>(
+      IDBTransactionModes.Readonly,
+      consumer
+    );
   }
 
   async getAllNutrients(): Promise<INutrientDefinition[]> {
@@ -69,7 +71,9 @@ const nutrientRepositoryProvider = derived<
 });
 
 export interface INutrientRepository extends IRepository {
-  iterateNutrients: () => Promise<IDBCursorWithTypedValue<INutrientDefinition>>;
+  iterateNutrients: (
+    consumer: CursorConsumer<INutrientDefinition>
+  ) => Promise<void>;
   getAllNutrients: () => Promise<INutrientDefinition[]>;
   getNutrient: (
     category: string,

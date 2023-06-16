@@ -6,8 +6,8 @@ import { derived, type Readable } from "svelte/store";
 import type IDBWrapper from "idb_wrapper.js";
 import {
   IDBTransactionModes,
-  type IDBCursorWithTypedValue,
   type KeyRangeSettings,
+  type CursorConsumer,
 } from "idb_wrapper.js";
 import idbConnector from "./idb";
 import type { IRepository } from "./repository";
@@ -19,8 +19,8 @@ import UserGoals from "../models/userGoals";
 const FMT_DB_USER_GOALS_STORE = "fmt_user_goals";
 
 class UserGoalsRepository extends Repository implements IUserGoalsRepository {
-  iterateUserGoals(): Promise<IDBCursorWithTypedValue<IUserGoals>> {
-    return this.iterate<IUserGoals>(IDBTransactionModes.Readonly);
+  iterateUserGoals(consumer: CursorConsumer<IUserGoals>): Promise<void> {
+    return this.iterate<IUserGoals>(IDBTransactionModes.Readonly, consumer);
   }
 
   async getUserGoals(
@@ -49,9 +49,14 @@ class UserGoalsRepository extends Repository implements IUserGoalsRepository {
   }
 
   queryByProfileAndDate(
+    consumer: CursorConsumer<IUserGoals>,
     query: KeyRangeSettings
-  ): Promise<IDBCursorWithTypedValue<IUserGoals>> {
-    return this.iterate<IUserGoals>(IDBTransactionModes.Readonly, query);
+  ): Promise<void> {
+    return this.iterate<IUserGoals>(
+      IDBTransactionModes.Readonly,
+      consumer,
+      query
+    );
   }
 }
 
@@ -67,7 +72,7 @@ const userGoalsRepositoryProvider = derived<
 });
 
 export interface IUserGoalsRepository extends IRepository {
-  iterateUserGoals: () => Promise<IDBCursorWithTypedValue<IUserGoals>>;
+  iterateUserGoals: (consumer: CursorConsumer<IUserGoals>) => Promise<void>;
   getUserGoals: (
     profileId: RecordId,
     year: number,
@@ -77,7 +82,8 @@ export interface IUserGoalsRepository extends IRepository {
   addUserGoals: (userGoals: IUserGoals) => Promise<void>;
   updateUserGoals: (userGoals: IUserGoals) => Promise<void>;
   queryByProfileAndDate: (
+    consumer: CursorConsumer<IUserGoals>,
     query: KeyRangeSettings
-  ) => Promise<IDBCursorWithTypedValue<IUserGoals>>;
+  ) => Promise<void>;
 }
 export default userGoalsRepositoryProvider;

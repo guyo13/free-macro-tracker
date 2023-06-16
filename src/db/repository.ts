@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 import type {
-  IDBCursorWithTypedValue,
+  CursorConsumer,
   IDBTransactionModes,
   KeyRangeSettings,
 } from "idb_wrapper.js";
@@ -40,13 +40,14 @@ class Repository {
 
   protected async iterate<T>(
     mode: IDBTransactionModes,
+    consumer: CursorConsumer<T>,
     query?: KeyRangeSettings
-  ): Promise<IDBCursorWithTypedValue<T>> {
+  ): Promise<void> {
     if (!this.isReady) {
       await this.connection.wait();
     }
 
-    return this.connection.openCursor(this.storeName, mode, query);
+    return this.connection.openCursor(this.storeName, mode, consumer, query);
   }
 
   protected async add<T>(object: T) {
