@@ -2,8 +2,8 @@
 // All rights reserved. Use of this source code is governed by a GNU GPL
 // license that can be found in the LICENSE file.
 
-export interface WebkitMessageHandler {
-  postMessage: Function;
+export interface WebkitMessageHandler<T> {
+  postMessage: (messageBody: T) => void;
 }
 
 export interface FMTPlatformInterface {
@@ -15,15 +15,25 @@ export interface FMTPlatformInterface {
   FMTShowPrompt: (message: string, level?: string) => void;
 }
 
-export interface FMTAndroidInterface extends FMTPlatformInterface {}
+export type FMTAndroidInterface = FMTPlatformInterface;
+
+export interface IFMTiOSAlertArgs {
+  msg: string;
+  level?: string;
+}
+
+export interface IFMTiOSExportArgs {
+  data: string;
+  filename: string;
+}
 
 export interface FMTiOSInterface {
-  FMTShowAlert: WebkitMessageHandler;
-  FMTShowAlertBar: WebkitMessageHandler;
-  FMTExportData: WebkitMessageHandler;
-  FMTImportData: WebkitMessageHandler;
-  FMTFinishedLoading: WebkitMessageHandler;
-  FMTShowPrompt: WebkitMessageHandler;
+  FMTShowAlert: WebkitMessageHandler<IFMTiOSAlertArgs>;
+  FMTShowAlertBar: WebkitMessageHandler<IFMTiOSAlertArgs>;
+  FMTExportData: WebkitMessageHandler<IFMTiOSExportArgs>;
+  FMTImportData: WebkitMessageHandler<string>;
+  FMTFinishedLoading: WebkitMessageHandler<string>;
+  FMTShowPrompt: WebkitMessageHandler<IFMTiOSAlertArgs>;
 }
 
 export enum FMTPlatformType {
@@ -149,7 +159,7 @@ export default class FMTPlatform implements FMTPlatformInterface {
     }
   }
 
-  FMTShowPrompt(message: string, level?: string) {
+  FMTShowPrompt(message: string, level: string) {
     switch (this.#platform) {
       case FMTPlatformType.Android:
         FMTAndroidPlatform.FMTShowPrompt(message, level);
