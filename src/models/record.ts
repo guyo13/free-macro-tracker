@@ -26,6 +26,6 @@ export function updateRecordDates(record: IDBRecord) {
 
 export default interface IDBRecord {
   id: RecordId;
-  lastModified: String; // UTC ISO string
+  lastModified: string; // UTC ISO string
   tzMinutes: number; // Timezone offset from UTC in minutes
 }

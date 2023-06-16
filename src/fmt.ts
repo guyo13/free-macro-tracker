@@ -3,8 +3,8 @@
 // license that can be found in the LICENSE file.
 
 import {
-  fmtAppGlobals,
   DEFAULT_ROUNDING_PRECISION,
+  fmtAppGlobals,
   NUTRIENT_ROUNDING_PRECISION,
   OVERVIEW_DATE_FORMAT,
   PREVIOUS_UNIT_ATTR,
@@ -13,10 +13,10 @@ import fmtAppInstance from "./app/instance";
 import { default as FMTPlatform } from "./app/platform";
 import {
   isDate,
-  isSameDay,
   isFunction,
   isNumber,
   isPercent,
+  isSameDay,
   isString,
   roundedToFixed,
 } from "./utils/utils";
@@ -39,9 +39,17 @@ import UserProfile from "./models/userProfile";
 
 // TODO - Temporary - until this is migrated to its own store
 export const platformInterface = new FMTPlatform();
+// TODO - Temporary - until jQuery is removed
+interface JQueryCarousel extends JQuery {
+  carousel: (string) => void;
+}
+
+interface JQueryTooltip extends JQuery {
+  tooltip: (string?) => void;
+}
 
 //Globals - Export
-var fmtAppExport;
+let fmtAppExport;
 
 //Functions
 //Functions - Generic
@@ -58,8 +66,7 @@ function isInput(elem) {
 function taskWaitUntil(onendFn, endconditionFn, intervalMs) {
   intervalMs = intervalMs || 50;
   if (!(typeof endconditionFn === "function")) return;
-  let intervalObj;
-  intervalObj = setInterval(function () {
+  const intervalObj = setInterval(function () {
     if (endconditionFn()) {
       clearInterval(intervalObj);
       if (typeof onendFn === "function") {
@@ -163,7 +170,7 @@ function FMTSumAdditionalNutrients(
   });
 }
 function indexesOfObject(array, key, value) {
-  let idx = [];
+  const idx = [];
   array.forEach((item, i) => {
     if (item[key] === value) {
       idx.push(i);
@@ -172,7 +179,7 @@ function indexesOfObject(array, key, value) {
   return idx;
 }
 function indexesOfObjectMulti(array, obj) {
-  let idx = [];
+  const idx = [];
   array.forEach((item, i) => {
     for (const k in obj) {
       if (item[k] !== obj[k]) {
@@ -241,7 +248,7 @@ function getObjectStore(store_name, mode) {
     console.error("fmt DB null reference");
     return;
   }
-  var tx = fmtAppInstance.fmtDb.transaction(store_name, mode);
+  const tx = fmtAppInstance.fmtDb.transaction(store_name, mode);
   return tx.objectStore(store_name);
 }
 
@@ -266,7 +273,7 @@ function FMTExportToJSONBlob(data, onsuccessFn, stringifyReplacerFn) {
     window.URL.revokeObjectURL(fmtAppExport);
   }
   const stringified = JSON.stringify(data, stringifyReplacerFn);
-  let blob = new Blob([stringified], { type: "application/json" });
+  const blob = new Blob([stringified], { type: "application/json" });
   fmtAppExport = window.URL.createObjectURL(blob);
   if (typeof onsuccessFn == "function") {
     onsuccessFn();
@@ -324,7 +331,7 @@ function FMTDataToJSONArray(exportFn) {
     });
   };
   const onIterFoodsSuccFn = function (ev) {
-    let cursor = ev.target.result;
+    const cursor = ev.target.result;
     if (cursor) {
       const record = cursor.value;
       record["__db_table_name__"] = fmtAppGlobals.FMT_DB_FOODS_STORE;
@@ -338,7 +345,7 @@ function FMTDataToJSONArray(exportFn) {
     }
   };
   const onQueryMealEntriesSuccFn = function (ev) {
-    let cursor = ev.target.result;
+    const cursor = ev.target.result;
     if (cursor) {
       const record = cursor.value;
       record["__db_table_name__"] = fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE;
@@ -352,7 +359,7 @@ function FMTDataToJSONArray(exportFn) {
     }
   };
   const onQueryUserGoalsSuccFn = function (ev) {
-    let cursor = ev.target.result;
+    const cursor = ev.target.result;
     if (cursor) {
       const record = cursor.value;
       record["__db_table_name__"] = fmtAppGlobals.FMT_DB_USER_GOALS_STORE;
@@ -645,8 +652,8 @@ function FMTImportTables(dbTables: any, jsonData: any, verbose?: any) {
   if (dbTables.length < 1) return;
   const dbTableName = dbTables[0]; //.shift();
 
-  let keys, endCond, recordsObj, onEnd, iterSuccess, iterError;
-  onEnd = getOnEndRemoveFirstFromArrayAndExec(
+  let keys, endCond, recordsObj, iterSuccess, iterError;
+  const onEnd = getOnEndRemoveFirstFromArrayAndExec(
     dbTables,
     dbTableName,
     function () {
@@ -684,9 +691,9 @@ function FMTImportTables(dbTables: any, jsonData: any, verbose?: any) {
 
       const onNextProfile = function () {
         if (!Array.isArray(keys) || keys.length < 1) return;
-        let currentProfile_id = keys[0];
+        const currentProfile_id = keys[0];
         recordsObj = profileEntriesContainer[currentProfile_id];
-        let recordKeys = Object.keys(recordsObj);
+        const recordKeys = Object.keys(recordsObj);
         const iterProfilesEndCond = getEmptyArrayEndCondition(recordKeys);
         FMTImportRecordsSeq(
           recordsObj,
@@ -729,7 +736,7 @@ function FMTImportFromStructuredJSON(
   onEnd?: any,
   excludeTables?: any
 ) {
-  let jsonData = JSON.parse(jsonString, jsonParseReviverFn);
+  const jsonData = JSON.parse(jsonString, jsonParseReviverFn);
   let dbTables = Object.keys(jsonData);
   if (Array.isArray(excludeTables)) {
     dbTables = dbTables.filter((table) => excludeTables.indexOf(table) < 0);
@@ -822,7 +829,7 @@ function FMTValidateNutritionalValue(
     additionalNutrients: {},
   };
 
-  let additionalNutrients = nutritionalValueObj.additionalNutrients;
+  const additionalNutrients = nutritionalValueObj.additionalNutrients;
   if (additionalNutrients != null) {
     for (const nutrientCategoryName in additionalNutrients) {
       const nutrientsInCat = additionalNutrients[nutrientCategoryName];
@@ -1336,15 +1343,15 @@ function FMTAddMealEntry(mealEntryObj, onsuccessFn, onerrorFn) {
       };
     return onerrorFn();
   }
-  let mealEntry = res.mealEntry;
+  const mealEntry = res.mealEntry;
   const date = new Date();
   mealEntry.lastModified = date.toISOString();
   mealEntry.tzMinutes = date.getTimezoneOffset();
-  let mealEntriesStore = getObjectStore(
+  const mealEntriesStore = getObjectStore(
     fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE,
     IDBTransactionModes.Readwrite
   );
-  let addRequest = mealEntriesStore.add(mealEntry);
+  const addRequest = mealEntriesStore.add(mealEntry);
   addRequest.onerror = onerrorFn;
   addRequest.onsuccess = onsuccessFn;
 }
@@ -1359,24 +1366,24 @@ function FMTUpdateMealEntry(entry_id, mealEntryObj, onsuccessFn, onerrorFn) {
       };
     return onerrorFn(res.error);
   }
-  let mealEntry = res.mealEntry;
+  const mealEntry = res.mealEntry;
   const date = new Date();
   mealEntry.lastModified = date.toISOString();
   mealEntry.tzMinutes = date.getTimezoneOffset();
-  let mealEntriesStore = getObjectStore(
+  const mealEntriesStore = getObjectStore(
     fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE,
     IDBTransactionModes.Readwrite
   );
-  let updateRequest = mealEntriesStore.put(mealEntry);
+  const updateRequest = mealEntriesStore.put(mealEntry);
   updateRequest.onerror = onerrorFn;
   updateRequest.onsuccess = onsuccessFn;
 }
 function FMTRemoveMealEntry(entry_id, onsuccessFn, onerrorFn) {
-  let mealEntriesStore = getObjectStore(
+  const mealEntriesStore = getObjectStore(
     fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE,
     IDBTransactionModes.Readwrite
   );
-  let deleteRequest = mealEntriesStore.delete(entry_id);
+  const deleteRequest = mealEntriesStore.delete(entry_id);
   deleteRequest.onerror = onerrorFn;
   deleteRequest.onsuccess = onsuccessFn;
 }
@@ -1413,7 +1420,7 @@ function FMTQueryMealEntriesByProfileAndDate(
   let keyRange = null;
   switch (options.queryType) {
     //Doesn't make a lot of sense to use either upperBound or lowerBound because we will then
-    //retreive meal entries that belong to other users (via differing profile_ids)
+    //retrieve meal entries that belong to other users (via differing profile_ids)
     // It is included for completeness
     case "upperBound":
       keyRange = IDBKeyRange.upperBound(
@@ -1500,11 +1507,11 @@ function FMTReadProfile(profileId, onsuccessFn, onerrorFn) {
       };
     return onerrorFn(msg);
   }
-  let profileStore = getObjectStore(
+  const profileStore = getObjectStore(
     fmtAppGlobals.FMT_DB_PROFILES_STORE,
     IDBTransactionModes.Readonly
   );
-  let getRequest = profileStore.get(profileId);
+  const getRequest = profileStore.get(profileId);
   getRequest.onerror =
     onerrorFn ||
     function () {
@@ -1514,11 +1521,11 @@ function FMTReadProfile(profileId, onsuccessFn, onerrorFn) {
 }
 // TODO - Delete
 function FMTReadAllProfiles(onsuccessFn, onerrorFn) {
-  let profileStore = getObjectStore(
+  const profileStore = getObjectStore(
     fmtAppGlobals.FMT_DB_PROFILES_STORE,
     IDBTransactionModes.Readonly
   );
-  let getRequest = profileStore.getAll();
+  const getRequest = profileStore.getAll();
   getRequest.onerror = onerrorFn;
   getRequest.onsuccess = onsuccessFn;
 }
@@ -1537,11 +1544,11 @@ function FMTUpdateProfile(profileId, profileObj, onsuccessFn, onerrorFn) {
     return onerrorFn(err);
   }
   const profile = result;
-  let profileStore = getObjectStore(
+  const profileStore = getObjectStore(
     fmtAppGlobals.FMT_DB_PROFILES_STORE,
     IDBTransactionModes.Readwrite
   );
-  let updateRequest = profileStore.put(profile);
+  const updateRequest = profileStore.put(profile);
   updateRequest.onerror =
     onerrorFn ||
     function () {
@@ -1560,24 +1567,15 @@ function FMTUpdateProfile(profileId, profileObj, onsuccessFn, onerrorFn) {
 //Functions - DB - Foods
 // TODO - Delete
 function FMTReadFood(foodId, onsuccessFn, onerrorFn) {
-  let foodStore = getObjectStore(
+  const foodStore = getObjectStore(
     fmtAppGlobals.FMT_DB_FOODS_STORE,
     IDBTransactionModes.Readonly
   );
-  let getRequest = foodStore.get(foodId);
+  const getRequest = foodStore.get(foodId);
   getRequest.onerror = onerrorFn;
   getRequest.onsuccess = onsuccessFn;
 }
-// TODO - Delete
-function FMTReadAllFoods(onsuccessFn, onerrorFn) {
-  let foodStore = getObjectStore(
-    fmtAppGlobals.FMT_DB_FOODS_STORE,
-    IDBTransactionModes.Readonly
-  );
-  let getRequest = foodStore.getAll();
-  getRequest.onerror = onerrorFn;
-  getRequest.onsuccess = onsuccessFn;
-}
+
 // TODO - Delete
 function FMTIterateFoods(onsuccessFn, onerrorFn) {
   /*onsuccessFn must implement success function accessing the cursor*/
@@ -1586,11 +1584,11 @@ function FMTIterateFoods(onsuccessFn, onerrorFn) {
     function (e) {
       console.error(`[FMTIterateFoods] - ${e}`);
     };
-  let foodStore = getObjectStore(
+  const foodStore = getObjectStore(
     fmtAppGlobals.FMT_DB_FOODS_STORE,
     IDBTransactionModes.Readonly
   );
-  let getRequest = foodStore.openCursor();
+  const getRequest = foodStore.openCursor();
   getRequest.onerror = onerrorFn;
   getRequest.onsuccess = onsuccessFn;
 }
@@ -1601,14 +1599,14 @@ function FMTAddFood(foodObj, unitsChart, onsuccessFn, onerrorFn) {
   const result = FMTValidateFoodObject(foodObj, unitsChart);
   const food = result.food;
   if (food != null && result.error == null) {
-    let date = new Date();
+    const date = new Date();
     food.lastModified = date.toISOString();
     food.tzMinutes = date.getTimezoneOffset();
-    let foodStore = getObjectStore(
+    const foodStore = getObjectStore(
       fmtAppGlobals.FMT_DB_FOODS_STORE,
       IDBTransactionModes.Readwrite
     );
-    let addRequest = foodStore.add(food);
+    const addRequest = foodStore.add(food);
     addRequest.onerror =
       onerrorFn ||
       function () {
@@ -1647,15 +1645,15 @@ function FMTUpdateFood(foodId, foodObj, unitsChart, onsuccessFn, onerrorFn) {
   const result = FMTValidateFoodObject(foodObj, unitsChart);
   const food = result.food;
   if (food != null && result.error == null) {
-    let date = new Date();
+    const date = new Date();
     food.lastModified = date.toISOString();
     food.tzMinutes = date.getTimezoneOffset();
     food.food_id = foodId;
-    let foodStore = getObjectStore(
+    const foodStore = getObjectStore(
       fmtAppGlobals.FMT_DB_FOODS_STORE,
       IDBTransactionModes.Readwrite
     );
-    let addRequest = foodStore.put(food);
+    const addRequest = foodStore.put(food);
     addRequest.onerror =
       onerrorFn ||
       function () {
@@ -1690,11 +1688,11 @@ function FMTUpdateFood(foodId, foodObj, unitsChart, onsuccessFn, onerrorFn) {
 // TODO - Delete
 function FMTDeleteFood(foodId, onsuccessFn, onerrorFn) {
   const _fnName = "FMTDeleteFood";
-  let foodStore = getObjectStore(
+  const foodStore = getObjectStore(
     fmtAppGlobals.FMT_DB_FOODS_STORE,
     IDBTransactionModes.Readwrite
   );
-  let delRequest = foodStore.delete(foodId);
+  const delRequest = foodStore.delete(foodId);
   delRequest.onerror =
     onerrorFn ||
     function (e) {
@@ -1717,29 +1715,20 @@ function FMTDeleteFood(foodId, onsuccessFn, onerrorFn) {
 
 //Functions - DB - Recipes
 function FMTReadRecipe(recipeId, onsuccessFn, onerrorFn) {
-  let recipeStore = getObjectStore(
+  const recipeStore = getObjectStore(
     fmtAppGlobals.FMT_DB_RECIPES_STORE,
     IDBTransactionModes.Readonly
   );
-  let getRequest = recipeStore.get(recipeId);
-  getRequest.onerror = onerrorFn;
-  getRequest.onsuccess = onsuccessFn;
-}
-function FMTReadAllRecipes(onsuccessFn, onerrorFn) {
-  let recipeStore = getObjectStore(
-    fmtAppGlobals.FMT_DB_RECIPES_STORE,
-    IDBTransactionModes.Readonly
-  );
-  let getRequest = recipeStore.getAll();
+  const getRequest = recipeStore.get(recipeId);
   getRequest.onerror = onerrorFn;
   getRequest.onsuccess = onsuccessFn;
 }
 function FMTIterateRecipes(onsuccessFn, onerrorFn) {
-  let recipeStore = getObjectStore(
+  const recipeStore = getObjectStore(
     fmtAppGlobals.FMT_DB_RECIPES_STORE,
     IDBTransactionModes.Readonly
   );
-  let cursorRequest = recipeStore.openCursor();
+  const cursorRequest = recipeStore.openCursor();
   cursorRequest.onerror = onerrorFn;
   cursorRequest.onsuccess = onsuccessFn;
 }
@@ -1748,7 +1737,7 @@ function FMTAddRecipe(recipeObj, onsuccessFn, onerrorFn, unitsChart) {
   const result = FMTValidateRecipeObject(recipeObj, unitsChart);
   const recipe = result.recipe;
   if (recipe != null && result.error == null) {
-    let date = new Date();
+    const date = new Date();
     recipe.lastModified = date.toISOString();
     recipe.tzMinutes = date.getTimezoneOffset();
     const _onerror = isFunction(onerrorFn)
@@ -1774,11 +1763,11 @@ function FMTAddRecipe(recipeObj, onsuccessFn, onerrorFn, unitsChart) {
             )}`
           );
         };
-    let recipeStore = getObjectStore(
+    const recipeStore = getObjectStore(
       fmtAppGlobals.FMT_DB_RECIPES_STORE,
       IDBTransactionModes.Readwrite
     );
-    let addRequest = recipeStore.add(recipe);
+    const addRequest = recipeStore.add(recipe);
     addRequest.onerror = _onerror;
     addRequest.onsuccess = _onsuccess;
   } else {
@@ -1805,7 +1794,7 @@ function FMTUpdateRecipe(
   const result = FMTValidateRecipeObject(recipeObj, unitsChart);
   const recipe = result.recipe;
   if (recipe != null && result.error == null) {
-    let date = new Date();
+    const date = new Date();
     recipe.lastModified = date.toISOString();
     recipe.tzMinutes = date.getTimezoneOffset();
     recipe.recipe_id = recipeId;
@@ -1831,11 +1820,11 @@ function FMTUpdateRecipe(
             )}`
           );
         };
-    let recipeStore = getObjectStore(
+    const recipeStore = getObjectStore(
       fmtAppGlobals.FMT_DB_RECIPES_STORE,
       IDBTransactionModes.Readwrite
     );
-    let putRequest = recipeStore.put(recipe);
+    const putRequest = recipeStore.put(recipe);
     putRequest.onerror = _onerror;
     putRequest.onsuccess = _onsuccess;
   } else {
@@ -1853,11 +1842,11 @@ function FMTUpdateRecipe(
 }
 function FMTDeleteRecipe(recipeId, onsuccessFn, onerrorFn) {
   const _fnName = "FMTDeleteRecipe";
-  let recipeStore = getObjectStore(
+  const recipeStore = getObjectStore(
     fmtAppGlobals.FMT_DB_RECIPES_STORE,
     IDBTransactionModes.Readwrite
   );
-  let delRequest = recipeStore.delete(recipeId);
+  const delRequest = recipeStore.delete(recipeId);
   delRequest.onerror =
     onerrorFn ||
     function (e) {
@@ -1881,11 +1870,11 @@ function FMTDeleteRecipe(recipeId, onsuccessFn, onerrorFn) {
 //Functions - DB - Nutrients
 // TODO - Delete
 function FMTReadAllNutrients(onsuccessFn, onerrorFn) {
-  let nutrientStore = getObjectStore(
+  const nutrientStore = getObjectStore(
     fmtAppGlobals.FMT_DB_NUTRIENTS_STORE,
     IDBTransactionModes.Readonly
   );
-  let readRequest = nutrientStore.getAll();
+  const readRequest = nutrientStore.getAll();
   readRequest.onsuccess =
     onsuccessFn ||
     function (e) {
@@ -1897,46 +1886,18 @@ function FMTReadAllNutrients(onsuccessFn, onerrorFn) {
       console.debug(`[FMTReadAllNutrients.onerror] - ${JSON.stringify(e)}`);
     };
 }
-function FMTIterateNutrients(onsuccessFn, onerrorFn) {
-  /*onsuccessFn must implement success function accessing the cursor*/
-  let nutrientStore = getObjectStore(
-    fmtAppGlobals.FMT_DB_NUTRIENTS_STORE,
-    IDBTransactionModes.Readonly
-  );
-  let readRequest = nutrientStore.openCursor();
-  readRequest.onsuccess =
-    onsuccessFn ||
-    function (e) {
-      console.debug(`[FMTIterateNutrients.onsuccess] - ${JSON.stringify(e)}`);
-    };
-  readRequest.onerror =
-    onerrorFn ||
-    function (e) {
-      console.debug(`[FMTIterateNutrients.onerror] - ${JSON.stringify(e)}`);
-    };
-}
 
 //Functions - DB - Units
 // TODO - Remove and use repository method
 function FMTReadAllUnits(onsuccessFn, onerrorFn) {
-  let unitStore = getObjectStore(
+  const unitStore = getObjectStore(
     fmtAppGlobals.FMT_DB_UNITS_STORE,
     IDBTransactionModes.Readonly
   );
-  let readRequest = unitStore.getAll();
+  const readRequest = unitStore.getAll();
   readRequest.onsuccess =
     onsuccessFn || console.debug(`Successfully read all units`);
   readRequest.onerror = onerrorFn || console.debug(`Failed reading all units`);
-}
-function FMTIterateUnits(onsuccessFn, onerrorFn) {
-  let unitStore = getObjectStore(
-    fmtAppGlobals.FMT_DB_UNITS_STORE,
-    IDBTransactionModes.Readonly
-  );
-  let readRequest = unitStore.openCursor();
-  readRequest.onsuccess =
-    onsuccessFn || console.debug(`Successfully iterate unit`);
-  readRequest.onerror = onerrorFn || console.debug(`Failed units iteration`);
 }
 
 //Functions - DB - User Goals
@@ -2098,9 +2059,8 @@ function FMTShowAlert(divId, alertLevel, msg, scrollOptions = undefined) {
   if (platformInterface.hasPlatformInterface) {
     platformInterface.FMTShowAlert(msg, alertLevel);
   } else {
-    let alertDiv = document.getElementById(divId);
-    let alertElem = `<div class="alert alert-${alertLevel} col-11 col-lg-8 mb-1 alert-dismissible fade show" role="alert">${msg}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
-    alertDiv.innerHTML = alertElem;
+    const alertDiv = document.getElementById(divId);
+    alertDiv.innerHTML = `<div class="alert alert-${alertLevel} col-11 col-lg-8 mb-1 alert-dismissible fade show" role="alert">${msg}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
     if (scrollOptions) {
       window.scroll(scrollOptions);
     }
@@ -2121,10 +2081,10 @@ function FMTShowAlertBar(msg, divId, alertLevel) {
 function _FMTDropdownToggleValue(elem, text, attributes, skipEvent) {
   if (elem) {
     elem.innerHTML = text;
-    let attributeNames = Object.keys(attributes);
+    const attributeNames = Object.keys(attributes);
     for (let j = 0; j < attributeNames.length; j++) {
-      let attrName = attributeNames[j];
-      let attrValue = attributes[attrName];
+      const attrName = attributeNames[j];
+      const attrValue = attributes[attrName];
       elem.setAttribute(attrName, attrValue);
     }
     if (!skipEvent) {
@@ -2133,7 +2093,7 @@ function _FMTDropdownToggleValue(elem, text, attributes, skipEvent) {
   }
 }
 function FMTDropdownToggleValue(targetDivId, text, attributes, skipEvent) {
-  let elem = document.getElementById(targetDivId);
+  const elem = document.getElementById(targetDivId);
   _FMTDropdownToggleValue(elem, text, attributes, skipEvent);
 }
 function FMTShowPrompt(divId, alertLevel, msg, scrollOptions, oncompleteFn) {
@@ -2147,8 +2107,8 @@ function FMTShowPrompt(divId, alertLevel, msg, scrollOptions, oncompleteFn) {
     };
     platformInterface.FMTShowPrompt(msg, alertLevel);
   } else {
-    let alertDiv = document.getElementById(divId);
-    let alertElem = `<div class="alert alert-${alertLevel} alert-dismissible fade show row col-11 col-lg-8" role="alert">
+    const alertDiv = document.getElementById(divId);
+    alertDiv.innerHTML = `<div class="alert alert-${alertLevel} alert-dismissible fade show row col-11 col-lg-8" role="alert">
     <div class="col">
     <span>${msg}</span>
     </div>
@@ -2158,7 +2118,6 @@ function FMTShowPrompt(divId, alertLevel, msg, scrollOptions, oncompleteFn) {
         <button type="button" class="btn btn-outline-dark" id="__${divId}__no" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">No</span></button>
     </div>
 </div>`;
-    alertDiv.innerHTML = alertElem;
     if (scrollOptions) {
       window.scroll(scrollOptions);
     }
@@ -2414,7 +2373,7 @@ function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
     throw TypeError(`Invalid profile_id ${profileId}`);
   }
   document.getElementById("profile-alerts").innerHTML = "";
-  let profile = {
+  const profile = {
     profile_id: profileId,
     // @ts-ignore
     name: document.getElementById("profile-name").value || null,
@@ -2454,7 +2413,7 @@ function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
   FMTReadProfile(
     profileId,
     function (e) {
-      let res = e.target.result || {};
+      const res = e.target.result || {};
       profile.macroSplit = res?.macroSplit || null;
       console.debug(res);
       console.debug(profile);
@@ -2472,30 +2431,30 @@ function FMTUpdateProfileForm(profileId, onsuccessFn, onerrorFn) {
 }
 function FMTFillMacro(baseID, nutrient, calories) {
   // Fills the macro specified by [nutrient] into macro form field
-  // DOM structure idefntified by [baseID] and based on [calories]
+  // DOM structure identified by [baseID] and based on [calories]
   // Returns the converted values for [nutrient]
   if (calories <= 0) {
     console.warn("Calories must be greater than 0 to fill macroes");
     return;
   }
-  let fatInput = document.getElementById(`${baseID}-fat`);
-  let carbInput = document.getElementById(`${baseID}-carb`);
-  let proteinInput = document.getElementById(`${baseID}-protein`);
+  const fatInput = document.getElementById(`${baseID}-fat`);
+  const carbInput = document.getElementById(`${baseID}-carb`);
+  const proteinInput = document.getElementById(`${baseID}-protein`);
   if (!(fatInput && carbInput && proteinInput)) {
     console.warn(`Couldn't find all required macroes inputs. Skipping.`);
     return;
   }
   // @ts-ignore
-  let fat = isNumber(fatInput.value) ? Number(fatInput.value) : 0;
+  const fat = isNumber(fatInput.value) ? Number(fatInput.value) : 0;
   // @ts-ignore
-  let carb = isNumber(carbInput.value) ? Number(carbInput.value) : 0;
+  const carb = isNumber(carbInput.value) ? Number(carbInput.value) : 0;
   // @ts-ignore
-  let protein = isNumber(proteinInput.value) ? Number(proteinInput.value) : 0;
+  const protein = isNumber(proteinInput.value) ? Number(proteinInput.value) : 0;
   // @ts-ignore
-  let fatUnit = document.getElementById(`${baseID}-fat-units-select`).value;
+  const fatUnit = document.getElementById(`${baseID}-fat-units-select`).value;
   // @ts-ignore
-  let carbUnit = document.getElementById(`${baseID}-carb-units-select`).value;
-  let proteinUnit = document.getElementById(
+  const carbUnit = document.getElementById(`${baseID}-carb-units-select`).value;
+  const proteinUnit = document.getElementById(
     `${baseID}-protein-units-select`
     // @ts-ignore
   ).value;
@@ -2503,7 +2462,7 @@ function FMTFillMacro(baseID, nutrient, calories) {
   let fats, carbs, proteins;
   let percentFat, percentCarb, percentProtein;
   let diff;
-  let resultsDiv = document.getElementById(`${baseID}-${nutrient}-result`);
+  const resultsDiv = document.getElementById(`${baseID}-${nutrient}-result`);
   switch (nutrient) {
     case "protein":
       fats = FMTConvertMacro("fat", fatUnit, fat, calories);
@@ -2578,7 +2537,7 @@ function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
     // @ts-ignore
     Fat: FMTConvertMacro("fat", fSelect.value, fatVal, caloriesVal)["%"],
   };
-  let sum = macroSplit.Protein + macroSplit.Carbohydrate + macroSplit.Fat;
+  const sum = macroSplit.Protein + macroSplit.Carbohydrate + macroSplit.Fat;
   if (sum != 100) {
     // Autofill based on settings
     // TODO - prompt user ?
@@ -2590,14 +2549,14 @@ function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
     // FIXME - Allow user to select different default macro
     macroSplit.Carbohydrate = conv["%"];
   }
-  let readAndUpdateOperation = () => {
+  const readAndUpdateOperation = () => {
     FMTReadProfile(
       profileId,
       function (e) {
-        let profile = e.target.result;
+        const profile = e.target.result;
         console.debug(profile);
         if (profile === undefined) {
-          let msg = `Profile with ID ${profileId} does not exist yet. Please create it first by filling in your Personal details and then click "Save Personal Details"`;
+          const msg = `Profile with ID ${profileId} does not exist yet. Please create it first by filling in your Personal details and then click "Save Personal Details"`;
           onerrorFn ||
             function () {
               console.error(`${msg}`);
@@ -2613,7 +2572,7 @@ function FMTUpdateMacroesForm(profileId, onsuccessFn, onerrorFn) {
             fmtAppInstance.today.getMonth(),
             fmtAppInstance.today.getDate(),
             function (res) {
-              let userGoals: IUserGoals = res.target.result;
+              const userGoals: IUserGoals = res.target.result;
               if (userGoals) {
                 userGoals.macroSplit = profile.macroSplit;
                 FMTUpdateUserGoalEntry(
@@ -2650,7 +2609,7 @@ function FMTDisplayProfile(profileId) {
     profileId,
     function (e) {
       // On Success
-      let profile = e.target.result;
+      const profile = e.target.result;
       console.debug(`Loaded Profile: ${JSON.stringify(profile)}`);
       if (profile === undefined) {
         return;
@@ -2696,8 +2655,8 @@ function FMTDisplayProfile(profileId) {
       activityMultiplier.value = profile.activityMultiplier;
       activityMultiplier.setAttribute("readonly", "true");
       activityMultiplier.classList.remove("d-none");
-      let bmr = Math.round(profile.bmr);
-      let tdee = Math.round(profile.tdee);
+      const bmr = Math.round(profile.bmr);
+      const tdee = Math.round(profile.tdee);
       document
         .getElementById("profile-bmr")
         .setAttribute("value", bmr.toString());
@@ -2713,7 +2672,7 @@ function FMTDisplayProfile(profileId) {
         "profile-formula"
       ).innerHTML = `* According to ${profile.formula} formula`;
       // Set Macro fields
-      let macroSplit = profile.macroSplit;
+      const macroSplit = profile.macroSplit;
       if (macroSplit) {
         // Set saved macro split
         // @ts-ignore
@@ -2746,7 +2705,7 @@ function FMTDisplayProfile(profileId) {
       pSelect.setAttribute(PREVIOUS_UNIT_ATTR, "%");
       cSelect.setAttribute(PREVIOUS_UNIT_ATTR, "%");
       fSelect.setAttribute(PREVIOUS_UNIT_ATTR, "%");
-      let _e = { currentTarget: pSelect };
+      const _e = { currentTarget: pSelect };
       FMTProfileSelectMacroUnits(
         _e,
         "protein",
@@ -2791,7 +2750,7 @@ function FMTCreateUnitSelectMenu(
 ) {
   const _fnName = "FMTCreateUnitSelectMenu";
   if (targetDiv) {
-    let selectId = `${baseName}${prefix ? `-${prefix}` : ""}-unit-select`;
+    const selectId = `${baseName}${prefix ? `-${prefix}` : ""}-unit-select`;
     let select = document.getElementById(selectId);
     if (select) {
       select.parentElement.removeChild(select);
@@ -2807,8 +2766,8 @@ function FMTCreateUnitSelectMenu(
         unitNames = unitNames.filter(unitFilerFn);
       }
       for (let j = 0; j < unitNames.length; j++) {
-        let unitName = unitNames[j];
-        let unit = unitsChart[unitName];
+        const unitName = unitNames[j];
+        const unit = unitsChart[unitName];
         if (!unit) {
           console.warn(
             `[${_fnName}] - ${unitName} couldn't be found in units chart`
@@ -2939,7 +2898,7 @@ function FMTCreateConsumablesTableRowElement(
   brandProp,
   eventListeners
 ) {
-  let consumableRow = document.createElement("tr");
+  const consumableRow = document.createElement("tr");
   consumableRow.setAttribute(idProp, consumableObj[idProp]);
   consumableRow.classList.add("fmt-consumable-table-row");
   consumableRow.innerHTML = `<th scope="row" class="${
@@ -3007,7 +2966,7 @@ function FMTDisplayConsumableTable(
       return;
   }
   const consumableTableBodyID = `${baseID}-${qualifier}-table-body`;
-  let consumableTableBody = document.getElementById(consumableTableBodyID);
+  const consumableTableBody = document.getElementById(consumableTableBodyID);
   if (consumableTableBody == null) {
     console.warn(
       `Consumable table not found (${consumableTableBodyID}). Skipping`,
@@ -3124,9 +3083,9 @@ function FMTDisplayConsumableTable(
   );
 
   dbFunc(function (e) {
-    let cursor = e.target.result;
+    const cursor = e.target.result;
     if (cursor) {
-      let record = cursor.value;
+      const record = cursor.value;
       const consumableRow = FMTCreateConsumablesTableRowElement(
         record,
         objectType,
@@ -3143,21 +3102,22 @@ function FMTDisplayConsumableTable(
   }, onerrorFn);
 }
 function FMTQueryConsumablesTable(baseID, qualifier, query) {
-  let tbody = document.getElementById(`${baseID}-${qualifier}-table-body`);
+  const tbody = document.getElementById(`${baseID}-${qualifier}-table-body`);
   // TODO - refactor selection by class name
-  let tableRows = tbody.getElementsByClassName("fmt-consumable-table-row");
+  const tableRows = tbody.getElementsByClassName("fmt-consumable-table-row");
   if (query === "") {
     for (let i = 0; i < tableRows.length; i++) {
-      let row = tableRows[i];
-      row.classList.remove("d-none");
+      tableRows[i].classList.remove("d-none");
     }
   } else {
     query = query.toLowerCase();
     for (let i = 0; i < tableRows.length; i++) {
-      let row = tableRows[i];
+      const row = tableRows[i];
       // TODO - refactor selection by class name
-      let _nameCell = row.getElementsByClassName("fmt-consumable-name-cell");
-      let _brandCell = row.getElementsByClassName("fmt-consumable-brand-cell");
+      const _nameCell = row.getElementsByClassName("fmt-consumable-name-cell");
+      const _brandCell = row.getElementsByClassName(
+        "fmt-consumable-brand-cell"
+      );
       let consumableName = "";
       let consumableBrand = "";
       if (_nameCell.length > 0) {
@@ -3263,16 +3223,15 @@ function FMTUICreateAdditionalNutrientsFromChart(
   qualifier = qualifier || "food";
   const unitsChart = fmtAppInstance.unitsChart;
   const additionalNutriDivId = `${baseScreenID}-${qualifier}-additional`;
-  const additionalNutriDiv = document.getElementById(additionalNutriDivId);
   const categories = Object.keys(fmtAppInstance.additionalNutrients);
   const baseID = `${baseScreenID}-${qualifier}-addi`;
   for (let j = 0; j < categories.length; j++) {
-    let category = categories[j];
-    let nutrientsInCategory = fmtAppInstance.additionalNutrients[category];
+    const category = categories[j];
+    const nutrientsInCategory = fmtAppInstance.additionalNutrients[category];
     FMTCreateNutrientCategoryHeading(category, additionalNutriDivId);
     for (let k = 0; k < nutrientsInCategory.length; k++) {
       const nutri = nutrientsInCategory[k];
-      const elements = FMTCreateAdditionalNutrientWithUnitsInput(
+      FMTCreateAdditionalNutrientWithUnitsInput(
         baseID,
         additionalNutriDivId,
         nutri,
@@ -3388,7 +3347,7 @@ function FMTUIPopulateNutritionalValue(
 
     if (createAdditionalNutrients === true) {
       additionalNutriDiv.innerHTML = "";
-      let emptyAdditionalNutrients = FMTCreateEmptyAdditionalNutrients();
+      const emptyAdditionalNutrients = FMTCreateEmptyAdditionalNutrients();
       FMTSumAdditionalNutrients(
         additionalNutrients,
         emptyAdditionalNutrients,
@@ -3416,7 +3375,6 @@ function FMTUIPopulateNutritionalValue(
           const baseElementId = `${idBase}-addi-${normalizedCategory}-${nutrientNameNormalized}`;
           const inputElementId = `${baseElementId}-input`;
           const selectId = `${baseElementId}-unit-select`;
-          const baseElement = document.getElementById(baseElementId);
           const inputElement = document.getElementById(inputElementId);
           const select = document.getElementById(selectId);
           if (inputElement) {
@@ -4075,7 +4033,7 @@ function FMTSaveConsumableItemScreen(
   const unitsChart = fmtAppInstance.unitsChart;
   const updateBtn = document.getElementById(`${baseScreenID}-save`);
 
-  let consumableObj: any = {
+  const consumableObj: any = {
     units: document.getElementById(
       `${baseScreenID}-${qualifier}-serving-unit-select`
       // @ts-ignore
@@ -4238,9 +4196,9 @@ function FMTUpdateConsumableValuesOnServingChange(
     `${baseScreenID}-${qualifier}-serving-unit-select`
     // @ts-ignore
   ).value;
-  let referenceServingSize =
+  const referenceServingSize =
     servingInputField.getAttribute("reference_serving");
-  let referenceServingUnits = servingInputField.getAttribute(
+  const referenceServingUnits = servingInputField.getAttribute(
     "reference_serving_units"
   );
   const conversionRes = calculateConsumableRatio(
@@ -4272,7 +4230,7 @@ function FMTUpdateConsumableValuesOnServingChange(
       undefined,
     ];
   } else {
-    let objectId = document
+    const objectId = document
       .getElementById(`${baseScreenID}-save`)
       .getAttribute(idProp);
     if (!isNumber(objectId)) {
@@ -4351,7 +4309,7 @@ function FMTCreateMacroProgressBar(
 function FMTOverviewCreateMealNode(mealEntryObj, validate) {
   let mealEntry = mealEntryObj;
   if (validate) {
-    let res = FMTValidateMealEntry(mealEntryObj);
+    const res = FMTValidateMealEntry(mealEntryObj);
     if (res.mealEntry == null || res.error != null) {
       console.error(
         `Error validating Meal Entry Object (${mealEntryObj}) . Error - ${res.error}`
@@ -4532,7 +4490,7 @@ function FMTOverviewCreateMealNode(mealEntryObj, validate) {
 function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
   let mealEntry = mealEntryObj;
   if (validate) {
-    let res = FMTValidateMealEntry(mealEntryObj);
+    const res = FMTValidateMealEntry(mealEntryObj);
     if (res.mealEntry == null || res.error != null) {
       console.error(
         `Error validating Meal Entry Object (${mealEntryObj}) . Error - ${res.error}`
@@ -4541,9 +4499,6 @@ function FMTOverviewCreateMealEntryNode(mealEntryObj, validate) {
     }
     mealEntry = res.mealEntry;
   }
-  const normalizedMealName = mealEntry.mealName
-    .replace(/ /g, "_")
-    .replace(/-/g, "_");
 
   const mealEntryDiv = document.createElement("div");
   const mealEntryId = `overview-meal-${mealEntry.entry_id}`;
@@ -4821,7 +4776,7 @@ function FMTOverviewUpdateTotalProgress(sourceID) {
 function FMTOverviewAddMealEntry(mealEntryObj, validate) {
   let mealEntry = mealEntryObj;
   if (validate) {
-    let res = FMTValidateMealEntry(mealEntryObj);
+    const res = FMTValidateMealEntry(mealEntryObj);
     if (res.mealEntry == null || res.error != null) {
       console.error(
         `Error validating Meal Entry Object (${mealEntryObj}) . Error - ${res.error}`
@@ -4839,7 +4794,7 @@ function FMTOverviewAddMealEntry(mealEntryObj, validate) {
     document.getElementById("overview-meals-container").appendChild(mealDiv);
     mealDiv = document.getElementById(`overview-meal-${normalizedMealName}`);
   }
-  let mealEntryDiv = FMTOverviewCreateMealEntryNode(mealEntry, false);
+  const mealEntryDiv = FMTOverviewCreateMealEntryNode(mealEntry, false);
   const w100 = document.createElement("div");
   w100.classList.add("w-100");
   const mealEntriesDiv = document.getElementById(
@@ -4857,7 +4812,7 @@ function FMTOverviewSetDateStrings(dateStr) {
 }
 function FMTLoadCurrentDayUserGoals(onsuccessFn, onerrorFn) {
   //Query for User Goals from currentDay onwards. Take either current day, or first day found after it
-  let userGoalsQueryOpts = {
+  const userGoalsQueryOpts = {
     queryType: "bound",
     lowerOpen: false,
     upperOpen: false,
@@ -4869,8 +4824,8 @@ function FMTLoadCurrentDayUserGoals(onsuccessFn, onerrorFn) {
   let goalCount = 0;
   let userGoalFound = false;
 
-  let onOpenUserGoalsCursorSuccessFn = function (ev) {
-    let cursor = ev.target.result;
+  const onOpenUserGoalsCursorSuccessFn = function (ev) {
+    const cursor = ev.target.result;
     if (cursor) {
       goalCount++;
       const validate = FMTValidateUserGoals(cursor.value);
@@ -4939,7 +4894,7 @@ function FMTLoadCurrentDayUserGoals(onsuccessFn, onerrorFn) {
       }
     }
   };
-  let onOpenUserGoalsCursorErrorFn = function () {
+  const onOpenUserGoalsCursorErrorFn = function () {
     const msg = `Failed loading Current Day - ${fmtAppInstance.currentDay.getFullYear()}-${fmtAppInstance.currentDay.getMonth()}-${fmtAppInstance.currentDay.getDate()}`;
     console.error(msg);
     FMTShowAlertBar(
@@ -4961,7 +4916,7 @@ function FMTLoadCurrentDayUserGoals(onsuccessFn, onerrorFn) {
 }
 function FMTOverviewLoadMealEntries(onsuccessFn, onerrorFn) {
   //Query for Meals based on current Profile ID and currentDate
-  let queryOpts = { queryType: "only" };
+  const queryOpts = { queryType: "only" };
   let entryCount = 0;
   document.getElementById("overview-meals-container").innerHTML = "";
   let lastMealEntry;
@@ -4985,9 +4940,9 @@ function FMTOverviewLoadMealEntries(onsuccessFn, onerrorFn) {
   }
 
   const onOpenCursorSuccessFn = function (event) {
-    let cursor = event.target.result;
+    const cursor = event.target.result;
     if (cursor) {
-      let mealEntryObj = cursor.value;
+      const mealEntryObj = cursor.value;
       FMTOverviewAddMealEntry(mealEntryObj, true);
       entryCount++;
       lastMealEntry = mealEntryObj;
@@ -5247,7 +5202,7 @@ function FMTUIAddIngredientBtnClick(
     return;
   }
 
-  let foodId = addBtn.getAttribute("food_id");
+  const foodId = addBtn.getAttribute("food_id");
   if (FMTIsValidId(foodId)) {
     addBtn.removeAttribute("food_id");
     const foodObj = FMTSaveConsumableItemScreen(
@@ -5473,7 +5428,7 @@ function FMTUIEditBtnClick(baseId, qualifier, objectType, event) {
       return;
   }
   const editBtn = document.getElementById(`${baseId}-edit`);
-  let consumableId = editBtn.getAttribute(idProp);
+  const consumableId = editBtn.getAttribute(idProp);
   if (!isValidIDFn(consumableId)) {
     const msg = `Invalid ${objectType} ID (${consumableId}). Please reload`;
     console.error(msg);
@@ -5614,7 +5569,7 @@ export function FMTToday() {
   fmtAppInstance.today = new Date();
 }
 function FMTSetCurrentDate(currentDate, onsuccessFn) {
-  const onerrorFn = function (e?: any) {
+  const onerrorFn = function (e?) {
     console.error(e);
   };
   if (!isDate(currentDate)) {
@@ -5653,9 +5608,9 @@ function FMTNextDay(onsuccessFn) {
 export const pageController = {
   hideAllTabs: function () {
     for (const i in fmtAppGlobals.tabIds) {
-      let s = "#" + fmtAppGlobals.tabIds[i];
+      const s = "#" + fmtAppGlobals.tabIds[i];
       $(s).removeClass("fmt-nav-item-container-active");
-      let areaToHideName = "#" + fmtAppGlobals.tabIds[i].split("-")[1];
+      const areaToHideName = "#" + fmtAppGlobals.tabIds[i].split("-")[1];
       $(areaToHideName).hide();
     }
   },
@@ -5664,10 +5619,10 @@ export const pageController = {
       return;
     }
     pageController.hideAllTabs();
-    let active = "#" + tabName;
+    const active = "#" + tabName;
     $(active).addClass("fmt-nav-item-container-active");
-    let tabId = tabName.split("-")[1];
-    let areaName = "#" + tabId;
+    const tabId = tabName.split("-")[1];
+    const areaName = "#" + tabId;
     $(areaName).show();
     fmtAppInstance.pageState.activeTab = tabId;
     pageController.closeDynamicScreens();
@@ -5683,10 +5638,10 @@ export const pageController = {
   },
   showFoods: function () {
     pageController.setTabActive("goto-foods");
-    let onsuccessFn = function () {
+    const onsuccessFn = function () {
       console.debug("[showFoods] - Foods loaded successfully");
     };
-    let onerrorFn = function (e) {
+    const onerrorFn = function (e) {
       console.error(e);
       FMTShowAlertBar("Failed loading food", "foods-alerts", "danger");
     };
@@ -5697,11 +5652,11 @@ export const pageController = {
       .setAttribute("consumables-table-body-id", foodsTableBodyID);
     const events = {
       click: function (e, objectType) {
-        let idProp, screenFunc, args;
+        let idProp, screenFunc, args, foodId, recipeId;
         switch (objectType) {
           case "Food Item":
             idProp = "food_id";
-            const foodId = Number(e.currentTarget.getAttribute(idProp));
+            foodId = Number(e.currentTarget.getAttribute(idProp));
             screenFunc = pageController.openViewFoodDynamicScreen;
             args = [
               foodId,
@@ -5716,7 +5671,7 @@ export const pageController = {
             break;
           case "Recipe Item":
             idProp = "recipe_id";
-            const recipeId = Number(e.currentTarget.getAttribute(idProp));
+            recipeId = Number(e.currentTarget.getAttribute(idProp));
             screenFunc = pageController.openViewRecipeDynamicScreen;
             args = [
               recipeId,
@@ -5753,8 +5708,8 @@ export const pageController = {
     document.getElementById("profile-alerts").innerHTML = "";
     FMTDisplayProfile(fmtAppInstance.currentProfileId);
   },
-  updateZIndexes: function (reverse: boolean = false) {
-    let sortedScreenNames = Object.keys(
+  updateZIndexes: function (reverse = false) {
+    const sortedScreenNames = Object.keys(
       fmtAppInstance.pageState.activeDynamicScreens
     ).sort(function (a, b) {
       return (
@@ -5775,7 +5730,7 @@ export const pageController = {
   },
   closeDynamicScreens: function () {
     $(".fmt-dynamic-screen").hide();
-    let screenNames = Object.keys(
+    const screenNames = Object.keys(
       fmtAppInstance.pageState.activeDynamicScreens
     );
     for (let i = 0; i < screenNames.length; i++) {
@@ -6091,7 +6046,6 @@ export const pageController = {
     const objectType = "Recipe Item";
     const optionsObj = undefined;
     const ingredients = [];
-    const additionalNutriDivId = `${screenID}-${qualifier}-additional`;
     const additionalNutrientsObj = FMTCreateEmptyAdditionalNutrients();
     const onAddIngredientClick = function () {
       const mealName =
@@ -6199,11 +6153,9 @@ export const pageController = {
     if (clear !== false) {
       clear = clear || true;
     }
-    const alertDivId = pageController.getAlertDivId();
     const screenID = "view-recipe-screen";
     const qualifier = "recipe";
     const objectType = "Recipe Item";
-    const addToMealBtn = document.getElementById(`${screenID}-save`);
     const editRecipeBtn = document.getElementById(`${screenID}-edit`);
     //Clear Screen if needed (Basically anytime except when updating values on serving change)
     if (clear) {
@@ -6331,21 +6283,21 @@ export const pageController = {
         "add-to-recipe-screen-heading"
       ).innerHTML = `Add to ${mealName}`;
     }
-    let onsuccessFn = function () {
+    const onsuccessFn = function () {
       console.debug("[openAddToMealDynamicScreen] - Foods loaded successfully");
     };
-    let onerrorFn = function (e) {
+    const onerrorFn = function (e) {
       FMTShowAlertBar("Failed loading foods", `${screenID}-alerts`, "danger");
       console.error(e);
     };
     const foodsTableBodyID = `${screenID}-food-table-body`;
     const events = {
       click: function (e, objectType) {
-        let idProp, screenFunc, args;
+        let idProp, screenFunc, args, foodId;
         switch (objectType) {
           case "Food Item":
             idProp = "food_id";
-            const foodId = Number(e.currentTarget.getAttribute(idProp));
+            foodId = Number(e.currentTarget.getAttribute(idProp));
             screenFunc = pageController.openViewFoodDynamicScreen;
             args = [
               foodId,
@@ -6361,7 +6313,7 @@ export const pageController = {
           default:
             return;
         }
-        const clickFn = function () {
+        fmtAppInstance.viewFoodAddIngredientFn = function () {
           FMTUIAddIngredientBtnClick(
             "view-food-screen",
             sourceID,
@@ -6383,7 +6335,6 @@ export const pageController = {
             false
           );
         };
-        fmtAppInstance.viewFoodAddIngredientFn = clickFn;
         screenFunc.apply(null, args);
       },
     };
@@ -6412,7 +6363,6 @@ export const pageController = {
       return;
     }
     recipeId = Number(recipeId);
-    const alertDivId = pageController.getAlertDivId();
     const screenID = "edit-recipe-screen";
     const qualifier = "recipe";
     const objectType = "Recipe Item";
@@ -6574,8 +6524,6 @@ export const pageController = {
     if (clear !== false) {
       clear = clear || true;
     }
-    const saveBtn = document.getElementById(`${screenID}-save`);
-    const delBtn = document.getElementById(`${screenID}-delete`);
     if (clear) {
       const onServingChange = (event) => {
         FMTUpdateConsumableValuesOnServingChange(
@@ -6687,10 +6635,10 @@ export const pageController = {
         "add-to-meal-screen-heading"
       ).innerHTML = `Add to ${mealIdentifierObj.meal_name}`;
     }
-    let onsuccessFn = function () {
+    const onsuccessFn = function () {
       console.debug("[openAddToMealDynamicScreen] - Foods loaded successfully");
     };
-    let onerrorFn = function (e) {
+    const onerrorFn = function (e) {
       // FMTShowAlert(`${screenID}-alerts`, "danger", "Failed loading food", fmtAppGlobals.defaultAlertScroll);
       console.error(e);
     };
@@ -6698,11 +6646,11 @@ export const pageController = {
     const recipesTableBodyID = `${screenID}-recipe-table-body`;
     const events = {
       click: function (e, objectType) {
-        let idProp, screenFunc, args;
+        let idProp, screenFunc, args, foodId, recipeId;
         switch (objectType) {
           case "Food Item":
             idProp = "food_id";
-            const foodId = Number(e.currentTarget.getAttribute(idProp));
+            foodId = Number(e.currentTarget.getAttribute(idProp));
             screenFunc = pageController.openViewFoodDynamicScreen;
             args = [
               foodId,
@@ -6717,7 +6665,7 @@ export const pageController = {
             break;
           case "Recipe Item":
             idProp = "recipe_id";
-            const recipeId = Number(e.currentTarget.getAttribute(idProp));
+            recipeId = Number(e.currentTarget.getAttribute(idProp));
             screenFunc = pageController.openViewRecipeDynamicScreen;
             args = [
               recipeId,
@@ -6769,7 +6717,6 @@ export const pageController = {
     if (clear !== false) {
       clear = clear || true;
     }
-    const alertDivId = pageController.getAlertDivId();
     const screenID = "edit-meal-entry-screen";
     const qualifier = "consumable";
     const objectType = "Meal Entry";
@@ -6869,12 +6816,11 @@ export const pageController = {
     return Object.keys(fmtAppInstance.pageState.activeDynamicScreens).length;
   },
   getAlertDivId: function () {
-    const alertDivId = `${
+    return `${
       pageController.openedDynamicScreensCount() > 0
         ? `${pageController.updateZIndexes(true)[0]}`
         : fmtAppInstance.pageState.activeTab
     }-alerts`;
-    return alertDivId;
   },
 };
 
@@ -6884,10 +6830,10 @@ export const pageController = {
 export function FMTLoadUnits(onloadedFn) {
   FMTReadAllUnits(
     function (e) {
-      let units = e.target.result;
+      const units = e.target.result;
       fmtAppInstance.unitsChart = {};
       for (let j in units) {
-        let unit = units[j];
+        const unit = units[j];
         fmtAppInstance.unitsChart[unit.name] = {
           value_in_grams: unit.value_in_grams,
           value_in_ml: unit.value_in_ml,
@@ -6914,14 +6860,14 @@ export function FMTLoadUnits(onloadedFn) {
 export function FMTLoadAdditionalNutrients(onloadedFn) {
   FMTReadAllNutrients(
     function (e) {
-      let addNutri = e.target.result;
+      const addNutri = e.target.result;
       fmtAppInstance.additionalNutrients = {};
-      for (let j in addNutri) {
-        let nutri = addNutri[j];
+      for (const j in addNutri) {
+        const nutri = addNutri[j];
         if (!fmtAppInstance.additionalNutrients[nutri.category]) {
           fmtAppInstance.additionalNutrients[nutri.category] = [];
         }
-        let _nutri = {
+        const _nutri = {
           name: nutri.name,
           default_unit: nutri.default_unit,
           help: nutri.help || null,
@@ -6949,7 +6895,7 @@ export function FMTLoadProfile(profile_id, onloadedFn, onNoProfileFn) {
   FMTReadProfile(
     fmtAppInstance.currentProfileId,
     function (e) {
-      let profile = e.target.result;
+      const profile = e.target.result;
       if (profile) {
         fmtAppInstance.currentProfile = profile;
         if (onloadedFn) {
@@ -6962,13 +6908,12 @@ export function FMTLoadProfile(profile_id, onloadedFn, onNoProfileFn) {
       }
     },
     //FIXME - make a standard error reporting call
-    // eslint-disable-next-line no-unused-vars
-    function (e) {
-      let _report = JSON.stringify({
+    function () {
+      const _report = JSON.stringify({
         globals: fmtAppGlobals,
         instance: fmtAppInstance,
       });
-      let msg = `Failed loading profiles. Please report problem on Github and include the following data:\n${_report}`;
+      const msg = `Failed loading profiles. Please report problem on Github and include the following data:\n${_report}`;
       throw ReferenceError(msg);
     }
   );
@@ -7161,9 +7106,9 @@ export function prepareEventHandlers() {
     );
   });
   $("#profile-macro-protein-fill").click(() => {
-    let baseID = "profile-macro";
-    let nutrient = "protein";
-    let caloriesDiv = document.getElementById("profile-daily-calories");
+    const baseID = "profile-macro";
+    const nutrient = "protein";
+    const caloriesDiv = document.getElementById("profile-daily-calories");
     if (
       !caloriesDiv ||
       // @ts-ignore
@@ -7177,13 +7122,13 @@ export function prepareEventHandlers() {
       return;
     }
     // @ts-ignore
-    let calories = Number(caloriesDiv.value);
+    const calories = Number(caloriesDiv.value);
     FMTFillMacro(baseID, nutrient, calories);
   });
   $("#profile-macro-carb-fill").click(() => {
-    let baseID = "profile-macro";
-    let nutrient = "carb";
-    let caloriesDiv = document.getElementById("profile-daily-calories");
+    const baseID = "profile-macro";
+    const nutrient = "carb";
+    const caloriesDiv = document.getElementById("profile-daily-calories");
     if (
       !caloriesDiv ||
       // @ts-ignore
@@ -7197,13 +7142,13 @@ export function prepareEventHandlers() {
       return;
     }
     // @ts-ignore
-    let calories = Number(caloriesDiv.value);
+    const calories = Number(caloriesDiv.value);
     FMTFillMacro(baseID, nutrient, calories);
   });
   $("#profile-macro-fat-fill").click(() => {
-    let baseID = "profile-macro";
-    let nutrient = "fat";
-    let caloriesDiv = document.getElementById("profile-daily-calories");
+    const baseID = "profile-macro";
+    const nutrient = "fat";
+    const caloriesDiv = document.getElementById("profile-daily-calories");
     if (
       !caloriesDiv ||
       // @ts-ignore
@@ -7217,12 +7162,12 @@ export function prepareEventHandlers() {
       return;
     }
     // @ts-ignore
-    let calories = Number(caloriesDiv.value);
+    const calories = Number(caloriesDiv.value);
     FMTFillMacro(baseID, nutrient, calories);
   });
 
   $("#save-profile-details").click(() => {
-    let onsuccessFn = function () {
+    const onsuccessFn = function () {
       let msg = "Profile updated successfully!";
       console.debug(
         `Profile ${fmtAppInstance.currentProfileId} updated successfully`
@@ -7231,8 +7176,8 @@ export function prepareEventHandlers() {
       FMTShowAlertBar(msg, "profile-alerts", "success");
       document.getElementById("profile-mid-indicator").click();
     };
-    let onerrorFn = function (msg) {
-      let _msg = "Error updating profile";
+    const onerrorFn = function (msg) {
+      const _msg = "Error updating profile";
       console.error(msg || "Error!");
       FMTShowAlertBar(_msg, "profile-alerts", "danger");
     };
@@ -7244,7 +7189,7 @@ export function prepareEventHandlers() {
   });
   $("#save-profile-macro").click(() => {
     let onsuccessFn = function () {
-      let msg = "Macro split updated successfully!";
+      const msg = "Macro split updated successfully!";
       console.debug(
         `Profile ${fmtAppInstance.currentProfileId} updated successfully`
       );
@@ -7252,7 +7197,7 @@ export function prepareEventHandlers() {
       FMTShowAlertBar(msg, "profile-alerts", "success");
     };
     let onerrorFn = function (msg) {
-      let _msg = "Error updating macro split";
+      const _msg = "Error updating macro split";
       console.error(msg || "Error!");
       FMTShowAlertBar(_msg, "profile-alerts", "danger");
     };
@@ -7286,12 +7231,12 @@ export function prepareEventHandlers() {
   });
   $("#add-food-screen-cancel").click(() => {
     if (fmtAppInstance.promptSettings.promptOnUnsavedFood) {
-      let inputs = document
+      const inputs = document
         .getElementById("add-food-screen")
         .getElementsByTagName("input");
       let prompt = false;
       for (let j = 0; j < inputs.length; j++) {
-        let val = inputs[j].value;
+        const val = inputs[j].value;
         if (val != null && val !== "") {
           prompt = true;
           break;
@@ -7858,27 +7803,27 @@ export function prepareEventHandlers() {
   //Search functions
   $("#foods-food-search").keyup((e) => {
     // @ts-ignore
-    let query = e.currentTarget.value;
+    const query = e.currentTarget.value;
     FMTQueryConsumablesTable("foods", "food", query);
   });
   $("#add-to-meal-screen-food-search").keyup((e) => {
     // @ts-ignore
-    let query = e.currentTarget.value;
+    const query = e.currentTarget.value;
     FMTQueryConsumablesTable("add-to-meal-screen", "food", query);
   });
   $("#foods-recipe-search").keyup((e) => {
     // @ts-ignore
-    let query = e.currentTarget.value;
+    const query = e.currentTarget.value;
     FMTQueryConsumablesTable("foods", "recipe", query);
   });
   $("#add-to-meal-screen-recipe-search").keyup((e) => {
     // @ts-ignore
-    let query = e.currentTarget.value;
+    const query = e.currentTarget.value;
     FMTQueryConsumablesTable("add-to-meal-screen", "recipe", query);
   });
   $("#add-to-recipe-screen-food-search").keyup((e) => {
     // @ts-ignore
-    let query = e.currentTarget.value;
+    const query = e.currentTarget.value;
     FMTQueryConsumablesTable("add-to-recipe-screen", "food", query);
   });
   $("#overview-date-prev").click(() => {
@@ -7887,44 +7832,36 @@ export function prepareEventHandlers() {
   $("#overview-date-next").click(() => {
     FMTNextDay(FMTOverviewLoadCurrentDay);
   });
-  // @ts-ignore
-  $(".carousel #profile-carousel").carousel({
+  ($(".carousel #profile-carousel") as JQueryCarousel).carousel({
     interval: false,
     wrap: false,
   });
   $("#profile-carousel").on("swiped-left", () => {
-    // @ts-ignore
-    $(".carousel").carousel("prev");
+    ($(".carousel") as JQueryCarousel).carousel("prev");
   });
   $("#profile-carousel").on("swiped-right", () => {
-    // @ts-ignore
-    $(".carousel").carousel("next");
+    ($(".carousel") as JQueryCarousel).carousel("next");
   });
   // Workaround for weird Boostrap carousel behavior...
   document.getElementById("profile-first-indicator").click();
-  // @ts-ignore
-  $('[data-toggle="tooltip"]').tooltip();
+  ($('[data-toggle="tooltip"]') as JQueryTooltip).tooltip();
   $("#profile-tdee-tooltip").on("shown.bs.tooltip", () => {
     setTimeout(() => {
-      // @ts-ignore
-      $("#profile-tdee-tooltip").tooltip("hide");
+      ($("#profile-tdee-tooltip") as JQueryTooltip).tooltip("hide");
     }, 3000);
   });
   $("#profile-bmr-tooltip").on("shown.bs.tooltip", () => {
     setTimeout(() => {
-      // @ts-ignore
-      $("#profile-bmr-tooltip").tooltip("hide");
+      ($("#profile-bmr-tooltip") as JQueryTooltip).tooltip("hide");
     }, 3000);
   });
   $("#profile-goto-macros").click(() => {
     document.getElementById("profile-last-indicator").click();
   });
   $("#profile-carousel-previous-chevron").click(() => {
-    // @ts-ignore
-    $(".carousel").carousel("prev");
+    ($(".carousel") as JQueryCarousel).carousel("prev");
   });
   $("#profile-carousel-next-chevron").click(() => {
-    // @ts-ignore
-    $(".carousel").carousel("next");
+    ($(".carousel") as JQueryCarousel).carousel("next");
   });
 }

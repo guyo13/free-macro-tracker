@@ -26,7 +26,6 @@ export function calculateConsumableRatio(
   inputUnitName: string,
   unitsChart: UnitChart
 ): ConsumableRatioResult {
-  const result = {};
   if (!unitsChart) {
     return { error: "Error - No Units loaded" };
   }
@@ -97,8 +96,7 @@ export function mifflinStJeorMale(
   heightCm: number,
   ageYears: number
 ): number {
-  let bmr = 10 * weightKg + 6.25 * heightCm - 5 * ageYears + 5;
-  return bmr;
+  return 10 * weightKg + 6.25 * heightCm - 5 * ageYears + 5;
 }
 
 export function mifflinStJeorFemale(
@@ -106,8 +104,7 @@ export function mifflinStJeorFemale(
   heightCm: number,
   ageYears: number
 ): number {
-  let bmr = 10 * weightKg + 6.25 * heightCm - 5 * ageYears - 161;
-  return bmr;
+  return 10 * weightKg + 6.25 * heightCm - 5 * ageYears - 161;
 }
 
 export function mifflinStJeor(
@@ -128,8 +125,7 @@ export function mifflinStJeor(
 
 export function katchMcArdle(weightKg: number, bodyfatReal: number): number {
   if (bodyfatReal > 0 && bodyfatReal < 1) {
-    let bmr = 370 + 21.6 * (1 - bodyfatReal) * weightKg;
-    return bmr;
+    return 370 + 21.6 * (1 - bodyfatReal) * weightKg;
   } else {
     return -1;
   }
