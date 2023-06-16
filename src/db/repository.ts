@@ -5,9 +5,9 @@
 import type {
   IDBCursorWithTypedValue,
   IDBTransactionModes,
+  KeyRangeSettings,
 } from "idb_wrapper.js";
 import type IDBWrapper from "idb_wrapper.js";
-import { type KeyRangeSettings } from "idb_wrapper.js/src/types";
 
 export interface IRepository {
   connection: IDBWrapper;

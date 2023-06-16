@@ -43,7 +43,7 @@ declare global {
 }
 
 // TODO - modify android app
-export declare var FMTAndroidPlatform: FMTAndroidInterface;
+export declare const FMTAndroidPlatform: FMTAndroidInterface;
 
 export default class FMTPlatform implements FMTPlatformInterface {
   #platform: string;
