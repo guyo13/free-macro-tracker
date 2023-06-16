@@ -28,10 +28,11 @@ license that can be found in the LICENSE file. -->
   import OnboardingScreen from "./components/OnboardingScreen.svelte";
   import { hasLocalStorage } from "./utils/browser";
   import Navbar from "./components/Navbar.svelte";
+  import Settings from "./components/Settings.svelte";
 
   const DEFAULT_PROFILE_ID = 1;
-  let isLoading: boolean = true;
-  let isOnboarding: boolean = false;
+  let isLoading = true;
+  let isOnboarding = false;
 
   function setUnitChart(units: IUnit[]) {
     fmtAppInstance.unitsChart = createUnitChart(units);
@@ -48,9 +49,9 @@ license that can be found in the LICENSE file. -->
     for (const category of categories.values()) {
       fmtAppInstance.additionalNutrients[category] = [];
     }
-    for (const nutrientDefition of nutrients) {
-      const category = nutrientDefition.category;
-      fmtAppInstance.additionalNutrients[category].push(nutrientDefition);
+    for (const nutrientDefinition of nutrients) {
+      const category = nutrientDefinition.category;
+      fmtAppInstance.additionalNutrients[category].push(nutrientDefinition);
     }
     console.debug(
       `Additional Nutrients loaded into Application instance ${JSON.stringify(
@@ -289,7 +290,7 @@ license that can be found in the LICENSE file. -->
         <div class="col-4 col-lg-2 fmt-center-text">
           <span
             id="overview-total-carbs"
-            class="fmt-font-1  fmt-font-color-violet d-none">0</span
+            class="fmt-font-1 fmt-font-color-violet d-none">0</span
           >
           <span
             id="overview-total-carbs-verb"
@@ -453,7 +454,7 @@ license that can be found in the LICENSE file. -->
                 <select
                   id="profile-weight-units"
                   name="profile-weight-units"
-                  class="custom-select fmt-select  fmt-center-text"
+                  class="custom-select fmt-select fmt-center-text"
                 >
                   <option value="Kg">Kg</option>
                   <option value="Lbs">Lbs</option>
@@ -826,66 +827,7 @@ license that can be found in the LICENSE file. -->
       </a>
     </div>
   </div>
-  <div id="settings" class="fmt-tab container-fluid">
-    <div id="settings-alerts" class="row justify-content-center" />
-    <div
-      class="row pt-1 pb-1 justify-content-center align-items-center fmt-bg-gainsboro"
-    >
-      <div class="col-12 col-lg-8 ml-1">
-        <h4 class="fmt-font-2 mb-0">Settings</h4>
-      </div>
-    </div>
-    <div id="settings-data-control" class="row justify-content-center mt-4">
-      <div class="col-12 col-lg-8 mb-4">
-        <h4 class="fmt-font-1-5 mb-0">Import and Export</h4>
-      </div>
-      <div class="col-12 col-lg-8 mb-1">
-        <div
-          id="settings-data-control-export"
-          class="fmt-list-tile fmt-bg-cultured"
-        >
-          <span
-            class="fmt-list-tile-body btn fmt-btn-outline-dark-green d-inline-block"
-            >Export Your Data
-          </span>
-          <span class="fal fa-download btn fmt-list-tile-trailing" />
-        </div>
-      </div>
-      <div class="col-12 col-lg-8 mb-1">
-        <div
-          id="settings-data-control-import"
-          class="fmt-list-tile fmt-bg-cultured"
-        >
-          <span
-            class="fmt-list-tile-body btn fmt-btn-outline-dark-green d-inline-block"
-            >Import JSON File
-          </span>
-          <span class="fal fa-file-upload btn fmt-list-tile-trailing" />
-        </div>
-      </div>
-      <div
-        id="settings-data-control-import-indiv"
-        class="input-group col-12 col-lg-8 mb-1 d-none"
-      >
-        <div class="input-group mb-3 mt-3">
-          <div class="custom-file">
-            <input
-              id="settings-data-control-import-file"
-              class="custom-file-input"
-              type="file"
-              accept="application/json"
-            />
-            <label
-              id="settings-data-control-import-file-label"
-              class="custom-file-label"
-              for="settings-data-control-import-file"
-              >Choose file to Import</label
-            >
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <Settings />
   <!--Dynamic Screens-->
   <div id="add-food-screen" class="fmt-dynamic-screen container-fluid">
     <div id="add-food-screen-alerts" class="row justify-content-center" />
