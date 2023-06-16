@@ -281,14 +281,14 @@ function FMTExportToJSONBlob(data, onsuccessFn, stringifyReplacerFn) {
 }
 
 function FMTDataToJSONArray(exportFn) {
-  let records = [];
-  let errors = [];
+  const records = [];
+  const errors = [];
   if (!(typeof exportFn === "function")) {
     return;
   }
 
   const onIterRecipesSuccFn = function (ev) {
-    let cursor = ev.target.result;
+    const cursor = ev.target.result;
     if (cursor) {
       const record = cursor.value;
       record["__db_table_name__"] = fmtAppGlobals.FMT_DB_RECIPES_STORE;
@@ -416,7 +416,7 @@ function FMTDataToJSONArray(exportFn) {
   });
 }
 function FMTDataToStructuredJSON(exportFn: (records: any) => any) {
-  let records = {};
+  const records = {};
   records[fmtAppGlobals.FMT_DB_UNITS_STORE] = [];
   records[fmtAppGlobals.FMT_DB_NUTRIENTS_STORE] = [];
   records[fmtAppGlobals.FMT_DB_FOODS_STORE] = [];
@@ -425,10 +425,10 @@ function FMTDataToStructuredJSON(exportFn: (records: any) => any) {
   records[fmtAppGlobals.FMT_DB_USER_GOALS_STORE] = {};
   records[fmtAppGlobals.FMT_DB_PROFILES_STORE] = [];
   // TODO Export User Settings after implementation
-  let errors = [];
+  const errors = [];
 
   const onIterRecipesSuccFn = function (ev) {
-    let cursor = ev.target.result;
+    const cursor = ev.target.result;
     if (cursor) {
       const record = cursor.value;
       records[fmtAppGlobals.FMT_DB_RECIPES_STORE].push(record);
@@ -468,7 +468,7 @@ function FMTDataToStructuredJSON(exportFn: (records: any) => any) {
   };
 
   const onIterFoodsSuccFn = function (ev) {
-    let cursor = ev.target.result;
+    const cursor = ev.target.result;
     if (cursor) {
       const record = cursor.value;
       records[fmtAppGlobals.FMT_DB_FOODS_STORE].push(record);
@@ -482,7 +482,7 @@ function FMTDataToStructuredJSON(exportFn: (records: any) => any) {
   };
 
   const onQueryMealEntriesSuccFn = function (ev) {
-    let cursor = ev.target.result;
+    const cursor = ev.target.result;
     if (cursor) {
       const record = cursor.value;
       if (
@@ -504,7 +504,7 @@ function FMTDataToStructuredJSON(exportFn: (records: any) => any) {
   };
 
   const onQueryUserGoalsSuccFn = function (ev) {
-    let cursor = ev.target.result;
+    const cursor = ev.target.result;
     if (cursor) {
       const record = cursor.value;
       if (!records[fmtAppGlobals.FMT_DB_USER_GOALS_STORE][record.profile_id]) {
@@ -2065,7 +2065,7 @@ function FMTShowAlert(divId, alertLevel, msg, scrollOptions = undefined) {
       window.scroll(scrollOptions);
     }
     setTimeout(() => {
-      let _ = document.getElementById(divId).getElementsByTagName("button");
+      const _ = document.getElementById(divId).getElementsByTagName("button");
       if (_.length > 0) _[0].click();
     }, 5000);
   }
@@ -5906,7 +5906,6 @@ export const pageController = {
     if (clear !== false) {
       clear = clear || true;
     }
-    const alertDivId = pageController.getAlertDivId();
     const screenID = "view-food-screen";
     const qualifier = "food";
     const objectType = "Food Item";
@@ -6832,7 +6831,7 @@ export function FMTLoadUnits(onloadedFn) {
     function (e) {
       const units = e.target.result;
       fmtAppInstance.unitsChart = {};
-      for (let j in units) {
+      for (const j in units) {
         const unit = units[j];
         fmtAppInstance.unitsChart[unit.name] = {
           value_in_grams: unit.value_in_grams,
@@ -7168,7 +7167,7 @@ export function prepareEventHandlers() {
 
   $("#save-profile-details").click(() => {
     const onsuccessFn = function () {
-      let msg = "Profile updated successfully!";
+      const msg = "Profile updated successfully!";
       console.debug(
         `Profile ${fmtAppInstance.currentProfileId} updated successfully`
       );
@@ -7188,7 +7187,7 @@ export function prepareEventHandlers() {
     );
   });
   $("#save-profile-macro").click(() => {
-    let onsuccessFn = function () {
+    const onsuccessFn = function () {
       const msg = "Macro split updated successfully!";
       console.debug(
         `Profile ${fmtAppInstance.currentProfileId} updated successfully`
@@ -7196,7 +7195,7 @@ export function prepareEventHandlers() {
       FMTDisplayProfile(fmtAppInstance.currentProfileId);
       FMTShowAlertBar(msg, "profile-alerts", "success");
     };
-    let onerrorFn = function (msg) {
+    const onerrorFn = function (msg) {
       const _msg = "Error updating macro split";
       console.error(msg || "Error!");
       FMTShowAlertBar(_msg, "profile-alerts", "danger");
