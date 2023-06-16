@@ -18,7 +18,7 @@ import type { RecordId } from "../models/record";
 const FMT_DB_FOODS_STORE = "fmt_foods";
 
 class FoodRepository extends Repository implements IFoodRepository {
-  async iterateFoods(): Promise<IDBCursorWithTypedValue<IFood>> {
+  iterateFoods(): Promise<IDBCursorWithTypedValue<IFood>> {
     return this.iterate<IFood>(IDBTransactionModes.Readonly);
   }
 
