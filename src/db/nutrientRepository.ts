@@ -27,21 +27,9 @@ class NutrientRepository extends Repository implements INutrientRepository {
     if (!this.isReady) {
       await this.connection.wait();
     }
-    return new Promise((resolve, reject) => {
-      const nutrientStore = this.connection.getObjectStore(
-        this.storeName,
-        IDBTransactionModes.Readonly
-      );
-      const getAllRequest = nutrientStore.getAll();
-      getAllRequest.onsuccess = (ev: Event) => {
-        // @ts-ignore
-        const nutrients: any[] | undefined = ev?.target?.result;
-        resolve(nutrients ? nutrients.map(NutrientDefinition.fromObject) : []);
-      };
-      getAllRequest.onerror = (_ev: Event) => {
-        reject("Failed getting all nutrients");
-      };
-    });
+    return (
+      await this.connection.getAll<INutrientDefinition>(this.storeName)
+    )?.map(NutrientDefinition.fromObject);
   }
 
   async getNutrient(
@@ -51,66 +39,19 @@ class NutrientRepository extends Repository implements INutrientRepository {
     if (!this.isReady) {
       await this.connection.wait();
     }
-    return new Promise((resolve, reject) => {
-      const nutrientStore = this.connection.getObjectStore(
-        this.storeName,
-        IDBTransactionModes.Readonly
-      );
-      const getRequest = nutrientStore.get([category, name]);
-      getRequest.onsuccess = (ev: Event) => {
-        //@ts-ignore
-        const result: any | undefined = ev?.target?.result;
-        try {
-          const nutrientDef = result
-            ? NutrientDefinition.fromObject(result)
-            : null;
-          resolve(nutrientDef);
-        } catch (err) {
-          reject(err);
-        }
-      };
-      getRequest.onerror = (_ev: Event) => {
-        reject(`Failed getting nutrient with key '${[category, name]}`);
-      };
-    });
+    const nutrient = await this.connection.get<INutrientDefinition>(
+      this.storeName,
+      [category, name]
+    );
+    return nutrient && NutrientDefinition.fromObject(nutrient);
   }
 
-  async addNutrient(nutrient: INutrientDefinition): Promise<void> {
-    if (!this.isReady) {
-      await this.connection.wait();
-    }
-    return new Promise((resolve, reject) => {
-      const nutrientStore = this.connection.getObjectStore(
-        this.storeName,
-        IDBTransactionModes.Readwrite
-      );
-      const addRequest = nutrientStore.add(nutrient);
-      addRequest.onsuccess = (_ev: Event) => {
-        resolve();
-      };
-      addRequest.onerror = (_ev: Event) => {
-        reject(`Failed adding nutrient ${JSON.stringify(nutrient)}`);
-      };
-    });
+  addNutrient(nutrient: INutrientDefinition): Promise<void> {
+    return this.add(nutrient);
   }
 
-  async updateNutrient(nutrient: INutrientDefinition): Promise<void> {
-    if (!this.isReady) {
-      await this.connection.wait();
-    }
-    return new Promise((resolve, reject) => {
-      const nutrientStore = this.connection.getObjectStore(
-        this.storeName,
-        IDBTransactionModes.Readwrite
-      );
-      const putRequest = nutrientStore.put(nutrient);
-      putRequest.onsuccess = (_ev: Event) => {
-        resolve();
-      };
-      putRequest.onerror = (_ev: Event) => {
-        reject(`Failed updating nutrient ${JSON.stringify(nutrient)}`);
-      };
-    });
+  updateNutrient(nutrient: INutrientDefinition): Promise<void> {
+    return this.update(nutrient);
   }
 
   async deleteNutrient(category: string, name: string): Promise<void> {
