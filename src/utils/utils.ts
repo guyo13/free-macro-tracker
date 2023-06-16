@@ -60,10 +60,10 @@ export function roundedToFixed(
   realNumber: number,
   decimalDigits: number
 ): string {
-  let rounded = Math.pow(10, decimalDigits);
+  const rounded = Math.pow(10, decimalDigits);
   return (Math.round(realNumber * rounded) / rounded).toFixed(decimalDigits);
 }
 
-export function isEmptyObject(obj?: Object) {
+export function isEmptyObject(obj?: object) {
   return Object.keys(obj ?? EMPTY_OBJ).length === 0;
 }
