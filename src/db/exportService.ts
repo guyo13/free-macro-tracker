@@ -52,6 +52,7 @@ class ExportService implements IExportService {
   }
 
   exportUserGoals(writer: CursorConsumer<IUserGoals>): Promise<void> {
+    // TODO - export as a Map of {<Profile Id> : IUserGoals[]}
     return this.#userGoalsRepository.iterateUserGoals(writer);
   }
 }
@@ -60,7 +61,6 @@ export interface IExportService {
   //     let records = {};
   //   records[fmtAppGlobals.FMT_DB_RECIPES_STORE] = [];
   //   records[fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE] = {};
-  //   records[fmtAppGlobals.FMT_DB_USER_GOALS_STORE] = {};
   exportUnits: (writer: CursorConsumer<IUnit>) => Promise<void>;
   exportNutrients: (
     writer: CursorConsumer<INutrientDefinition>
