@@ -19,7 +19,7 @@ import UserGoals from "../models/userGoals";
 const FMT_DB_USER_GOALS_STORE = "fmt_user_goals";
 
 class UserGoalsRepository extends Repository implements IUserGoalsRepository {
-  async iterateUserGoals(): Promise<IDBCursorWithTypedValue<IUserGoals>> {
+  iterateUserGoals(): Promise<IDBCursorWithTypedValue<IUserGoals>> {
     return this.iterate<IUserGoals>(IDBTransactionModes.Readonly);
   }
 
@@ -32,65 +32,20 @@ class UserGoalsRepository extends Repository implements IUserGoalsRepository {
     if (!this.isReady) {
       await this.connection.wait();
     }
-    return new Promise((resolve, reject) => {
-      const store = this.connection.getObjectStore(
-        this.storeName,
-        IDBTransactionModes.Readonly
-      );
-      const key = [profileId, year, month, day];
-      const getRequest = store.get(key);
-      getRequest.onsuccess = (ev: Event) => {
-        // @ts-ignore
-        const result: any | undefined = ev?.target?.result;
-        try {
-          const userGoals = result ? UserGoals.fromObject(result) : null;
-          resolve(userGoals);
-        } catch (err) {
-          reject(err);
-        }
-      };
-      getRequest.onerror = (_ev: Event) => {
-        reject(`Failed getting user goals with key ${key}`);
-      };
-    });
+    const key = [profileId, year, month, day];
+    const userGoals = await this.connection.get<IUserGoals>(
+      this.storeName,
+      key
+    );
+    return userGoals && UserGoals.fromObject(userGoals);
   }
 
-  async addUserGoals(userGoals: IUserGoals): Promise<void> {
-    if (!this.isReady) {
-      await this.connection.wait();
-    }
-    return new Promise((resolve, reject) => {
-      const store = this.connection.getObjectStore(
-        this.storeName,
-        IDBTransactionModes.Readwrite
-      );
-      const addRequest = store.add(userGoals);
-      addRequest.onsuccess = (_ev: Event) => {
-        resolve();
-      };
-      addRequest.onerror = (_ev: Event) => {
-        reject(`Failed adding user goals ${JSON.stringify(userGoals)}`);
-      };
-    });
+  addUserGoals(userGoals: IUserGoals): Promise<void> {
+    return this.add(userGoals);
   }
 
-  async updateUserGoals(userGoals: IUserGoals): Promise<void> {
-    if (!this.isReady) {
-      await this.connection.wait();
-    }
-    return new Promise((resolve, reject) => {
-      const store = this.connection.getObjectStore(
-        this.storeName,
-        IDBTransactionModes.Readwrite
-      );
-      const putRequest = store.put(userGoals);
-      putRequest.onsuccess = (_ev: Event) => {
-        resolve();
-      };
-      putRequest.onerror = (_ev: Event) => {
-        reject(`Failed updating user goals ${JSON.stringify(userGoals)}`);
-      };
-    });
+  updateUserGoals(userGoals: IUserGoals): Promise<void> {
+    return this.update(userGoals);
   }
 
   queryByProfileAndDate(
