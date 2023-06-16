@@ -48,11 +48,8 @@ class FoodRepository extends Repository implements IFoodRepository {
     return this.updateRecord(food);
   }
 
-  async deleteFood(id: RecordId): Promise<void> {
-    if (!this.isReady) {
-      await this.connection.wait();
-    }
-    return this.connection.delete(this.storeName, id);
+  deleteFood(id: RecordId): Promise<void> {
+    return this.delete(id);
   }
 }
 

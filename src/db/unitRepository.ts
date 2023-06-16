@@ -46,23 +46,8 @@ class UnitRepository extends Repository implements IUnitRepository {
     return this.update(unit);
   }
 
-  async deleteUnit(unitName: string): Promise<void> {
-    if (!this.isReady) {
-      await this.connection.wait();
-    }
-    return new Promise((resolve, reject) => {
-      const unitStore = this.connection.getObjectStore(
-        this.storeName,
-        IDBTransactionModes.Readwrite
-      );
-      const deleteRequest = unitStore.delete(unitName);
-      deleteRequest.onsuccess = (_ev: Event) => {
-        resolve();
-      };
-      deleteRequest.onerror = (_ev: Event) => {
-        reject(`Failed deleting unit with name '${unitName}`);
-      };
-    });
+  deleteUnit(unitName: string): Promise<void> {
+    return this.delete(unitName);
   }
 }
 

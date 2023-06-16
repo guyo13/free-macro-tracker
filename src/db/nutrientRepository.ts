@@ -54,23 +54,8 @@ class NutrientRepository extends Repository implements INutrientRepository {
     return this.update(nutrient);
   }
 
-  async deleteNutrient(category: string, name: string): Promise<void> {
-    if (!this.isReady) {
-      await this.connection.wait();
-    }
-    return new Promise((resolve, reject) => {
-      const nutrientStore = this.connection.getObjectStore(
-        this.storeName,
-        IDBTransactionModes.Readwrite
-      );
-      const deleteRequest = nutrientStore.delete([category, name]);
-      deleteRequest.onsuccess = (_ev: Event) => {
-        resolve();
-      };
-      deleteRequest.onerror = (_ev: Event) => {
-        reject(`Failed deleting nutrient with key '${[category, name]}`);
-      };
-    });
+  deleteNutrient(category: string, name: string): Promise<void> {
+    return this.delete([category, name]);
   }
 }
 

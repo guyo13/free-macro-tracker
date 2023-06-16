@@ -71,6 +71,14 @@ class Repository {
 
     return this.connection.put(this.storeName, object);
   }
+
+  protected async delete(query: IDBValidKey | IDBKeyRange) {
+    if (!this.isReady) {
+      await this.connection.wait();
+    }
+
+    return this.connection.delete(this.storeName, query);
+  }
 }
 
 export default Repository;

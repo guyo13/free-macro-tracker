@@ -52,23 +52,8 @@ class ProfileRepository extends Repository implements IProfileRepository {
     return this.update(userProfile);
   }
 
-  async deleteProfile(profileId: RecordId): Promise<void> {
-    if (!this.isReady) {
-      await this.connection.wait();
-    }
-    return new Promise((resolve, reject) => {
-      const profileStore = this.connection.getObjectStore(
-        this.storeName,
-        IDBTransactionModes.Readwrite
-      );
-      const deleteRequest = profileStore.delete(profileId);
-      deleteRequest.onsuccess = (_ev: Event) => {
-        resolve();
-      };
-      deleteRequest.onerror = (_ev: Event) => {
-        reject(`Failed deleting profile with id '${profileId}`);
-      };
-    });
+  deleteProfile(profileId: RecordId): Promise<void> {
+    return this.delete(profileId);
   }
 }
 
