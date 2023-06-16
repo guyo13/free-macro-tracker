@@ -6,7 +6,6 @@ const sveltePreprocess = require("svelte-preprocess");
 const mode = process.env.NODE_ENV || "development";
 const prod = mode === "production";
 console.log("mode", mode);
-
 module.exports = {
   target: "web",
   entry: {
@@ -25,6 +24,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, "public", "build"),
     filename: "[name].bundle.js",
+    clean: true,
   },
   module: {
     rules: [
@@ -45,14 +45,22 @@ module.exports = {
             hotReload: !prod,
             preprocess: sveltePreprocess({
               sourceMap: !prod,
-              typescript: { tsconfigFile: "tsconfig.json" },
             }),
           },
         },
       },
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader"],
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: "css-loader",
+            options: {
+              sourceMap: !prod,
+              url: false,
+            },
+          },
+        ],
       },
       {
         // required to prevent errors from Svelte on Webpack 5+
