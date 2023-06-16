@@ -26,105 +26,40 @@ class FoodRepository extends Repository implements IFoodRepository {
     if (!this.isReady) {
       await this.connection.wait();
     }
-    return new Promise((resolve, reject) => {
-      const foodStore = this.connection.getObjectStore(
-        this.storeName,
-        IDBTransactionModes.Readonly
-      );
-      const getAllRequest = foodStore.getAll();
-      getAllRequest.onsuccess = (ev: Event) => {
-        // @ts-ignore
-        const foods: any[] | undefined = ev?.target?.result;
-        resolve(foods ? foods.map(Food.fromObject) : []);
-      };
-      getAllRequest.onerror = (_ev: Event) => {
-        reject("Failed getting all foods");
-      };
-    });
+    return (await this.connection.getAll<IFood>(this.storeName))?.map(
+      Food.fromObject
+    );
   }
 
   async getFood(id: RecordId): Promise<IFood | null> {
     if (!this.isReady) {
       await this.connection.wait();
     }
-    return new Promise((resolve, reject) => {
-      const foodStore = this.connection.getObjectStore(
-        this.storeName,
-        IDBTransactionModes.Readonly
-      );
-      const getRequest = foodStore.get(id);
-      getRequest.onsuccess = (ev: Event) => {
-        // @ts-ignore
-        const result: any | undefined = ev?.target?.result;
-        try {
-          const food = result ? Food.fromObject(result) : null;
-          resolve(food);
-        } catch (err) {
-          reject(err);
-        }
-      };
-      getRequest.onerror = (_ev: Event) => {
-        reject(`Failed getting food with id ${id}`);
-      };
-    });
+
+    const food = await this.connection.get<IFood>(this.storeName, id);
+    return food && Food.fromObject(food);
   }
 
   async addFood(food: IFood): Promise<void> {
     if (!this.isReady) {
       await this.connection.wait();
     }
-    return new Promise((resolve, reject) => {
-      const foodStore = this.connection.getObjectStore(
-        this.storeName,
-        IDBTransactionModes.Readwrite
-      );
-      const addRequest = foodStore.add(food);
-      addRequest.onsuccess = (_ev: Event) => {
-        resolve();
-      };
-      addRequest.onerror = (_ev: Event) => {
-        reject(`Failed adding food ${JSON.stringify(food)}`);
-      };
-    });
+    return this.connection.add(this.storeName, food);
   }
 
   async updateFood(food: IFood): Promise<void> {
     if (!this.isReady) {
       await this.connection.wait();
     }
-    return new Promise((resolve, reject) => {
-      updateRecordDates(food);
-      const foodStore = this.connection.getObjectStore(
-        this.storeName,
-        IDBTransactionModes.Readwrite
-      );
-      const putRequest = foodStore.put(food);
-      putRequest.onsuccess = (_ev: Event) => {
-        resolve();
-      };
-      putRequest.onerror = (_ev: Event) => {
-        reject(`Failed updating food ${JSON.stringify(food)}`);
-      };
-    });
+    updateRecordDates(food);
+    return this.connection.put(this.storeName, food);
   }
 
   async deleteFood(id: RecordId): Promise<void> {
     if (!this.isReady) {
       await this.connection.wait();
     }
-    return new Promise((resolve, reject) => {
-      const foodStore = this.connection.getObjectStore(
-        this.storeName,
-        IDBTransactionModes.Readwrite
-      );
-      const deleteRequest = foodStore.delete(id);
-      deleteRequest.onsuccess = (_ev: Event) => {
-        resolve();
-      };
-      deleteRequest.onerror = (_ev: Event) => {
-        reject(`Failed deleting food with id ${id}`);
-      };
-    });
+    return this.connection.delete(this.storeName, id);
   }
 }
 
