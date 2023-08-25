@@ -63,9 +63,7 @@ const nutrientRepositoryProvider = derived<
   Readable<IDBWrapper>,
   INutrientRepository
 >(idbConnector, (connector, set) => {
-  let isInitialized = false;
-  if (idbConnector && !isInitialized) {
-    isInitialized = true;
+  if (idbConnector) {
     set(new NutrientRepository(connector, FMT_DB_NUTRIENTS_STORE));
   }
 });

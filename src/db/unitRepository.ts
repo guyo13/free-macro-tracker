@@ -51,9 +51,7 @@ class UnitRepository extends Repository implements IUnitRepository {
 const unitRepositoryProvider = derived<Readable<IDBWrapper>, IUnitRepository>(
   idbConnector,
   (connector, set) => {
-    let isInitialized = false;
-    if (idbConnector && !isInitialized) {
-      isInitialized = true;
+    if (idbConnector) {
       set(new UnitRepository(connector, FMT_DB_UNITS_STORE));
     }
   }

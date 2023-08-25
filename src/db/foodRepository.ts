@@ -53,9 +53,7 @@ class FoodRepository extends Repository implements IFoodRepository {
 const foodRepositoryProvider = derived<Readable<IDBWrapper>, IFoodRepository>(
   idbConnector,
   (connector, set) => {
-    let isInitialized = false;
-    if (idbConnector && !isInitialized) {
-      isInitialized = true;
+    if (idbConnector) {
       set(new FoodRepository(connector, FMT_DB_FOODS_STORE));
     }
   }

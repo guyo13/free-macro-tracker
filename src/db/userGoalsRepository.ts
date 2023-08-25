@@ -64,9 +64,7 @@ const userGoalsRepositoryProvider = derived<
   Readable<IDBWrapper>,
   IUserGoalsRepository
 >(idbConnector, (connector, set) => {
-  let isInitialized = false;
-  if (idbConnector && !isInitialized) {
-    isInitialized = true;
+  if (idbConnector) {
     set(new UserGoalsRepository(connector, FMT_DB_USER_GOALS_STORE));
   }
 });

@@ -58,9 +58,7 @@ const profileRepositoryProvider = derived<
   Readable<IDBWrapper>,
   IProfileRepository
 >(idbConnector, (connector, set) => {
-  let isInitialized = false;
-  if (idbConnector && !isInitialized) {
-    isInitialized = true;
+  if (idbConnector) {
     set(new ProfileRepository(connector, FMT_DB_PROFILES_STORE));
   }
 });
