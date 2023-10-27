@@ -36,6 +36,8 @@ import type { RecordId } from "./models/record";
 import type { IMealIdentifier } from "./models/mealIdentifier";
 import type { IMacroSplit } from "./models/macroSplit";
 import UserProfile from "./models/userProfile";
+import MealEntry, { type IMealEntry } from "./models/mealEntry";
+import { updateRecordDates } from "./models/record";
 
 // TODO - Temporary - until this is migrated to its own store
 export const platformInterface = new FMTPlatform();
@@ -1069,99 +1071,44 @@ function FMTValidateMacroSplit(macroSplitObj): {
 
 function FMTValidateMealEntry(mealEntryObj): {
   error?: string;
-  mealEntry?: any;
+  mealEntry?: IMealEntry;
 } {
-  if (
-    !isNumber(mealEntryObj.profile_id) ||
-    !Number.isInteger(Number(mealEntryObj.profile_id))
-  ) {
-    return {
-      error: `Profile id must be an integer, got (${mealEntryObj.profile_id})`,
-    };
-  }
-  if (
-    !isDate(new Date(mealEntryObj.year, mealEntryObj.month, mealEntryObj.day))
-  ) {
-    return {
-      error: `Year Month and Day must be valid integers, got (${mealEntryObj.year}, ${mealEntryObj.month}, ${mealEntryObj.day})`,
-    };
-  }
-  if (mealEntryObj.mealName == null || mealEntryObj.mealName === "") {
-    return {
-      error: `Meal Name must not be null or empty string (got ${mealEntryObj.mealName})`,
-    };
-  }
-  if (
-    !!mealEntryObj.lastModified &&
-    !isDate(new Date(mealEntryObj.lastModified))
-  ) {
-    return {
-      error: `'lastModified ' value must be valid Date (got ${mealEntryObj.lastModified})`,
-    };
-  }
-  if (
-    mealEntryObj.tzMinutes !== undefined &&
-    !Number.isInteger(mealEntryObj.tzMinutes)
-  ) {
-    return { error: `Invalid timezone ${mealEntryObj.tzMinutes}` };
-  }
-  if (
-    !isNumber(mealEntryObj.consumable_id) ||
-    !Number.isInteger(Number(mealEntryObj.consumable_id))
-  ) {
-    return {
-      error: `Consumable id must be an integer, got (${mealEntryObj.consumable_id})`,
-    };
-  }
-  if (
-    mealEntryObj.consumableName == null ||
-    mealEntryObj.consumableName === ""
-  ) {
-    return {
-      error: `Consumable Name  must not be null or empty string (got ${mealEntryObj.consumableName})`,
-    };
-  }
-  if (!isNumber(mealEntryObj.serving) || Number(mealEntryObj.serving) <= 0) {
-    return {
-      error: `Serving must be a positive number (got ${mealEntryObj.serving})`,
-    };
-  }
-  if (mealEntryObj.units == null || mealEntryObj.units === "") {
-    return { error: `Units must not be null` };
-  }
-  if (mealEntryObj.nutritionalValue == null) {
-    return { error: `Nutritional Value must not be empty` };
-  }
-  const nutriValueValidateRes = FMTValidateNutritionalValue(
-    mealEntryObj.nutritionalValue,
-    fmtAppInstance.unitsChart
-  );
-  if (
-    nutriValueValidateRes.nutritionalValue == null ||
-    nutriValueValidateRes.error != null
-  ) {
-    return { error: nutriValueValidateRes.error };
+  try {
+    const mealEntry = MealEntry.fromObject(mealEntryObj);
+    const nutriValueValidateRes = FMTValidateNutritionalValue(
+      mealEntryObj.nutritionalValue,
+      fmtAppInstance.unitsChart
+    );
+    if (
+      nutriValueValidateRes.nutritionalValue == null ||
+      nutriValueValidateRes.error != null
+    ) {
+      throw nutriValueValidateRes.error;
+    }
+    return { mealEntry };
+  } catch (error) {
+    return { error };
   }
 
-  const mealEntry = {
-    profile_id: Number(mealEntryObj.profile_id),
-    year: Number(mealEntryObj.year),
-    month: Number(mealEntryObj.month),
-    day: Number(mealEntryObj.day),
-    mealName: mealEntryObj.mealName,
-    lastModified: mealEntryObj.lastModified,
-    tzMinutes: mealEntryObj.tzMinutes,
-    consumable_id: Number(mealEntryObj.consumable_id),
-    consumableName: mealEntryObj.consumableName,
-    consumableBrand: mealEntryObj.consumableBrand,
-    consumableType: mealEntryObj.consumableType || "",
-    serving: mealEntryObj.serving,
-    units: mealEntryObj.units,
-    nutritionalValue: nutriValueValidateRes.nutritionalValue,
-    entry_id: mealEntryObj.entry_id,
-  };
-
-  return { mealEntry };
+  // const mealEntry = {
+  //   profile_id: Number(mealEntryObj.profile_id),
+  //   year: Number(mealEntryObj.year),
+  //   month: Number(mealEntryObj.month),
+  //   day: Number(mealEntryObj.day),
+  //   mealName: mealEntryObj.mealName,
+  //   lastModified: mealEntryObj.lastModified,
+  //   tzMinutes: mealEntryObj.tzMinutes,
+  //   consumable_id: Number(mealEntryObj.consumable_id),
+  //   consumableName: mealEntryObj.consumableName,
+  //   consumableBrand: mealEntryObj.consumableBrand,
+  //   consumableType: mealEntryObj.consumableType || "",
+  //   serving: mealEntryObj.serving,
+  //   units: mealEntryObj.units,
+  //   nutritionalValue: nutriValueValidateRes.nutritionalValue,
+  //   entry_id: mealEntryObj.entry_id,
+  // };
+  //
+  // return { mealEntry };
 }
 
 // TODO - Remove and use MealIdentifier class
@@ -1334,6 +1281,7 @@ function FMTValidateRecipeObject(
 
 //Functions - DB - Meal Entries
 function FMTAddMealEntry(mealEntryObj, onsuccessFn, onerrorFn) {
+  updateRecordDates(mealEntryObj);
   const res = FMTValidateMealEntry(mealEntryObj);
   if (res.error != null || res.mealEntry == null) {
     onerrorFn =
@@ -1344,9 +1292,6 @@ function FMTAddMealEntry(mealEntryObj, onsuccessFn, onerrorFn) {
     return onerrorFn();
   }
   const mealEntry = res.mealEntry;
-  const date = new Date();
-  mealEntry.lastModified = date.toISOString();
-  mealEntry.tzMinutes = date.getTimezoneOffset();
   const mealEntriesStore = getObjectStore(
     fmtAppGlobals.FMT_DB_MEAL_ENTRIES_STORE,
     IDBTransactionModes.Readwrite
@@ -5383,7 +5328,7 @@ function FMTUIAddtoMealBtnClick(baseId, qualifier, objectType, event) {
     consumableName: consumableValues[nameProp],
     consumableBrand: consumableValues[brandProp],
     consumableType: objectType,
-    serving: consumableValues.referenceServing,
+    serving: Number(consumableValues.referenceServing),
     units: consumableValues.units,
     nutritionalValue: consumableValues.nutritionalValue,
   };
@@ -6768,20 +6713,29 @@ export const pageController = {
           const updateBtn = document.getElementById(`${screenID}-save`);
           //TODO move it to the generic function
           delBtn.setAttribute("entry_id", entry_id);
-          updateBtn.setAttribute("meal_year", validateResult.mealEntry.year);
-          updateBtn.setAttribute("meal_month", validateResult.mealEntry.month);
-          updateBtn.setAttribute("meal_day", validateResult.mealEntry.day);
+          updateBtn.setAttribute(
+            "meal_year",
+            validateResult.mealEntry.year.toString()
+          );
+          updateBtn.setAttribute(
+            "meal_month",
+            validateResult.mealEntry.month.toString()
+          );
+          updateBtn.setAttribute(
+            "meal_day",
+            validateResult.mealEntry.day.toString()
+          );
           updateBtn.setAttribute(
             "meal_name",
             validateResult.mealEntry.mealName
           );
           updateBtn.setAttribute(
             "profile_id",
-            validateResult.mealEntry.profile_id
+            validateResult.mealEntry.profile_id.toString()
           );
           updateBtn.setAttribute(
             "consumable_id",
-            validateResult.mealEntry.consumable_id
+            validateResult.mealEntry.consumable_id.toString()
           );
         }
         FMTPopulateSavedValuesInConsumableItemScreen(

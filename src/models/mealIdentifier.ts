@@ -2,11 +2,13 @@
 // All rights reserved. Use of this source code is governed by a GNU GPL
 // license that can be found in the LICENSE file.
 
+import { isNullOrEmptyString, isString } from "../utils/utils";
+
 export interface IMealIdentifier {
+  profile_id: number;
   meal_year: number;
   meal_month: number;
   meal_day: number;
-  profile_id: number;
   meal_name: string;
 }
 
@@ -24,7 +26,13 @@ export default class MealIdentifier implements IMealIdentifier {
     meal_day: number,
     meal_name: string
   ) {
-    MealIdentifier.validate(profile_id, meal_year, meal_month, meal_day);
+    MealIdentifier.validate(
+      profile_id,
+      meal_year,
+      meal_month,
+      meal_day,
+      meal_name
+    );
     this.profile_id = profile_id;
     this.meal_year = meal_year;
     this.meal_month = meal_month;
@@ -36,7 +44,7 @@ export default class MealIdentifier implements IMealIdentifier {
     return this.fromObject(mealIdentifier);
   }
 
-  static fromObject(object: any): MealIdentifier {
+  static fromObject(object): MealIdentifier {
     const { profile_id, meal_year, meal_month, meal_day, meal_name } = object;
     return new MealIdentifier(
       profile_id,
@@ -47,12 +55,7 @@ export default class MealIdentifier implements IMealIdentifier {
     );
   }
 
-  static validate(
-    profile_id: any,
-    meal_year: any,
-    meal_month: any,
-    meal_day: any
-  ) {
+  static validate(profile_id, meal_year, meal_month, meal_day, meal_name) {
     if (!Number.isInteger(meal_year) || meal_year < 0) {
       throw `Meal Year must be a positive integer. Got '${meal_year}'`;
     }
@@ -64,6 +67,9 @@ export default class MealIdentifier implements IMealIdentifier {
     }
     if (!Number.isInteger(profile_id)) {
       throw `Profile ID must be a valid integer. Got '${profile_id}'`;
+    }
+    if (isNullOrEmptyString(meal_name) || !isString(meal_name)) {
+      throw `Meal Name must not be null or empty string. Got '${meal_name}'`;
     }
   }
 }

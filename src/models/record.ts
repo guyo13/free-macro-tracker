@@ -6,13 +6,25 @@ import { isDateString } from "../utils/utils";
 
 export type RecordId = number;
 
-export function validateRecord(id: any, lastModified: any, tzMinutes: any) {
+export function validateRecord(id, lastModified, tzMinutes) {
+  validateRecordId(id);
+  validateDateString(lastModified);
+  validateTzMinutes(tzMinutes);
+}
+
+export function validateRecordId(id) {
   if (!Number.isInteger(id)) {
     throw `ID must be a valid integer. Got '${id}'`;
   }
-  if (!isDateString(lastModified)) {
-    throw `Invalid last modified date. Got '${lastModified}'`;
+}
+
+export function validateDateString(ds) {
+  if (!isDateString(ds)) {
+    throw `Invalid date. Got '${ds}'`;
   }
+}
+
+export function validateTzMinutes(tzMinutes) {
   if (!Number.isInteger(tzMinutes)) {
     throw `Invalid timezone offset value. Got '${tzMinutes}'`;
   }

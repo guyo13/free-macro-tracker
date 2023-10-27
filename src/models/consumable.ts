@@ -13,15 +13,16 @@ export enum ConsumableType {
 }
 
 export function validateConsumable(
-  name: any,
-  _brand: any,
-  referenceServing: any,
-  units: any,
-  nutritionalValue: any
+  name,
+  _brand,
+  referenceServing,
+  units,
+  nutritionalValue
 ) {
   if (!name) {
     throw "Name must not be empty.";
   }
+  // TODO - Validate brand!
   if (!isPositiveNumber(referenceServing)) {
     throw `Reference serving must be positive number. Got '${referenceServing}'`;
   }
