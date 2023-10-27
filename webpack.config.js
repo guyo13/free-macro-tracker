@@ -15,7 +15,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      svelte: path.dirname(require.resolve("svelte/package.json")),
+      svelte: path.resolve("node_modules", "svelte/src/runtime"),
     },
     extensions: [".mjs", ".js", ".ts", ".svelte"],
     mainFields: ["svelte", "browser", "module", "main"],
