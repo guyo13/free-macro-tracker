@@ -1,3 +1,6 @@
+<!-- Copyright (c) 2020-2023, Guy Or Please see the AUTHORS file for details.
+All rights reserved. Use of this source code is governed by a GNU GPL
+license that can be found in the LICENSE file. -->
 <div id="add-to-recipe-screen" class="fmt-dynamic-screen container-fluid">
     <div id="add-to-recipe-screen-alerts" class="row justify-content-center" />
     <div class="row justify-content-center mt-3">
