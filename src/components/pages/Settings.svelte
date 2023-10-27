@@ -1,23 +1,23 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import repositoriesProvider from "../db/repositoriesProvider";
+  import repositoriesProvider from "../../db/repositoriesProvider";
   import unitRepositoryProvider, {
     type IUnitRepository,
-  } from "../db/unitRepository";
+  } from "../../db/unitRepository";
   import nutrientRepositoryProvider, {
     type INutrientRepository,
-  } from "../db/nutrientRepository";
+  } from "../../db/nutrientRepository";
   import profileRepositoryProvider, {
     type IProfileRepository,
-  } from "../db/profileRepository";
+  } from "../../db/profileRepository";
   import foodRepositoryProvider, {
     type IFoodRepository,
-  } from "../db/foodRepository";
+  } from "../../db/foodRepository";
   import userGoalsRepositoryProvider, {
     type IUserGoalsRepository,
-  } from "../db/userGoalsRepository";
-  import { type IExportService } from "../db/exportService";
-  import ExportService from "../db/exportService";
+  } from "../../db/userGoalsRepository";
+  import { type IExportService } from "../../db/exportService";
+  import ExportService from "../../db/exportService";
 
   let exportService: IExportService;
   onMount(() => {
