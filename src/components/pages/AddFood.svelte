@@ -75,7 +75,6 @@ license that can be found in the LICENSE file. -->
     <ButtonGroup id="add-food-screen-footer" class="justify-center space-x-px mt-auto">
       <Button outline color="dark" id="add-food-screen-more" class="w-40"
               on:click={handleExpandOrCollapse}>{expandCollapseText}</Button>
-      <!--                <Button id="add-food-screen-less" class="hidden" outline color="dark">{TEXT.showLess}</Button>-->
       <Button color="blue" id="add-food-screen-save" class="w-40" on:click={handleSave}>{TEXT.save}</Button>
     </ButtonGroup>
   </div>

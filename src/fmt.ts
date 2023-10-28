@@ -1300,6 +1300,7 @@ function FMTAddMealEntry(mealEntryObj, onsuccessFn, onerrorFn) {
   addRequest.onerror = onerrorFn;
   addRequest.onsuccess = onsuccessFn;
 }
+
 function FMTUpdateMealEntry(entry_id, mealEntryObj, onsuccessFn, onerrorFn) {
   mealEntryObj.entry_id = entry_id;
   const res = FMTValidateMealEntry(mealEntryObj);
@@ -5230,6 +5231,7 @@ function FMTUIAddIngredientBtnClick(
     console.error(`Invalid food Id ${foodId} on Add Ingredient`);
   }
 }
+
 function FMTUIAddtoMealBtnClick(baseId, qualifier, objectType, event) {
   if (fmtAppGlobals.inputScreensQualifiers.indexOf(qualifier) < 0) {
     console.error(`Invalid qualifier ${qualifier}`);
@@ -5348,6 +5350,7 @@ function FMTUIAddtoMealBtnClick(baseId, qualifier, objectType, event) {
     }
   );
 }
+
 function FMTUIEditBtnClick(baseId, qualifier, objectType, event) {
   if (fmtAppGlobals.inputScreensQualifiers.indexOf(qualifier) < 0) {
     console.error(`Invalid qualifier ${qualifier}`);
@@ -7215,12 +7218,6 @@ export function prepareEventHandlers() {
     } else {
       pageController.closeAddFoodDynamicScreen();
     }
-  });
-  $("#add-food-screen-more").click(() => {
-    FMTConsumableItemScreenShowMore("add-food-screen", "food");
-  });
-  $("#add-food-screen-less").click(() => {
-    FMTConsumableItemScreenShowLess("add-food-screen", "food");
   });
   $("#add-food-screen-save").click(() => {
     const onerrorFn = function (err) {
