@@ -60,6 +60,7 @@ module.exports = {
               url: false,
             },
           },
+          "postcss-loader",
         ],
       },
       {
