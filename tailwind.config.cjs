@@ -1,5 +1,5 @@
 module.exports = {
-  plugins: [],
+  plugins: [require('flowbite/plugin')],
   theme: {
     extend: {
       colors: {
@@ -18,8 +18,9 @@ module.exports = {
       },
     },
   },
-  content: ["./src/**/*.{svelte,js,ts,html}"], //for unused css
+  content: ["./src/**/*.{svelte,js,ts,html}", './node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}'],
   variants: {
     extend: {},
   },
+  darkMode: 'class',
 };
