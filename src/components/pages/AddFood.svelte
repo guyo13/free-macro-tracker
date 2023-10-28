@@ -1,166 +1,69 @@
 <!-- Copyright (c) 2020-2023, Guy Or Please see the AUTHORS file for details.
 All rights reserved. Use of this source code is governed by a GNU GPL
 license that can be found in the LICENSE file. -->
+<script lang="ts">
+  import Button from "flowbite-svelte/Button.svelte";
+  import ButtonGroup from "flowbite-svelte/ButtonGroup.svelte";
+  import Input from "flowbite-svelte/Input.svelte";
+  import Label from "flowbite-svelte/Label.svelte";
+
+  const TEXT = {
+    save: "Save",
+    showMore: "Show More",
+    showLess: "Show Less",
+    addFood: "Add Food",
+    nutritionalFacts: "Nutritional Facts",
+    name: "Name",
+    brand: "Brand",
+    serving: "Serving",
+    calories: "Calories",
+    proteins: "Proteins",
+    carbohydrates: "Carbohydrates",
+    fats: "Fats",
+    micronutrients: "Micronutrients",
+  };
+</script>
+
 <div id="add-food-screen" class="fmt-dynamic-screen container-fluid">
-    <div id="add-food-screen-alerts" class="row justify-content-center" />
-    <div class="fmt-column full-height">
-        <!-- Heading -->
-        <div class="row justify-content-center mt-3 fmt-flex-1">
-            <div class="d-flex col-12 col-lg-8 mb-1 justify-content-between">
-                <div class="fmt-flex-4 fmt-truncate">
-                    <span class="fmt-font-2">Add Food</span>
-                </div>
-                <div
-                        id="add-food-screen-cancel"
-                        class="fmt-flex-1 fmt-right-text"
-                        style="cursor: pointer;"
-                >
-                    <button class="fal fa-times btn fmt-text-btn1" type="button" />
-                </div>
-            </div>
-        </div>
-        <!-- Content -->
-        <div
-                id="add-food-screen-content"
-                class="row justify-content-center fmt-screen-content fmt-align-start fmt-flex-11"
-        >
-            <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group d-flex">
-                    <input
-                            type="text"
-                            class="form__field fmt-input-field"
-                            placeholder="Item Name"
-                            id="add-food-screen-food-name"
-                            required
-                    />
-                    <label for="add-food-screen-food-name" class="form__label"
-                    >Item Name</label
-                    >
-                </div>
-            </div>
-            <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group d-flex">
-                    <input
-                            type="text"
-                            class="form__field fmt-input-field"
-                            placeholder="Item Brand"
-                            id="add-food-screen-food-brand"
-                            required
-                    />
-                    <label for="add-food-screen-food-brand" class="form__label"
-                    >Brand</label
-                    >
-                </div>
-            </div>
-            <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group d-flex" id="add-food-screen-food-serving">
-                    <input
-                            type="number"
-                            class="form__field fmt-input-field"
-                            placeholder="Serving Size"
-                            id="add-food-screen-food-serving-input"
-                            required
-                    />
-                    <label for="add-food-screen-food-serving-input" class="form__label"
-                    >Serving</label
-                    >
-                </div>
-            </div>
-            <div class="col-12 col-lg-8 mb-1">
-                <h4 class="fmt-font-2">Nutritional Facts</h4>
-            </div>
-            <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group d-flex">
-                    <input
-                            type="number"
-                            class="form__field fmt-input-field"
-                            placeholder="Calories"
-                            id="add-food-screen-food-calories"
-                            required
-                    />
-                    <label for="add-food-screen-food-calories" class="form__label"
-                    >Calories</label
-                    >
-                </div>
-            </div>
-            <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group d-flex">
-                    <input
-                            type="number"
-                            class="form__field fmt-input-field"
-                            placeholder="Proteins"
-                            id="add-food-screen-food-proteins"
-                            required
-                    />
-                    <label for="add-food-screen-food-proteins" class="form__label"
-                    >Proteins</label
-                    >
-                </div>
-            </div>
-            <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group d-flex">
-                    <input
-                            type="number"
-                            class="form__field fmt-input-field"
-                            placeholder="Carbohydrates"
-                            id="add-food-screen-food-carbohydrates"
-                            required
-                    />
-                    <label for="add-food-screen-food-carbohydrates" class="form__label"
-                    >Carbohydrates</label
-                    >
-                </div>
-            </div>
-            <div class="col-12 col-lg-8 mb-1">
-                <div class="form__group d-flex">
-                    <input
-                            type="number"
-                            class="form__field fmt-input-field"
-                            placeholder="Fats"
-                            id="add-food-screen-food-fats"
-                            required
-                    />
-                    <label for="add-food-screen-food-fats" class="form__label"
-                    >Fats</label
-                    >
-                </div>
-            </div>
-            <div
-                    id="add-food-screen-food-microes"
-                    class="col-12 col-lg-8 fmt-no-pad d-none mt-1"
-            >
-                <div class="col-12 col-lg-8 mb-1">
-                    <h4 class="fmt-font-1-5">Micronutrients</h4>
-                </div>
-                <div id="add-food-screen-food-additional" class="col-12 col-lg-8" />
-            </div>
-        </div>
-        <!-- Footer -->
-        <div
-                id="add-food-screen-footer"
-                class="row justify-content-center fmt-align-end fmt-flex-1 mb-1"
-        >
-            <div class="col-12 col-lg-8 d-flex">
-                <div class="input-group fmt-flex-1">
-                    <button
-                            id="add-food-screen-save"
-                            class="btn btn-outline-primary flex-fill ml-1 mr-1"
-                            type="button">Save Food</button
-                    >
-                </div>
-                <div class="input-group fmt-flex-1">
-                    <button
-                            id="add-food-screen-more"
-                            class="btn btn-outline-dark flex-fill"
-                            type="button">Show More</button
-                    >
-                    <button
-                            id="add-food-screen-less"
-                            class="btn btn-outline-dark flex-fill d-none"
-                            type="button">Show Less</button
-                    >
-                </div>
-            </div>
-        </div>
+  <div id="add-food-screen-alerts" class="row justify-content-center" />
+  <div class="container max-w-5xl">
+    <!-- Heading -->
+    <div class="flex mb-3 justify-between mt-3">
+      <span class="fmt-font-2">Add Food</span>
+      <button id="add-food-screen-cancel" class="fal fa-times btn fmt-text-btn1" type="button" />
     </div>
+    <!-- Content -->
+    <div class="flex flex-col overflow-y-auto overflow-x-hidden">
+      <Label for="add-food-screen-food-name">{TEXT.name}</Label>
+      <Input id="add-food-screen-food-name" size="sm" placeholder="{TEXT.name}" required />
+      <Label for="add-food-screen-food-brand">{TEXT.brand}</Label>
+      <Input id="add-food-screen-food-brand" size="sm" placeholder="{TEXT.brand}" required />
+      <Label for="add-food-screen-food-serving-input">{TEXT.serving}</Label>
+      <Input id="add-food-screen-food-serving-input" size="sm" placeholder="{TEXT.serving}" type="number" step="any"
+             required />
+      <h4 class="text-2xl font-light mt-3">{TEXT.nutritionalFacts}</h4>
+      <Label for="add-food-screen-food-calories">{TEXT.calories}</Label>
+      <Input id="add-food-screen-food-calories" size="sm" placeholder="{TEXT.calories}" type="number" step="any"
+             required />
+      <Label for="add-food-screen-food-proteins">{TEXT.proteins}</Label>
+      <Input id="add-food-screen-food-proteins" size="sm" placeholder="{TEXT.proteins}" type="number" step="any"
+             required />
+      <Label for="add-food-screen-food-carbohydrates">{TEXT.carbohydrates}</Label>
+      <Input id="add-food-screen-food-carbohydrates" size="sm" placeholder="{TEXT.carbohydrates}" type="number"
+             step="any" required />
+      <Label for="add-food-screen-food-fats">{TEXT.fats}</Label>
+      <Input id="add-food-screen-food-fats" size="sm" placeholder="{TEXT.fats}" type="number" step="any" required />
+
+      <div id="add-food-screen-food-microes" class="flex flex-col">
+        <h4 class="text-2xl font-light mt-3">{TEXT.micronutrients}</h4>
+        <div id="add-food-screen-food-additional" />
+      </div>
+
+      <ButtonGroup id="add-food-screen-footer" class="justify-center space-x-px">
+        <Button outline color="dark" id="add-food-screen-more" class="w-40">{TEXT.showMore}</Button>
+        <!--                <Button id="add-food-screen-less" class="hidden" outline color="dark">{TEXT.showLess}</Button>-->
+        <Button color="blue" id="add-food-screen-save" class="w-40">{TEXT.save}</Button>
+      </ButtonGroup>
+    </div>
+  </div>
 </div>
