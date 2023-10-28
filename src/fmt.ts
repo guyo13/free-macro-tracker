@@ -5716,7 +5716,6 @@ export const pageController = {
     const objectType = "Food Item";
     const optionsObj = undefined;
     pageController.openDynamicScreen(screenID);
-    FMTClearConsumableItemScreen(screenID, qualifier);
     FMTPopulateConsumableItemScreen(
       screenID,
       optionsObj,

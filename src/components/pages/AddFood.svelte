@@ -6,6 +6,7 @@ license that can be found in the LICENSE file. -->
   import ButtonGroup from "flowbite-svelte/ButtonGroup.svelte";
   import Input from "flowbite-svelte/Input.svelte";
   import Label from "flowbite-svelte/Label.svelte";
+  import Select from "flowbite-svelte/Select.svelte";
 
   const TEXT = {
     save: "Save",
@@ -16,6 +17,7 @@ license that can be found in the LICENSE file. -->
     name: "Name",
     brand: "Brand",
     serving: "Serving",
+    chooseUnits: "Choose units",
     calories: "Calories",
     proteins: "Proteins",
     carbohydrates: "Carbohydrates",
@@ -38,7 +40,7 @@ license that can be found in the LICENSE file. -->
 
 <div id="add-food-screen" class="fmt-dynamic-screen container-fluid">
   <div id="add-food-screen-alerts" class="row justify-content-center" />
-  <div class="container flex flex-col max-w-5xl h-full">
+  <div class="container flex flex-col max-w-4xl h-full">
     <!-- Heading -->
     <div class="flex mb-3 justify-between mt-3">
       <span class="fmt-font-2">Add Food</span>
@@ -51,8 +53,11 @@ license that can be found in the LICENSE file. -->
       <Label for="add-food-screen-food-brand">{TEXT.brand}</Label>
       <Input id="add-food-screen-food-brand" size="sm" placeholder="{TEXT.brand}" required bind:value={brand} />
       <Label for="add-food-screen-food-serving-input">{TEXT.serving}</Label>
-      <Input id="add-food-screen-food-serving-input" size="sm" placeholder="{TEXT.serving}" type="number" step="any"
-             required bind:value={serving} />
+      <div class="flex">
+        <Input id="add-food-screen-food-serving-input" size="sm" placeholder="{TEXT.serving}" type="number" step="any"
+               required bind:value={serving} />
+        <Select class="w-6/12" items="{[]}" placeholder="{TEXT.chooseUnits}" />
+      </div>
       <h4 class="text-2xl font-light mt-3">{TEXT.nutritionalFacts}</h4>
       <Label for="add-food-screen-food-calories">{TEXT.calories}</Label>
       <Input id="add-food-screen-food-calories" size="sm" placeholder="{TEXT.calories}" type="number" step="any"
