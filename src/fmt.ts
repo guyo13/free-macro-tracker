@@ -5033,7 +5033,14 @@ function FMTUIAddIngredient(foodObj, ingredientsDiv, onDel, onEdit) {
   const col = FMTUICreateIngredient(food);
   const input = col.getElementsByTagName("input")[0];
   const editBtn = document.createElement("button");
-  editBtn.classList.add("btn", "btn-secondary", "fal", "fa-pencil-alt", "mr-1");
+  editBtn.classList.add(
+    "btn",
+    "btn-secondary",
+    "fa",
+    "fa-light",
+    "fa-pencil-alt",
+    "mr-1"
+  );
   editBtn.addEventListener("click", () => {
     //TODO - implement edit ingredient screen
     if (isFunction(onEdit)) {
@@ -5041,7 +5048,7 @@ function FMTUIAddIngredient(foodObj, ingredientsDiv, onDel, onEdit) {
     }
   });
   const delBtn = document.createElement("button");
-  delBtn.classList.add("btn", "btn-danger", "fal", "fa-trash-alt");
+  delBtn.classList.add("btn", "btn-danger", "fa", "fa-light", "fa-trash-alt");
   delBtn.addEventListener("click", () => {
     ingredientsDiv.removeChild(col);
     if (isFunction(onDel)) {
@@ -5118,7 +5125,14 @@ function FMTUIAddPreparationStep(
   const textarea = col.getElementsByTagName("textarea")[0];
   if (addStepDelBtn) {
     const delBtn = document.createElement("button");
-    delBtn.classList.add("btn", "btn-danger", "fal", "fa-trash-alt", "ml-2");
+    delBtn.classList.add(
+      "btn",
+      "fa",
+      "btn-danger",
+      "fa-light",
+      "fa-trash-alt",
+      "ml-2"
+    );
     delBtn.addEventListener("click", () => {
       prepStepContainerDiv.removeChild(col);
       FMTUIRefreshPreparationStepNumbers(prepStepContainerDiv);
@@ -5710,26 +5724,9 @@ export const pageController = {
     delete fmtAppInstance.pageState.activeDynamicScreens[dynamicScreenId];
     pageController.updateZIndexes();
   },
-  openAddFoodDynamicScreen: function (foodsTableBodyID) {
+  openAddFoodDynamicScreen: function () {
     const screenID = "add-food-screen";
-    const qualifier = "food";
-    const objectType = "Food Item";
-    const optionsObj = undefined;
     pageController.openDynamicScreen(screenID);
-    FMTPopulateConsumableItemScreen(
-      screenID,
-      optionsObj,
-      qualifier,
-      objectType,
-      undefined,
-      true
-    );
-    if (foodsTableBodyID) {
-      const saveBtn = document.getElementById(`${screenID}-save`);
-      if (saveBtn) {
-        saveBtn.setAttribute("consumables-table-body-id", foodsTableBodyID);
-      }
-    }
   },
   closeAddFoodDynamicScreen: function () {
     const screenID = "add-food-screen";
@@ -7162,61 +7159,11 @@ export function prepareEventHandlers() {
       onerrorFn
     );
   });
-  $("#foods-add").click(() => {
-    const addBtn = document.getElementById("foods-add");
-    let consumablesTableBodyID;
-    const qualifier = addBtn.getAttribute("action");
-    switch (qualifier) {
-      case "recipe":
-        consumablesTableBodyID = "foods-recipe-table-body";
-        pageController.openAddRecipeDynamicScreen(consumablesTableBodyID);
-        break;
-      case "food":
-      default:
-        consumablesTableBodyID = "foods-food-table-body";
-        pageController.openAddFoodDynamicScreen(consumablesTableBodyID);
-        break;
-    }
-  });
   $("#foods-my-food-btn").click(() => {
     FMTToggleFoodMenu("foods", "food");
   });
   $("#foods-my-recipe-btn").click(() => {
     FMTToggleFoodMenu("foods", "recipe");
-  });
-  $("#add-food-screen-cancel").click(() => {
-    if (fmtAppInstance.promptSettings.promptOnUnsavedFood) {
-      const inputs = document
-        .getElementById("add-food-screen")
-        .getElementsByTagName("input");
-      let prompt = false;
-      for (let j = 0; j < inputs.length; j++) {
-        const val = inputs[j].value;
-        if (val != null && val !== "") {
-          prompt = true;
-          break;
-        }
-      }
-      if (prompt) {
-        FMTShowPrompt(
-          "add-food-screen-alerts",
-          "warning",
-          "Unsaved Food, discard changes?",
-          fmtAppGlobals.defaultAlertScroll,
-          function (res) {
-            if (res) {
-              pageController.closeAddFoodDynamicScreen();
-            } else {
-              return;
-            }
-          }
-        );
-      } else {
-        pageController.closeAddFoodDynamicScreen();
-      }
-    } else {
-      pageController.closeAddFoodDynamicScreen();
-    }
   });
   $("#add-food-screen-save").click(() => {
     const onerrorFn = function (err) {
@@ -7482,7 +7429,7 @@ export function prepareEventHandlers() {
     switch (qualifier) {
       case "food":
       default:
-        pageController.openAddFoodDynamicScreen(foodsTableBodyID);
+        pageController.openAddFoodDynamicScreen();
         break;
     }
   });
@@ -7501,7 +7448,7 @@ export function prepareEventHandlers() {
       case "food":
       default:
         consumablesTableBodyID = "add-to-meal-screen-food-table-body";
-        pageController.openAddFoodDynamicScreen(consumablesTableBodyID);
+        pageController.openAddFoodDynamicScreen();
         break;
     }
   });

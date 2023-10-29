@@ -17,24 +17,24 @@ license that can be found in the LICENSE file. -->
       class="col-3 align-self-center menuItem"
       title="Meals"
     >
-      <i class="fal fa-tasks-alt navbarIcon" />
+      <i class="fa fa-light fa-list-check navbarIcon"></i>
     </div>
     <div
       id="goto-profile"
       class="col-3 align-self-center menuItem"
       title="Profile"
     >
-      <i class="fal fa-user navbarIcon" />
+      <i class="fa fa-light fa-user navbarIcon" />
     </div>
     <div id="goto-foods" class="col-3 align-self-center menuItem" title="Foods">
-      <i class="fal fa-utensils navbarIcon" />
+      <i class="fa fa-light fa-utensils navbarIcon" />
     </div>
     <div
       id="goto-settings"
       class="col-3 align-self-center menuItem"
       title="Settings"
     >
-      <i class="fal fa-cog navbarIcon" />
+      <i class="fa fa-light fa-cog navbarIcon" />
     </div>
   </div>
 </div>

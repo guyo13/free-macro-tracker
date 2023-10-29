@@ -4,7 +4,6 @@
 
 import { isPositiveNumber } from "../utils/utils";
 import type { INutritionalValue } from "./nutrient";
-import type IDBRecord from "./record";
 
 export enum ConsumableType {
   // TODO - Add compatibility with previous "Food/Recipe Item" enum values
@@ -35,7 +34,7 @@ export function validateConsumable(
   // TODO - Validate nutritional value!
 }
 
-export default interface IConsumable extends IDBRecord {
+export default interface IConsumable {
   name: string;
   brand: string;
   type: ConsumableType;

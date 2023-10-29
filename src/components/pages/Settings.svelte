@@ -45,7 +45,7 @@ license that can be found in the LICENSE file. -->
           INutrientRepository,
           IProfileRepository,
           IFoodRepository,
-          IUserGoalsRepository
+          IUserGoalsRepository,
         ];
 
         exportService = new ExportService(
@@ -62,7 +62,7 @@ license that can be found in the LICENSE file. -->
 <div id="settings" class="fmt-tab container-fluid">
   <div id="settings-alerts" class="row justify-content-center" />
   <div
-    class="row pt-1 pb-1 justify-content-center align-items-center fmt-bg-gainsboro"
+    class="row justify-content-center align-items-center fmt-bg-gainsboro pb-1 pt-1"
   >
     <div class="col-12 col-lg-8 ml-1">
       <h4 class="fmt-font-2 mb-0">Settings</h4>
@@ -81,7 +81,7 @@ license that can be found in the LICENSE file. -->
           class="fmt-list-tile-body btn fmt-btn-outline-dark-green d-inline-block"
           >Export Your Data
         </span>
-        <span class="fal fa-download btn fmt-list-tile-trailing" />
+        <span class="fa fa-light fa-download btn fmt-list-tile-trailing" />
       </div>
     </div>
     <div class="col-12 col-lg-8 mb-1">
@@ -93,12 +93,12 @@ license that can be found in the LICENSE file. -->
           class="fmt-list-tile-body btn fmt-btn-outline-dark-green d-inline-block"
           >Import JSON File
         </span>
-        <span class="fal fa-file-upload btn fmt-list-tile-trailing" />
+        <span class="fa fa-light fa-file-upload btn fmt-list-tile-trailing" />
       </div>
     </div>
     <div
       id="settings-data-control-import-indiv"
-      class="input-group col-12 col-lg-8 mb-1 d-none"
+      class="input-group col-12 col-lg-8 d-none mb-1"
     >
       <div class="input-group mb-3 mt-3">
         <div class="custom-file">

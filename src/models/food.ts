@@ -6,10 +6,10 @@ import { ConsumableType, validateConsumable } from "./consumable";
 import type IConsumable from "./consumable";
 import type { INutritionalValue } from "./nutrient";
 import { validateRecord, type RecordId } from "./record";
+import type IDBRecord from "./record";
 
 export type IFood = IConsumable;
-
-export default class Food implements IFood {
+export default class Food implements IFood, IDBRecord {
   readonly food_id: RecordId;
   readonly foodName: string;
   readonly foodBrand: string;

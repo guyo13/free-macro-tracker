@@ -1,11 +1,8 @@
-<!-- Copyright (c) 2020-2023, Guy Or Please see the AUTHORS file for details.
-All rights reserved. Use of this source code is governed by a GNU GPL
-license that can be found in the LICENSE file. -->
 <script lang="ts">
   import unitRepositoryProvider, {
     type IUnitRepository,
   } from "./db/unitRepository";
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
   import {
     FMTToday,
     prepareEventHandlers,
@@ -42,13 +39,36 @@ license that can be found in the LICENSE file. -->
   import AddToMeal from "./components/pages/AddToMeal.svelte";
   import EditMealEntry from "./components/pages/EditMealEntry.svelte";
   import EditRecipeIngredient from "./components/pages/EditRecipeIngredient.svelte";
+  import type { IFood } from "./models/food";
 
   const DEFAULT_PROFILE_ID = 1;
-  let isLoading = true;
-  let isOnboarding = false;
+  let isLoading = true,
+    isOnboarding = false,
+    // TODO - Remove after getting rid of pageController and implementing routing
+    isAddFoodOpen = false;
+  let units: IUnit[];
+  let additionalNutrients: Map<string, INutrientDefinition[]>;
 
-  function setUnitChart(units: IUnit[]) {
-    fmtAppInstance.unitsChart = createUnitChart(units);
+  // TODO - Remove after getting rid of pageController and implementing routing
+  function closeAddFoodPage() {
+    pageController.closeAddFoodDynamicScreen();
+    isAddFoodOpen = false;
+  }
+
+  // TODO - Remove after getting rid of pageController and implementing routing
+  async function openAddFoodPage() {
+    isAddFoodOpen = true;
+    await tick();
+    pageController.openAddFoodDynamicScreen();
+  }
+
+  function handleAddFoodSave(food: IFood) {
+    console.log(food);
+  }
+
+  function setUnitChart(_units: IUnit[]) {
+    fmtAppInstance.unitsChart = createUnitChart(_units);
+    units = _units;
     console.debug(
       `Units loaded into Application instance ${JSON.stringify(
         fmtAppInstance.unitsChart
@@ -58,14 +78,18 @@ license that can be found in the LICENSE file. -->
 
   function setAdditionalNutrients(nutrients: INutrientDefinition[]) {
     fmtAppInstance.additionalNutrients = {};
+    const _additionalNutrients = new Map<string, INutrientDefinition[]>();
     const categories = new Set(nutrients.map((x) => x.category));
     for (const category of categories.values()) {
       fmtAppInstance.additionalNutrients[category] = [];
+      _additionalNutrients.set(category, []);
     }
     for (const nutrientDefinition of nutrients) {
       const category = nutrientDefinition.category;
       fmtAppInstance.additionalNutrients[category].push(nutrientDefinition);
+      _additionalNutrients.get(category).push(nutrientDefinition);
     }
+    additionalNutrients = _additionalNutrients;
     console.debug(
       `Additional Nutrients loaded into Application instance ${JSON.stringify(
         fmtAppInstance.additionalNutrients
@@ -132,7 +156,7 @@ license that can be found in the LICENSE file. -->
           repositories as [
             IUnitRepository,
             INutrientRepository,
-            IProfileRepository
+            IProfileRepository,
           ];
 
         try {
@@ -147,9 +171,8 @@ license that can be found in the LICENSE file. -->
 
           // TODO - Remove this
           setCurrentProfileId(DEFAULT_PROFILE_ID);
-          const userProfile = await profileRepository.getProfile(
-            DEFAULT_PROFILE_ID
-          );
+          const userProfile =
+            await profileRepository.getProfile(DEFAULT_PROFILE_ID);
           setCurrentProfile(userProfile);
           if (userProfile || isProfileCreationSkippedByUser()) {
             pageController.showOverview(true);
@@ -171,6 +194,31 @@ license that can be found in the LICENSE file. -->
   });
 </script>
 
+<!-- Copyright (c) 2020-2023, Guy Or Please see the AUTHORS file for details.
+All rights reserved. Use of this source code is governed by a GNU GPL
+license that can be found in the LICENSE file. -->
+<svelte:head>
+  <title>Free Macro Tracker</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
+  <meta charset="utf-8" />
+  <meta name="theme-color" content="#2a763b" />
+  <meta name="msapplication-navbutton-color" content="#2a763b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="viewport" content="width = device-width" />
+  <link rel="stylesheet" href="/vendor/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/vendor/css/fontawesome.min.css" />
+  <link rel="stylesheet" href="/vendor/css/light.min.css" />
+  <link rel="stylesheet" href="/build/app.css" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+</svelte:head>
+
 {#if isLoading}
   <SplashScreen />
 {:else if isOnboarding}
@@ -179,22 +227,29 @@ license that can be found in the LICENSE file. -->
     onCreateProfileClick={handleCreateProfileClick}
   />
 {/if}
-<main class={isLoading || isOnboarding ? "d-none" : ""}>
-  <Dashboard/>
-  <FoodsAndRecipes/>
-  <Profile/>
+<main class={isLoading || isOnboarding ? "hidden" : ""}>
+  <Dashboard />
+  <FoodsAndRecipes onAddClick={openAddFoodPage} />
+  <Profile />
   <Settings />
   <!--Dynamic Screens-->
-  <AddFood/>
-  <EditFood/>
-  <ViewFood/>
-  <AddRecipe/>
-  <EditRecipe/>
-  <ViewRecipe/>
-  <EditRecipeIngredient/>
-  <AddIngredientToRecipe/>
-  <AddToMeal/>
-  <EditMealEntry/>
+  {#if isAddFoodOpen}
+    <AddFood
+      {units}
+      {additionalNutrients}
+      onClose={closeAddFoodPage}
+      onSave={handleAddFoodSave}
+    />
+  {/if}
+  <EditFood />
+  <ViewFood />
+  <AddRecipe />
+  <EditRecipe />
+  <ViewRecipe />
+  <EditRecipeIngredient />
+  <AddIngredientToRecipe />
+  <AddToMeal />
+  <EditMealEntry />
   <Navbar />
 </main>
 

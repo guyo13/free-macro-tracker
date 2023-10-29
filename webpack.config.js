@@ -86,5 +86,6 @@ module.exports = {
     devMiddleware: {
       publicPath: "/build",
     },
+    port: 9000,
   },
 };

@@ -12,6 +12,12 @@ export function isPercent(num: any) {
   return !isNaN(num) && num >= 0 && num <= 100;
 }
 
+export function isValidNutritionalValue(num) {
+  const _num = parseFloat(num);
+
+  return !isNaN(_num) && isFinite(_num) && _num >= 0;
+}
+
 export function isString(s: any) {
   return typeof s === "string";
 }
