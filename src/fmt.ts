@@ -51,7 +51,7 @@ interface JQueryTooltip extends JQuery {
 }
 
 //Globals - Export
-let fmtAppExport;
+export let fmtAppExport;
 
 //Functions
 //Functions - Generic
@@ -261,7 +261,12 @@ function getIndex(store_name, indexName) {
 }
 
 //Functions - DB - Export
-function FMTExportToJSON(data, onsuccessFn, stringifyReplacerFn, filename) {
+export function FMTExportToJSON(
+  data,
+  onsuccessFn,
+  stringifyReplacerFn,
+  filename
+) {
   if (platformInterface.hasPlatformInterface) {
     const stringified = JSON.stringify(data, stringifyReplacerFn);
     platformInterface.FMTExportData(stringified, filename);
@@ -417,7 +422,7 @@ function FMTDataToJSONArray(exportFn) {
     }
   });
 }
-function FMTDataToStructuredJSON(exportFn: (records: any) => any) {
+export function FMTDataToStructuredJSON(exportFn: (records: any) => any) {
   const records = {};
   records[fmtAppGlobals.FMT_DB_UNITS_STORE] = [];
   records[fmtAppGlobals.FMT_DB_NUTRIENTS_STORE] = [];
@@ -732,7 +737,7 @@ function FMTImportTables(dbTables: any, jsonData: any, verbose?: any) {
       }, 50);
   }
 }
-function FMTImportFromStructuredJSON(
+export function FMTImportFromStructuredJSON(
   jsonString: any,
   jsonParseReviverFn?: any,
   onEnd?: any,
@@ -2000,7 +2005,12 @@ function FMTQueryUserGoalsByProfileAndDate(
 }
 
 //Functions - UI - Generic
-function FMTShowAlert(divId, alertLevel, msg, scrollOptions = undefined) {
+export function FMTShowAlert(
+  divId,
+  alertLevel,
+  msg,
+  scrollOptions = undefined
+) {
   // Use Platform Interface if available
   if (platformInterface.hasPlatformInterface) {
     platformInterface.FMTShowAlert(msg, alertLevel);
@@ -2042,7 +2052,13 @@ function FMTDropdownToggleValue(targetDivId, text, attributes, skipEvent) {
   const elem = document.getElementById(targetDivId);
   _FMTDropdownToggleValue(elem, text, attributes, skipEvent);
 }
-function FMTShowPrompt(divId, alertLevel, msg, scrollOptions, oncompleteFn) {
+export function FMTShowPrompt(
+  divId,
+  alertLevel,
+  msg,
+  scrollOptions,
+  oncompleteFn
+) {
   /*oncompleteFn - User defined functions that takes a boolean based on if user
    * clicked "Yes" or "No"
    */
@@ -7623,78 +7639,6 @@ export function prepareEventHandlers() {
   });
   $("#edit-meal-entry-screen-less").click(() => {
     FMTConsumableItemScreenShowLess("edit-meal-entry-screen", "consumable");
-  });
-  $("#settings-data-control-export").click(() => {
-    const d = new Date();
-    const fileName = `FMT_Data_export_${d.getFullYear()}_${d.getMonth()}_${d.getDate()}`;
-    FMTDataToStructuredJSON(function (records) {
-      FMTExportToJSON(
-        records,
-        function () {
-          const link = document.createElement("a");
-          link.setAttribute("download", fileName);
-          link.href = fmtAppExport;
-          link.click();
-        },
-        null,
-        fileName
-      );
-    });
-  });
-  $("#settings-data-control-import").click(() => {
-    if (platformInterface.hasPlatformInterface) {
-      // This initiates the import process on the platform
-      // When the user proceeds with selecting file, the platform will fire
-      // [FMTImportData]
-      platformInterface.FMTImportData();
-    } else {
-      document
-        .getElementById("settings-data-control-import-indiv")
-        .classList.remove("d-none");
-    }
-  });
-  $("#settings-data-control-import-file").change(() => {
-    const fileList = document.getElementById(
-      "settings-data-control-import-file"
-      // @ts-ignore
-    ).files;
-    if (fileList.length < 1) {
-      document
-        .getElementById("settings-data-control-import-indiv")
-        .classList.add("d-none");
-      return;
-    }
-    const file = fileList[0];
-    document.getElementById(
-      "settings-data-control-import-file-label"
-    ).innerHTML = file.name;
-    FMTShowPrompt(
-      "settings-alerts",
-      "warning",
-      "Importing might cause loss of current application data. Are you sure?",
-      undefined,
-      function (res) {
-        if (res) {
-          const fileReader = new FileReader();
-          fileReader.onloadend = function () {
-            FMTImportFromStructuredJSON(fileReader.result);
-          };
-          fileReader.readAsText(file);
-        } else {
-          FMTShowAlert(
-            "settings-alerts",
-            "primary",
-            "Import from file aborted!"
-          );
-          document
-            .getElementById("settings-data-control-import-indiv")
-            .classList.add("d-none");
-          document.getElementById(
-            "settings-data-control-import-file-label"
-          ).innerHTML = "Choose file to Import";
-        }
-      }
-    );
   });
   //Search functions
   $("#foods-food-search").keyup((e) => {

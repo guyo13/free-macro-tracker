@@ -4,6 +4,7 @@ license that can be found in the LICENSE file. -->
 <script lang="ts">
   import Button from "flowbite-svelte/Button.svelte";
   import ButtonGroup from "flowbite-svelte/ButtonGroup.svelte";
+  import Fileupload from "flowbite-svelte/Fileupload.svelte";
   import { onMount } from "svelte";
   import repositoriesProvider from "../../db/repositoriesProvider";
   import unitRepositoryProvider, {
@@ -23,6 +24,15 @@ license that can be found in the LICENSE file. -->
   } from "../../db/userGoalsRepository";
   import { type IExportService } from "../../db/exportService";
   import ExportService from "../../db/exportService";
+  import {
+    fmtAppExport,
+    FMTDataToStructuredJSON,
+    FMTExportToJSON,
+    FMTImportFromStructuredJSON,
+    FMTShowAlert,
+    FMTShowPrompt,
+    platformInterface,
+  } from "../../fmt";
 
   const TEXTS = {
     settings: "Settings",
@@ -31,6 +41,7 @@ license that can be found in the LICENSE file. -->
     import: "Import JSON File",
   };
 
+  let showFileUploader = false;
   let exportService: IExportService;
   onMount(() => {
     return repositoriesProvider
@@ -66,6 +77,64 @@ license that can be found in the LICENSE file. -->
         );
       });
   });
+
+  function handleExportClick() {
+    const d = new Date();
+    const fileName = `FMT_Data_export_${d.getFullYear()}_${d.getMonth()}_${d.getDate()}`;
+    FMTDataToStructuredJSON(function (records) {
+      FMTExportToJSON(
+        records,
+        function () {
+          const link = document.createElement("a");
+          link.setAttribute("download", fileName);
+          link.href = fmtAppExport;
+          link.click();
+        },
+        null,
+        fileName
+      );
+    });
+  }
+
+  function handleImportClick() {
+    if (platformInterface.hasPlatformInterface) {
+      // This initiates the import process on the platform
+      // When the user proceeds with selecting file, the platform will fire
+      // [FMTImportData]
+      platformInterface.FMTImportData();
+    } else {
+      showFileUploader = !showFileUploader;
+    }
+  }
+
+  function handleImport(event) {
+    const file = event.target.files[0];
+    console.log({ file });
+    if (file) {
+      // TODO - Refactor
+      FMTShowPrompt(
+        "settings-alerts",
+        "warning",
+        "Importing might cause loss of current application data. Are you sure?",
+        undefined,
+        function (res) {
+          if (res) {
+            const fileReader = new FileReader();
+            fileReader.onloadend = function () {
+              FMTImportFromStructuredJSON(fileReader.result);
+            };
+            fileReader.readAsText(file);
+          } else {
+            FMTShowAlert(
+              "settings-alerts",
+              "primary",
+              "Import from file aborted!"
+            );
+          }
+        }
+      );
+    }
+  }
 </script>
 
 <div id="settings" class="fmt-tab container-fluid">
@@ -78,36 +147,24 @@ license that can be found in the LICENSE file. -->
     <span class="mb-3 mt-3 text-2xl font-light">{TEXTS.settings}</span>
     <h4 class="mb-2 text-xl font-light">{TEXTS.importAndExport}</h4>
     <ButtonGroup class="w-fit">
-      <Button id="settings-data-control-export">
+      <Button id="settings-data-control-export" on:click={handleExportClick}>
         <i class="fa fa-light fa-download mr-2" />
         {TEXTS.export}
       </Button>
-      <Button id="settings-data-control-import">
+      <Button id="settings-data-control-import" on:click={handleImportClick}>
         <i class="fa fa-light fa-file-upload mr-2" />
         {TEXTS.import}
       </Button>
     </ButtonGroup>
-
-    <div
-      id="settings-data-control-import-indiv"
-      class="input-group col-12 col-lg-8 d-none mb-1"
-    >
-      <div class="input-group mb-3 mt-3">
-        <div class="custom-file">
-          <input
-            id="settings-data-control-import-file"
-            class="custom-file-input"
-            type="file"
-            accept="application/json"
-          />
-          <label
-            id="settings-data-control-import-file-label"
-            class="custom-file-label"
-            for="settings-data-control-import-file">Choose file to Import</label
-          >
-        </div>
-      </div>
-    </div>
+    {#if showFileUploader}
+      <Fileupload
+        id="settings-data-control-import-file"
+        class="mt-3"
+        type="file"
+        accept="application/json"
+        on:change={handleImport}
+      />
+    {/if}
   </div>
 </div>
 
