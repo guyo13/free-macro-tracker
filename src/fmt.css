@@ -384,19 +384,6 @@ button {
   font-size: 0.7rem !important;
   font-weight: bold;
 }
-.fmt-list-tile {
-  width: 100%;
-  cursor: pointer;
-  border-radius: 0.25rem;
-}
-.fmt-list-tile-body {
-  text-align: left;
-  width: 80%;
-}
-.fmt-list-tile-trailing {
-  width: 15%;
-  text-align: right;
-}
 .form__group {
   position: relative;
   padding: 0.7rem 0 0;
