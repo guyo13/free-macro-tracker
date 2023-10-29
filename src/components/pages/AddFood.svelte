@@ -25,6 +25,8 @@ license that can be found in the LICENSE file. -->
   const TEXT = {
     basicInfo: "Basic Information",
     save: "Save",
+    confirm: "Confirm",
+    cancel: "Cancel",
     addFood: "Add Food",
     nutritionalFacts: "Nutritional Facts",
     name: "Name",
@@ -179,16 +181,16 @@ license that can be found in the LICENSE file. -->
 <Modal bind:open={alertBeforeDiscardingChanges} size="xs">
   <p>Unsaved changes will be discarded.</p>
   <ButtonGroup slot="footer">
-    <Button on:click={onClose} color="red" outline>Confirm</Button>
-    <Button on:click={handleCancelClose}>Cancel</Button>
+    <Button on:click={onClose} color="red" outline>{TEXT.confirm}</Button>
+    <Button on:click={handleCancelClose}>{TEXT.cancel}</Button>
   </ButtonGroup>
 </Modal>
 <div id="add-food-screen" class="fmt-dynamic-screen container-fluid">
   <div id="add-food-screen-alerts" class="row justify-content-center"></div>
-  <div class="container flex h-full max-w-4xl flex-col">
+  <div class="flex-column container flex h-full max-w-4xl">
     <!-- Heading -->
     <div class="mb-3 mt-3 flex justify-between">
-      <span class="fmt-font-2">Add Food</span>
+      <span class="text-2xl font-light">{TEXT.addFood}</span>
       <Button
         class="fa fa-light fa-times btn fmt-text-btn1"
         color="red"
