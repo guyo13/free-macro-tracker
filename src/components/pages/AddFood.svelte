@@ -15,6 +15,8 @@ license that can be found in the LICENSE file. -->
   } from "../../models/nutrient";
   import { isValidNutritionalValue } from "../../utils/utils";
   import type { IFood } from "../../models/food";
+  import { makeUnitOptions } from "../utils/units";
+  import AdditionalNutrientsInputs from "../AdditionalNutrientsInputs.svelte";
   const EMPTY_FN = () => {};
 
   export let units: IUnit[];
@@ -76,11 +78,7 @@ license that can be found in the LICENSE file. -->
     carbs ||
     fats ||
     additionalNutrientsValues.size > 0;
-  $: unitOptions =
-    units?.map((unit) => ({
-      name: unit.description,
-      value: unit.name,
-    })) ?? [];
+  $: unitOptions = makeUnitOptions(units);
   function handleMicronutrientChange(
     amount: string,
     unit: string,
@@ -199,7 +197,7 @@ license that can be found in the LICENSE file. -->
     </div>
     <!-- Content -->
     <div class="flex flex-col overflow-y-auto">
-      <h4 class="mt-3 border-solid border-t-neutral-300 text-2xl font-light">
+      <h4 class="mt-3 text-2xl font-light">
         {TEXT.basicInfo}
       </h4>
       <InputField
@@ -270,30 +268,13 @@ license that can be found in the LICENSE file. -->
         error={fatsError}
       />
       <h4 class="mt-3 text-2xl font-light">{TEXT.micronutrients}</h4>
-      <!--TODO - Extract to separate component-->
-      <div id="add-food-screen-food-additional">
-        {#each additionalNutrients?.entries() ?? [] as category (category[0])}
-          <h3 class="font-weight-normal mb-3 mt-3 text-xl">{category[0]}</h3>
-          {#each category[1] as nutrient (nutrient.name)}
-            <UnitInput
-              id={`add-food-screen-food-${category[0]}-${nutrient.name}}`}
-              label={nutrient.name}
-              placeholder={nutrient.name}
-              selectPlaceholder={TEXT.select}
-              {unitOptions}
-              onChange={(amount, unit) =>
-                handleMicronutrientChange(amount, unit, nutrient)}
-              value={additionalNutrientsValues
-                .get(nutrient.category)
-                ?.get(nutrient.name)
-                ?.amount.toString()}
-              selectedUnit={additionalNutrientsValues
-                .get(nutrient.category)
-                ?.get(nutrient.name)?.unit ?? nutrient.default_unit}
-            />
-          {/each}
-        {/each}
-      </div>
+      <AdditionalNutrientsInputs
+        {additionalNutrients}
+        {additionalNutrientsValues}
+        {unitOptions}
+        onMicronutrientChange={handleMicronutrientChange}
+        selectPlaceholder={TEXT.select}
+      />
     </div>
     <!-- Footer -->
     <ButtonGroup

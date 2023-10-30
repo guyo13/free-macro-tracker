@@ -242,7 +242,7 @@ license that can be found in the LICENSE file. -->
     />
   {/if}
   <EditFood />
-  <ViewFood />
+  <ViewFood {units} {additionalNutrients} />
   <AddRecipe />
   <EditRecipe />
   <ViewRecipe />

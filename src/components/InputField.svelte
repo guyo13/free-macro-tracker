@@ -8,8 +8,8 @@ license that can be found in the LICENSE file. -->
   import Helper from "flowbite-svelte/Helper.svelte";
 
   export let label: string,
-    placeholder: string,
-    value: string,
+    value: string = "",
+    placeholder: string = "",
     containerClass: string = "",
     addonClass: string = "",
     inputGroupClass: string = "w-full",
@@ -25,9 +25,9 @@ license that can be found in the LICENSE file. -->
   <ButtonGroup class={inputGroupClass}>
     <InputAddon class={_addonClass}><span>{label}</span></InputAddon>
     <Input
-      {size}
-      {placeholder}
       bind:value
+      {placeholder}
+      {size}
       {...$$restProps}
       class={_inputClass}
       on:change={onChange}

@@ -308,14 +308,6 @@ button {
   color: white;
   border-radius: 2rem;
 }
-.fmt-loading-screen-position {
-  position: absolute;
-  top: calc(
-    50% - 2 * 1.5 * 4.5rem / 2
-  ); /* 2 rows of text 4.5 rem font size 1.5 line height*/
-  left: calc(50% - 13 * 1.05rem);
-  right: calc(50% - 13 * 1.05rem);
-}
 .fmt-btn-no-focus:focus {
   box-shadow: none;
 }
@@ -677,33 +669,6 @@ input[type="number"] {
 }
 .fmt-flex-11 {
   flex: 11;
-}
-.fmt-flex-12 {
-  flex: 12;
-}
-.fmt-flex-13 {
-  flex: 13;
-}
-.fmt-flex-14 {
-  flex: 14;
-}
-.fmt-flex-15 {
-  flex: 15;
-}
-.fmt-flex-16 {
-  flex: 16;
-}
-.fmt-flex-17 {
-  flex: 17;
-}
-.fmt-flex-18 {
-  flex: 18;
-}
-.fmt-flex-19 {
-  flex: 19;
-}
-.fmt-flex-20 {
-  flex: 20;
 }
 .fmt-truncate {
   overflow: hidden;

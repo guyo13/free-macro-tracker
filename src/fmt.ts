@@ -574,7 +574,7 @@ export function FMTDataToStructuredJSON(exportFn: (records: any) => any) {
 }
 
 //Functions - DB - Import
-function FMTImportData(jsonString) {
+export function FMTImportData(jsonString) {
   try {
     FMTImportFromStructuredJSON(jsonString);
   } catch (err) {
@@ -3282,9 +3282,7 @@ function FMTUIPopulateNutritionalValue(
   qualifier,
   nutritionalValue,
   multiplier,
-  readonly,
-  createAdditionalNutrients,
-  restrictNutrientUnit
+  readonly
 ) {
   if (multiplier !== 0) {
     multiplier = multiplier || 1;
@@ -3300,80 +3298,22 @@ function FMTUIPopulateNutritionalValue(
     multiplier,
     readonly
   );
-  if (nutritionalValue.additionalNutrients) {
-    //Create and/or Populate Additional Nutrients values
-    const idBase = `${baseScreenID}-${qualifier}`;
-    const additionalNutriDivId = `${idBase}-additional`;
-    const additionalNutriDiv = document.getElementById(additionalNutriDivId);
-    const additionalNutrients = nutritionalValue.additionalNutrients;
-
-    if (createAdditionalNutrients === true) {
-      additionalNutriDiv.innerHTML = "";
-      const emptyAdditionalNutrients = FMTCreateEmptyAdditionalNutrients();
-      FMTSumAdditionalNutrients(
-        additionalNutrients,
-        emptyAdditionalNutrients,
-        fmtAppInstance.unitsChart
-      );
-      FMTUICreateAdditionalNutrientsFromObj(
-        baseScreenID,
-        qualifier,
-        additionalNutrients,
-        restrictNutrientUnit,
-        fmtAppInstance.unitsChart,
-        readonly
-      );
-    } else {
-      //Fill values only
-      for (const category in additionalNutrients) {
-        const nutrientsList = additionalNutrients[category];
-        const normalizedCategory = category.replace(/ /g, "_");
-        for (const i in nutrientsList) {
-          const nutrient = nutrientsList[i];
-          if (nutrient.amount == 0) {
-            continue;
-          }
-          const nutrientNameNormalized = nutrient.name.replace(/ /g, "_");
-          const baseElementId = `${idBase}-addi-${normalizedCategory}-${nutrientNameNormalized}`;
-          const inputElementId = `${baseElementId}-input`;
-          const selectId = `${baseElementId}-unit-select`;
-          const inputElement = document.getElementById(inputElementId);
-          const select = document.getElementById(selectId);
-          if (inputElement) {
-            // @ts-ignore
-            inputElement.value = nutrient.amount;
-            // @ts-ignore
-            select.value = nutrient.unit;
-          } else {
-            //TODO - Review if needed to Lazy Load inexisting nutrients/categories based on APP settings
-            console.warn(`Could not find DOM element "${inputElementId}"`);
-          }
-        }
-      }
-    }
-    //Iterate and manipulate fields as needed
-    // TODO - refactor selection by class name
-    const addiNutrients =
-      additionalNutriDiv.getElementsByClassName("fmt-add-nutri");
-    //Apply multiplier
-    if (multiplier !== 1) {
-      for (let k = 0; k < addiNutrients.length; k++) {
-        const _field = addiNutrients[k];
-        //@ts-ignore
-        if (isNumber(_field.value)) {
-          //@ts-ignore
-          _field.value = Number(
-            roundedToFixed(
-              //@ts-ignore
-              _field.value * multiplier,
-              NUTRIENT_ROUNDING_PRECISION
-            )
-          );
-        }
-      }
-    }
-  }
+  // TODO - Delete
+  // if (multiplier !== 1) {
+  //   for (let k = 0; k < addiNutrients.length; k++) {
+  //     const _field = addiNutrients[k];
+  //     if (isNumber(_field.value)) {
+  //       _field.value = Number(
+  //         roundedToFixed(
+  //           _field.value * multiplier,
+  //           NUTRIENT_ROUNDING_PRECISION
+  //         )
+  //       );
+  //     }
+  //   }
+  // }
 }
+// TODO - remove
 function FMTPopulateConsumableItemScreen(
   baseScreenID,
   optionsObj,
@@ -3396,19 +3336,6 @@ function FMTPopulateConsumableItemScreen(
     return { error };
   }
   optionsObj = optionsObj || { readonly: false };
-  let idProp;
-  switch (objectType) {
-    case "Food Item":
-      idProp = "food_id";
-      break;
-    case "Meal Entry":
-      idProp = "entry_id";
-      break;
-    case "Recipe Item":
-      //TODO
-      idProp = "recipe_id";
-      break;
-  }
   //Prepare Serving field - where user selects units and inputs amount
   const servingBaseName = `${baseScreenID}-${qualifier}-serving`;
   const servingTargetDivId = servingBaseName;
@@ -3426,21 +3353,6 @@ function FMTPopulateConsumableItemScreen(
     true
   );
 
-  //Validate and Add ID of consumable/entry (food_id, recipe_id, entry_id).
-  const saveOrAddBtn = document.getElementById(`${baseScreenID}-save`);
-  const delBtn = document.getElementById(`${baseScreenID}-delete`);
-  const editBtn = document.getElementById(`${baseScreenID}-edit`);
-  //TODO - write a function to validate the different IDs
-  if (isNumber(optionsObj.consumableId)) {
-    saveOrAddBtn.setAttribute(`${idProp}`, optionsObj.consumableId);
-    if (delBtn) {
-      delBtn.setAttribute(`${idProp}`, optionsObj.consumableId);
-    }
-    if (editBtn) {
-      editBtn.setAttribute(`${idProp}`, optionsObj.consumableId);
-    }
-  }
-
   //Vaidate and handle Meal Identifier if present
   if (mealIdentifierObj) {
     const validateMealIdentifier = FMTValidateMealIdentifier(mealIdentifierObj);
@@ -3451,26 +3363,6 @@ function FMTPopulateConsumableItemScreen(
       //TODO handle error
       //@ts-ignore
       result.error = validateMealIdentifier.error;
-    }
-    const mealIdentifier = validateMealIdentifier.mealIdentifier;
-    //Add to buttons
-    if (saveOrAddBtn) {
-      if (mealIdentifier.meal_name) {
-        saveOrAddBtn.setAttribute("meal_name", mealIdentifier.meal_name);
-      }
-      saveOrAddBtn.setAttribute(
-        "meal_year",
-        mealIdentifier.meal_year.toString()
-      );
-      saveOrAddBtn.setAttribute(
-        "meal_month",
-        mealIdentifier.meal_month.toString()
-      );
-      saveOrAddBtn.setAttribute("meal_day", mealIdentifier.meal_day.toString());
-      saveOrAddBtn.setAttribute(
-        "profile_id",
-        mealIdentifier.profile_id.toString()
-      );
     }
   }
 
@@ -3551,10 +3443,8 @@ function FMTPopulateSavedValuesInConsumableItemScreen(
       servingProp = "referenceServing";
       break;
   }
-  // Set Naming properties
-  document.getElementById(`${baseScreenID}-heading`).innerHTML = `${
-    headingPrefix ? `${headingPrefix} - ` : ""
-  }${consumableItem[nameProp]}`;
+  //TODO remove
+
   // @ts-ignore
   document.getElementById(`${idBase}-name`).value = consumableItem[nameProp];
   // @ts-ignore
@@ -3590,9 +3480,7 @@ function FMTPopulateSavedValuesInConsumableItemScreen(
     qualifier,
     consumableItem.nutritionalValue,
     multiplier,
-    readonly,
-    createAdditionalNutrients,
-    restrictNutrientUnit
+    readonly
   );
   //Additinal object type specific tasks - Ugly FIXME
   switch (objectType) {
@@ -3657,9 +3545,7 @@ function FMTPopulateSavedValuesInConsumableItemScreen(
             qualifier,
             consumableItem.nutritionalValue,
             1,
-            true,
-            true,
-            false
+            true
           );
         };
 
@@ -3706,9 +3592,7 @@ function FMTPopulateSavedValuesInConsumableItemScreen(
           qualifier,
           consumableItem.nutritionalValue,
           multiplier,
-          true,
-          createAdditionalNutrients,
-          restrictNutrientUnit
+          true
         );
       }
       break;
@@ -3741,6 +3625,8 @@ function FMTConsumableItemScreenShowLess(baseScreenID, qualifier) {
     $(`#${baseScreenID}-${qualifier}-microes`).addClass("d-none");
   }
 }
+
+// TODO - Remove
 function FMTClearViewConsumableItemScreen(baseScreenID, qualifier, objectType) {
   if (fmtAppGlobals.inputScreensQualifiers.indexOf(qualifier) < 0) {
     console.error(`Invalid qualifier ${qualifier}`);
@@ -3752,41 +3638,9 @@ function FMTClearViewConsumableItemScreen(baseScreenID, qualifier, objectType) {
   }
   //Clear screen
   FMTClearConsumableItemScreen(baseScreenID, qualifier, objectType);
-  let idProp;
-  switch (objectType) {
-    case "Food Item":
-    //FIXME when ingredient item will not nesecarrily be a food item
-    case "Ingredient Item":
-      idProp = "food_id";
-      break;
-    case "Meal Entry":
-      idProp = "consumable_id";
-      break;
-    case "Recipe Item":
-      idProp = "recipe_id";
-      break;
-  }
-  //Clear Add to Meal/Update (save btn) properties present in this screen
-  const saveBtn = document.getElementById(`${baseScreenID}-save`);
-  saveBtn.removeAttribute(idProp);
-  saveBtn.removeAttribute("meal_name");
-  saveBtn.removeAttribute("meal_year");
-  saveBtn.removeAttribute("meal_month");
-  saveBtn.removeAttribute("meal_day");
-  saveBtn.removeAttribute("profile_id");
-  // @ts-ignore
-  document.getElementById(`${baseScreenID}-meal-year`).value = "";
-  // @ts-ignore
-  document.getElementById(`${baseScreenID}-meal-month`).value = "";
-  // @ts-ignore
-  document.getElementById(`${baseScreenID}-meal-day`).value = "";
-  // @ts-ignore
-  document.getElementById(`${baseScreenID}-meal-name`).value = "";
-  //Hide container of the above input fields
-  document
-    .getElementById(`${baseScreenID}-add-to-meal`)
-    .classList.add("d-none");
 }
+
+//TODO - remove
 function FMTClearConsumableItemScreen(
   baseScreenID: string,
   qualifier: string,
@@ -3835,15 +3689,10 @@ function FMTClearConsumableItemScreen(
     _carbs.innerHTML = "";
     _fats.innerHTML = "";
   }
-  // @ts-ignore
-  document.getElementById(`${baseScreenID}-${qualifier}-serving-input`).value =
-    "";
-  document.getElementById(`${baseScreenID}-${qualifier}-additional`).innerHTML =
-    "";
   FMTConsumableItemScreenShowLess(baseScreenID, qualifier);
   //Type sepecific actions
   if (objectType) {
-    let delBtn, saveBtn, updateBtn, editBtn;
+    let delBtn, updateBtn;
     switch (objectType) {
       case "Meal Entry":
         // @ts-ignore
@@ -3860,21 +3709,6 @@ function FMTClearConsumableItemScreen(
         updateBtn.removeAttribute("consumable_id");
         break;
       case "Food Item":
-        saveBtn = document.getElementById(`${baseScreenID}-save`);
-        delBtn = document.getElementById(`${baseScreenID}-delete`);
-        editBtn = document.getElementById(`${baseScreenID}-edit`);
-        saveBtn.removeAttribute("consumables-table-body-id");
-        saveBtn.removeAttribute("meal_name");
-        saveBtn.removeAttribute("meal_year");
-        saveBtn.removeAttribute("meal_month");
-        saveBtn.removeAttribute("meal_day");
-        saveBtn.removeAttribute("profile_id");
-        if (delBtn) {
-          delBtn.removeAttribute("consumables-table-body-id");
-        }
-        if (editBtn) {
-          editBtn.removeAttribute("consumables-table-body-id");
-        }
         break;
       case "Recipe Item":
         document.getElementById(
@@ -5212,9 +5046,7 @@ function FMTUIAddIngredientBtnClick(
         "recipe",
         nutritionalValue,
         1,
-        true,
-        true,
-        false
+        true
       );
     };
 
@@ -5272,42 +5104,8 @@ function FMTUIAddtoMealBtnClick(baseId, qualifier, objectType, event) {
     return;
   }
   const addToMealBtn = document.getElementById(`${baseId}-save`);
-  const mealIdentifierObj = {
-    meal_year:
-      addToMealBtn.getAttribute("meal_year") ||
-      // @ts-ignore
-      document.getElementById(`${baseId}-meal-year`).value,
-    meal_month:
-      addToMealBtn.getAttribute("meal_month") ||
-      // @ts-ignore
-      Number(document.getElementById(`${baseId}-meal-month`).value) - 1,
-    meal_day:
-      addToMealBtn.getAttribute("meal_day") ||
-      // @ts-ignore
-      document.getElementById(`${baseId}-meal-day`).value,
-    meal_name:
-      addToMealBtn.getAttribute("meal_name") ||
-      // @ts-ignore
-      document.getElementById(`${baseId}-meal-name`).value,
-    profile_id:
-      addToMealBtn.getAttribute("profile_id") ||
-      fmtAppInstance.currentProfileId,
-  };
-
-  if (
-    !mealIdentifierObj.meal_year ||
-    !mealIdentifierObj.meal_month ||
-    !mealIdentifierObj.meal_day ||
-    !mealIdentifierObj.meal_name
-  ) {
-    document.getElementById(`${baseId}-add-to-meal`).classList.remove("d-none");
-    FMTShowAlert(
-      `${baseId}-alerts`,
-      "primary",
-      "Please enter the Year, Month and Day as well as the Meal Name into which to add"
-    );
-    return;
-  }
+  // TODO - remove
+  const mealIdentifierObj = {};
   const validateMealIdentifierObjRes =
     FMTValidateMealIdentifier(mealIdentifierObj);
   if (
@@ -5869,8 +5667,6 @@ export const pageController = {
     const screenID = "view-food-screen";
     const qualifier = "food";
     const objectType = "Food Item";
-    const addToMealBtn = document.getElementById(`${screenID}-save`);
-    const editFoodBtn = document.getElementById(`${screenID}-edit`);
     //Clear Screen if needed (Basically anytime except when updating values on serving change)
     if (clear) {
       FMTClearViewConsumableItemScreen(screenID, qualifier, objectType);
@@ -5899,9 +5695,6 @@ export const pageController = {
         false
       );
       const mealIdentifier = result.mealIdentifier;
-      if (foodsTableBodyID) {
-        editFoodBtn.setAttribute("consumables-table-body-id", foodsTableBodyID);
-      }
       if (result.error) {
         console.error(result.error);
       }
@@ -5918,6 +5711,7 @@ export const pageController = {
             .getElementById(`${screenID}-add-to-meal`)
             .classList.remove("d-none");
         }
+        // TODO - remove
         // @ts-ignore
         document.getElementById("view-food-screen-meal-year").value =
           mealIdentifier.meal_year;
@@ -5927,17 +5721,6 @@ export const pageController = {
         // @ts-ignore
         document.getElementById("view-food-screen-meal-day").value =
           mealIdentifier.meal_day;
-      }
-    }
-    const addBtn = document.getElementById("view-food-screen-add");
-    if (addBtn) {
-      if (showAddToRecipe === true) {
-        addBtn.classList.remove("d-none");
-        addBtn.setAttribute("food_id", foodId);
-        addToMealBtn.classList.add("d-none");
-      } else if (showAddToRecipe === false) {
-        addBtn.classList.add("d-none");
-        addToMealBtn.classList.remove("d-none");
       }
     }
 
@@ -6289,9 +6072,7 @@ export const pageController = {
             "recipe",
             nutritionalValue,
             1,
-            true,
-            true,
-            false
+            true
           );
         };
         screenFunc.apply(null, args);
@@ -7181,7 +6962,9 @@ export function prepareEventHandlers() {
   $("#foods-my-recipe-btn").click(() => {
     FMTToggleFoodMenu("foods", "recipe");
   });
+  // TODO - remove
   $("#add-food-screen-save").click(() => {
+    return;
     const onerrorFn = function (err) {
       const msg = `Failed adding food - ${err}`;
       console.error(msg);
@@ -7329,12 +7112,7 @@ export function prepareEventHandlers() {
       fmtAppInstance.editIngredientServingKeyupFn(event);
     }
   });
-  $("#view-food-screen-more").click(() => {
-    FMTConsumableItemScreenShowMore("view-food-screen", "food");
-  });
-  $("#view-food-screen-less").click(() => {
-    FMTConsumableItemScreenShowLess("view-food-screen", "food");
-  });
+  //TODO - remove
   $("#view-food-screen-cancel").click(() => {
     pageController.closeViewFoodDynamicScreen();
   });
