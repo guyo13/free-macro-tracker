@@ -6275,27 +6275,69 @@ function startIndexedDB() {
   window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
   if (!window.indexedDB) {
       document.getElementById("page-title").innerHTML += '<div class="alert alert-danger col-12" role="alert">IndexedDB is not supported on this browser. Can\'t use app!</div>';
+      onAppFinishedLoading();
       return;
   }
   window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || {READ_WRITE: "readwrite"};
   window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 
   //Start IndexedDB
-  var dbOpenReq = indexedDB.open(fmtAppGlobals.FMT_DB_NAME, fmtAppGlobals.FMT_DB_VER);
+  var dbOpenReq;
+  try {
+    dbOpenReq = indexedDB.open(fmtAppGlobals.FMT_DB_NAME, fmtAppGlobals.FMT_DB_VER);
+  } catch (error) {
+    console.error("indexedDB.open threw synchronously", error);
+    onAppFinishedLoading();
+    return;
+  }
   dbOpenReq.onupgradeneeded = onUpgradeNeeded;
   dbOpenReq.onsuccess = onDbSuccess;
+  // Without onerror/onblocked the loading screen hangs forever on failure
+  // and the native shell never gets FMTFinishedLoading.
+  dbOpenReq.onerror = function(event) {
+    console.error("Failed opening IndexedDB", event && event.target && event.target.error);
+    onAppFinishedLoading();
+  };
+  dbOpenReq.onblocked = function(event) {
+    console.error("IndexedDB open blocked - another tab/connection holds the DB open", event);
+    onAppFinishedLoading();
+  };
 }
-function askPersistentStorage() {
-  navigator.storage.persist().then( (isConfirmed) => {
-    if (isConfirmed) {
-      fmtAppInstance.isStoragePersistent = true;
-      startIndexedDB();
-    }
-    else {
+// Durable Storage (navigator.storage.persist) is not granted inside Android
+// WebView, and recent WebView versions reject the promise instead of
+// resolving with false. Treat any failure as "not persistent" and continue
+// booting so the loading screen never hangs.
+function requestPersistentStorageThenStart() {
+  // Skip the persist dance entirely inside the native shell - it never
+  // worked there and recent WebViews now reject the promise.
+  if (hasAndroidPlatformInterface() || hasIOSPlatformInterface()
+      || !navigator.storage || typeof navigator.storage.persisted !== 'function') {
+    fmtAppInstance.isStoragePersistent = false;
+    startIndexedDB();
+    return;
+  }
+  Promise.resolve()
+    .then(() => navigator.storage.persisted())
+    .then((isPersisted) => {
+      if (isPersisted) {
+        fmtAppInstance.isStoragePersistent = true;
+        return;
+      }
+      if (typeof navigator.storage.persist !== 'function') {
+        fmtAppInstance.isStoragePersistent = false;
+        return;
+      }
+      return navigator.storage.persist().then((isConfirmed) => {
+        fmtAppInstance.isStoragePersistent = !!isConfirmed;
+      });
+    })
+    .catch((error) => {
+      console.warn("navigator.storage check/persist failed - continuing without persistent storage", error);
       fmtAppInstance.isStoragePersistent = false;
+    })
+    .then(() => {
       startIndexedDB();
-    }
-  });
+    });
 }
 //Main
 $(document).ready(function() {
@@ -6307,21 +6349,11 @@ $(document).ready(function() {
       }
     };
     try {
-      navigator.storage.persisted().then( (isPersisted) => {
-        if (isPersisted) {
-          fmtAppInstance.isStoragePersistent = true;
-          startIndexedDB();
-        }
-        else {
-          fmtAppInstance.isStoragePersistent = false;
-          askPersistentStorage();
-        }
-      });
+      requestPersistentStorageThenStart();
     }
     catch (error) {
       console.error(error);
       fmtAppInstance.isStoragePersistent = false;
       startIndexedDB();
     }
-
 });
